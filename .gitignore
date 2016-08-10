@@ -1,12 +1,12 @@
 
-logs
-project/project
-project/target
+/dist
+/lib_managed
+/logs
+/project/project
+/project/target
 target
-lib_managed
 tmp
 .history
-dist
 /.idea
 /*.iml
 /*.ipr
@@ -14,8 +14,7 @@ dist
 /.idea_modules
 /.classpath
 /.project
-/RUNNING_PID
 /.settings
 *.iws
+/RUNNING_PID
 
-    

@@ -1,0 +1,6 @@
+# routes
+
+#GET           /                                          controllers.SomeController.start
+#GET           /start                                     controllers.SomeController.start
+
+GET           /assets/*file                              controllers.Assets.at(path="/public", file)

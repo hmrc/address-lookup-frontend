@@ -21,6 +21,7 @@ import java.io.File
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.Mode._
+import play.api.Play._
 import play.api.mvc.Request
 import play.api.{Application, Configuration, Play}
 import play.twirl.api.Html
@@ -51,15 +52,21 @@ object FrontendGlobal
     views.html.error_template(pageTitle, heading, message)
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
+
+  // one EC to rule them all - be sure to use it
+  val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 }
+
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
 }
 
+
 object LoggingFilter extends FrontendLoggingFilter {
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
+
 
 object  AuditFilter extends FrontendAuditFilter with RunMode with AppName {
 

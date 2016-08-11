@@ -15,9 +15,11 @@
  */
 
 import sbt.Keys._
-import sbt.Tests.{SubProcess, Group}
+import sbt.Tests.{Group, SubProcess}
 import sbt._
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+import uk.gov.hmrc.versioning.SbtGitVersioning
 
 trait MicroService {
 
@@ -30,15 +32,27 @@ trait MicroService {
   val appName: String
 
   lazy val appDependencies: Seq[ModuleID] = ???
-  lazy val plugins: Seq[Plugins] = Seq(play.PlayScala)
   lazy val playSettings: Seq[Setting[_]] = Seq.empty
 
+  lazy val scoverageSettings = {
+    import scoverage.ScoverageKeys
+    Seq(
+      // Semicolon-separated list of regexs matching classes to exclude
+      ScoverageKeys.coverageExcludedPackages := "<empty>;views.html.*",
+      ScoverageKeys.coverageMinimum := 90,
+      ScoverageKeys.coverageFailOnMinimum := false,
+      ScoverageKeys.coverageHighlighting := true
+    )
+  }
+
   lazy val microservice = Project(appName, file("."))
-    .enablePlugins(Seq(play.PlayScala) ++ plugins: _*)
+    .enablePlugins(play.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+    .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
     .settings(Seq(SettingKey[Boolean]("autoSourceHeader") := false))
     .settings(playSettings: _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
+    .settings(scoverageSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
       targetJvm := "jvm-1.8",
@@ -50,18 +64,18 @@ trait MicroService {
     )
     .settings(Provenance.setting)
     .configs(Test)
-    .settings(inConfig(Test)(Defaults.testSettings): _*)
-    .settings(unmanagedSourceDirectories in Test <<= (baseDirectory in Test)(base => Seq(base / "test" / "unit")),
-      addTestReportOption(Test, "test-reports"))
+      .settings(inConfig(Test)(Defaults.testSettings): _*)
+      .settings(unmanagedSourceDirectories in Test <<= (baseDirectory in Test)(base => Seq(base / "test" / "unit")),
+        addTestReportOption(Test, "test-reports"))
     .configs(IntegrationTest)
-    .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-    .settings(
-      Keys.fork in IntegrationTest := false,
-      unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "test" / "it")),
-      addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-      parallelExecution in IntegrationTest := false
-    )
+      .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+      .settings(
+        Keys.fork in IntegrationTest := false,
+        unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "test" / "it")),
+        addTestReportOption(IntegrationTest, "int-test-reports"),
+        testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+        parallelExecution in IntegrationTest := false
+      )
     .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
 }
 

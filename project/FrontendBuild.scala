@@ -25,10 +25,6 @@ object FrontendBuild extends Build with MicroService {
 
   val appName = "address-capture-frontend"
 
-  override lazy val plugins: Seq[Plugins] = Seq(
-    SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
-  )
-
   override lazy val appDependencies: Seq[ModuleID] = compile ++ testDependencies ++ itDependencies
 
   private val jacksonVersion = "2.7.4"

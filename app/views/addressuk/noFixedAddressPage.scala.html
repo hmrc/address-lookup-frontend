@@ -14,13 +14,14 @@
 * limitations under the License.
 *@
 
-@(view: address.uk.ViewConfig)(implicit request: Request[_])
+@(ix: Int, view: address.uk.ViewConfig)(implicit request: Request[_])
 
-@main_template(title = view.title, bodyClasses = Some("no-fixed-address-page")) {
+@main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("no-fixed-address-page")) {
 
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>
         <p>No fixed address.</p>
+        <a href="../@{ix}">Start again</a>
     </div>
 
 }

@@ -17,6 +17,8 @@
 @(title: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
+  alpha: Boolean = false,
+  beta: Boolean = false,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_])
@@ -62,6 +64,8 @@
 @govuk_wrapper(appConfig = FrontendAppConfig,
                title = title,
                mainClass = mainClass,
+               alpha = alpha,
+               beta = beta,
                bodyClasses = bodyClasses,
                sidebar = sidebar,
                contentHeader = contentHeader,

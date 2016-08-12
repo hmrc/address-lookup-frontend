@@ -32,7 +32,8 @@ object AddressLookupController extends AddressLookupController(AddressLookupServ
 
 class AddressLookupController(lookup: AddressLookupService) extends FrontendController {
   val cfg = List(
-    ViewConfig(baseTitle = "Your address", "Choose your location", allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20),
+    ViewConfig(baseTitle = "Your address", "Choose your location", allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true),
+    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
     ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
   )
 
@@ -144,7 +145,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
   def confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async {
     implicit request =>
       if (nfa.contains(1)) {
-        Future.successful(Ok(noFixedAddressPage(cfg(ix))))
+        Future.successful(Ok(noFixedAddressPage(ix, cfg(ix))))
       } else if (uprn.isEmpty) {
         Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None)))
       } else {
@@ -163,7 +164,9 @@ case class ViewConfig(baseTitle: String,
                       allowManualEntry: Boolean = false,
                       allowNoFixedAddress: Boolean = true,
                       maxAddressesToShow: Int = 20,
-                      indicator: Option[String] = None) {
+                      indicator: Option[String] = None,
+                      alpha: Boolean = false,
+                      beta: Boolean = false) {
   def title = if (indicator.isDefined) baseTitle + " - " + indicator.get else baseTitle
 }
 

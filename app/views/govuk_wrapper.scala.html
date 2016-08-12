@@ -18,6 +18,8 @@
   title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
+  alpha: Boolean = false,
+  beta: Boolean = false,
   bodyClasses: Option[String] = None,
   sidebar: Html = HtmlFormat.empty,
   contentHeader: Option[Html] = None,
@@ -50,23 +52,7 @@
       navLinks = Some(headerNavLinks))
 }
 
-@alphaBanner = {
-    <div class="phase-banner-alpha">
-        <p>
-            <strong class="phase-tag">ALPHA</strong>
-            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-        </p>
-    </div>
-}
-
-@betaBanner = {
-    <div class="phase-banner-beta">
-        <p>
-            <strong class="phase-tag">BETA</strong>
-            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-        </p>
-    </div>
-}
+@afterHeader = {}
 
 @bodyEnd = {
     @uiLayouts.footer(
@@ -83,7 +69,7 @@
 
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = HtmlFormat.empty,
+      betaBanner = phase_banner(alpha, beta),
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
@@ -107,4 +93,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, alphaBanner, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

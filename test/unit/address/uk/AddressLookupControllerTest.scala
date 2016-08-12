@@ -27,7 +27,7 @@ import play.api.data.Forms._
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 
-class AddressLookupControllerrTest extends PlaySpec with Results with OneAppPerSuite {
+class AddressLookupControllerTest extends PlaySpec with Results with OneAppPerSuite {
 
   "addressLookup action" should {
 

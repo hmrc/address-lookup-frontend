@@ -14,7 +14,8 @@
 * limitations under the License.
 *@
 
-@(view: address.uk.ViewConfig,
+@(ix: Int,
+  view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
   noMatchesWereFound: Boolean)(implicit request: Request[_])
 
@@ -30,7 +31,7 @@
     <label class="form-label-bold" for="location">Choose your location</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.AddressLookupController.postForm, 'id -> "myForm"  ) {
+        @helpers.form( address.uk.routes.AddressLookupController.postForm(ix), 'id -> "myForm"  ) {
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.getOrElse("")' />
 
             @if(!noMatchesWereFound) {

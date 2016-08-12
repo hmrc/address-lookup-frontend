@@ -27,13 +27,15 @@ import views.html.addressuk._
 import scala.concurrent.Future
 
 
-object AddressLookupController extends AddressLookupController(
-  AddressLookupService,
-  ViewConfig(title = "Your address", allowManualEntry = false, maxAddressesToShow = 20)
-)
+object AddressLookupController extends AddressLookupController(AddressLookupService)
 
 
-class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) extends FrontendController {
+class AddressLookupController(lookup: AddressLookupService) extends FrontendController {
+  val cfg = List(
+    ViewConfig(title = "Your address", allowManualEntry = true, maxAddressesToShow = 20),
+    ViewConfig(title = "Account holder address", allowManualEntry = false, maxAddressesToShow = 10)
+  )
+
   val defaultContinueUrl = "confirmation"
 
   val addressForm = Form[AddressForm] {
@@ -52,42 +54,42 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
   }
 
   def start: Action[AnyContent] = Action { implicit request =>
-    Redirect(routes.AddressLookupController.getEmptyForm(None))
+    Redirect(routes.AddressLookupController.getEmptyForm(0, None))
   }
 
-  def getEmptyForm(continueUrl: Option[String]): Action[AnyContent] = Action { implicit request =>
+  def getEmptyForm(ix: Int, continueUrl: Option[String]): Action[AnyContent] = Action { implicit request =>
     val cu = continueUrl.getOrElse(defaultContinueUrl)
     val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None, None, None))
-    Ok(blankForm(cfg, bound, noMatchesWereFound = false))
+    Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
   }
 
-  def postForm: Action[AnyContent] = Action { implicit request =>
+  def postForm(ix: Int): Action[AnyContent] = Action { implicit request =>
     val bound = addressForm.bindFromRequest()
     if (bound.errors.nonEmpty) {
-      BadRequest(blankForm(cfg, bound, noMatchesWereFound = false))
+      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
     } else {
       val formData = bound.get
       if (formData.noFixedAddress) {
-        completion(cfg, addressForm.bindFromRequest().get, noFixedAddress = true)
+        completion(ix, addressForm.bindFromRequest().get, noFixedAddress = true)
       } else if (formData.postcode.isEmpty) {
-        BadRequest(blankForm(cfg, addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false))
+        BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false))
       } else {
         val cu = Some(formData.continueUrl)
-        SeeOther(routes.AddressLookupController.getProposals(formData.nameNo.getOrElse("-"), formData.postcode.get, cu).url)
+        SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), formData.postcode.get, cu).url)
       }
     }
   }
 
-  def getProposals(nameNo: String, postcode: String, continueUrl: Option[String]): Action[AnyContent] = Action.async { implicit request =>
+  def getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
     lookup.findAddresses(postcode, optNameNo) map {
       list =>
         val cu = continueUrl.getOrElse(defaultContinueUrl)
-        showAddressList(optNameNo, postcode, cu, list)
+        Ok(showAddressList(ix, optNameNo, postcode, cu, list))
     }
   }
 
-  private def showAddressList(nameNo: Option[String], postcode: String, continueUrl: String, matchingAddresses: List[AddressRecord])
+  private def showAddressList(ix: Int, nameNo: Option[String], postcode: String, continueUrl: String, matchingAddresses: List[AddressRecord])
                              (implicit request: Request[_]) = {
     val updatedDetails =
       if (matchingAddresses.nonEmpty) {
@@ -102,20 +104,20 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
         addressForm.fill(AddressForm(continueUrl, false, nameNo, Some(postcode), None, None, None, None, None, None))
       }
 
-    Ok(proposalForm(cfg, updatedDetails, matchingAddresses, matchingAddresses.isEmpty))
+    proposalForm(ix, cfg(ix), updatedDetails, matchingAddresses, -1, matchingAddresses.isEmpty)
   }
 
-  def postSelected: Action[AnyContent] = Action { implicit request =>
+  def postSelected(ix: Int): Action[AnyContent] = Action { implicit request =>
     val bound = addressForm.bindFromRequest()
     if (bound.errors.nonEmpty) {
-      BadRequest(blankForm(cfg, bound, noMatchesWereFound = false))
+      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
     } else {
       val formData = bound.get
-      completion(cfg, addressForm.bindFromRequest().get, noFixedAddress = false)
+      completion(ix, addressForm.bindFromRequest().get, noFixedAddress = false)
     }
   }
 
-  private def completion(cfg: ViewConfig, address: AddressForm, noFixedAddress: Boolean)(implicit request: Request[_]) = {
+  private def completion(ix: Int, address: AddressForm, noFixedAddress: Boolean)(implicit request: Request[_]) = {
     val nfa = if (noFixedAddress) "nfa=1&" else ""
     val uprn = if (address.id.isDefined) s"uprn=${address.id.get}&" else ""
     val ed = address.editedAddress
@@ -123,14 +125,16 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
     SeeOther(address.continueUrl + "?" + nfa + uprn + ea)
   }
 
-  def confirmation(nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async { implicit request =>
+  def confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     if (nfa.contains(1)) {
-      Future.successful(Ok(noFixedAddressPage(cfg)))
+      Future.successful(Ok(noFixedAddressPage(cfg(ix))))
+    } else if (uprn.isEmpty) {
+      Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None)))
     } else {
       lookup.findUprn(uprn.get) map {
         list =>
           val editedAddress = edit.map(json => JacksonMapper.readValue(json, classOf[Address]))
-          Ok(confirmationPage(cfg, list.head, editedAddress))
+          Ok(confirmationPage(cfg(ix), list.head, editedAddress))
       }
     }
   }

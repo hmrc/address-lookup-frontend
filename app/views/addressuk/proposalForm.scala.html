@@ -14,9 +14,11 @@
 * limitations under the License.
 *@
 
-@(view: address.uk.ViewConfig,
+@(ix: Int,
+  view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
   addressList: List[address.uk.AddressRecord],
+  selected: Int,
   noMatchesWereFound: Boolean)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -31,8 +33,8 @@
     <label class="form-label-bold" for="location">Choose your location</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.AddressLookupController.postSelected, 'id -> "myForm"  ) {
-            <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.getOrElse("")' />
+        @helpers.form( address.uk.routes.AddressLookupController.postSelected(ix), 'id -> "myForm"  ) {
+            <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
 
             @if(!noMatchesWereFound && addressList.isEmpty) {
             <div class="form-group">
@@ -96,19 +98,17 @@
                         <label class="form-label-bold" for="Address-table">Found addresses</label>
                         <table id="Address-table">
                             <tbody>
-                            @for(addr <- addressList) {
+                            @for(i <- addressList.indices) {
                                 <tr>
-                                    <td class="selection"><input id='a@{
-                                        addr.uprn.get
-                                    }' type="radio" name="radio-inline-group" value='@{
-                                        addr.uprn.get
-                                    }'>
+                                    <td class="selection"><input id='a@{addressList(i).uprn.get}'
+                                        type="radio" name="radio-inline-group"
+                                        @if(selected == i) {
+                                            checked="checked"
+                                        }
+                                        value='@{addressList(i).uprn.get}' />
                                     </td>
-                                    <td><label for='a@{
-                                        addr.uprn.get
-                                    }'>@{
-                                        addr.address.printable
-                                    }</label>
+                                    <td><label for='a@{addressList(i).uprn.get}'
+                                        >@{addressList(i).address.printable}</label>
                                     </td>
                                 </tr>
                             }
@@ -118,7 +118,7 @@
                 </div>
             }
 
-            @if(view.allowManualEntry) {
+            @if(view.allowManualEntry && selected >= 0) {
                 <div class="form-group">
                     <h2>Amend address</h2>
                     @helper.inputText(ukAddrForm("address-line1"),  'class -> "form-control", '_name -> "Address line 1" )

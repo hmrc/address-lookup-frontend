@@ -18,6 +18,8 @@ package address.uk
 
 import java.util.regex.Pattern
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 /**
   * Address typically represents a postal address.
   * For UK addresses, 'town' will always be present.
@@ -30,6 +32,7 @@ case class Address(lines: List[String],
                    subdivision: Option[String],
                    country: Country) {
 
+  @JsonIgnore
   def isValid = lines.nonEmpty && lines.size <= (if (town.isEmpty) 4 else 3)
 
   def nonEmptyFields: List[String] = lines ::: town.toList ::: county.toList ::: List(postcode)

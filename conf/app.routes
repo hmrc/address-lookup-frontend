@@ -5,7 +5,7 @@ GET    /                                                  address.uk.AddressLook
 GET    /uk/addresses/:ix                                  address.uk.AddressLookupController.getEmptyForm(ix: Int, continueUrl: Option[String])
 POST   /uk/addresses/:ix/propose                          address.uk.AddressLookupController.postForm(ix: Int)
 POST   /uk/addresses/:ix/select                           address.uk.AddressLookupController.postSelected(ix: Int)
-GET    /uk/addresses/:ix/get-proposals/:nameNo/:postcode  address.uk.AddressLookupController.getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String])
+GET    /uk/addresses/:ix/get-proposals/:nameNo/:postcode  address.uk.AddressLookupController.getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String], edit: Option[Boolean])
 GET    /uk/addresses/:ix/confirmation                     address.uk.AddressLookupController.confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String])
 
 GET    /assets/*file                                      controllers.Assets.at(path="/public", file)

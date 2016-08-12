@@ -18,12 +18,11 @@
   view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
   addressList: List[address.uk.AddressRecord],
-  selected: Int,
-  noMatchesWereFound: Boolean)(implicit request: Request[_])
+  selected: Int)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers
 
-@main_template(title = view.title, bodyClasses = None) {
+@main_template(title = view.title, bodyClasses = Some("proposal-form")) {
 
 <div>
     <h1 class="heading-xlarge">Your Address</h1>
@@ -36,15 +35,6 @@
         @helpers.form( address.uk.routes.AddressLookupController.postSelected(ix), 'id -> "myForm"  ) {
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
 
-            @if(!noMatchesWereFound && addressList.isEmpty) {
-            <div class="form-group">
-                <label class="form-checkbox" for="no-fixed-address">
-                    <input id="no-fixed-address" name="no-fixed-address" type="checkbox" value="true">
-                    I have no fixed address
-                </label>
-            </div>
-            }
-
             <div class="form-group">
                 @helper.inputText(ukAddrForm("house-name-number"),  'class -> "form-control",  '_label -> "Building name or number" )
             </div>
@@ -54,69 +44,49 @@
                 @helper.inputText(ukAddrForm("postcode"),  'class -> "form-control",  '_label -> "Post code",  'maxlength -> "8"  )
             </div>
 
-            @if(addressList.size > view.maxAddressesToShow) {
-                <div class="form-group">
-                    <div class="warning-box">
-                        <h3>More than @view.maxAddressesToShow addresses were found</h3>
-                        <p>Please enter the first line of your address.</p>
-                    </div>
-                </div>
-            }
-
-            @if(noMatchesWereFound) {
-                <div class="form-group">
-                    <div class="warning-box">
-                        <h3>No addresses were found for this postcode</h3>
-                        <p>Please enter a postcode or select 'edit this address'.</p>
-                    </div>
-                </div>
-            }
-
-            @if(!noMatchesWereFound && addressList.nonEmpty && addressList.size <= view.maxAddressesToShow) {
-                <div class="form-group">
-                    @if(addressList.size == 1) {
-                        <label class="form-label-bold" for="Address-table">Found address</label>
-                        <table id="Address-table">
-                            <tbody>
-                                <tr>
-                                    <td class="selection"><input id='a@{
-                                        addressList.head.uprn.get
-                                    }' type="radio" name="radio-inline-group" checked='checked' value='@{
-                                        addressList.head.uprn.get
-                                    }'>
-                                    </td>
-                                    <td><label for='a@{
-                                        addressList.head.uprn.get
-                                    }'>@{
-                                        addressList.head.address.printable
-                                    }</label>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    } else {
-                        <label class="form-label-bold" for="Address-table">Found addresses</label>
-                        <table id="Address-table">
-                            <tbody>
-                            @for(i <- addressList.indices) {
-                                <tr>
-                                    <td class="selection"><input id='a@{addressList(i).uprn.get}'
-                                        type="radio" name="radio-inline-group"
-                                        @if(selected == i) {
-                                            checked="checked"
-                                        }
-                                        value='@{addressList(i).uprn.get}' />
-                                    </td>
-                                    <td><label for='a@{addressList(i).uprn.get}'
-                                        >@{addressList(i).address.printable}</label>
-                                    </td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
-                    }
-                </div>
-            }
+            <div class="form-group">
+                @if(addressList.size == 1) {
+                    <label class="form-label-bold" for="Address-table">Found address</label>
+                    <table id="Address-table">
+                        <tbody>
+                            <tr>
+                                <td class="selection"><input id='a@{
+                                    addressList.head.uprn.get
+                                }' type="radio" name="radio-inline-group" checked='checked' value='@{
+                                    addressList.head.uprn.get
+                                }'>
+                                </td>
+                                <td><label for='a@{
+                                    addressList.head.uprn.get
+                                }'>@{
+                                    addressList.head.address.printable
+                                }</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                } else {
+                    <label class="form-label-bold" for="Address-table">Found addresses</label>
+                    <table id="Address-table">
+                        <tbody>
+                        @for(i <- addressList.indices) {
+                            <tr>
+                                <td class="selection"><input id='a@{addressList(i).uprn.get}'
+                                    type="radio" name="radio-inline-group"
+                                    @if(selected == i) {
+                                        checked="checked"
+                                    }
+                                    value='@{addressList(i).uprn.get}' />
+                                </td>
+                                <td><label for='a@{addressList(i).uprn.get}'
+                                    >@{addressList(i).address.printable}</label>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+            </div>
 
             @if(view.allowManualEntry && selected >= 0) {
                 <div class="form-group">

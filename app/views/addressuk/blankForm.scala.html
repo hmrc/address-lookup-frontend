@@ -17,11 +17,12 @@
 @(ix: Int,
   view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
-  noMatchesWereFound: Boolean)(implicit request: Request[_])
+  noMatchesWereFound: Boolean,
+  exceededLimit: Boolean)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers
 
-@main_template(title = view.title, bodyClasses = None) {
+@main_template(title = view.title, bodyClasses = Some("entry-form")) {
 
 <div>
     <h1 class="heading-xlarge">Your Address</h1>
@@ -57,6 +58,15 @@
                     <div class="warning-box">
                         <h3>No addresses were found for this postcode</h3>
                         <p>Please enter a postcode or select 'edit this address'.</p>
+                    </div>
+                </div>
+            }
+
+            @if(exceededLimit) {
+                <div class="form-group">
+                    <div class="warning-box">
+                        <h3>More than @view.maxAddressesToShow addresses were found</h3>
+                        <p>Please enter the first line of your address.</p>
                     </div>
                 </div>
             }

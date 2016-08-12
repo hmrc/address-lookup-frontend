@@ -38,7 +38,6 @@ object AddressLookupService extends AddressLookupService(
 
 
 class AddressLookupService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
-  Logger.info("************* " + endpoint)
 
   private val url = s"$endpoint/uk/addresses"
 

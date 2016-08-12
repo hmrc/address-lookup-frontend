@@ -18,7 +18,7 @@
   selected: address.uk.AddressRecord,
   edited: Option[address.uk.Address])(implicit request: Request[_])
 
-@main_template(title = view.title, bodyClasses = None) {
+@main_template(title = view.title, bodyClasses = Some("confirmation-page")) {
 
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>

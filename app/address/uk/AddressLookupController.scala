@@ -60,19 +60,19 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
   def getEmptyForm(ix: Int, continueUrl: Option[String]): Action[AnyContent] = Action { implicit request =>
     val cu = continueUrl.getOrElse(defaultContinueUrl)
     val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None, None, None))
-    Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
+    Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false))
   }
 
   def postForm(ix: Int): Action[AnyContent] = Action { implicit request =>
     val bound = addressForm.bindFromRequest()
     if (bound.errors.nonEmpty) {
-      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
+      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false))
     } else {
       val formData = bound.get
       if (formData.noFixedAddress) {
         completion(ix, addressForm.bindFromRequest().get, noFixedAddress = true)
       } else if (formData.postcode.isEmpty) {
-        BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false))
+        BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false, exceededLimit = false))
       } else {
         val cu = Some(formData.continueUrl)
         SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), formData.postcode.get, cu).url)
@@ -85,32 +85,32 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
     lookup.findAddresses(postcode, optNameNo) map {
       list =>
         val cu = continueUrl.getOrElse(defaultContinueUrl)
-        Ok(showAddressList(ix, optNameNo, postcode, cu, list))
+        val exceededLimit = list.size > cfg(ix).maxAddressesToShow
+        if (list.isEmpty || exceededLimit) {
+          val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(postcode), None, None, None, None, None, None))
+          Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
+        } else {
+          Ok(showAddressList(ix, optNameNo, postcode, cu, list))
+        }
     }
   }
 
   private def showAddressList(ix: Int, nameNo: Option[String], postcode: String, continueUrl: String, matchingAddresses: List[AddressRecord])
                              (implicit request: Request[_]) = {
-    val updatedDetails =
-      if (matchingAddresses.nonEmpty) {
-        val a = matchingAddresses.head.address
-        addressForm.fill(
-          AddressForm(continueUrl, false, nameNo, Some(postcode),
-            None,
-            Some(a.line1), Some(a.line2), Some(a.line3),
-            a.town, None
-          ))
-      } else {
-        addressForm.fill(AddressForm(continueUrl, false, nameNo, Some(postcode), None, None, None, None, None, None))
-      }
-
-    proposalForm(ix, cfg(ix), updatedDetails, matchingAddresses, -1, matchingAddresses.isEmpty)
+    val selected = if (matchingAddresses.size == 1) 0 else -1
+    val ar = matchingAddresses.head
+    val ad = ar.address
+    val l1 = ad.lines.headOption
+    val l2 = if (ad.lines.size > 1) Some(ad.lines(1)) else None
+    val l3 = if (ad.lines.size > 2) Some(ad.lines(2)) else None
+    val updatedDetails = AddressForm(continueUrl, false, nameNo, Some(postcode), ar.uprn.map(_.toString), l1, l2, l3, ad.town, None)
+    proposalForm(ix, cfg(ix), addressForm.fill(updatedDetails), matchingAddresses, selected)
   }
 
   def postSelected(ix: Int): Action[AnyContent] = Action { implicit request =>
     val bound = addressForm.bindFromRequest()
     if (bound.errors.nonEmpty) {
-      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false))
+      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false))
     } else {
       val formData = bound.get
       completion(ix, addressForm.bindFromRequest().get, noFixedAddress = false)

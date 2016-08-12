@@ -16,7 +16,7 @@
 
 @(view: address.uk.ViewConfig)(implicit request: Request[_])
 
-@main_template(title = view.title, bodyClasses = None) {
+@main_template(title = view.title, bodyClasses = Some("no-fixed-address-page")) {
 
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>

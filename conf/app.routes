@@ -1,6 +1,10 @@
 # routes
 
-#GET           /                                          controllers.SomeController.start
-#GET           /start                                     controllers.SomeController.start
+GET    /                                              address.uk.AddressLookupController.start
+GET    /uk/addresses                                  address.uk.AddressLookupController.getEmptyForm(continueUrl: Option[String])
+POST   /uk/addresses/propose                          address.uk.AddressLookupController.postForm
+POST   /uk/addresses/select                           address.uk.AddressLookupController.postSelected
+GET    /uk/addresses/get-proposals/:nameNo/:postcode  address.uk.AddressLookupController.getProposals(nameNo: String, postcode: String, continue: Option[String])
+GET    /uk/addresses/confirmation                     address.uk.AddressLookupController.confirmation(nfa: Option[Int], uprn: Option[String], edit: Option[String])
 
-GET           /assets/*file                              controllers.Assets.at(path="/public", file)
+GET    /assets/*file                                  controllers.Assets.at(path="/public", file)

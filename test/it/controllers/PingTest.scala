@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package address.uk
+package controllers
 
-import config.ConfigHelper._
-import play.api.Play
+import org.scalatestplus.play._
+import play.api.test.Helpers._
 
-object Services {
+class PingTest extends PlaySpec with AppServerUnderTest {
 
-  lazy val baseUrl = mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint")
+  "ping resource" must {
+    val pingPage = s"$baseURL/ping"
+
+    "give a successful response" in {
+      get(pingPage).status mustBe OK
+    }
+
+    "give version information in the response body" in {
+      (get(pingPage).json \ "version").as[String] must not be empty
+    }
+  }
+
 }

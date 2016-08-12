@@ -1,0 +1,71 @@
+@*
+* Copyright 2016 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@(view: address.uk.ViewConfig,
+  ukAddrForm: Form[address.uk.AddressForm],
+  noMatchesWereFound: Boolean)(implicit request: Request[_])
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@main_template(title = view.title, bodyClasses = None) {
+
+<div>
+    <h1 class="heading-xlarge">Your Address</h1>
+
+    <legend class="visuallyhidden">Choose your location</legend>
+
+    <label class="form-label-bold" for="location">Choose your location</label>
+    <fieldset class="inline">
+        <div class="panel panel-border-narrow" id='UK-Tab'>
+        @helpers.form( address.uk.routes.AddressLookupController.postForm, 'id -> "myForm"  ) {
+            <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.getOrElse("")' />
+
+            @if(!noMatchesWereFound) {
+            <div class="form-group">
+                <label class="form-checkbox" for="no-fixed-address">
+                    <input id="no-fixed-address" name="no-fixed-address" type="checkbox" value="true">
+                    I have no fixed address
+                </label>
+            </div>
+            }
+
+            <div class="form-group">
+                @helper.inputText(ukAddrForm("house-name-number"),  'class -> "form-control",  '_label -> "Building name or number" )
+            </div>
+
+
+            <div class="form-group">
+                @helper.inputText(ukAddrForm("postcode"),  'class -> "form-control",  '_label -> "Post code",  'maxlength -> "8"  )
+            </div>
+
+            @if(noMatchesWereFound) {
+                <div class="form-group">
+                    <div class="warning-box">
+                        <h3>No addresses were found for this postcode</h3>
+                        <p>Please enter a postcode or select 'edit this address'.</p>
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <button type="submit" name="submit" value="continue">Continue</button>
+            </div>
+        }
+        </div>
+    </fieldset>
+
+</div>
+}

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package address.uk
+package address.uk.service
 
-import config.ConfigHelper._
-import play.api.Play
-
-object Services {
-
-  lazy val baseUrl = mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint")
+object LayoutHelper {
+//  import views.html.helper.FieldConstructor
+//  implicit val myFields = FieldConstructor(views.html.addressuk.defaultAddressLookupFieldConstructor.f)
 }

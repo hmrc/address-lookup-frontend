@@ -50,10 +50,19 @@
       navLinks = Some(headerNavLinks))
 }
 
-@afterHeader = {
+@alphaBanner = {
     <div class="phase-banner-alpha">
         <p>
             <strong class="phase-tag">ALPHA</strong>
+            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+        </p>
+    </div>
+}
+
+@betaBanner = {
+    <div class="phase-banner-beta">
+        <p>
+            <strong class="phase-tag">BETA</strong>
             <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
         </p>
     </div>
@@ -98,4 +107,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, alphaBanner, footerTop, Some(uiLayouts.footer_links()), true)(content)

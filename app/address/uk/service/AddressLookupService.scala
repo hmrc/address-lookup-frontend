@@ -16,8 +16,12 @@
 
 package address.uk.service
 
+import java.net.URLEncoder
+
 import address.uk.{Address, AddressRecord, Country, Services}
 import config.FrontendGlobal
+import config.ConfigHelper._
+import play.api.{Logger, Play}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json.{JsPath, Reads}
@@ -29,11 +33,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 object AddressLookupService extends AddressLookupService(
-  Services.baseUrl,
+  mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint"),
   FrontendGlobal.appName)(FrontendGlobal.executionContext)
 
 
 class AddressLookupService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
+  Logger.info("************* " + endpoint)
 
   private val url = s"$endpoint/uk/addresses"
 
@@ -62,9 +67,16 @@ class AddressLookupService(endpoint: String, applicationName: String)(implicit v
     val appName = applicationName
   }
 
+  def findUprn(uprn: String): Future[List[AddressRecord]] = {
+    val uq = "?uprn=" + enc(uprn)
+    http.GET[List[AddressRecord]](url + uq)
+  }
+
   def findAddresses(postcode: String, filter: Option[String]): Future[List[AddressRecord]] = {
-    val pq = s"?postcode=$postcode"
-    val fq = filter.map(fi => s"&filter=$fi").getOrElse("")
+    val pq = "?postcode=" + enc(postcode)
+    val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
     http.GET[List[AddressRecord]](url + pq + fq)
   }
+
+  private def enc(s: String) = URLEncoder.encode(s, "UTF-8")
 }

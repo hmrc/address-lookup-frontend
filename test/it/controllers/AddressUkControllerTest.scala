@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package address.uk
+package controllers
 
-import config.ConfigHelper._
-import play.api.Play
+import org.scalatestplus.play._
 
-object Services {
+class AddressUkControllerTest extends PlaySpec with AppServerUnderTest {
 
-  lazy val baseUrl = mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint")
+  "uk address happy-path journeys" must {
+    val getFormPage = s"$appBaseURL/getForm"
+
+    "get form, post form, redirect to continue" in {
+      deleteAllCookies() // ensure we are definitely not logged in
+      go to getFormPage
+      //      currentUrl mustBe loginPage
+    }
+
+  }
+
 }

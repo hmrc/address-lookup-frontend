@@ -34,10 +34,11 @@ object AddressLookupController extends AddressLookupController(
 
 
 class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) extends FrontendController {
+  val defaultContinueUrl = "confirmation"
 
   val addressForm = Form[AddressForm] {
     mapping(
-      "continue-url" -> optional(text),
+      "continue-url" -> text,
       "no-fixed-address" -> boolean,
       "house-name-number" -> optional(text),
       "postcode" -> optional(text),
@@ -55,7 +56,8 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
   }
 
   def getEmptyForm(continueUrl: Option[String]): Action[AnyContent] = Action { implicit request =>
-    val bound = addressForm.fill(AddressForm(continueUrl, false, None, None, None, None, None, None, None, None))
+    val cu = continueUrl.getOrElse(defaultContinueUrl)
+    val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None, None, None))
     Ok(blankForm(cfg, bound, noMatchesWereFound = false))
   }
 
@@ -70,7 +72,8 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
       } else if (formData.postcode.isEmpty) {
         BadRequest(blankForm(cfg, addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false))
       } else {
-        SeeOther(routes.AddressLookupController.getProposals(formData.nameNo.getOrElse("-"), formData.postcode.get, formData.continueUrl).url)
+        val cu = Some(formData.continueUrl)
+        SeeOther(routes.AddressLookupController.getProposals(formData.nameNo.getOrElse("-"), formData.postcode.get, cu).url)
       }
     }
   }
@@ -78,11 +81,13 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
   def getProposals(nameNo: String, postcode: String, continueUrl: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
     lookup.findAddresses(postcode, optNameNo) map {
-      list => showAddressList(optNameNo, postcode, continueUrl, list)
+      list =>
+        val cu = continueUrl.getOrElse(defaultContinueUrl)
+        showAddressList(optNameNo, postcode, cu, list)
     }
   }
 
-  private def showAddressList(nameNo: Option[String], postcode: String, continueUrl: Option[String], matchingAddresses: List[AddressRecord])
+  private def showAddressList(nameNo: Option[String], postcode: String, continueUrl: String, matchingAddresses: List[AddressRecord])
                              (implicit request: Request[_]) = {
     val updatedDetails =
       if (matchingAddresses.nonEmpty) {
@@ -111,22 +116,11 @@ class AddressLookupController(lookup: AddressLookupService, cfg: ViewConfig) ext
   }
 
   private def completion(cfg: ViewConfig, address: AddressForm, noFixedAddress: Boolean)(implicit request: Request[_]) = {
-    val url = if (address.continueUrl.isDefined) {
-      val nfa = if (noFixedAddress) "nfa=1&" else ""
-      val uprn = if (address.id.isDefined) s"uprn=${address.id.get}&" else ""
-      val ed = address.editedAddress
-      val ea = if (ed.isDefined) "edit=" + JacksonMapper.writeValueAsString(ed.get) else ""
-      address.continueUrl.get + "?" + nfa + uprn + ea
-
-    } else {
-      val nfa = if (noFixedAddress) Some(1) else None
-      val uprn = if (address.id.isDefined) s"uprn=${address.id.get}&" else ""
-      val ed = address.editedAddress
-      val ea = ed.map(JacksonMapper.writeValueAsString)
-      routes.AddressLookupController.confirmation(nfa, address.id, ea).url
-    }
-
-    SeeOther(url)
+    val nfa = if (noFixedAddress) "nfa=1&" else ""
+    val uprn = if (address.id.isDefined) s"uprn=${address.id.get}&" else ""
+    val ed = address.editedAddress
+    val ea = if (ed.isDefined) "edit=" + JacksonMapper.writeValueAsString(ed.get) else ""
+    SeeOther(address.continueUrl + "?" + nfa + uprn + ea)
   }
 
   def confirmation(nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async { implicit request =>
@@ -150,7 +144,7 @@ case class ViewConfig(title: String,
 
 
 case class AddressForm(
-                        continueUrl: Option[String],
+                        continueUrl: String,
                         noFixedAddress: Boolean,
                         nameNo: Option[String], postcode: Option[String],
                         id: Option[String],

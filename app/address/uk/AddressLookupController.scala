@@ -32,8 +32,8 @@ object AddressLookupController extends AddressLookupController(AddressLookupServ
 
 class AddressLookupController(lookup: AddressLookupService) extends FrontendController {
   val cfg = List(
-    ViewConfig(title = "Your address", allowManualEntry = true, maxAddressesToShow = 20),
-    ViewConfig(title = "Account holder address", allowManualEntry = false, maxAddressesToShow = 10)
+    ViewConfig(baseTitle = "Your address", "Choose your location", allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20),
+    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
   )
 
   val defaultContinueUrl = "confirmation"
@@ -83,7 +83,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       }
   }
 
-  def getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String], edit: Option[Boolean]): Action[AnyContent] = Action.async {
+  def getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
     implicit request =>
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
       val uPostcode = postcode.toUpperCase
@@ -95,24 +95,31 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
             val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(uPostcode), None, None, None, None, None, None))
             Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
           } else {
-            Ok(showAddressList(ix, optNameNo, uPostcode, continueUrl, list, edit.contains(true)))
+            Ok(showAddressList(ix, optNameNo, uPostcode, continueUrl, list, edit))
           }
       }
   }
 
   private def showAddressList(ix: Int, nameNo: Option[String], postcode: String, continueUrl: Option[String],
-                              matchingAddresses: List[AddressRecord], edit: Boolean)
+                              matchingAddresses: List[AddressRecord], edit: Option[Long])
                              (implicit request: Request[_]) = {
-    val selected = if (matchingAddresses.size == 1) 0 else -1
-    val ar = matchingAddresses.head
+    val ar = if (edit.isDefined) matchingAddresses.find(_.uprn == edit).getOrElse(matchingAddresses.head) else matchingAddresses.head
     val ad = ar.address
     val l1 = ad.lines.headOption
     val l2 = if (ad.lines.size > 1) Some(ad.lines(1)) else None
     val l3 = if (ad.lines.size > 2) Some(ad.lines(2)) else None
     val cu = continueUrl.getOrElse(defaultContinueUrl)
+    val selectedUprn =
+      if (matchingAddresses.size == 1) {
+        ar.uprn.getOrElse(-1L)
+      } else if (edit.isDefined) {
+        edit.get
+      } else {
+        -1L
+      }
     val updatedDetails = AddressForm(cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), l1, l2, l3, ad.town, None)
-    val editUrl = routes.AddressLookupController.getProposals(ix, nameNo.getOrElse("-"), postcode, continueUrl, Some(true))
-    proposalForm(ix, cfg(ix), addressForm.fill(updatedDetails), matchingAddresses, selected, edit, editUrl.url)
+    val editUrl = routes.AddressLookupController.getProposals(ix, nameNo.getOrElse("-"), postcode, continueUrl, None)
+    proposalForm(ix, cfg(ix).copy(indicator = Some(postcode)), addressForm.fill(updatedDetails), matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)
   }
 
   def postSelected(ix: Int): Action[AnyContent] = Action { implicit request =>
@@ -144,17 +151,21 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
         lookup.findUprn(uprn.get) map {
           list =>
             val editedAddress = edit.map(json => JacksonMapper.readValue(json, classOf[Address]))
-            Ok(confirmationPage(cfg(ix), list.head, editedAddress))
+            Ok(confirmationPage(ix, cfg(ix), list.head, editedAddress))
         }
       }
   }
 }
 
 
-case class ViewConfig(title: String,
+case class ViewConfig(baseTitle: String,
+                      prompt: String,
                       allowManualEntry: Boolean = false,
                       allowNoFixedAddress: Boolean = true,
-                      maxAddressesToShow: Int = 20)
+                      maxAddressesToShow: Int = 20,
+                      indicator: Option[String] = None) {
+  def title = if (indicator.isDefined) baseTitle + " - " + indicator.get else baseTitle
+}
 
 
 case class AddressForm(

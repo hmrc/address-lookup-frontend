@@ -14,7 +14,8 @@
 * limitations under the License.
 *@
 
-@(view: address.uk.ViewConfig,
+@(ix: Int,
+  view: address.uk.ViewConfig,
   selected: address.uk.AddressRecord,
   edited: Option[address.uk.Address])(implicit request: Request[_])
 
@@ -79,6 +80,7 @@
                 <td>@{selected.language}</td>
             </tr>
         </table>
+        <a href="../@{ix}">Start again</a>
     </div>
 
 }

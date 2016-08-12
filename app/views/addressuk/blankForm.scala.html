@@ -25,17 +25,17 @@
 @main_template(title = view.title, bodyClasses = Some("entry-form")) {
 
 <div>
-    <h1 class="heading-xlarge">Your Address</h1>
+    <h1 class="heading-xlarge">@{view.baseTitle}</h1>
 
-    <legend class="visuallyhidden">Choose your location</legend>
+    <legend class="visuallyhidden">@{view.prompt}</legend>
 
-    <label class="form-label-bold" for="location">Choose your location</label>
+    <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
         @helpers.form( address.uk.routes.AddressLookupController.postForm(ix), 'id -> "myForm"  ) {
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.getOrElse("")' />
 
-            @if(!noMatchesWereFound) {
+            @if(!noMatchesWereFound && view.allowNoFixedAddress) {
             <div class="form-group">
                 <label class="form-checkbox" for="no-fixed-address">
                     <input id="no-fixed-address" name="no-fixed-address" type="checkbox" value="true">

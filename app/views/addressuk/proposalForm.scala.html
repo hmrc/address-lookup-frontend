@@ -18,20 +18,21 @@
   view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
   addressList: List[address.uk.AddressRecord],
-  selected: Int,
+  selectedUprn: Long,
   canEdit: Boolean,
   editUrl: String)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.Plural._
 
 @main_template(title = view.title, bodyClasses = Some("proposal-form")) {
 
 <div>
-    <h1 class="heading-xlarge">Your Address</h1>
+    <h1 class="heading-xlarge">@{view.baseTitle}</h1>
 
-    <legend class="visuallyhidden">Choose your location</legend>
+    <legend class="visuallyhidden">@{view.prompt}</legend>
 
-    <label class="form-label-bold" for="location">Choose your location</label>
+    <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
         @helpers.form( address.uk.routes.AddressLookupController.postSelected(ix), 'id -> "myForm"  ) {
@@ -47,47 +48,29 @@
             </div>
 
             <div class="form-group">
-                @if(addressList.size == 1) {
-                    <label class="form-label-bold" for="Address-table">Found address</label>
-                    <table id="Address-table">
-                        <tbody>
-                            <tr>
-                                <td class="selection"><input id='a@{
-                                    addressList.head.uprn.get
-                                }' type="radio" name="radio-inline-group" checked='checked' value='@{
-                                    addressList.head.uprn.get
-                                }'>
-                                </td>
-                                <td><label for='a@{
-                                    addressList.head.uprn.get
-                                }'>@{
-                                    addressList.head.address.printable
-                                }</label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                } else {
-                    <label class="form-label-bold" for="Address-table">Found addresses</label>
-                    <table id="Address-table">
-                        <tbody>
-                        @for(i <- addressList.indices) {
-                            <tr>
-                                <td class="selection"><input id='a@{addressList(i).uprn.get}'
-                                    type="radio" name="radio-inline-group"
-                                    @if(selected == i) {
-                                        checked="checked"
-                                    }
-                                    value='@{addressList(i).uprn.get}' />
-                                </td>
-                                <td><label for='a@{addressList(i).uprn.get}'
-                                    >@{addressList(i).address.printable}</label>
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }
+                <label class="form-label-bold" for="Address-table">Found @{plural(addressList, "address", "addresses")}</label>
+                <table id="Address-table">
+                    <tbody>
+                    @for(a <- addressList) {
+                        <tr>
+                            <td class="selection"><input id='a@{a.uprn.get}'
+                                type="radio" name="radio-inline-group"
+                                @if(a.uprn.contains(selectedUprn)) {
+                                    checked="checked"
+                                }
+                                value='@{a.uprn.get}' />
+                            </td>
+                            <td><label for='a@{a.uprn.get}'
+                                >@{a.address.printable}
+                            </label>
+                            @if(view.allowManualEntry && editUrl.nonEmpty) {
+                                <span class="edit-link"><a href="@{editUrl}&edit=@{a.uprn.get}">(edit)</a></span>
+                            }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
 
             @if(view.allowManualEntry && canEdit) {
@@ -103,9 +86,6 @@
 
             <div class="form-group">
                 <button type="submit" name="submit" value="continue">Continue</button>
-                @if(view.allowManualEntry && editUrl.nonEmpty) {
-                    <span class="edit-link">or <a href="@editUrl" id="editAddress">edit this address</a></span>
-                }
             </div>
         }
         </div>

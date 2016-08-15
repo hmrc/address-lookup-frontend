@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package helper
 
 import address.uk.AddressRecord
 import com.pyruby.stubserver._

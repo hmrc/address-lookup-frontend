@@ -16,20 +16,19 @@
 
 package controllers
 
+import helper.{AppServerTestApi, IntegrationTest}
 import org.scalatestplus.play._
 import play.api.test.Helpers._
 
-class PingTest extends PlaySpec with AppServerUnderTest {
+class PingTest extends PlaySpec with IntegrationTest with AppServerTestApi {
 
   "ping resource" must {
-    val pingPage = s"$baseURL/ping"
-
     "give a successful response" in {
-      get(pingPage).status mustBe OK
+      get("/ping").status mustBe OK
     }
 
     "give version information in the response body" in {
-      (get(pingPage).json \ "version").as[String] must not be empty
+      (get("/ping").json \ "version").as[String] must not be empty
     }
   }
 

@@ -16,17 +16,18 @@
 
 package controllers
 
+import helper.{AppServerTestApi, IntegrationTest}
+import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play._
 
-class AddressUkControllerTest extends PlaySpec with AppServerUnderTest {
+class AddressukTest extends PlaySpec with IntegrationTest with AppServerTestApi with SequentialNestedSuiteExecution {
 
   "uk address happy-path journeys" must {
-    val getFormPage = s"$appBaseURL/getForm"
 
     "get form, post form, redirect to continue" in {
-      deleteAllCookies() // ensure we are definitely not logged in
-      go to getFormPage
-      //      currentUrl mustBe loginPage
+      val getFormPage = s"$appContext/uk/addresses/0"
+      val response = get(getFormPage)
+      response.status must be(200)
     }
 
   }

@@ -64,6 +64,7 @@ object FrontendBuild extends Build with MicroService {
     "com.pyruby" % "java-stub-server" % "0.14" % scope,
     "com.github.tomakehurst" % "wiremock" % "1.58" % scope,
     "uk.gov.hmrc" %% "hmrctest" % "1.6.0" % scope,
+    "org.jsoup" % "jsoup" % "1.7.3" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
   )
 

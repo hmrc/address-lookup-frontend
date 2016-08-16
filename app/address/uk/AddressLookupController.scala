@@ -74,7 +74,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       } else {
         val formData = bound.get
         if (formData.noFixedAddress) {
-          completion(ix, addressForm.bindFromRequest().get, noFixedAddress = true)
+          completion(ix, bound.get, noFixedAddress = true)
         } else if (formData.postcode.isEmpty) {
           BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false, exceededLimit = false))
         } else {

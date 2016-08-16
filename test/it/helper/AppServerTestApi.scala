@@ -44,12 +44,20 @@ trait AppServerTestApi extends Assertions {
     newRequest(method, path).withHeaders("Content-Type" -> "application/json").withBody(wsBody)
   }
 
+  def newRequest(method: String, path: String, body: Map[String, String]): WSRequestHolder = {
+    val wsBody: Map[String, Seq[String]] = body.map(kv => kv._1 -> Seq(kv._2))
+    newRequest(method, path).withBody(wsBody)
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   def request(method: String, path: String, hdrs: (String, String)*): WSResponse =
     await(newRequest(method, path).withHeaders(hdrs:_*).execute())
 
   def request(method: String, path: String, body: String, hdrs: (String, String)*): WSResponse =
+    await(newRequest(method, path, body).withHeaders(hdrs:_*).execute())
+
+  def request(method: String, path: String, body: Map[String, String], hdrs: (String, String)*): WSResponse =
     await(newRequest(method, path, body).withHeaders(hdrs:_*).execute())
 
   def get(path: String): WSResponse =
@@ -60,6 +68,9 @@ trait AppServerTestApi extends Assertions {
 
   def post(path: String, body: String, ct: String = "application/json") =
     await(newRequest("POST", path, body).withHeaders("Content-Type" -> ct, "User-Agent" -> "xyz").execute())
+
+  def post(path: String, body: Map[String, String]) =
+    await(newRequest("POST", path, body).withHeaders("User-Agent" -> "xyz").execute())
 
   def put(path: String, body: String, ct: String = "application/json") =
     await(newRequest("PUT", path, body).withHeaders("Content-Type" -> ct, "User-Agent" -> "xyz").execute())

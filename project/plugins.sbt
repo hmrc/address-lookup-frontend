@@ -1,7 +1,5 @@
-credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
-
-resolvers += Resolver.url("hmrc-sbt-plugin-releases",
-  url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
+resolvers += Resolver.url("hmrc-sbt-plugin-releases", url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
+resolvers += Resolver.bintrayRepo("hmrc", "releases")
 
 resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/"
 

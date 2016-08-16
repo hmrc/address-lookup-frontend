@@ -34,32 +34,20 @@ trait MicroService {
   lazy val appDependencies: Seq[ModuleID] = ???
   lazy val playSettings: Seq[Setting[_]] = Seq.empty
 
-  lazy val scoverageSettings = {
-    import scoverage.ScoverageKeys
-    Seq(
-      // Semicolon-separated list of regexs matching classes to exclude
-      ScoverageKeys.coverageExcludedPackages := "<empty>;views.html.*",
-      ScoverageKeys.coverageMinimum := 90,
-      ScoverageKeys.coverageFailOnMinimum := false,
-      ScoverageKeys.coverageHighlighting := true
-    )
-  }
-
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(play.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
-    .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
+    .settings(Seq(SettingKey[Boolean]("autoSourceHeader") := false))
     .settings(playSettings: _*)
     .settings(scalaSettings: _*)
-    .settings(scalaVersion := "2.11.8")
     .settings(publishingSettings: _*)
-    .settings(scoverageSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
       targetJvm := "jvm-1.8",
       libraryDependencies ++= appDependencies,
       parallelExecution in Test := false,
       fork in Test := false,
-      retrieveManaged := true
+      retrieveManaged := true,
+      evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
     )
     .settings(Provenance.setting)
     .configs(Test)

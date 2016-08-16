@@ -61,11 +61,11 @@ object FrontendBuild extends Build with MicroService {
     "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % scope,
     "org.pegdown" % "pegdown" % "1.4.2" % scope,
     "org.scalatestplus" %% "play" % "1.2.0" % scope,
+    "org.jsoup" % "jsoup" % "1.7.3" % scope,
     "org.mockito" % "mockito-all" % "1.10.19" % scope,
     "com.pyruby" % "java-stub-server" % "0.14" % scope,
     "com.github.tomakehurst" % "wiremock" % "1.58" % scope,
     "uk.gov.hmrc" %% "hmrctest" % "1.6.0" % scope,
-    "org.jsoup" % "jsoup" % "1.7.3" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
   )
 

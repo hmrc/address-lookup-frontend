@@ -76,9 +76,12 @@
             @if(view.allowManualEntry && canEdit) {
                 <div class="form-group">
                     <h2>Amend address</h2>
-                    @helper.inputText(ukAddrForm("address-line1"),  'class -> "form-control", '_name -> "Address line 1" )
-                    @helper.inputText(ukAddrForm("address-line2"),  'class -> "form-control",  '_name -> "Address line 2"  )
-                    @helper.inputText(ukAddrForm("address-line3"),  'class -> "form-control",  '_name -> "Address line 3"  )
+                    <dl id="address-lines_field">
+                        <dt><label for="address-lines">Address lines</label></dt>
+                        <dd>
+                            <textarea type="text" id="address-lines" name="address-lines" rows="3" class="form-control">@{ukAddrForm("address-lines").value.getOrElse("")}</textarea>
+                        </dd>
+                    </dl>
                     @helper.inputText(ukAddrForm("town"),  'class -> "form-control",  '_name -> "Nearest town or city"  )
                     @helper.inputText(ukAddrForm("address-county"),  'class -> "form-control",  '_name -> "County"  )
                 </div>

@@ -46,25 +46,28 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       "house-name-number" -> optional(text),
       "postcode" -> optional(text),
       "radio-inline-group" -> optional(text),
-      "address-line1" -> optional(text),
-      "address-line2" -> optional(text),
-      "address-line3" -> optional(text),
+      "address-lines" -> optional(text),
       "town" -> optional(text),
       "county" -> optional(text)
     )(AddressForm.apply)(AddressForm.unapply)
   }
 
+  // not strictly needed
   def start: Action[AnyContent] = Action {
     implicit request =>
       Redirect(routes.AddressLookupController.getEmptyForm(0, None))
   }
 
+  //-----------------------------------------------------------------------------------------------
+
   def getEmptyForm(ix: Int, continueUrl: Option[String]): Action[AnyContent] = Action {
     implicit request =>
       val cu = continueUrl.getOrElse(defaultContinueUrl)
-      val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None, None, None))
+      val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None))
       Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false))
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   def postForm(ix: Int): Action[AnyContent] = Action {
     implicit request =>
@@ -84,6 +87,8 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       }
   }
 
+  //-----------------------------------------------------------------------------------------------
+
   def getProposals(ix: Int, nameNo: String, postcode: String, continueUrl: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
     implicit request =>
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
@@ -93,7 +98,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
           val cu = continueUrl.getOrElse(defaultContinueUrl)
           val exceededLimit = list.size > cfg(ix).maxAddressesToShow
           if (list.isEmpty || exceededLimit) {
-            val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(uPostcode), None, None, None, None, None, None))
+            val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(uPostcode), None, None, None, None))
             Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
           } else {
             Ok(showAddressList(ix, optNameNo, uPostcode, continueUrl, list, edit))
@@ -106,9 +111,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
                              (implicit request: Request[_]) = {
     val ar = if (edit.isDefined) matchingAddresses.find(_.uprn == edit).getOrElse(matchingAddresses.head) else matchingAddresses.head
     val ad = ar.address
-    val l1 = ad.lines.headOption
-    val l2 = if (ad.lines.size > 1) Some(ad.lines(1)) else None
-    val l3 = if (ad.lines.size > 2) Some(ad.lines(2)) else None
+    val lines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None
     val cu = continueUrl.getOrElse(defaultContinueUrl)
     val selectedUprn =
       if (matchingAddresses.size == 1) {
@@ -118,10 +121,12 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       } else {
         -1L
       }
-    val updatedDetails = AddressForm(cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), l1, l2, l3, ad.town, None)
+    val updatedDetails = AddressForm(cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, None)
     val editUrl = routes.AddressLookupController.getProposals(ix, nameNo.getOrElse("-"), postcode, continueUrl, None)
     proposalForm(ix, cfg(ix).copy(indicator = Some(postcode)), addressForm.fill(updatedDetails), matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   def postSelected(ix: Int): Action[AnyContent] = Action { implicit request =>
     val bound = addressForm.bindFromRequest()
@@ -141,6 +146,8 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
     val ea = if (ed.isDefined) "edit=" + JacksonMapper.writeValueAsString(ed.get) else ""
     SeeOther(address.continueUrl + "?" + nfa + uprn + ea)
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   def confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async {
     implicit request =>
@@ -176,13 +183,12 @@ case class AddressForm(
                         noFixedAddress: Boolean,
                         nameNo: Option[String], postcode: Option[String],
                         id: Option[String],
-                        editedLine1: Option[String], editedLine2: Option[String], editedLine3: Option[String],
-                        editedTown: Option[String], editedCounty: Option[String]
+                        editedLines: Option[String], editedTown: Option[String], editedCounty: Option[String]
                       ) {
 
-  def editedAddress =
-    if (editedLine1.isDefined || editedLine2.isDefined || editedLine3.isDefined || editedTown.isDefined)
-      Some(Address(editedLine1.toList ++ editedLine2.toList ++ editedLine3.toList, editedTown, editedCounty, postcode.get, None, Countries.UK))
+  def editedAddress: Option[Address] =
+    if (editedLines.isDefined || editedTown.isDefined || editedCounty.isDefined)
+      Some(Address(editedLines.toList.flatMap(_.split("\n")), editedTown, editedCounty, postcode.get, None, Countries.UK))
     else
       None
 }

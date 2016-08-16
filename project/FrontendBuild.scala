@@ -23,7 +23,7 @@ import play.core.PlayVersion
 
 object FrontendBuild extends Build with MicroService {
 
-  val appName = "address-capture-frontend"
+  val appName = "address-lookup-frontend"
 
   override lazy val appDependencies: Seq[ModuleID] = compile ++ testDependencies ++ itDependencies
 

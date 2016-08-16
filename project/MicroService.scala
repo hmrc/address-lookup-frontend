@@ -48,9 +48,9 @@ trait MicroService {
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(play.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-    .settings(Seq(SettingKey[Boolean]("autoSourceHeader") := false))
     .settings(playSettings: _*)
     .settings(scalaSettings: _*)
+    .settings(scalaVersion := "2.11.8")
     .settings(publishingSettings: _*)
     .settings(scoverageSettings: _*)
     .settings(defaultSettings(): _*)
@@ -59,8 +59,7 @@ trait MicroService {
       libraryDependencies ++= appDependencies,
       parallelExecution in Test := false,
       fork in Test := false,
-      retrieveManaged := true,
-      evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+      retrieveManaged := true
     )
     .settings(Provenance.setting)
     .configs(Test)

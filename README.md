@@ -1,7 +1,7 @@
 
-# address-capture-frontend
+# address-lookup-frontend
 
-[![Build Status](https://travis-ci.org/hmrc/address-capture-frontend.svg?branch=master)](https://travis-ci.org/hmrc/address-capture-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/address-capture-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/address-capture-frontend/_latestVersion)
+[![Build Status](https://travis-ci.org/hmrc/address-lookup-frontend.svg?branch=master)](https://travis-ci.org/hmrc/address-lookup-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/address-lookup-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/address-lookup-frontend/_latestVersion)
 
 This microservice provides a user interface for entering addresses. Assistance is provided
 to the user for looking up their address from a database (via a backend service).

@@ -18,13 +18,13 @@ package address.uk.service
 
 import java.net.URLEncoder
 
-import address.uk.{Address, AddressRecord, Country, Services}
 import config.FrontendGlobal
 import config.ConfigHelper._
 import play.api.{Logger, Play}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json.{JsPath, Reads}
+import uk.gov.hmrc.addresses.{Address, AddressRecord, Country}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.ws.WSGet

@@ -16,8 +16,8 @@
 
 @(ix: Int,
   view: address.uk.ViewConfig,
-  selected: address.uk.AddressRecord,
-  edited: Option[address.uk.Address])(implicit request: Request[_])
+  selected: uk.gov.hmrc.addresses.AddressRecord,
+  edited: Option[uk.gov.hmrc.addresses.Address])(implicit request: Request[_])
 
 @main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("confirmation-page")) {
 

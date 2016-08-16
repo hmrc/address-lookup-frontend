@@ -21,6 +21,7 @@ import config.JacksonMapper
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Request}
+import uk.gov.hmrc.addresses.{Address, AddressRecord, Countries, Postcode}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.addressuk._
 
@@ -81,8 +82,13 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
         } else if (formData.postcode.isEmpty) {
           BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A post code is required"), noMatchesWereFound = false, exceededLimit = false))
         } else {
-          val cu = Some(formData.continueUrl)
-          SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), formData.postcode.get, cu, None).url)
+          val pc = Postcode.cleanupPostcode(formData.postcode.get)
+          if (pc.isEmpty) {
+            BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A valid post code is required"), noMatchesWereFound = false, exceededLimit = false))
+          } else {
+            val cu = Some(formData.continueUrl)
+            SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), pc.get.toString, cu, None).url)
+          }
         }
       }
   }

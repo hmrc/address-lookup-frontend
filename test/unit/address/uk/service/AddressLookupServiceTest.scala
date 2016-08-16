@@ -16,11 +16,11 @@
 
 package address.uk.service
 
-import address.uk.{Address, AddressRecord}
-import address.uk.Countries.UK
 import org.scalatest.{BeforeAndAfterAll, SequentialNestedSuiteExecution}
 import org.scalatestplus.play.OneAppPerSuite
 import stub.AddRepStub
+import uk.gov.hmrc.addresses.{Address, AddressRecord}
+import uk.gov.hmrc.addresses.Countries.UK
 import uk.gov.hmrc.play.test.UnitSpec
 
 class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite

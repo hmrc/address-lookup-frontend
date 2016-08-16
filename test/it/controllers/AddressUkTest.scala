@@ -16,14 +16,14 @@
 
 package controllers
 
-import address.uk.{Address, AddressRecord}
-import address.uk.Countries.UK
 import helper.{AppServerTestApi, IntegrationTest}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play._
 import play.api.libs.ws.WSResponse
+import uk.gov.hmrc.addresses.{Address, AddressRecord}
+import uk.gov.hmrc.addresses.Countries.UK
 
 class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi with SequentialNestedSuiteExecution {
 
@@ -46,7 +46,7 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
         Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
-        cookies:_*
+        cookies: _*
       )
       assert(response2.status === 200)
       val doc2 = Jsoup.parse(response2.body)
@@ -58,11 +58,11 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
       val (cookies, doc1) = step1EntryForm("")
       val csrfToken = hiddenCsrfTokenValue(doc1)
 
-      addressRepStub.givenAddressResponse("/uk/addresses?postcode=SE19PY", List(se1_9py))
+      addressRepStub.givenAddressResponse("/uk/addresses?postcode=SE1%209PY", List(se1_9py))
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
         Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "house-name-number" -> "", "postcode" -> "SE19PY"),
-        cookies:_*
+        cookies: _*
       )
       assert(response2.status === 200)
       val doc2 = Jsoup.parse(response2.body)
@@ -72,7 +72,7 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
 
       val response3 = request("POST", s"$appContext/uk/addresses/0/select",
         Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
-        cookies:_*
+        cookies: _*
       )
       assert(response3.status === 200)
       val doc3 = Jsoup.parse(response3.body)

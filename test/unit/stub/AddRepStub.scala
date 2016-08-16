@@ -16,9 +16,9 @@
 
 package stub
 
-import address.uk.AddressRecord
 import com.pyruby.stubserver._
 import config.JacksonMapper
+import uk.gov.hmrc.addresses.AddressRecord
 
 class AddRepStub {
 

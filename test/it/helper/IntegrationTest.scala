@@ -25,16 +25,16 @@ import play.api.test.{FakeApplication, Helpers, TestServer}
 trait IntegrationTest extends SuiteMixin with ServerProvider {
   this: Suite =>
 
-  val stub = new AddRepStub()
+  val addressRepStub = new AddRepStub()
 
-  def appConfiguration: Map[String, String] = Map("addressReputation.endpoint" -> stub.endpoint)
+  def appConfiguration: Map[String, String] = Map("addressReputation.endpoint" -> addressRepStub.endpoint)
 
   def beforeAppServerStarts() {
-    stub.start()
+    addressRepStub.start()
   }
 
   def afterAppServerStops() {
-    stub.stop()
+    addressRepStub.stop()
   }
 
   implicit override final lazy val app: FakeApplication = new FakeApplication(additionalConfiguration = appConfiguration, withRoutes = {

@@ -9,6 +9,9 @@ to the user for looking up their address from a database (via a backend service)
 Initially, the use-case covers only UK addresses; BFPO addresses might be added soon.
 The roadmap includes support for international addresses.
 
+### GET SETUP
+* Follow [this walkthrough](https://confluence.tools.tax.service.gov.uk/display/DTRG/04+Service+Manager+Setup)
+
 ### TODO
 
 * bug - county fields get wiped

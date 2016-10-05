@@ -18,7 +18,7 @@ package stub
 
 import com.pyruby.stubserver._
 import config.JacksonMapper
-import uk.gov.hmrc.addresses.AddressRecord
+import uk.gov.hmrc.address.v2.AddressRecord
 
 class AddRepStub {
 
@@ -38,7 +38,7 @@ class AddRepStub {
 
   def endpoint = s"http://localhost:${stub.getLocalPort}"
 
-  def givenAddressResponse(url: String, ra: List[AddressRecord]) {
+  def givenAddressResponse(url: String, ra: AnyRef) {
     val json = JacksonMapper.writeValueAsString(ra)
     stub.expect(StubMethod.get(url)).thenReturn(200, "application/json", json)
   }

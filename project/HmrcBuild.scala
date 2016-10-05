@@ -21,7 +21,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning
 import play.PlayImport._
 import play.core.PlayVersion
 
-object FrontendBuild extends Build with MicroService {
+object HmrcBuild extends Build with MicroService {
 
   val appName = "address-lookup-frontend"
 
@@ -31,7 +31,8 @@ object FrontendBuild extends Build with MicroService {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "addresses" % "0.2.0",
+    "uk.gov.hmrc" %% "address-reputation-store" % "1.20.0" withSources()
+      excludeAll (ExclusionRule(organization = "org.reactivemongo"), ExclusionRule(organization = "io.netty")),
     "uk.gov.hmrc" %% "frontend-bootstrap" % "6.5.0",
     "uk.gov.hmrc" %% "play-partials" % "4.2.0",
     "uk.gov.hmrc" %% "play-authorised-frontend" % "5.0.0",

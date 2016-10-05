@@ -5,7 +5,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+* http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,11 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
 @(ix: Int,
-  view: address.uk.ViewConfig,
-  selected: uk.gov.hmrc.addresses.AddressRecord,
-  edited: Option[uk.gov.hmrc.addresses.Address])(implicit request: Request[_])
+        view: address.uk.ViewConfig,
+        selected: uk.gov.hmrc.address.v2.AddressRecord,
+        edited: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_])
 
 @main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("confirmation-page")) {
 
@@ -30,57 +29,123 @@
             }
 
             <tr><th>UPRN</th>
-                <td>@{selected.uprn.get}</td>
-                @if(edited.isDefined) {<td></td>}
+                <td>@{
+                    selected.uprn.get
+                }</td>
+                @if(edited.isDefined) {
+                    <td></td>
+                }
             </tr>
 
-            <tr><th>Address</th>
-                <td>@{selected.address.lines.headOption.getOrElse("")}
-                    @for(line <- selected.address.lines.tail) { <br/>@line }
-                </td>
-                @if(edited.isDefined) {
-                    <td>@{edited.get.lines.headOption.getOrElse("")}
-                        @for(line <- edited.get.lines.tail) { <br/> @line }
+            @if(selected.address.lines.nonEmpty || (edited.isDefined && edited.get.lines.nonEmpty)) {
+                <tr><th>Address</th>
+                    <td>@{
+                        selected.address.lines.headOption.getOrElse("")
+                    }
+                        @for(line <- selected.address.lines.tail) {
+                            <br/> @line
+                        }
                     </td>
-                }
-            </tr>
+                    @if(edited.isDefined) {
+                        <td>
+                        @if(edited.get.lines != selected.address.lines) {
+                            @{
+                                edited.get.lines.headOption.getOrElse("")
+                            }
+                            @for(line <- edited.get.lines.tail) {
+                                <br/> @line
+                            }
+                        }
+                        </td>
+                    }
+                </tr>
+            }
+
+            @if(selected.address.town.isDefined || (edited.isDefined && edited.get.town.isDefined)) {
+                <tr><th></th>
+                    <td>@{
+                        selected.address.town.getOrElse("")
+                    }</td>
+                    @if(edited.isDefined) {
+                        <td>
+                        @if(edited.get.town != selected.address.town) {
+                            @{
+                                edited.get.town.getOrElse("")
+                            }
+                        }
+                        </td>
+                    }
+                </tr>
+            }
+
+            @if(selected.address.county.isDefined || (edited.isDefined && edited.get.county.isDefined)) {
+                <tr><th></th>
+                    <td>@{
+                        selected.address.county.getOrElse("")
+                    }</td>
+                    @if(edited.isDefined) {
+                        <td>
+                        @if(edited.get.county != selected.address.county) {
+                            @{
+                                edited.get.county.getOrElse("")
+                            }
+                        }</td>
+                    }
+                </tr>
+            }
 
             <tr><th></th>
-                <td>@{selected.address.town.getOrElse("")}</td>
+                <td>@{
+                    selected.address.postcode
+                }</td>
                 @if(edited.isDefined) {
-                    <td>@{edited.get.town.getOrElse("")}</td>
+                    <td>
+                    @if(edited.get.postcode != selected.address.postcode) {
+                        @{
+                            edited.get.postcode
+                        }
+                    }</td>
                 }
             </tr>
 
+            @if(selected.address.subdivision.isDefined || (edited.isDefined && edited.get.subdivision.isDefined)) {
+                <tr><th></th>
+                    <td>@{
+                        selected.address.subdivision.map(_.name).getOrElse("")
+                    }</td>
+                    @if(edited.isDefined) {
+                        <td>
+                        @if(edited.get.subdivision != selected.address.subdivision) {
+                            @{
+                                edited.get.subdivision.map(_.name).getOrElse("")
+                            }
+                        }</td>
+                    }
+                </tr>
+            }
+
             <tr><th></th>
-                <td>@{selected.address.county.getOrElse("")}</td>
+                <td>@{
+                    selected.address.country.code
+                }</td>
                 @if(edited.isDefined) {
-                    <td>@{edited.get.county.getOrElse("")}</td>
+                    <td>@if(edited.get.country != selected.address.country) {
+                        @{
+                            edited.get.country.name
+                        }
+                    }</td>
                 }
-            </tr>
-
-            <tr><th></th>
-                <td>@{selected.address.postcode}</td>
-                @if(edited.isDefined) {
-                    <td>@{edited.get.postcode}</td>
-                }
-            </tr>
-
-            <tr><th></th>
-                <td>@{selected.address.subdivision.getOrElse("")}</td>
-                @if(edited.isDefined) {<td></td>}
-            </tr>
-
-            <tr><th></th>
-                <td>@{selected.address.country.code}</td>
-                @if(edited.isDefined) {<td></td>}
             </tr>
 
             <tr><th>Language</th>
-                <td>@{selected.language}</td>
+                <td>@{
+                    selected.language
+                }</td>
             </tr>
         </table>
-        <a href="../@{ix}">Start again</a>
+        <a href="../@{
+            ix
+        }">Start again</a>
     </div>
 
 }

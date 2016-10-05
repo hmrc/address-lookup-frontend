@@ -20,14 +20,12 @@ import java.net.URLEncoder
 
 import config.FrontendGlobal
 import config.ConfigHelper._
-import play.api.{Logger, Play}
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsPath, Reads}
-import uk.gov.hmrc.addresses.{Address, AddressRecord, Country}
+import play.api.Play
+import uk.gov.hmrc.address.v2.AddressRecord
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.ws.WSGet
+import uk.gov.hmrc.play.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,43 +37,38 @@ object AddressLookupService extends AddressLookupService(
 
 class AddressLookupService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
 
-  private val url = s"$endpoint/uk/addresses"
+  private val url = s"$endpoint/v2/uk/addresses"
 
   private implicit val hc = HeaderCarrier()
-
-  implicit val CountryReads: Reads[Country] = (
-    (JsPath \ "code").read[String](minLength[String](2) keepAnd maxLength[String](2)) and
-      (JsPath \ "name").read[String]) (Country.apply _)
-
-  implicit val AddressReads: Reads[Address] = (
-    (JsPath \ "lines").read[List[String]] and
-      (JsPath \ "town").readNullable[String] and
-      (JsPath \ "county").readNullable[String] and
-      (JsPath \ "postcode").read[String] and
-      (JsPath \ "subdivision").readNullable[String] and
-      (JsPath \ "country").read[Country]) (Address.apply _)
-
-  implicit val AddressRecordReads: Reads[AddressRecord] = (
-    (JsPath \ "id").read[String] and
-      (JsPath \ "uprn").readNullable[Long] and
-      (JsPath \ "address").read[Address] and
-      (JsPath \ "language").read[String]) (AddressRecord.apply _)
 
   private val http = new WSGet {
     override val hooks = Seq[HttpHook]()
     val appName = applicationName
   }
 
-  def findUprn(uprn: String): Future[List[AddressRecord]] = {
-    val uq = "?uprn=" + enc(uprn)
+  def findById(id: String): Future[Option[AddressRecord]] = {
+    val uq = "/" + enc(id)
+    import osgb.outmodel.v2.AddressReadable._
+    http.GET[Option[AddressRecord]](url + uq).recover {
+      case e: NotFoundException => None
+    }
+  }
+
+  def findByUprn(uprn: Long): Future[List[AddressRecord]] = {
+    val uq = "?uprn=" + uprn.toString
+    import osgb.outmodel.v2.AddressReadable._
     http.GET[List[AddressRecord]](url + uq)
   }
 
-  def findAddresses(postcode: String, filter: Option[String]): Future[List[AddressRecord]] = {
+  def findByPostcode(postcode: String, filter: Option[String]): Future[List[AddressRecord]] = {
     val pq = "?postcode=" + enc(postcode)
     val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
+    import osgb.outmodel.v2.AddressReadable._
     http.GET[List[AddressRecord]](url + pq + fq)
   }
+
+  //TODO
+  def searchFuzzy = ???
 
   private def enc(s: String) = URLEncoder.encode(s, "UTF-8")
 }

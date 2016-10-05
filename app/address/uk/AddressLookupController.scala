@@ -16,12 +16,15 @@
 
 package address.uk
 
+import java.net.URLEncoder
+
 import address.uk.service.AddressLookupService
 import config.JacksonMapper
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Request}
-import uk.gov.hmrc.addresses.{Address, AddressRecord, Countries, Postcode}
+import uk.gov.hmrc.address.uk.Postcode
+import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.addressuk._
 
@@ -32,26 +35,11 @@ object AddressLookupController extends AddressLookupController(AddressLookupServ
 
 
 class AddressLookupController(lookup: AddressLookupService) extends FrontendController {
-  val cfg = List(
-    ViewConfig(baseTitle = "Your address", "Choose your location", allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true),
-    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
-    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
-  )
+
+  import AddressLookupForm.addressForm
+  import ViewConfig.cfg
 
   val defaultContinueUrl = "confirmation"
-
-  val addressForm = Form[AddressForm] {
-    mapping(
-      "continue-url" -> text,
-      "no-fixed-address" -> boolean,
-      "house-name-number" -> optional(text),
-      "postcode" -> optional(text),
-      "radio-inline-group" -> optional(text),
-      "address-lines" -> optional(text),
-      "town" -> optional(text),
-      "county" -> optional(text)
-    )(AddressForm.apply)(AddressForm.unapply)
-  }
 
   // not strictly needed
   def start: Action[AnyContent] = Action {
@@ -64,7 +52,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
   def getEmptyForm(ix: Int, continue: Option[String]): Action[AnyContent] = Action {
     implicit request =>
       val cu = continue.getOrElse(defaultContinueUrl)
-      val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None))
+      val bound = addressForm.fill(AddressForm(cu, false, None, None, None, None, None, None, Countries.UK.code))
       Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false))
   }
 
@@ -87,7 +75,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
             BadRequest(blankForm(ix, cfg(ix), addressForm.fill(formData).withError("postcode", "A valid post code is required"), noMatchesWereFound = false, exceededLimit = false))
           } else {
             val cu = Some(formData.continue)
-            SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), pc.get.toString, cu, None).url)
+            SeeOther(routes.AddressLookupController.getProposals(ix, formData.nameNo.getOrElse("-"), pc.get.toString, cu, None).url + "#found-addresses")
           }
         }
       }
@@ -99,12 +87,12 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
     implicit request =>
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
       val uPostcode = postcode.toUpperCase
-      lookup.findAddresses(uPostcode, optNameNo) map {
+      lookup.findByPostcode(uPostcode, optNameNo) map {
         list =>
           val cu = continue.getOrElse(defaultContinueUrl)
           val exceededLimit = list.size > cfg(ix).maxAddressesToShow
           if (list.isEmpty || exceededLimit) {
-            val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(uPostcode), None, None, None, None))
+            val bound = addressForm.fill(AddressForm(cu, false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
             Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
           } else {
             Ok(showAddressList(ix, optNameNo, uPostcode, continue, list, edit))
@@ -127,7 +115,8 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       } else {
         -1L
       }
-    val updatedDetails = AddressForm(cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, None)
+    val country = matchingAddresses.headOption.map(_.address.country).getOrElse(Countries.UK)
+    val updatedDetails = AddressForm(cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, None, country.code)
     val editUrl = routes.AddressLookupController.getProposals(ix, nameNo.getOrElse("-"), postcode, continue, None)
     proposalForm(ix, cfg(ix).copy(indicator = Some(postcode)), addressForm.fill(updatedDetails), matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)
   }
@@ -147,9 +136,9 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
   private def completion(ix: Int, address: AddressForm, noFixedAddress: Boolean)
                         (implicit request: Request[_]) = {
     val nfa = if (noFixedAddress) "nfa=1&" else ""
-    val uprn = if (address.id.isDefined) s"uprn=${address.id.get}&" else ""
+    val uprn = if (address.uprn.isDefined) s"uprn=${address.uprn.get}&" else ""
     val ed = address.editedAddress
-    val ea = if (ed.isDefined) "edit=" + JacksonMapper.writeValueAsString(ed.get) else ""
+    val ea = if (ed.isDefined) "edit=" + URLEncoder.encode(JacksonMapper.writeValueAsString(ed.get), "ASCII") else ""
     SeeOther(address.continue + "?" + nfa + uprn + ea)
   }
 
@@ -162,7 +151,7 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
       } else if (uprn.isEmpty) {
         Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None)))
       } else {
-        lookup.findUprn(uprn.get) map {
+        lookup.findByUprn(uprn.get.toLong) map {
           list =>
             val editedAddress = edit.map(json => JacksonMapper.readValue(json, classOf[Address]))
             Ok(confirmationPage(ix, cfg(ix), list.head, editedAddress))
@@ -172,29 +161,41 @@ class AddressLookupController(lookup: AddressLookupService) extends FrontendCont
 }
 
 
-case class ViewConfig(baseTitle: String,
-                      prompt: String,
-                      allowManualEntry: Boolean = false,
-                      allowNoFixedAddress: Boolean = true,
-                      maxAddressesToShow: Int = 20,
-                      indicator: Option[String] = None,
-                      alpha: Boolean = false,
-                      beta: Boolean = false) {
-  def title = if (indicator.isDefined) baseTitle + " - " + indicator.get else baseTitle
-}
-
-
 case class AddressForm(
                         continue: String,
                         noFixedAddress: Boolean,
-                        nameNo: Option[String], postcode: Option[String],
-                        id: Option[String],
-                        editedLines: Option[String], editedTown: Option[String], editedCounty: Option[String]
+                        nameNo: Option[String],
+                        postcode: Option[String],
+                        uprn: Option[String],
+                        editedLines: Option[String], editedTown: Option[String],
+                        editedCounty: Option[String],
+                        countryCode: String
                       ) {
 
   def editedAddress: Option[Address] =
-    if (editedLines.isDefined || editedTown.isDefined || editedCounty.isDefined)
-      Some(Address(editedLines.toList.flatMap(_.split("\n")), editedTown, editedCounty, postcode.get, None, Countries.UK))
-    else
-      None
+    if (editedLines.isDefined || editedTown.isDefined || editedCounty.isDefined) {
+      Some(Address(
+        editedLines.toList.flatMap(_.split("\n").map(_.trim)),
+        editedTown.map(_.trim),
+        editedCounty.map(_.trim),
+        postcode.get.trim,
+        None, Countries.find(countryCode).get))
+    } else None
+}
+
+
+object AddressLookupForm {
+  val addressForm = Form[AddressForm] {
+    mapping(
+      "continue-url" -> text,
+      "no-fixed-address" -> boolean,
+      "house-name-number" -> optional(text),
+      "postcode" -> optional(text),
+      "radio-inline-group" -> optional(text),
+      "address-lines" -> optional(text),
+      "town" -> optional(text),
+      "county" -> optional(text),
+      "country-code" -> text
+    )(AddressForm.apply)(AddressForm.unapply)
+  }
 }

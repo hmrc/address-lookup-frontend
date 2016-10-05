@@ -9,6 +9,21 @@ to the user for looking up their address from a database (via a backend service)
 Initially, the use-case covers only UK addresses; BFPO addresses might be added soon.
 The roadmap includes support for international addresses.
 
+## Running the App
+
+In dev mode:
+```
+sm --start ASSETS_FRONTEND -r 2.232.0
+nice sbt run
+```
+
+Browse to http://localhost:9000/address-lookup-frontend/
+
+## Varied Journeys
+
+Different use-cases are supported and these can be evolved as needed.
+See [ViewConfig](https://github.com/hmrc/address-lookup-frontend/blob/master/app/address/uk/ViewConfig.scala).
+
 ### TODO
 
 * bug - county fields get wiped

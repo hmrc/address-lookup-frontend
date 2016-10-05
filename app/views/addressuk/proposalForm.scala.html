@@ -17,7 +17,7 @@
 @(ix: Int,
   view: address.uk.ViewConfig,
   ukAddrForm: Form[address.uk.AddressForm],
-  addressList: List[uk.gov.hmrc.addresses.AddressRecord],
+  addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
   selectedUprn: Long,
   canEdit: Boolean,
   editUrl: String)(implicit request: Request[_])
@@ -37,6 +37,7 @@
         <div class="panel panel-border-narrow" id='UK-Tab'>
         @helpers.form( address.uk.routes.AddressLookupController.postSelected(ix), 'id -> "myForm"  ) {
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
+            <input type='hidden' id='country-code' name='country-code' value='@ukAddrForm("country-code").value.get' />
 
             <div class="form-group">
                 @helper.inputText(ukAddrForm("house-name-number"),  'class -> "form-control",  '_label -> "Building name or number" )
@@ -47,7 +48,7 @@
                 @helper.inputText(ukAddrForm("postcode"),  'class -> "form-control",  '_label -> "Post code",  'maxlength -> "8"  )
             </div>
 
-            <div class="form-group">
+            <div id="found-addresses" class="form-group">
                 <label class="form-label-bold" for="Address-table">Found @{plural(addressList, "address", "addresses")}</label>
                 <table id="Address-table">
                     <tbody>
@@ -83,7 +84,7 @@
                         </dd>
                     </dl>
                     @helper.inputText(ukAddrForm("town"),  'class -> "form-control",  '_name -> "Nearest town or city"  )
-                    @helper.inputText(ukAddrForm("address-county"),  'class -> "form-control",  '_name -> "County"  )
+                    @helper.inputText(ukAddrForm("county"),  'class -> "form-control",  '_name -> "County"  )
                 </div>
             }
 

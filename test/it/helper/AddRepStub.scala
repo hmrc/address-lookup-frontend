@@ -18,7 +18,7 @@ package helper
 
 import com.pyruby.stubserver._
 import config.JacksonMapper
-import uk.gov.hmrc.addresses.AddressRecord
+import uk.gov.hmrc.address.v2.AddressRecord
 
 class AddRepStub {
 

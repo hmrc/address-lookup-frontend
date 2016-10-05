@@ -22,8 +22,8 @@ import org.jsoup.nodes.Document
 import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play._
 import play.api.libs.ws.WSResponse
-import uk.gov.hmrc.addresses.{Address, AddressRecord}
-import uk.gov.hmrc.addresses.Countries.UK
+import uk.gov.hmrc.address.v2.{Address, AddressRecord, LocalCustodian}
+import uk.gov.hmrc.address.v2.Countries._
 
 class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi with SequentialNestedSuiteExecution {
 
@@ -31,12 +31,13 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
   private val NewcastleUponTyne = Some("Newcastle upon Tyne")
   private val Northumberland = Some("Northumberland")
   private val NE1_6JN = "NE1 6JN"
+  private val lcc = LocalCustodian(123, "Town")
 
-  val se1_9py = AddressRecord("GB10091836674", Some(10091836674L), Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some("GB-ENG"), UK), en)
+  val se1_9py = AddressRecord("GB10091836674", Some(10091836674L), Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some(England), UK), Some(lcc), en)
 
   // This sample is a length-2 postcode
-  val ne1_6jn_a = AddressRecord("GB4510737202", Some(4510737202L), Address(List("11 Market Street"), NewcastleUponTyne, Northumberland, NE1_6JN, Some("GB-ENG"), UK), en)
-  val ne1_6jn_b = AddressRecord("GB4510141231", Some(4510141231L), Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, Northumberland, NE1_6JN, Some("GB-ENG"), UK), en)
+  val ne1_6jn_a = AddressRecord("GB4510737202", Some(4510737202L), Address(List("11 Market Street"), NewcastleUponTyne, Northumberland, NE1_6JN, Some(England), UK), Some(lcc), en)
+  val ne1_6jn_b = AddressRecord("GB4510141231", Some(4510141231L), Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, Northumberland, NE1_6JN, Some(England), UK), Some(lcc), en)
 
   "uk address happy-path journeys" must {
 
@@ -45,7 +46,7 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
       val csrfToken = hiddenCsrfTokenValue(doc1)
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
+        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
         cookies: _*
       )
       assert(response2.status === 200)
@@ -58,20 +59,20 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
       val (cookies, doc1) = step1EntryForm("")
       val csrfToken = hiddenCsrfTokenValue(doc1)
 
-      addressRepStub.givenAddressResponse("/uk/addresses?postcode=SE1%209PY", List(se1_9py))
+      addressRepStub.givenAddressResponse("/v2/uk/addresses?postcode=SE1%209PY", List(se1_9py))
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "house-name-number" -> "", "postcode" -> "SE19PY"),
+        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
         cookies: _*
       )
       assert(response2.status === 200)
       val doc2 = Jsoup.parse(response2.body)
       assert(doc2.select("body.proposal-form").size === 1, response2.body)
 
-      addressRepStub.givenAddressResponse("/uk/addresses?uprn=10091836674", List(se1_9py))
+      addressRepStub.givenAddressResponse("/v2/uk/addresses?uprn=10091836674", List(se1_9py))
 
       val response3 = request("POST", s"$appContext/uk/addresses/0/select",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
+        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK",  "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
         cookies: _*
       )
       assert(response3.status === 200)

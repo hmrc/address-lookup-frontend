@@ -21,21 +21,15 @@ import org.scalatest._
 import org.scalatestplus.play.ServerProvider
 import play.api.mvc.{Action, Results}
 import play.api.test.{FakeApplication, Helpers, TestServer}
+import stub.{StubbedAddressService, StubbedKeystoreService}
 
-trait IntegrationTest extends SuiteMixin with ServerProvider {
+trait IntegrationTest extends SuiteMixin with ServerProvider with StubbedAddressService with StubbedKeystoreService {
   this: Suite =>
 
-  val addressRepStub = new AddRepStub()
-
-  def appConfiguration: Map[String, String] = Map("addressReputation.endpoint" -> addressRepStub.endpoint)
-
-  def beforeAppServerStarts() {
-    addressRepStub.start()
-  }
-
-  def afterAppServerStops() {
-    addressRepStub.stop()
-  }
+  def appConfiguration: Map[String, String] = Map(
+    "addressReputation.endpoint" -> addressLookupEndpoint,
+    "keystore.endpoint" -> keystoreEndpoint
+  )
 
   implicit override final lazy val app: FakeApplication = new FakeApplication(additionalConfiguration = appConfiguration, withRoutes = {
     case ("GET", "/test-only/assets/javascripts/vendor/modernizr.js") => Action {
@@ -46,7 +40,7 @@ trait IntegrationTest extends SuiteMixin with ServerProvider {
   final def port: Int = Helpers.testServerPort
 
   abstract override def run(testName: Option[String], args: Args): Status = {
-    beforeAppServerStarts()
+    beforeAll()
     stabilise()
     val myApp = app
     val testServer = TestServer(port, myApp)
@@ -61,7 +55,7 @@ trait IntegrationTest extends SuiteMixin with ServerProvider {
     }
     finally {
       testServer.stop()
-      afterAppServerStops()
+      afterAll()
       stabilise()
     }
   }

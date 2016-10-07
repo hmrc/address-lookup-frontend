@@ -16,6 +16,8 @@
 
 package controllers
 
+import com.pyruby.stubserver.StubMethod
+import config.JacksonMapper._
 import helper.{AppServerTestApi, IntegrationTest}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -59,7 +61,7 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
       val (cookies, doc1) = step1EntryForm("")
       val csrfToken = hiddenCsrfTokenValue(doc1)
 
-      addressRepStub.givenAddressResponse("/v2/uk/addresses?postcode=SE1%209PY", List(se1_9py))
+      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(List(se1_9py)))
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
         Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
@@ -69,7 +71,7 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
       val doc2 = Jsoup.parse(response2.body)
       assert(doc2.select("body.proposal-form").size === 1, response2.body)
 
-      addressRepStub.givenAddressResponse("/v2/uk/addresses?uprn=10091836674", List(se1_9py))
+      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10091836674")) thenReturn(200, "application/json", writeValueAsString(List(se1_9py)))
 
       val response3 = request("POST", s"$appContext/uk/addresses/0/select",
         Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK",  "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),

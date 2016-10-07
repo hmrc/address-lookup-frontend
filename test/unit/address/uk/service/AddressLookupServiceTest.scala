@@ -16,32 +16,26 @@
 
 package address.uk.service
 
-import org.scalatest.{BeforeAndAfterAll, SequentialNestedSuiteExecution}
+import com.pyruby.stubserver.StubMethod._
+import config.JacksonMapper._
+import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play.OneAppPerSuite
-import stub.AddRepStub
+import stub.StubbedAddressService
 import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
   with SequentialNestedSuiteExecution
-  with BeforeAndAfterAll {
+  with StubbedAddressService {
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
 
-  val addRep = new AddRepStub()
-
-  override def beforeAll() {
-    addRep.start()
-  }
-
-  override def afterAll() {
-    addRep.stop()
-  }
-
   class Context {
-    addRep.clearExpectations()
-    val service = new AddressLookupService(addRep.endpoint, "foo")
+    addressLookupStub.clearExpectations()
+    val service = new AddressLookupService(addressLookupEndpoint, "foo")
   }
+
+  val emptyList = "[]"
 
   val ne15xdLike = AddressRecord("GB4510123533", Some(4510123533L),
     Address(List("10 Taylors Court", "Monk Street", "Byker"),
@@ -50,13 +44,13 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
 
   "Find By Postcode" should {
     "fetch an empty list ok" in new Context {
-      addRep.givenAddressResponse("/v2/uk/addresses?postcode=NE12AB", Nil)
+      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE12AB")) thenReturn(200, "application/json", emptyList)
       val actual = await(service.findByPostcode("NE12AB", None))
       actual shouldBe Nil
     }
 
     "fetch a list ok" in new Context {
-      addRep.givenAddressResponse("/v2/uk/addresses?postcode=NE15XD", List(ne15xdLike))
+      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE15XD")) thenReturn(200, "application/json", writeValueAsString(List(ne15xdLike)))
       val actual = await(service.findByPostcode("NE15XD", None))
       actual shouldBe List(ne15xdLike)
     }
@@ -64,13 +58,13 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
 
   "Find By UPRN" should {
     "fetch an empty list ok" in new Context {
-      addRep.givenAddressResponse("/v2/uk/addresses?uprn=9510123533", Nil)
+      addressLookupStub.expect(get("/v2/uk/addresses?uprn=9510123533")) thenReturn(200, "application/json", emptyList)
       val actual = await(service.findByUprn(9510123533L))
       actual shouldBe Nil
     }
 
     "fetch a list ok" in new Context {
-      addRep.givenAddressResponse("/v2/uk/addresses?uprn=4510123533", List(ne15xdLike))
+      addressLookupStub.expect(get("/v2/uk/addresses?uprn=4510123533")) thenReturn(200, "application/json", writeValueAsString(List(ne15xdLike)))
       val actual = await(service.findByUprn(4510123533L))
       actual shouldBe List(ne15xdLike)
     }
@@ -78,13 +72,13 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
 
   "Find By Id" should {
     "return 404" in new Context {
-      addRep.givenAddressError("/v2/uk/addresses/GB9510123533", 404, "Not found")
+      addressLookupStub.expect(get("/v2/uk/addresses/GB9510123533")) thenReturn(404, "text/plain", "Not found")
       val actual = await(service.findById("GB9510123533"))
       actual shouldBe None
     }
 
     "fetch a list ok" in new Context {
-      addRep.givenAddressResponse("/v2/uk/addresses/GB4510123533", ne15xdLike)
+      addressLookupStub.expect(get("/v2/uk/addresses/GB4510123533")) thenReturn(200, "application/json", writeValueAsString(ne15xdLike))
       val actual = await(service.findById("GB4510123533"))
       actual shouldBe Some(ne15xdLike)
     }
@@ -93,5 +87,4 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
   "Search Fuzzy" should {
     //TODO
   }
-
 }

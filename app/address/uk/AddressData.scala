@@ -8,6 +8,7 @@ import uk.gov.hmrc.address.v2.{Address, Countries, LocalCustodian}
 object AddressForm {
   val addressForm = Form[AddressData] {
     mapping(
+      "guid" -> text,
       "continue-url" -> text,
       "no-fixed-address" -> boolean,
       "house-name-number" -> optional(text),
@@ -23,6 +24,7 @@ object AddressForm {
 
 
 case class AddressData(
+                        guid: String,
                         continue: String,
                         noFixedAddress: Boolean,
                         nameNo: Option[String],
@@ -43,13 +45,3 @@ case class AddressData(
         None, Countries.find(countryCode).get))
     } else None
 }
-
-
-case class AddressRecordWithEdits(id: String,
-                                  uprn: Option[Long],
-                                  address: Address,
-                                  userEdited: Address,
-                                  localCustodian: Option[LocalCustodian],
-                                  // ISO639-1 code, e.g. 'en' for English
-                                  // see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-                                  language: String)

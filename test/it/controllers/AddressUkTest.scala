@@ -16,6 +16,7 @@
 
 package controllers
 
+import com.fasterxml.uuid.{EthernetAddress, Generators}
 import com.pyruby.stubserver.StubMethod
 import config.JacksonMapper._
 import helper.{AppServerTestApi, IntegrationTest}
@@ -46,9 +47,10 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
     "get form without params, post form with no-fixed-address" in {
       val (cookies, doc1) = step1EntryForm("")
       val csrfToken = hiddenCsrfTokenValue(doc1)
+      val guid = hiddenGuidValue(doc1)
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
+        Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
         cookies: _*
       )
       assert(response2.status === 200)
@@ -60,21 +62,23 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
     "get form without params, post form with address that has a single match, post selection to reach confirmation page" in {
       val (cookies, doc1) = step1EntryForm("")
       val csrfToken = hiddenCsrfTokenValue(doc1)
+      val guid = hiddenGuidValue(doc1)
 
       addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(List(se1_9py)))
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
+        Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
         cookies: _*
       )
       assert(response2.status === 200)
       val doc2 = Jsoup.parse(response2.body)
       assert(doc2.select("body.proposal-form").size === 1, response2.body)
+      assert(hiddenGuidValue(doc2) === guid)
 
       addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10091836674")) thenReturn(200, "application/json", writeValueAsString(List(se1_9py)))
 
       val response3 = request("POST", s"$appContext/uk/addresses/0/select",
-        Map("csrfToken" -> csrfToken, "continue-url" -> "confirmation", "country-code" -> "UK",  "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
+        Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",  "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
         cookies: _*
       )
       assert(response3.status === 200)
@@ -96,5 +100,6 @@ class AddressUkTest extends PlaySpec with IntegrationTest with AppServerTestApi 
   private def newCookies(response: WSResponse) = response.cookies.map(c => c.name.get + "=" + c.value.get).map("cookie" -> _)
 
   private def hiddenCsrfTokenValue(doc: Document) = doc.select("input[type=hidden][name=csrfToken]").attr("value")
+  private def hiddenGuidValue(doc: Document) = doc.select("input[type=hidden][name=guid]").attr("value")
 
 }

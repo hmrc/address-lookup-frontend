@@ -32,7 +32,8 @@
     <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.AddressLookupController.postForm(ix), 'id -> "myForm"  ) {
+        @helpers.form( address.uk.routes.AddressLookupController.postForm(ix), 'id -> "myForm" ) {
+            <input type='hidden' id='guid' name='guid' value='@ukAddrForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
             <input type='hidden' id='country-code' name='country-code' value='@ukAddrForm("country-code").value.get' />
 

@@ -44,6 +44,7 @@ object HmrcBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "http-caching-client" % "5.3.0",
     "com.univocity" % "univocity-parsers" % "1.5.6" withSources(),
     "uk.gov.hmrc" %% "play-async" % "0.2.0",
+    "com.fasterxml.uuid" % "java-uuid-generator" % "3.1.3",
     "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,

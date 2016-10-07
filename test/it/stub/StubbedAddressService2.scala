@@ -19,19 +19,21 @@ package stub
 import com.pyruby.stubserver.StubServer
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
-trait StubbedKeystoreService extends BeforeAndAfterAll { this: Suite =>
+// Identical to the similarly-named stub but differentiated to avoid name collisions.
 
-  val keystoreStub = new StubServer()
+trait StubbedAddressService2 extends BeforeAndAfterAll { this: Suite =>
+
+  val addressLookupStub = new StubServer()
 
   override def beforeAll() {
     super.beforeAll()
-    keystoreStub.start()
+    addressLookupStub.start()
   }
 
   override def afterAll() {
-    keystoreStub.stop()
+    addressLookupStub.stop()
     super.afterAll()
   }
 
-  def keystoreEndpoint = s"http://localhost:${keystoreStub.getLocalPort}"
+  def addressLookupEndpoint = s"http://localhost:${addressLookupStub.getLocalPort}"
 }

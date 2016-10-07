@@ -21,9 +21,9 @@ import org.scalatest._
 import org.scalatestplus.play.ServerProvider
 import play.api.mvc.{Action, Results}
 import play.api.test.{FakeApplication, Helpers, TestServer}
-import stub.{StubbedAddressService, StubbedKeystoreService}
+import stub.{StubbedAddressService2, StubbedKeystoreService2}
 
-trait IntegrationTest extends SuiteMixin with ServerProvider with StubbedAddressService with StubbedKeystoreService {
+trait IntegrationTest extends SuiteMixin with ServerProvider with StubbedAddressService2 with StubbedKeystoreService2 {
   this: Suite =>
 
   def appConfiguration: Map[String, String] = Map(

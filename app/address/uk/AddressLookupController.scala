@@ -18,10 +18,10 @@ package address.uk
 
 import java.net.URLEncoder
 
+import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
+import com.fasterxml.uuid.{EthernetAddress, Generators}
 import config.JacksonMapper
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, Countries}
@@ -38,22 +38,26 @@ object AddressLookupController extends AddressLookupController(AddressLookupServ
 class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionContext) extends FrontendController {
 
   private implicit val xec = ec
+
   import AddressForm.addressForm
   import ViewConfig._
+
+  private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
   // not strictly needed
   def start: Action[AnyContent] = Action {
     implicit request =>
-      Redirect(routes.AddressLookupController.getEmptyForm(0, None))
+      Redirect(routes.AddressLookupController.getEmptyForm(0, None, None))
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def getEmptyForm(ix: Int, continue: Option[String]): Action[AnyContent] = Action {
+  def getEmptyForm(ix: Int, guid: Option[String], continue: Option[String]): Action[AnyContent] = Action {
     request =>
+      val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
       val cu = continue.getOrElse(defaultContinueUrl)
-      val bound = addressForm.fill(AddressData(cu, false, None, None, None, None, None, None, Countries.UK.code))
-      Ok(blankFormHtml(ix, bound, noMatchesWereFound = false, exceededLimit = false, request))
+      val bound = addressForm.fill(AddressData(actualGuid, cu, false, None, None, None, None, None, None, Countries.UK.code))
+      Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -62,7 +66,7 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
     request =>
       val bound = addressForm.bindFromRequest()(request)
       if (bound.errors.nonEmpty) {
-        BadRequest(blankFormHtml(ix, bound, noMatchesWereFound = false, exceededLimit = false, request))
+        BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
 
       } else {
         val formData = bound.get
@@ -71,18 +75,18 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
 
         } else if (formData.postcode.isEmpty) {
           val formWithError = addressForm.fill(formData).withError("postcode", "A post code is required")
-          BadRequest(blankFormHtml(ix, formWithError, noMatchesWereFound = false, exceededLimit = false, request))
+          BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
 
         } else {
           val pc = Postcode.cleanupPostcode(formData.postcode.get)
           if (pc.isEmpty) {
             val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
-            BadRequest(blankFormHtml(ix, formWithError, noMatchesWereFound = false, exceededLimit = false, request))
+            BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
 
           } else {
             val cu = Some(formData.continue)
             val nameOrNumber = formData.nameNo.getOrElse("-")
-            SeeOther(routes.AddressLookupController.getProposals(ix, nameOrNumber, pc.get.toString, cu, None).url + "#found-addresses")
+            SeeOther(routes.AddressLookupController.getProposals(ix, nameOrNumber, pc.get.toString, formData.guid, cu, None).url + "#found-addresses")
           }
         }
       }
@@ -90,7 +94,7 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
 
   //-----------------------------------------------------------------------------------------------
 
-  def getProposals(ix: Int, nameNo: String, postcode: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
+  def getProposals(ix: Int, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
     request =>
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
       val uPostcode = postcode.toUpperCase
@@ -99,11 +103,11 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
           val cu = continue.getOrElse(defaultContinueUrl)
           val exceededLimit = list.size > cfg(ix).maxAddressesToShow
           if (list.isEmpty || exceededLimit) {
-            val filledInForm = addressForm.fill(AddressData(cu, noFixedAddress = false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
-            Ok(blankFormHtml(ix, filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit, request))
+            val filledInForm = addressForm.fill(AddressData(guid, cu, noFixedAddress = false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
+            Ok(blankForm(ix, cfg(ix), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit)(request))
 
           } else {
-            Ok(DisplayProposalsPage.showAddressListProposalForm(ix, optNameNo, uPostcode, continue, list, edit, request))
+            Ok(showAddressListProposalForm(ix, optNameNo, uPostcode, guid, continue, list, edit, request))
           }
       }
   }
@@ -113,7 +117,7 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
   def postSelected(ix: Int): Action[AnyContent] = Action { request =>
     val bound = addressForm.bindFromRequest()(request)
     if (bound.errors.nonEmpty) {
-      BadRequest(blankFormHtml(ix, bound, noMatchesWereFound = false, exceededLimit = false, request))
+      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
 
     } else {
       completion(ix, bound.get, noFixedAddress = false, request)
@@ -135,22 +139,19 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
         Future.successful(Ok(noFixedAddressPage(ix, cfg(ix))(request)))
 
       } else if (uprn.isEmpty) {
-        Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None)))
+        Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None, None)))
 
       } else {
         lookup.findByUprn(uprn.get.toLong) map {
           list =>
+            val normative = list.head
             val editedAddress = edit.map(json => JacksonMapper.readValue(json, classOf[Address]))
-            Ok(confirmationPage(ix, cfg(ix), list.head, editedAddress)(request))
+            val address = AddressRecordWithEdits(normative, editedAddress)
+            Ok(confirmationPage(ix, cfg(ix), address)(request))
         }
       }
   }
 
   private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
 
-  private def blankFormHtml(ix: Int, ukAddrForm: Form[address.uk.AddressData],
-                            noMatchesWereFound: Boolean, exceededLimit: Boolean, request: Request[_]) =
-    blankForm(ix, cfg(ix), ukAddrForm, noMatchesWereFound, exceededLimit)(request)
 }
-
-

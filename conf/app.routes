@@ -1,11 +1,11 @@
 # routes
 
-GET    /                                                  address.uk.AddressLookupController.start
+GET    /                                                        address.uk.AddressLookupController.start
 
-GET    /uk/addresses/:ix                                  address.uk.AddressLookupController.getEmptyForm(ix: Int, continue: Option[String])
-POST   /uk/addresses/:ix/propose                          address.uk.AddressLookupController.postForm(ix: Int)
-POST   /uk/addresses/:ix/select                           address.uk.AddressLookupController.postSelected(ix: Int)
-GET    /uk/addresses/:ix/get-proposals/:nameNo/:postcode  address.uk.AddressLookupController.getProposals(ix: Int, nameNo: String, postcode: String, continue: Option[String], edit: Option[Long])
-GET    /uk/addresses/:ix/confirmation                     address.uk.AddressLookupController.confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String])
+GET    /uk/addresses/:ix                                        address.uk.AddressLookupController.getEmptyForm(ix: Int, guid: Option[String], continue: Option[String])
+POST   /uk/addresses/:ix/propose                                address.uk.AddressLookupController.postForm(ix: Int)
+POST   /uk/addresses/:ix/select                                 address.uk.AddressLookupController.postSelected(ix: Int)
+GET    /uk/addresses/:ix/get-proposals/:nameNo/:postcode/:guid  address.uk.AddressLookupController.getProposals(ix: Int, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
+GET    /uk/addresses/:ix/confirmation                           address.uk.AddressLookupController.confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String])
 
-GET    /assets/*file                                      controllers.Assets.at(path="/public", file)
+GET    /assets/*file                                            controllers.Assets.at(path="/public", file)

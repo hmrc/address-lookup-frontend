@@ -15,8 +15,7 @@
 *@
 @(ix: Int,
         view: address.uk.ViewConfig,
-        selected: uk.gov.hmrc.address.v2.AddressRecord,
-        edited: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_])
+        selected: address.uk.AddressRecordWithEdits)(implicit request: Request[_])
 
 @main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("confirmation-page")) {
 
@@ -24,7 +23,7 @@
         <h2 class="bold-large">Application complete</h2>
         <p>Address:</p>
         <table>
-            @if(edited.isDefined) {
+            @if(selected.userEdited.isDefined) {
                 <tr><th></th><th>Reference</th><th>Edited</th></tr>
             }
 
@@ -32,12 +31,12 @@
                 <td>@{
                     selected.uprn.get
                 }</td>
-                @if(edited.isDefined) {
+                @if(selected.userEdited.isDefined) {
                     <td></td>
                 }
             </tr>
 
-            @if(selected.address.lines.nonEmpty || (edited.isDefined && edited.get.lines.nonEmpty)) {
+            @if(selected.address.lines.nonEmpty || (selected.userEdited.isDefined && selected.userEdited.get.lines.nonEmpty)) {
                 <tr><th>Address</th>
                     <td>@{
                         selected.address.lines.headOption.getOrElse("")
@@ -46,13 +45,13 @@
                             <br/> @line
                         }
                     </td>
-                    @if(edited.isDefined) {
+                    @if(selected.userEdited.isDefined) {
                         <td>
-                        @if(edited.get.lines != selected.address.lines) {
+                        @if(selected.userEdited.get.lines != selected.address.lines) {
                             @{
-                                edited.get.lines.headOption.getOrElse("")
+                                selected.userEdited.get.lines.headOption.getOrElse("")
                             }
-                            @for(line <- edited.get.lines.tail) {
+                            @for(line <- selected.userEdited.get.lines.tail) {
                                 <br/> @line
                             }
                         }
@@ -61,16 +60,16 @@
                 </tr>
             }
 
-            @if(selected.address.town.isDefined || (edited.isDefined && edited.get.town.isDefined)) {
+            @if(selected.address.town.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.town.isDefined)) {
                 <tr><th></th>
                     <td>@{
                         selected.address.town.getOrElse("")
                     }</td>
-                    @if(edited.isDefined) {
+                    @if(selected.userEdited.isDefined) {
                         <td>
-                        @if(edited.get.town != selected.address.town) {
+                        @if(selected.userEdited.get.town != selected.address.town) {
                             @{
-                                edited.get.town.getOrElse("")
+                                selected.userEdited.get.town.getOrElse("")
                             }
                         }
                         </td>
@@ -78,16 +77,16 @@
                 </tr>
             }
 
-            @if(selected.address.county.isDefined || (edited.isDefined && edited.get.county.isDefined)) {
+            @if(selected.address.county.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.county.isDefined)) {
                 <tr><th></th>
                     <td>@{
                         selected.address.county.getOrElse("")
                     }</td>
-                    @if(edited.isDefined) {
+                    @if(selected.userEdited.isDefined) {
                         <td>
-                        @if(edited.get.county != selected.address.county) {
+                        @if(selected.userEdited.get.county != selected.address.county) {
                             @{
-                                edited.get.county.getOrElse("")
+                                selected.userEdited.get.county.getOrElse("")
                             }
                         }</td>
                     }
@@ -98,26 +97,26 @@
                 <td>@{
                     selected.address.postcode
                 }</td>
-                @if(edited.isDefined) {
+                @if(selected.userEdited.isDefined) {
                     <td>
-                    @if(edited.get.postcode != selected.address.postcode) {
+                    @if(selected.userEdited.get.postcode != selected.address.postcode) {
                         @{
-                            edited.get.postcode
+                            selected.userEdited.get.postcode
                         }
                     }</td>
                 }
             </tr>
 
-            @if(selected.address.subdivision.isDefined || (edited.isDefined && edited.get.subdivision.isDefined)) {
+            @if(selected.address.subdivision.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.subdivision.isDefined)) {
                 <tr><th></th>
                     <td>@{
                         selected.address.subdivision.map(_.name).getOrElse("")
                     }</td>
-                    @if(edited.isDefined) {
+                    @if(selected.userEdited.isDefined) {
                         <td>
-                        @if(edited.get.subdivision != selected.address.subdivision) {
+                        @if(selected.userEdited.get.subdivision != selected.address.subdivision) {
                             @{
-                                edited.get.subdivision.map(_.name).getOrElse("")
+                                selected.userEdited.get.subdivision.map(_.name).getOrElse("")
                             }
                         }</td>
                     }
@@ -128,10 +127,10 @@
                 <td>@{
                     selected.address.country.code
                 }</td>
-                @if(edited.isDefined) {
-                    <td>@if(edited.get.country != selected.address.country) {
+                @if(selected.userEdited.isDefined) {
+                    <td>@if(selected.userEdited.get.country != selected.address.country) {
                         @{
-                            edited.get.country.name
+                            selected.userEdited.get.country.name
                         }
                     }</td>
                 }

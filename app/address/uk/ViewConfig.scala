@@ -34,4 +34,6 @@ object ViewConfig {
     ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
     ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
   )
+
+  val defaultContinueUrl = "confirmation"
 }

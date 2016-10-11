@@ -21,7 +21,8 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 
 // Identical to the similarly-named stub but differentiated to avoid name collisions.
 
-trait StubbedAddressService2 extends BeforeAndAfterAll { this: Suite =>
+trait StubbedAddressService2 extends BeforeAndAfterAll {
+  this: Suite =>
 
   val addressLookupStub = new StubServer()
 

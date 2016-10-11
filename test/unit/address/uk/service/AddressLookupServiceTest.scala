@@ -24,6 +24,10 @@ import stub.StubbedAddressService
 import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
 import uk.gov.hmrc.play.test.UnitSpec
 
+// Warning: this uses a stubbed server and may give rise to spurious test failures due to concurrency
+// problems when starting/stopping the stubs.
+// The workaround for such problems seems to be to move these tests into UnigrationTest.
+
 class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
   with SequentialNestedSuiteExecution
   with StubbedAddressService {

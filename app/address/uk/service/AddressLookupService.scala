@@ -30,11 +30,6 @@ import uk.gov.hmrc.play.http._
 import scala.concurrent.{ExecutionContext, Future}
 
 
-object AddressLookupService extends AddressLookupService(
-  mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint"),
-  FrontendGlobal.appName)(FrontendGlobal.executionContext)
-
-
 class AddressLookupService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
 
   private val url = s"$endpoint/v2/uk/addresses"

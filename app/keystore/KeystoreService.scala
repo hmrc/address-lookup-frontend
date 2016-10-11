@@ -16,27 +16,37 @@
 
 package keystore
 
-import uk.gov.hmrc.address.v2.AddressRecord
+import address.uk._
 import uk.gov.hmrc.play.http.hooks.HttpHook
-import uk.gov.hmrc.play.http.ws.WSPut
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.ws.{WSGet, WSPut}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, NotFoundException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class Keystore(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
+class KeystoreService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
 
   private val url = s"$endpoint/keystore/address-lookup/"
 
   private implicit val hc = HeaderCarrier()
 
-  private val http = new WSPut {
+  private val http = new WSGet with WSPut {
     override val hooks = Seq[HttpHook]()
     val appName = applicationName
   }
 
-  def storeResponse(id: String, variant: Int, addresses: List[AddressRecord]): Future[HttpResponse] = {
+  def fetchSingleResponse(id: String, variant: Int): Future[Option[AddressRecordWithEdits]] = {
+    import ResponseReadable._
     val url = s"$endpoint/keystore/address-lookup/$id/data/response$variant"
-    import osgb.outmodel.v2.AddressWriteable._
-    http.PUT[List[AddressRecord], HttpResponse](url, addresses)
+    http.GET[AddressRecordWithEdits](url).map {
+      ar => Some(ar)
+    }.recover {
+      case e: NotFoundException => None
+    }
+  }
+
+  def storeSingleResponse(id: String, variant: Int, address: AddressRecordWithEdits): Future[HttpResponse] = {
+    import ResponseWriteable._
+    val url = s"$endpoint/keystore/address-lookup/$id/data/response$variant"
+    http.PUT[AddressRecordWithEdits, HttpResponse](url, address)
   }
 }

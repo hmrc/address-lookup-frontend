@@ -21,21 +21,36 @@ import java.net.URLEncoder
 import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.JacksonMapper
+import config.{FrontendGlobal, JacksonMapper}
+import config.ConfigHelper._
+import keystore.KeystoreService
+import play.api.Play
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.addressuk._
 
-import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 
-object AddressLookupController extends AddressLookupController(AddressLookupService, global)
+object ConfiguredAddressLookupService extends AddressLookupService(
+  mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint"),
+  FrontendGlobal.appName)(FrontendGlobal.executionContext)
 
 
-class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionContext) extends FrontendController {
+object ConfiguredKeystoreService extends KeystoreService(
+  mustGetConfigString(Play.current.mode, Play.current.configuration, "keystore.endpoint"),
+  FrontendGlobal.appName)(FrontendGlobal.executionContext)
+
+
+object AddressLookupController extends AddressLookupController(
+  ConfiguredAddressLookupService,
+  ConfiguredKeystoreService,
+  FrontendGlobal.executionContext)
+
+
+class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreService, val ec: ExecutionContext) extends FrontendController {
 
   private implicit val xec = ec
 
@@ -62,34 +77,40 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
 
   //-----------------------------------------------------------------------------------------------
 
-  def postForm(ix: Int): Action[AnyContent] = Action {
+  def postForm(ix: Int): Action[AnyContent] = Action.async {
     request =>
       val bound = addressForm.bindFromRequest()(request)
       if (bound.errors.nonEmpty) {
-        BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
+        Future.successful(BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
 
       } else {
         val formData = bound.get
         if (formData.noFixedAddress) {
           completion(ix, bound.get, noFixedAddress = true, request)
 
-        } else if (formData.postcode.isEmpty) {
-          val formWithError = addressForm.fill(formData).withError("postcode", "A post code is required")
-          BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
-
         } else {
-          val pc = Postcode.cleanupPostcode(formData.postcode.get)
-          if (pc.isEmpty) {
-            val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
-            BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
-
-          } else {
-            val cu = Some(formData.continue)
-            val nameOrNumber = formData.nameNo.getOrElse("-")
-            SeeOther(routes.AddressLookupController.getProposals(ix, nameOrNumber, pc.get.toString, formData.guid, cu, None).url + "#found-addresses")
-          }
+          Future.successful(fixedAddress(ix, formData, request))
         }
       }
+  }
+
+  private def fixedAddress(ix: Int, formData: AddressData, request: Request[_]) = {
+    if (formData.postcode.isEmpty) {
+      val formWithError = addressForm.fill(formData).withError("postcode", "A post code is required")
+      BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
+
+    } else {
+      val pc = Postcode.cleanupPostcode(formData.postcode.get)
+      if (pc.isEmpty) {
+        val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
+        BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
+
+      } else {
+        val cu = Some(formData.continue)
+        val nameOrNumber = formData.nameNo.getOrElse("-")
+        SeeOther(routes.AddressLookupController.getProposals(ix, nameOrNumber, pc.get.toString, formData.guid, cu, None).url + "#found-addresses")
+      }
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -114,44 +135,61 @@ class AddressLookupController(lookup: AddressLookupService, val ec: ExecutionCon
 
   //-----------------------------------------------------------------------------------------------
 
-  def postSelected(ix: Int): Action[AnyContent] = Action { request =>
+  def postSelected(ix: Int): Action[AnyContent] = Action.async { request =>
     val bound = addressForm.bindFromRequest()(request)
     if (bound.errors.nonEmpty) {
-      BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
+      Future.successful(BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
 
     } else {
       completion(ix, bound.get, noFixedAddress = false, request)
     }
   }
 
-  private def completion(ix: Int, address: AddressData, noFixedAddress: Boolean, request: Request[_]): Result = {
+  private def completion(ix: Int, addressData: AddressData, noFixedAddress: Boolean, request: Request[_]): Future[Result] = {
     val nfa = if (noFixedAddress) "nfa=1&" else ""
-    val uprn = if (address.uprn.isDefined) s"uprn=${address.uprn.get}&" else ""
-    val ea = if (address.editedAddress.isDefined) "edit=" + encJson(address.editedAddress.get) else ""
-    SeeOther(address.continue + "?" + nfa + uprn + ea)
+    val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
+
+    if (addressData.uprn.isEmpty) {
+      val response = AddressRecordWithEdits(None, addressData.editedAddress, noFixedAddress)
+      keystore.storeSingleResponse(addressData.guid, ix, response) map {
+        httpResponse =>
+          SeeOther(addressData.continue + "?id=" + addressData.guid)
+      }
+
+    } else {
+      val uprn = s"uprn=${addressData.uprn.get}&"
+      lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
+        list =>
+          val response = AddressRecordWithEdits(list.headOption, addressData.editedAddress, noFixedAddress)
+          keystore.storeSingleResponse(addressData.guid, ix, response) map {
+            httpResponse =>
+              SeeOther(addressData.continue + "?ix=" + ix + "&id=" + addressData.guid)
+          }
+      }
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def confirmation(ix: Int, nfa: Option[Int], uprn: Option[String], edit: Option[String]): Action[AnyContent] = Action.async {
+  def confirmation(ix: Int, id: String): Action[AnyContent] = Action.async {
     request =>
-      if (nfa.contains(1)) {
-        Future.successful(Ok(noFixedAddressPage(ix, cfg(ix))(request)))
-
-      } else if (uprn.isEmpty) {
-        Future.successful(Redirect(routes.AddressLookupController.getEmptyForm(ix, None, None)))
-
-      } else {
-        lookup.findByUprn(uprn.get.toLong) map {
-          list =>
-            val normative = list.head
-            val editedAddress = edit.map(json => JacksonMapper.readValue(json, classOf[Address]))
-            val address = AddressRecordWithEdits(normative, editedAddress)
-            Ok(confirmationPage(ix, cfg(ix), address)(request))
-        }
+      val fuResponse = keystore.fetchSingleResponse(id, ix)
+      fuResponse.map {
+        response: Option[AddressRecordWithEdits] =>
+          if (response.isEmpty) {
+            TemporaryRedirect(routes.AddressLookupController.getEmptyForm(ix, None, None).url)
+          } else {
+            val addressRecord = response.get
+            if (addressRecord.normativeAddress.isDefined) {
+              Ok(confirmationPage(ix, cfg(ix), addressRecord.normativeAddress.get, addressRecord.userSuppliedAddress)(request))
+            } else {
+              Ok(userSuppliedAddressPage(ix, cfg(ix), addressRecord.userSuppliedAddress.getOrElse(noFixedAbodeAddress))(request))
+            }
+          }
       }
   }
 
   private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
 
+  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
 }

@@ -15,7 +15,8 @@
 *@
 @(ix: Int,
         view: address.uk.ViewConfig,
-        selected: address.uk.AddressRecordWithEdits)(implicit request: Request[_])
+        normativeAddress: uk.gov.hmrc.address.v2.AddressRecord,
+        userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_])
 
 @main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("confirmation-page")) {
 
@@ -23,35 +24,35 @@
         <h2 class="bold-large">Application complete</h2>
         <p>Address:</p>
         <table>
-            @if(selected.userEdited.isDefined) {
-                <tr><th></th><th>Reference</th><th>Edited</th></tr>
+            @if(userSuppliedAddress.isDefined) {
+                <tr><th></th><th>Normative</th><th>User-Supplied</th></tr>
             }
 
             <tr><th>UPRN</th>
                 <td>@{
-                    selected.uprn.get
+                    normativeAddress.uprn.getOrElse("")
                 }</td>
-                @if(selected.userEdited.isDefined) {
+                @if(userSuppliedAddress.isDefined) {
                     <td></td>
                 }
             </tr>
 
-            @if(selected.address.lines.nonEmpty || (selected.userEdited.isDefined && selected.userEdited.get.lines.nonEmpty)) {
+            @if(normativeAddress.address.lines.nonEmpty || (userSuppliedAddress.isDefined && userSuppliedAddress.get.lines.nonEmpty)) {
                 <tr><th>Address</th>
                     <td>@{
-                        selected.address.lines.headOption.getOrElse("")
+                        normativeAddress.address.lines.headOption.getOrElse("")
                     }
-                        @for(line <- selected.address.lines.tail) {
+                        @for(line <- normativeAddress.address.lines.tail) {
                             <br/> @line
                         }
                     </td>
-                    @if(selected.userEdited.isDefined) {
+                    @if(userSuppliedAddress.isDefined) {
                         <td>
-                        @if(selected.userEdited.get.lines != selected.address.lines) {
+                        @if(userSuppliedAddress.get.lines != normativeAddress.address.lines) {
                             @{
-                                selected.userEdited.get.lines.headOption.getOrElse("")
+                                userSuppliedAddress.get.lines.headOption.getOrElse("")
                             }
-                            @for(line <- selected.userEdited.get.lines.tail) {
+                            @for(line <- userSuppliedAddress.get.lines.tail) {
                                 <br/> @line
                             }
                         }
@@ -60,16 +61,16 @@
                 </tr>
             }
 
-            @if(selected.address.town.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.town.isDefined)) {
+            @if(normativeAddress.address.town.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.town.isDefined)) {
                 <tr><th></th>
                     <td>@{
-                        selected.address.town.getOrElse("")
+                        normativeAddress.address.town.getOrElse("")
                     }</td>
-                    @if(selected.userEdited.isDefined) {
+                    @if(userSuppliedAddress.isDefined) {
                         <td>
-                        @if(selected.userEdited.get.town != selected.address.town) {
+                        @if(userSuppliedAddress.get.town != normativeAddress.address.town) {
                             @{
-                                selected.userEdited.get.town.getOrElse("")
+                                userSuppliedAddress.get.town.getOrElse("")
                             }
                         }
                         </td>
@@ -77,16 +78,16 @@
                 </tr>
             }
 
-            @if(selected.address.county.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.county.isDefined)) {
+            @if(normativeAddress.address.county.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.county.isDefined)) {
                 <tr><th></th>
                     <td>@{
-                        selected.address.county.getOrElse("")
+                        normativeAddress.address.county.getOrElse("")
                     }</td>
-                    @if(selected.userEdited.isDefined) {
+                    @if(userSuppliedAddress.isDefined) {
                         <td>
-                        @if(selected.userEdited.get.county != selected.address.county) {
+                        @if(userSuppliedAddress.get.county != normativeAddress.address.county) {
                             @{
-                                selected.userEdited.get.county.getOrElse("")
+                                userSuppliedAddress.get.county.getOrElse("")
                             }
                         }</td>
                     }
@@ -95,28 +96,28 @@
 
             <tr><th></th>
                 <td>@{
-                    selected.address.postcode
+                    normativeAddress.address.postcode
                 }</td>
-                @if(selected.userEdited.isDefined) {
+                @if(userSuppliedAddress.isDefined) {
                     <td>
-                    @if(selected.userEdited.get.postcode != selected.address.postcode) {
+                    @if(userSuppliedAddress.get.postcode != normativeAddress.address.postcode) {
                         @{
-                            selected.userEdited.get.postcode
+                            userSuppliedAddress.get.postcode
                         }
                     }</td>
                 }
             </tr>
 
-            @if(selected.address.subdivision.isDefined || (selected.userEdited.isDefined && selected.userEdited.get.subdivision.isDefined)) {
+            @if(normativeAddress.address.subdivision.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.subdivision.isDefined)) {
                 <tr><th></th>
                     <td>@{
-                        selected.address.subdivision.map(_.name).getOrElse("")
+                        normativeAddress.address.subdivision.map(_.name).getOrElse("")
                     }</td>
-                    @if(selected.userEdited.isDefined) {
+                    @if(userSuppliedAddress.isDefined) {
                         <td>
-                        @if(selected.userEdited.get.subdivision != selected.address.subdivision) {
+                        @if(userSuppliedAddress.get.subdivision != normativeAddress.address.subdivision) {
                             @{
-                                selected.userEdited.get.subdivision.map(_.name).getOrElse("")
+                                userSuppliedAddress.get.subdivision.map(_.name).getOrElse("")
                             }
                         }</td>
                     }
@@ -125,12 +126,12 @@
 
             <tr><th></th>
                 <td>@{
-                    selected.address.country.code
+                    normativeAddress.address.country.code
                 }</td>
-                @if(selected.userEdited.isDefined) {
-                    <td>@if(selected.userEdited.get.country != selected.address.country) {
+                @if(userSuppliedAddress.isDefined) {
+                    <td>@if(userSuppliedAddress.get.country != normativeAddress.address.country) {
                         @{
-                            selected.userEdited.get.country.name
+                            userSuppliedAddress.get.country.name
                         }
                     }</td>
                 }
@@ -138,7 +139,7 @@
 
             <tr><th>Language</th>
                 <td>@{
-                    selected.language
+                    normativeAddress.language
                 }</td>
             </tr>
         </table>

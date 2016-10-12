@@ -13,11 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
+@import address.ViewConfig
 @(ix: Int,
-        view: address.uk.ViewConfig,
+        view: ViewConfig,
         userSuppliedAddress: uk.gov.hmrc.address.v2.Address)(implicit request: Request[_])
 
-@main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("user-supplied-address-page")) {
+@main_template(view = view, bodyClasses = Some("user-supplied-address-page")) {
 
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>
@@ -93,6 +94,7 @@
 
             <tr><th>Language</th>
                 <td>-</td>
+                <td></td>
             </tr>
         </table>
         <a href="../@{

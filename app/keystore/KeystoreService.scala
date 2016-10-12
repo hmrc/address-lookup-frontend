@@ -17,13 +17,17 @@
 package keystore
 
 import address.uk._
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import uk.gov.hmrc.logging.SimpleLogger
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPut}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, NotFoundException}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KeystoreService(endpoint: String, applicationName: String)(implicit val ec: ExecutionContext) {
+class KeystoreService(endpoint: String, applicationName: String, logger: SimpleLogger)(implicit val ec: ExecutionContext) {
 
   private val url = s"$endpoint/keystore/address-lookup/"
 
@@ -35,13 +39,32 @@ class KeystoreService(endpoint: String, applicationName: String)(implicit val ec
   }
 
   def fetchSingleResponse(id: String, variant: Int): Future[Option[AddressRecordWithEdits]] = {
-    import ResponseReadable._
-    val url = s"$endpoint/keystore/address-lookup/$id/data/response$variant"
-    http.GET[AddressRecordWithEdits](url).map {
-      ar => Some(ar)
-    }.recover {
-      case e: NotFoundException => None
+    val url = s"$endpoint/keystore/address-lookup/$id"
+    // Not using 'GET' because the status and response entity processing would not be appropriate.
+    http.doGet(url) map {
+      parse(_, variant)
     }
+  }
+
+  private def parse(response: HttpResponse, variant: Int): Option[AddressRecordWithEdits] = {
+    val key = s"response$variant"
+    response.status match {
+      case 200 =>
+        try {
+          val ks = LenientJacksonMapper.readValue(response.body, classOf[KeystoreResponse])
+          ks.data.get(key)
+        } catch {
+          case e: Exception =>
+            logger.warn(s"$url ${response.status}", e)
+            None
+        }
+      case 404 =>
+        None
+      case _ =>
+        logger.info("{} {}", url, response.status.toString)
+        None
+    }
+
   }
 
   def storeSingleResponse(id: String, variant: Int, address: AddressRecordWithEdits): Future[HttpResponse] = {
@@ -49,4 +72,14 @@ class KeystoreService(endpoint: String, applicationName: String)(implicit val ec
     val url = s"$endpoint/keystore/address-lookup/$id/data/response$variant"
     http.PUT[AddressRecordWithEdits, HttpResponse](url, address)
   }
+}
+
+
+case class KeystoreResponse(id: String, data: Map[String, AddressRecordWithEdits])
+
+
+object LenientJacksonMapper extends ObjectMapper {
+  configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+  registerModule(DefaultScalaModule)
+  setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
 }

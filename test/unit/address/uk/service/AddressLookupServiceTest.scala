@@ -17,7 +17,7 @@
 package address.uk.service
 
 import com.pyruby.stubserver.StubMethod._
-import config.JacksonMapper._
+import uk.gov.hmrc.util.JacksonMapper._
 import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play.OneAppPerSuite
 import stub.StubbedAddressService

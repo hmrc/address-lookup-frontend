@@ -8,7 +8,7 @@ import views.html.addressuk.proposalForm
 object DisplayProposalsPage {
 
   import AddressForm.addressForm
-  import ViewConfig._
+  import address.ViewConfig._
 
   def showAddressListProposalForm(ix: Int, nameNo: Option[String], postcode: String,
                                   guid: String, continue: Option[String],

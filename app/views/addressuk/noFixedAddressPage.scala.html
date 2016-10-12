@@ -13,10 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
+@import address.ViewConfig
+@(ix: Int, view: ViewConfig)(implicit request: Request[_])
 
-@(ix: Int, view: address.uk.ViewConfig)(implicit request: Request[_])
-
-@main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("no-fixed-address-page")) {
+@main_template(view = view, bodyClasses = Some("no-fixed-address-page")) {
 
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>

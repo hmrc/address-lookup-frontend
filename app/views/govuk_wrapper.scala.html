@@ -15,11 +15,9 @@
 *@
 
 @(appConfig: config.AppConfig,
-  title: String,
+  view: address.ViewConfig,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
-  alpha: Boolean = false,
-  beta: Boolean = false,
   bodyClasses: Option[String] = None,
   sidebar: Html = HtmlFormat.empty,
   contentHeader: Option[Html] = None,
@@ -40,13 +38,13 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="http://www.google.com"
+  <li><a id="homeNavHref" href="@{view.homeUrl}"
          data-journey-click="primary-navigation:Click:Home">Home</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("Address lookup"),
+      navTitle = Some(view.pageTitle),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
@@ -69,7 +67,7 @@
 
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = phase_banner(alpha, beta),
+      betaBanner = phase_banner(view.alpha, view.beta),
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
@@ -93,4 +91,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(view.title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

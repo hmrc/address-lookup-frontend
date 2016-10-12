@@ -18,14 +18,15 @@ package config
 
 import java.io.File
 
+import address.ViewConfig
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.Mode._
-import play.api.Play._
 import play.api.mvc.Request
-import play.api.{Application, Configuration, Play}
+import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
 import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.logging.LoggerFacade
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
@@ -48,13 +49,17 @@ object FrontendGlobal
     super.onLoadConfig(config, path, classloader, mode)
   }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    views.html.error_template(pageTitle, heading, message)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html = {
+    val view = ViewConfig(pageTitle, "", "", "")
+    views.html.error_template(view, heading, message)
+  }
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 
   // one EC to rule them all - be sure to use it
   val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+  val logger = new LoggerFacade(Logger.logger)
 }
 
 
@@ -68,7 +73,7 @@ object LoggingFilter extends FrontendLoggingFilter {
 }
 
 
-object  AuditFilter extends FrontendAuditFilter with RunMode with AppName {
+object AuditFilter extends FrontendAuditFilter with RunMode with AppName {
 
   override lazy val maskedFormFields = Seq("password")
 

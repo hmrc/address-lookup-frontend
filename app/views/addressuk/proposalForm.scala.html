@@ -13,9 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
+@import address.ViewConfig
 @(ix: Int,
-  view: address.uk.ViewConfig,
+  view: ViewConfig,
   ukAddrForm: Form[address.uk.AddressData],
   addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
   selectedUprn: Long,
@@ -25,7 +25,7 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import config.Plural._
 
-@main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("proposal-form")) {
+@main_template(view = view, bodyClasses = Some("proposal-form")) {
 
 <div>
     <h1 class="heading-xlarge">@{view.baseTitle}</h1>

@@ -16,11 +16,12 @@
 
 package controllers
 
+import java.nio.charset.StandardCharsets
+
 import address.uk.AddressRecordWithEdits
 import com.pyruby.stubserver.StubMethod
-import config.JacksonMapper._
 import helper.{AppServerTestApi, IntegrationTest}
-import keystore.KeystoreService
+import keystore.{KeystoreResponse, KeystoreService}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.SequentialNestedSuiteExecution
@@ -28,7 +29,9 @@ import org.scalatestplus.play._
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 import uk.gov.hmrc.address.v2.Countries._
-import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
+import uk.gov.hmrc.address.v2._
+import uk.gov.hmrc.logging.StubLogger
+import uk.gov.hmrc.util.JacksonMapper._
 
 //-------------------------------------------------------------------------------------------------
 // This is a long test file to ensure that everything runs in sequence, not overlapping.
@@ -64,32 +67,49 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
   "keystore" must {
 
     "fetchResponse" must {
-      """
-      serialise the list of addresses as JSON
-      and then PUT the data to the keystore micrservice endpoint
-      and the URL must include the specified ID and variant
-      """ in {
+      "return an address record when matched" in {
+        val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreService(keystoreEndpoint, "foo")
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345/data/response3")
-        keystoreStub.expect(stubMethod) thenReturn(200, "application/json", writeValueAsString(sr))
+        val service = new KeystoreService(keystoreEndpoint, "foo", logger)
+        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
+        val ksr = writeValueAsString(KeystoreResponse("id12345", Map("response3" -> sr)))
+        keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
+
         val actual = await(service.fetchSingleResponse("id12345", 3))
+
         assert(actual === Some(sr))
+        keystoreStub.verify()
+      }
+
+      "return none when not matched" in {
+        val logger = new StubLogger(true)
+        keystoreStub.clearExpectations()
+        val service = new KeystoreService(keystoreEndpoint, "foo", logger)
+        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
+        keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
+
+        val actual = await(service.fetchSingleResponse("id12345", 3))
+
+        assert(actual === None)
+        keystoreStub.verify()
       }
     }
 
     "storeResponse" must {
       """
-      serialise the list of addresses as JSON
-      and then PUT the data to the keystore micrservice endpoint
-      and the URL must include the specified ID and variant
+      send the address record to the keystore
       """ in {
-        //        keystoreStub.clearExpectations()
-        //        val service = new KeystoreService(keystoreEndpoint, "foo")
-        //        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/response3")
-        //        keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
-        //        val actual = await(service.storeSingleResponse("id12345", 3, sr))
-        //        assert(actual.status === 204)
+        val logger = new StubLogger(true)
+        keystoreStub.clearExpectations()
+        val service = new KeystoreService(keystoreEndpoint, "foo", logger)
+        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/response3")
+        keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
+
+        val actual = await(service.storeSingleResponse("id12345", 3, sr))
+
+        assert(actual.status === 204)
+        keystoreStub.verify()
+        assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
       }
     }
   }
@@ -102,7 +122,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
       val nfaWithoutEdits = AddressRecordWithEdits(None, None, true)
       keystoreStub.expect(StubMethod.get("/keystore/address-lookup/abc123/data/response0")) thenReturn(200, "application/json", writeValueAsString(nfaWithoutEdits))
 
-      val (cookies, doc1) = step1EntryForm()
+      val (cookies, doc1) = step1EntryForm("0")
       val csrfToken = hiddenCsrfTokenValue(doc1)
       val guid: String = hiddenGuidValue(doc1)
 
@@ -117,38 +137,41 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
 
     "get form without params, post form with address that has a single match, post selection to reach confirmation page" in {
-      addressLookupStub.clearExpectations()
-      keystoreStub.clearExpectations()
-      val sel9pyList = List(se1_9py)
-      val se19pyWithoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
+      for (ix <- 0 to 2) {
+        addressLookupStub.clearExpectations()
+        keystoreStub.clearExpectations()
+        val sel9pyList = List(se1_9py)
+        val se19pyWithoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
 
-      val (cookies, doc1) = step1EntryForm("?guid=abc123")
-      val csrfToken = hiddenCsrfTokenValue(doc1)
-      val guid = hiddenGuidValue(doc1)
-      assert(guid === "abc123")
+        val (cookies, doc1) = step1EntryForm(s"$ix?guid=abc123")
+        val csrfToken = hiddenCsrfTokenValue(doc1)
+        val guid = hiddenGuidValue(doc1)
+        assert(guid === "abc123")
 
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
 
-      val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
-        Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
-        cookies: _*
-      )
-      assert(response2.status === 200) // note that redirection has been followed
-      val doc2 = Jsoup.parse(response2.body)
-      assert(doc2.select("body.proposal-form").size === 1, response2.body)
-      assert(hiddenGuidValue(doc2) === guid)
+        val response2 = request("POST", s"$appContext/uk/addresses/$ix/propose",
+          Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
+          cookies: _*
+        )
+        assert(response2.status === 200) // note that redirection has been followed
+        val doc2 = Jsoup.parse(response2.body)
+        assert(doc2.select("body.proposal-form").size === 1, response2.body)
+        assert(hiddenGuidValue(doc2) === guid)
 
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10091836674")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
-      keystoreStub.expect(StubMethod.get("/keystore/address-lookup/abc123/data/response0")) thenReturn(200, "application/json", writeValueAsString(se19pyWithoutEdits))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10091836674")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
+          writeValueAsString(KeystoreResponse("", Map(s"response$ix" -> se19pyWithoutEdits))))
 
-      val response3 = request("POST", s"$appContext/uk/addresses/0/select",
-        Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
-        cookies: _*
-      )
-      assert(response3.status === 200) // note that redirection has been followed
-      val doc3 = Jsoup.parse(response3.body)
-      assert(doc3.select("body.confirmation-page").size === 1, response3.body)
-      //      assert(doc3.select("body.user-supplied-address-page").size === 1, response3.body)
+        val response3 = request("POST", s"$appContext/uk/addresses/$ix/select",
+          Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
+          cookies: _*
+        )
+        assert(response3.status === 200) // note that redirection has been followed
+        val doc3 = Jsoup.parse(response3.body)
+        assert(doc3.select("body.confirmation-page").size === 1, response3.body)
+        //      assert(doc3.select("body.user-supplied-address-page").size === 1, response3.body)
+      }
     }
 
   }
@@ -156,16 +179,18 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
   "uk address error journeys" must {
     "landing unexpectedly on the confirmation page causes redirection to the blank form" in {
-      keystoreStub.clearExpectations()
-      keystoreStub.expect(StubMethod.get("/keystore/address-lookup/a1c5d2ba/data/response0")) thenReturn(404, "text/plain", "Not found")
+      for (ix <- 0 to 2) {
+        keystoreStub.clearExpectations()
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/a1c5d2ba")) thenReturn(404, "text/plain", "Not found")
 
-      getHtmlForm(s"/uk/addresses/0/confirmation?id=a1c5d2ba", "entry-form")
+        getHtmlForm(s"/uk/addresses/$ix/confirmation?id=a1c5d2ba", "entry-form")
+      }
     }
   }
 
 
   private def step1EntryForm(params: String = ""): (Seq[(String, String)], Document) = {
-    getHtmlForm(s"/uk/addresses/0" + params, "entry-form")
+    getHtmlForm(s"/uk/addresses/" + params, "entry-form")
   }
 
   private def getHtmlForm(path: String, expectedBodyClass: String): (Seq[(String, String)], Document) = {

@@ -21,7 +21,7 @@ import java.net.URLEncoder
 import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.{FrontendGlobal, JacksonMapper}
+import config.FrontendGlobal
 import config.ConfigHelper._
 import keystore.KeystoreService
 import play.api.Play
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +42,8 @@ object ConfiguredAddressLookupService extends AddressLookupService(
 
 object ConfiguredKeystoreService extends KeystoreService(
   mustGetConfigString(Play.current.mode, Play.current.configuration, "keystore.endpoint"),
-  FrontendGlobal.appName)(FrontendGlobal.executionContext)
+  FrontendGlobal.appName,
+  FrontendGlobal.logger)(FrontendGlobal.executionContext)
 
 
 object AddressLookupController extends AddressLookupController(
@@ -55,7 +57,7 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
   private implicit val xec = ec
 
   import AddressForm.addressForm
-  import ViewConfig._
+  import address.ViewConfig._
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package address.uk
+package address
 
-case class ViewConfig(baseTitle: String,
+case class ViewConfig(pageTitle: String,
+                      baseTitle: String,
                       prompt: String,
+                      homeUrl: String,
                       allowManualEntry: Boolean = false,
                       allowNoFixedAddress: Boolean = true,
                       maxAddressesToShow: Int = 20,
@@ -30,9 +32,26 @@ case class ViewConfig(baseTitle: String,
 
 object ViewConfig {
   val cfg = List(
-    ViewConfig(baseTitle = "Your address", "Choose your location", allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true),
-    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
-    ViewConfig(baseTitle = "Address entry", "Enter the address", allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
+    ViewConfig(
+      pageTitle = "Address lookup",
+      baseTitle = "Your address",
+      prompt = "Choose your location",
+      homeUrl = "http://example.com/",
+      allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true),
+
+    ViewConfig(
+      pageTitle = "Address lookup",
+      baseTitle = "Address entry",
+      prompt = "Enter the address",
+      homeUrl = "http://example.com/",
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
+
+    ViewConfig(
+      pageTitle = "Address lookup",
+      baseTitle = "Address entry",
+      prompt = "Enter the address",
+      homeUrl = "http://example.com/",
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
   )
 
   val defaultContinueUrl = "confirmation"

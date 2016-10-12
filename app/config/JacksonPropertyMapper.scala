@@ -17,16 +17,9 @@
 package config
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-
-object JacksonMapper extends ObjectMapper {
-  configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
-  registerModule(DefaultScalaModule)
-  setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-}
-
 
 // Instead of converting to/from JSON, this converts to/from nested key/value properties.
 object JacksonPropertyMapper extends JavaPropsMapper {

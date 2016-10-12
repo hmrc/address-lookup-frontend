@@ -13,16 +13,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-
+@import address.ViewConfig
 @(ix: Int,
-  view: address.uk.ViewConfig,
+  view: ViewConfig,
   ukAddrForm: Form[address.uk.AddressData],
   noMatchesWereFound: Boolean,
   exceededLimit: Boolean)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.helpers
 
-@main_template(title = view.title, alpha = view.alpha, beta = view.beta, bodyClasses = Some("entry-form")) {
+@main_template(view = view, bodyClasses = Some("entry-form")) {
 
 <div>
     <h1 class="heading-xlarge">@{view.baseTitle}</h1>

@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
 import address.uk.AddressRecordWithEdits
 import com.pyruby.stubserver.StubMethod
 import helper.{AppServerTestApi, IntegrationTest}
-import keystore.{KeystoreResponse, KeystoreServiceImpl}
+import keystore.{KeystoreMetrics, KeystoreResponse, KeystoreServiceImpl}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.SequentialNestedSuiteExecution
@@ -79,6 +79,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
         assert(actual === Some(sr))
         keystoreStub.verify()
+        assert(logger.isEmpty, logger.all)
       }
 
       "return none when not matched" in {
@@ -92,6 +93,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
         assert(actual === None)
         keystoreStub.verify()
+        assert(logger.isEmpty, logger.all)
       }
     }
 
@@ -110,14 +112,54 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         assert(actual.status === 204)
         keystoreStub.verify()
         assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
+        assert(logger.isEmpty, logger.all)
       }
     }
+
+    "fetchResponse with metrics" must {
+      "return an address record when matched" in {
+        val logger = new StubLogger(true)
+        keystoreStub.clearExpectations()
+        val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
+        val service = new KeystoreMetrics(peer, logger, ec)
+        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
+        val ksr = writeValueAsString(KeystoreResponse(Map("response3" -> sr)))
+        keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
+
+        val actual = await(service.fetchSingleResponse("id12345", 3))
+
+        assert(actual === Some(sr))
+        keystoreStub.verify()
+        assert(logger.infos.map(_.message) === List(s"Info:Keystore get id12345 3 took {}ms"))
+      }
+    }
+
+    "storeResponse with metrics" must {
+      """
+      send the address record to the keystore
+      """ in {
+        val logger = new StubLogger(true)
+        keystoreStub.clearExpectations()
+        val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
+        val service = new KeystoreMetrics(peer, logger, ec)
+        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/response3")
+        keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
+
+        val actual = await(service.storeSingleResponse("id12345", 3, sr))
+
+        assert(actual.status === 204)
+        keystoreStub.verify()
+        assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
+        assert(logger.infos.map(_.message) === List(s"Info:Keystore put id12345 3 uprn=4510123533 took {}ms"))
+      }
+    }
+
   }
 
 
   "uk address happy-path journeys" must {
 
-    "get form without params, post form with no-fixed-address" ignore {
+    "get form without params, post form with no-fixed-address" in {
       keystoreStub.clearExpectations()
       val sel9pyList = List(se1_9py)
       val se19pyWithoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
@@ -129,7 +171,8 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
       val csrfToken = hiddenCsrfTokenValue(doc1)
       val guid: String = hiddenGuidValue(doc1)
 
-      keystoreStub.expect(StubMethod.put(s"/keystore/address-lookup/$guid/data/response0")) thenReturn(204, "application/json", "")
+      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/$guid")) thenReturn(200, "application/json",
+        writeValueAsString(KeystoreResponse(Map("response0" -> se19pyWithoutEdits))))
 
       val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
         Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),

@@ -14,7 +14,7 @@ class KeystoreMetrics(peer: KeystoreService, logger: SimpleLogger, ec: Execution
     peer.fetchSingleResponse(id, variant) map {
       response =>
         val took = System.currentTimeMillis - now
-        logger.info(s"GET keystore $id $variant took {}ms", took.toString)
+        logger.info(s"Keystore get $id $variant took {}ms", took.toString)
         response
     }
   }
@@ -24,8 +24,8 @@ class KeystoreMetrics(peer: KeystoreService, logger: SimpleLogger, ec: Execution
     peer.storeSingleResponse(id, variant, address) map {
       response =>
         val took = System.currentTimeMillis - now
-        val uprn = address.normativeAddress.map(_.uprn.toString) getOrElse "???"
-        logger.info(s"PUT keystore $id $variant $uprn took {}ms", took.toString)
+        val uprn = address.normativeAddress.flatMap(_.uprn.map(_.toString)) getOrElse "unknown"
+        logger.info(s"Keystore put $id $variant uprn=$uprn took {}ms", took.toString)
         response
     }
   }

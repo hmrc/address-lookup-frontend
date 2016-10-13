@@ -37,7 +37,6 @@ trait KeystoreService {
 class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger, ec: ExecutionContext) extends KeystoreService {
 
   private implicit val xec = ec
-  private val url = s"$endpoint/keystore/address-lookup/"
 
   private implicit val hc = HeaderCarrier()
 
@@ -50,11 +49,11 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
     val url = s"$endpoint/keystore/address-lookup/$id"
     // Not using 'GET' because the status and response entity processing would not be appropriate.
     http.doGet(url) map {
-      parse(_, variant)
+      parse(_, variant, url)
     }
   }
 
-  private def parse(response: HttpResponse, variant: Int): Option[AddressRecordWithEdits] = {
+  private def parse(response: HttpResponse, variant: Int, url: String): Option[AddressRecordWithEdits] = {
     val key = s"response$variant"
     response.status match {
       case 200 =>
@@ -63,13 +62,13 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
           ks.data.get(key)
         } catch {
           case e: Exception =>
-            logger.warn(s"$url ${response.status}", e)
+            logger.warn(s"keystore error GET $url ${response.status}", e)
             None
         }
       case 404 =>
         None
       case _ =>
-        logger.info("{} {}", url, response.status.toString)
+        logger.info("keystore error GET {} {}", url, response.status.toString)
         None
     }
 

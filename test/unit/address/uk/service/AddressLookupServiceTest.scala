@@ -36,7 +36,7 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
 
   class Context {
     addressLookupStub.clearExpectations()
-    val service = new AddressLookupService(addressLookupEndpoint, "foo")
+    val service = new AddressLookupService(addressLookupEndpoint, "foo", ec)
   }
 
   val emptyList = "[]"

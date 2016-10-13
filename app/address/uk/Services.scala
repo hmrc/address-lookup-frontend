@@ -16,10 +16,28 @@
 
 package address.uk
 
+import address.uk.service.AddressLookupService
+import config.FrontendGlobal
 import config.ConfigHelper._
+import keystore.{KeystoreMetrics, KeystoreServiceImpl}
 import play.api.Play
 
 object Services {
 
   lazy val baseUrl = mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint")
+
+  val configuredAddressLookupService = new AddressLookupService(
+    mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint"),
+    FrontendGlobal.appName,
+    FrontendGlobal.executionContext)
+
+  val configuredKeystoreService = new KeystoreServiceImpl(
+    mustGetConfigString(Play.current.mode, Play.current.configuration, "keystore.endpoint"),
+    FrontendGlobal.appName,
+    FrontendGlobal.logger,
+    FrontendGlobal.executionContext)
+
+  val metricatedKeystoreService = new KeystoreMetrics(configuredKeystoreService,
+    FrontendGlobal.logger,
+    FrontendGlobal.executionContext)
 }

@@ -27,8 +27,16 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KeystoreService(endpoint: String, applicationName: String, logger: SimpleLogger)(implicit val ec: ExecutionContext) {
+trait KeystoreService {
+  def fetchSingleResponse(id: String, variant: Int): Future[Option[AddressRecordWithEdits]]
 
+  def storeSingleResponse(id: String, variant: Int, address: AddressRecordWithEdits): Future[HttpResponse]
+}
+
+
+class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger, ec: ExecutionContext) extends KeystoreService {
+
+  private implicit val xec = ec
   private val url = s"$endpoint/keystore/address-lookup/"
 
   private implicit val hc = HeaderCarrier()
@@ -75,7 +83,7 @@ class KeystoreService(endpoint: String, applicationName: String, logger: SimpleL
 }
 
 
-case class KeystoreResponse(id: String, data: Map[String, AddressRecordWithEdits])
+case class KeystoreResponse(data: Map[String, AddressRecordWithEdits])
 
 
 object LenientJacksonMapper extends ObjectMapper {

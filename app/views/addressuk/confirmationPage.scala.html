@@ -14,7 +14,7 @@
 * limitations under the License.
 *@
 @import address.ViewConfig
-@(ix: Int,
+@(tag: String,
         view: ViewConfig,
         normativeAddress: uk.gov.hmrc.address.v2.AddressRecord,
         userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_])
@@ -145,7 +145,7 @@
             </tr>
         </table>
         <a href="../@{
-            ix
+            tag
         }">Start again</a>
     </div>
 

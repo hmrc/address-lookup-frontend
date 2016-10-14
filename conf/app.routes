@@ -2,10 +2,10 @@
 
 GET    /                                                        address.uk.AddressLookupController.start
 
-GET    /uk/addresses/:ix                                        address.uk.AddressLookupController.getEmptyForm(ix: Int, guid: Option[String], continue: Option[String])
-POST   /uk/addresses/:ix/propose                                address.uk.AddressLookupController.postForm(ix: Int)
-POST   /uk/addresses/:ix/select                                 address.uk.AddressLookupController.postSelected(ix: Int)
-GET    /uk/addresses/:ix/get-proposals/:nameNo/:postcode/:guid  address.uk.AddressLookupController.getProposals(ix: Int, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
-GET    /uk/addresses/:ix/confirmation                           address.uk.AddressLookupController.confirmation(ix: Int, id: String )
+GET    /uk/addresses/:tag                                        address.uk.AddressLookupController.getEmptyForm(tag: String, guid: Option[String], continue: Option[String])
+POST   /uk/addresses/:tag/propose                                address.uk.AddressLookupController.postForm(tag: String)
+POST   /uk/addresses/:tag/select                                 address.uk.AddressLookupController.postSelected(tag: String)
+GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid  address.uk.AddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
+GET    /uk/addresses/:tag/confirmation                           address.uk.AddressLookupController.confirmation(tag: String, id: String )
 
 GET    /assets/*file                                            controllers.Assets.at(path="/public", file)

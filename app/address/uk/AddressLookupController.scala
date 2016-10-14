@@ -51,96 +51,101 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
   // not strictly needed
   def start: Action[AnyContent] = Action {
     implicit request =>
-      Redirect(routes.AddressLookupController.getEmptyForm(0, None, None))
+      Redirect(routes.AddressLookupController.getEmptyForm("j0", None, None))
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def getEmptyForm(ix: Int, guid: Option[String], continue: Option[String]): Action[AnyContent] = Action {
+  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String]): Action[AnyContent] = Action {
     request =>
+      require(tag.nonEmpty)
       val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
       val cu = continue.getOrElse(defaultContinueUrl)
       val bound = addressForm.fill(AddressData(actualGuid, cu, false, None, None, None, None, None, None, Countries.UK.code))
-      Ok(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request))
+      Ok(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request))
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def postForm(ix: Int): Action[AnyContent] = Action.async {
+  def postForm(tag: String): Action[AnyContent] = Action.async {
     request =>
+      require(tag.nonEmpty)
       val bound = addressForm.bindFromRequest()(request)
       if (bound.errors.nonEmpty) {
-        Future.successful(BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
+        Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
 
       } else {
         val formData = bound.get
         if (formData.noFixedAddress) {
-          completion(ix, bound.get, noFixedAddress = true, request)
+          completion(tag, bound.get, noFixedAddress = true, request)
 
         } else {
-          Future.successful(fixedAddress(ix, formData, request))
+          Future.successful(fixedAddress(tag, formData, request))
         }
       }
   }
 
-  private def fixedAddress(ix: Int, formData: AddressData, request: Request[_]) = {
+  private def fixedAddress(tag: String, formData: AddressData, request: Request[_]) = {
     if (formData.postcode.isEmpty) {
       val formWithError = addressForm.fill(formData).withError("postcode", "A post code is required")
-      BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
+      BadRequest(blankForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
 
     } else {
       val pc = Postcode.cleanupPostcode(formData.postcode.get)
       if (pc.isEmpty) {
         val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
-        BadRequest(blankForm(ix, cfg(ix), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
+        BadRequest(blankForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false)(request))
 
       } else {
         val cu = Some(formData.continue)
         val nameOrNumber = formData.nameNo.getOrElse("-")
-        SeeOther(routes.AddressLookupController.getProposals(ix, nameOrNumber, pc.get.toString, formData.guid, cu, None).url + "#found-addresses")
+        SeeOther(routes.AddressLookupController.getProposals(tag, nameOrNumber, pc.get.toString, formData.guid, cu, None).url + "#found-addresses")
       }
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def getProposals(ix: Int, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
+  def getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
     request =>
+      require(tag.nonEmpty)
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
       val uPostcode = postcode.toUpperCase
       lookup.findByPostcode(uPostcode, optNameNo) map {
         list =>
           val cu = continue.getOrElse(defaultContinueUrl)
-          val exceededLimit = list.size > cfg(ix).maxAddressesToShow
+          val exceededLimit = list.size > cfg(tag).maxAddressesToShow
           if (list.isEmpty || exceededLimit) {
             val filledInForm = addressForm.fill(AddressData(guid, cu, noFixedAddress = false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
-            Ok(blankForm(ix, cfg(ix), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit)(request))
+            Ok(blankForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit)(request))
 
           } else {
-            Ok(showAddressListProposalForm(ix, optNameNo, uPostcode, guid, continue, list, edit, request))
+            Ok(showAddressListProposalForm(tag, optNameNo, uPostcode, guid, continue, list, edit, request))
           }
       }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def postSelected(ix: Int): Action[AnyContent] = Action.async { request =>
-    val bound = addressForm.bindFromRequest()(request)
-    if (bound.errors.nonEmpty) {
-      Future.successful(BadRequest(blankForm(ix, cfg(ix), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
+  def postSelected(tag: String): Action[AnyContent] = Action.async {
+    request =>
+      require(tag.nonEmpty)
+      val bound = addressForm.bindFromRequest()(request)
+      if (bound.errors.nonEmpty) {
+        Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
 
-    } else {
-      completion(ix, bound.get, noFixedAddress = false, request)
-    }
+      } else {
+        completion(tag, bound.get, noFixedAddress = false, request)
+      }
   }
 
-  private def completion(ix: Int, addressData: AddressData, noFixedAddress: Boolean, request: Request[_]): Future[Result] = {
+  private def completion(tag: String, addressData: AddressData, noFixedAddress: Boolean, request: Request[_]): Future[Result] = {
     val nfa = if (noFixedAddress) "nfa=1&" else ""
     val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
 
     if (addressData.uprn.isEmpty) {
       val response = AddressRecordWithEdits(None, addressData.editedAddress, noFixedAddress)
-      keystore.storeSingleResponse(addressData.guid, ix, response) map {
+      keystore.storeSingleResponse(addressData.guid, tag, response) map {
         httpResponse =>
           SeeOther(addressData.continue + "?id=" + addressData.guid)
       }
@@ -150,9 +155,9 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
       lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
         list =>
           val response = AddressRecordWithEdits(list.headOption, addressData.editedAddress, noFixedAddress)
-          keystore.storeSingleResponse(addressData.guid, ix, response) map {
+          keystore.storeSingleResponse(addressData.guid, tag, response) map {
             httpResponse =>
-              SeeOther(addressData.continue + "?ix=" + ix + "&id=" + addressData.guid)
+              SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
           }
       }
     }
@@ -160,19 +165,21 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
 
   //-----------------------------------------------------------------------------------------------
 
-  def confirmation(ix: Int, id: String): Action[AnyContent] = Action.async {
+  def confirmation(tag: String, id: String): Action[AnyContent] = Action.async {
     request =>
-      val fuResponse = keystore.fetchSingleResponse(id, ix)
+      require(id.nonEmpty)
+      require(tag.nonEmpty)
+      val fuResponse = keystore.fetchSingleResponse(id, tag)
       fuResponse.map {
         response: Option[AddressRecordWithEdits] =>
           if (response.isEmpty) {
-            TemporaryRedirect(routes.AddressLookupController.getEmptyForm(ix, None, None).url)
+            TemporaryRedirect(routes.AddressLookupController.getEmptyForm(tag, None, None).url)
           } else {
             val addressRecord = response.get
             if (addressRecord.normativeAddress.isDefined) {
-              Ok(confirmationPage(ix, cfg(ix), addressRecord.normativeAddress.get, addressRecord.userSuppliedAddress)(request))
+              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress.get, addressRecord.userSuppliedAddress)(request))
             } else {
-              Ok(userSuppliedAddressPage(ix, cfg(ix), addressRecord.userSuppliedAddress.getOrElse(noFixedAbodeAddress))(request))
+              Ok(userSuppliedAddressPage(tag, cfg(tag), addressRecord.userSuppliedAddress.getOrElse(noFixedAbodeAddress))(request))
             }
           }
       }

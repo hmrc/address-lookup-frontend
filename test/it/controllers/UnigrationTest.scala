@@ -71,11 +71,11 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(KeystoreResponse(Map("response3" -> sr)))
+        val stubMethod = StubMethod.get("/keystore/address-lookup-exchange/id12345")
+        val ksr = writeValueAsString(KeystoreResponse(Map("j3" -> sr)))
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
 
-        val actual = await(service.fetchSingleResponse("id12345", 3))
+        val actual = await(service.fetchSingleResponse("id12345", "j3"))
 
         assert(actual === Some(sr))
         keystoreStub.verify()
@@ -86,10 +86,10 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
+        val stubMethod = StubMethod.get("/keystore/address-lookup-exchange/id12345")
         keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
 
-        val actual = await(service.fetchSingleResponse("id12345", 3))
+        val actual = await(service.fetchSingleResponse("id12345", "j3"))
 
         assert(actual === None)
         keystoreStub.verify()
@@ -98,16 +98,14 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
     }
 
     "storeResponse" must {
-      """
-      send the address record to the keystore
-      """ in {
+      "send the address record to the keystore" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/response3")
+        val stubMethod = StubMethod.put("/keystore/address-lookup-exchange/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 
-        val actual = await(service.storeSingleResponse("id12345", 3, sr))
+        val actual = await(service.storeSingleResponse("id12345", "j3", sr))
 
         assert(actual.status === 204)
         keystoreStub.verify()
@@ -122,35 +120,33 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         keystoreStub.clearExpectations()
         val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
         val service = new KeystoreMetrics(peer, logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(KeystoreResponse(Map("response3" -> sr)))
+        val stubMethod = StubMethod.get("/keystore/address-lookup-exchange/id12345")
+        val ksr = writeValueAsString(KeystoreResponse(Map("j3" -> sr)))
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
 
-        val actual = await(service.fetchSingleResponse("id12345", 3))
+        val actual = await(service.fetchSingleResponse("id12345", "j3"))
 
         assert(actual === Some(sr))
         keystoreStub.verify()
-        assert(logger.infos.map(_.message) === List(s"Info:Keystore get id12345 3 took {}ms"))
+        assert(logger.infos.map(_.message) === List(s"Info:Keystore get id12345 j3 took {}ms"))
       }
     }
 
     "storeResponse with metrics" must {
-      """
-      send the address record to the keystore
-      """ in {
+      "send the address record to the keystore" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
         val service = new KeystoreMetrics(peer, logger, ec)
-        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/response3")
+        val stubMethod = StubMethod.put("/keystore/address-lookup-exchange/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 
-        val actual = await(service.storeSingleResponse("id12345", 3, sr))
+        val actual = await(service.storeSingleResponse("id12345", "j3", sr))
 
         assert(actual.status === 204)
         keystoreStub.verify()
         assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
-        assert(logger.infos.map(_.message) === List(s"Info:Keystore put id12345 3 uprn=4510123533 took {}ms"))
+        assert(logger.infos.map(_.message) === List(s"Info:Keystore put id12345 j3 uprn=4510123533 took {}ms"))
       }
     }
 
@@ -164,17 +160,17 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
       val sel9pyList = List(se1_9py)
       val se19pyWithoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
       val nfaWithoutEdits = AddressRecordWithEdits(None, None, true)
-      //      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
+      //      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup-exchange/abc123")) thenReturn(200, "application/json",
       //        writeValueAsString(KeystoreResponse("", Map("response0" -> se19pyWithoutEdits))))
 
       val (cookies, doc1) = step1EntryForm("0")
       val csrfToken = hiddenCsrfTokenValue(doc1)
       val guid: String = hiddenGuidValue(doc1)
 
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/$guid")) thenReturn(200, "application/json",
-        writeValueAsString(KeystoreResponse(Map("response0" -> se19pyWithoutEdits))))
+      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup-exchange/$guid")) thenReturn(200, "application/json",
+        writeValueAsString(KeystoreResponse(Map("j0" -> se19pyWithoutEdits))))
 
-      val response2 = request("POST", s"$appContext/uk/addresses/0/propose",
+      val response2 = request("POST", s"$appContext/uk/addresses/j0/propose",
         Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> ""),
         cookies: _*
       )
@@ -200,7 +196,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
 
-        val response2 = request("POST", s"$appContext/uk/addresses/$ix/propose",
+        val response2 = request("POST", s"$appContext/uk/addresses/j$ix/propose",
           Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),
           cookies: _*
         )
@@ -210,10 +206,10 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         assert(hiddenGuidValue(doc2) === guid)
 
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10091836674")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(s"response$ix" -> se19pyWithoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup-exchange/abc123")) thenReturn(200, "application/json",
+          writeValueAsString(KeystoreResponse(Map(s"j$ix" -> se19pyWithoutEdits))))
 
-        val response3 = request("POST", s"$appContext/uk/addresses/$ix/select",
+        val response3 = request("POST", s"$appContext/uk/addresses/j$ix/select",
           Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY", "radio-inline-group" -> "10091836674"),
           cookies: _*
         )
@@ -232,9 +228,9 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
     "landing unexpectedly on the confirmation page causes redirection to the blank form" in {
       for (ix <- 0 to 2) {
         keystoreStub.clearExpectations()
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/a1c5d2ba")) thenReturn(404, "text/plain", "Not found")
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup-exchange/a1c5d2ba")) thenReturn(404, "text/plain", "Not found")
 
-        getHtmlForm(s"/uk/addresses/$ix/confirmation?id=a1c5d2ba", "entry-form")
+        getHtmlForm(s"/uk/addresses/j$ix/confirmation?id=a1c5d2ba", "entry-form")
 
         keystoreStub.verify()
       }

@@ -31,28 +31,30 @@ case class ViewConfig(pageTitle: String,
 
 
 object ViewConfig {
-  val cfg = List(
-    ViewConfig(
+
+  val defaultViewConfig = ViewConfig(
+    pageTitle = "Address lookup",
+    baseTitle = "Address entry",
+    prompt = "Enter the address",
+    homeUrl = "http://www.gov.uk/",
+    allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
+
+  val cfg = Map(
+    "j0" -> ViewConfig(
       pageTitle = "Address lookup",
       baseTitle = "Your address",
       prompt = "Choose your location",
-      homeUrl = "http://example.com/",
+      homeUrl = "http://www.gov.uk/",
       allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true),
 
-    ViewConfig(
+    "j1" -> ViewConfig(
       pageTitle = "Address lookup",
       baseTitle = "Address entry",
       prompt = "Enter the address",
-      homeUrl = "http://example.com/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
+      homeUrl = "http://www.gov.uk/",
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true)
 
-    ViewConfig(
-      pageTitle = "Address lookup",
-      baseTitle = "Address entry",
-      prompt = "Enter the address",
-      homeUrl = "http://example.com/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
-  )
+    ).withDefault(s => defaultViewConfig)
 
   val defaultContinueUrl = "confirmation"
 }

@@ -28,9 +28,9 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait KeystoreService {
-  def fetchSingleResponse(id: String, variant: Int): Future[Option[AddressRecordWithEdits]]
+  def fetchSingleResponse(id: String, tag: String): Future[Option[AddressRecordWithEdits]]
 
-  def storeSingleResponse(id: String, variant: Int, address: AddressRecordWithEdits): Future[HttpResponse]
+  def storeSingleResponse(id: String, tag: String, address: AddressRecordWithEdits): Future[HttpResponse]
 }
 
 
@@ -45,21 +45,23 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
     val appName = applicationName
   }
 
-  def fetchSingleResponse(id: String, variant: Int): Future[Option[AddressRecordWithEdits]] = {
-    val url = s"$endpoint/keystore/address-lookup/$id"
+  def fetchSingleResponse(id: String, tag: String): Future[Option[AddressRecordWithEdits]] = {
+    require(id.nonEmpty)
+    require(tag.nonEmpty)
+
+    val url = s"$endpoint/keystore/address-lookup-exchange/$id"
     // Not using 'GET' because the status and response entity processing would not be appropriate.
     http.doGet(url) map {
-      parse(_, variant, url)
+      parse(_, tag, url)
     }
   }
 
-  private def parse(response: HttpResponse, variant: Int, url: String): Option[AddressRecordWithEdits] = {
-    val key = s"response$variant"
+  private def parse(response: HttpResponse, tag: String, url: String): Option[AddressRecordWithEdits] = {
     response.status match {
       case 200 =>
         try {
           val ks = LenientJacksonMapper.readValue(response.body, classOf[KeystoreResponse])
-          ks.data.get(key)
+          ks.data.get(tag)
         } catch {
           case e: Exception =>
             logger.warn(s"keystore error GET $url ${response.status}", e)
@@ -74,9 +76,13 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
 
   }
 
-  def storeSingleResponse(id: String, variant: Int, address: AddressRecordWithEdits): Future[HttpResponse] = {
+
+  def storeSingleResponse(id: String, tag: String, address: AddressRecordWithEdits): Future[HttpResponse] = {
+    require(id.nonEmpty)
+    require(tag.nonEmpty)
+
     import ResponseWriteable._
-    val url = s"$endpoint/keystore/address-lookup/$id/data/response$variant"
+    val url = s"$endpoint/keystore/address-lookup-exchange/$id/data/$tag"
     http.PUT[AddressRecordWithEdits, HttpResponse](url, address)
   }
 }

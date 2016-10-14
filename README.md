@@ -14,48 +14,58 @@ In dev mode:
 ```
 sm --start ASSETS_FRONTEND -r 2.232.0
 sm --start KEYSTORE        -r 8.5.0
+sm --start ADDRESS_LOOKUP  -f
+sm --start ADDRESS_LOOKUP_FRONTEND -f
 nice sbt run
 ```
 
 Browse to http://localhost:9000/address-lookup-frontend/
 
-## Varied Journeys
+## Operation Overview
 
-Different variants are provided for varying the messaging presented to users. These are preconfigured and can be evolved as needed. The required option is indicated by a zero-based integer as a path parameter in the URL. The same number is used again later in response retrieval.
+In essence, four parties are involved:
 
-For the use-case of entering UK addresses described below, the initial URL is
+ * a frontend service in the tax platform (the 'calling service' here)
+ * the user-agent (i.e. web browser) and the user who operates it
+ * the *address-lookup-frontend*, described here
+ * the backend *addreess-lookup*, containing large national datasets of addresses.
+
+*address-lookup-frontend* operates as a micro-site: the interaction sequence is as follows.
+
+ # The calling service sends the user-agent to *address-lookup-frontend* by means of HTTP redirection.
+ # The end-user chooses an address.
+ # The user-agent is redirected back to the calling service, along with an identifier.
+ # Using this identifier, the calling service obtains the chosen address directly via a REST resource in *address-lookup-frontend*.
+
+In the last step, data exchange happens server-side between, eliminating any possibility of user tampering.
+
+## Varied Journey Options
+
+Different variants are provided; these vary the messaging presented to users and enable or disable some features. The variants are preconfigured and can be evolved as needed. The required option is indicated by a short tag (e.g. `pta2`) as a path parameter in the URL. The same tag is used throughout each user-journey and in response retrieval.
+
+For the use-case of entering UK addresses described below, the initial URL is one of
 
 ```
-http://localhost:9000/address-lookup-frontend/uk/addresses/0
+http://localhost:9025/address-lookup-frontend/uk/addresses/<tag>
+http://address-lookup-frontend.service/address-lookup-frontend/uk/addresses/<tag>
+http://address-lookup-frontend.service/address-lookup-frontend/uk/addresses/<tag>?guid=abc123&continue=https://www.gov.uk/personal-tax-account/change-address
 ```
 
-where the final 0 may be substituted by another option.
+where the final `tag` specifies the pre-agreed journey option, e.g. `j0`. (See [ViewConfig](https://github.com/hmrc/address-lookup-frontend/blob/master/app/address/uk/ViewConfig.scala).)
 
-See [ViewConfig](https://github.com/hmrc/address-lookup-frontend/blob/master/app/address/uk/ViewConfig.scala).
+There are two optional query parameters:
 
-## Data Transfer via Keystore
+ * `guid` allows the journey identifier to be supplied; otherwise, a GUID is generated and used instead.
+ * `continue` specifies the URL for returning the user-agent to the calling service.
 
-The calling app specifies what the *address-lookup-frontend* needs to do. This is choreographed by simple URL parameters and by data-exchange using the *keystore* microservice.
+After the (short) user journey, an outcome will have been reached that is available to the calling service via a REST resource. 
 
- * Request data may optionally be supplied to *address-lookup-frontend*, transferred via temporary *keystore* storage.
- * Similarly, response data will be returned by *address-lookup-frontend*, transferred back to the calling app via temporary *keystore* storage.
+```
+http://address-lookup-frontend.service/address-lookup-frontend/uk/outcome/<tag>/<id>
+```
 
-The rationale for using *keystore* in this way is to ensure easy transfer of data that is immune to external tampering.
+where the `id` is supplied to the calling service via a query parameter called `id`.
 
-Generally, our *keystore* paths will be as follows:
-
-| Path                                   | Supported Methods | Description  |
-| -------------------------------------- | ------------------| ------------ |
-| `/keystore/:source/:id`                |        GET        |Returns the document the with the given `id` contained in the provided `source`|
-| `/keystore/:source/:id/data/keys`      |        GET        |Returns all the keys contained in the document with the given `id` inside the provided source|
-| `/keystore/:source/:id/data/:key       |        PUT        |Saves the mapping between the `key` and the Json body of the request in the `source` for the given `id`| 
-
-For this application:
-
- # The `:source` parameter is always `address-lookup`.
- # The `:id` parameter is a guid (see below).
- # The `:key` parameter is either `request` or `response<n>`, where *n* is the same number used for the journey variant.
- # The data value is a list of addresses (as JSON), exchanged in either direction depending on use-cases journey. The format of the JSON is the same as used by *address-lookup*. 
 
 ## Use Case 1: Entering a new address using postcode lookup
 

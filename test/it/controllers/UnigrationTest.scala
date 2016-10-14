@@ -163,7 +163,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
       //      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
       //        writeValueAsString(KeystoreResponse("", Map("response0" -> se19pyWithoutEdits))))
 
-      val (cookies, doc1) = step1EntryForm("0")
+      val (cookies, doc1) = step1EntryForm("j0")
       val csrfToken = hiddenCsrfTokenValue(doc1)
       val guid: String = hiddenGuidValue(doc1)
 
@@ -189,7 +189,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         val sel9pyList = List(se1_9py)
         val se19pyWithoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
 
-        val (cookies, doc1) = step1EntryForm(s"$ix?id=abc123")
+        val (cookies, doc1) = step1EntryForm(s"j$ix?id=abc123")
         val csrfToken = hiddenCsrfTokenValue(doc1)
         val guid = hiddenGuidValue(doc1)
         assert(guid === "abc123")

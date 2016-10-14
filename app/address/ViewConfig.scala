@@ -32,13 +32,6 @@ case class ViewConfig(pageTitle: String,
 
 object ViewConfig {
 
-  val defaultViewConfig = ViewConfig(
-    pageTitle = "Address lookup",
-    baseTitle = "Address entry",
-    prompt = "Enter the address",
-    homeUrl = "http://www.gov.uk/",
-    allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
-
   val cfg = Map(
     "j0" -> ViewConfig(
       pageTitle = "Address lookup",
@@ -52,9 +45,15 @@ object ViewConfig {
       baseTitle = "Address entry",
       prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true)
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
 
-    ).withDefault(s => defaultViewConfig)
+    "j2" -> ViewConfig(
+      pageTitle = "Address lookup",
+      baseTitle = "Address entry",
+      prompt = "Enter the address",
+      homeUrl = "http://www.gov.uk/",
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
+  )
 
   val defaultContinueUrl = "confirmation"
 }

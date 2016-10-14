@@ -58,29 +58,35 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
 
   def getEmptyForm(tag: String, guid: Option[String], continue: Option[String]): Action[AnyContent] = Action {
     request =>
-      require(tag.nonEmpty)
-      val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
-      val cu = continue.getOrElse(defaultContinueUrl)
-      val bound = addressForm.fill(AddressData(actualGuid, cu, false, None, None, None, None, None, None, Countries.UK.code))
-      Ok(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request))
+      if (tag.isEmpty || cfg.get(tag).isEmpty || guid.contains("") || continue.contains("")) {
+        BadRequest
+      } else {
+        val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
+        val cu = continue.getOrElse(defaultContinueUrl)
+        val bound = addressForm.fill(AddressData(actualGuid, cu, false, None, None, None, None, None, None, Countries.UK.code))
+        Ok(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request))
+      }
   }
 
   //-----------------------------------------------------------------------------------------------
 
   def postForm(tag: String): Action[AnyContent] = Action.async {
     request =>
-      require(tag.nonEmpty)
-      val bound = addressForm.bindFromRequest()(request)
-      if (bound.errors.nonEmpty) {
-        Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
-
+      if (tag.isEmpty || cfg.get(tag).isEmpty) {
+        Future.successful(BadRequest)
       } else {
-        val formData = bound.get
-        if (formData.noFixedAddress) {
-          completion(tag, bound.get, noFixedAddress = true, request)
+        val bound = addressForm.bindFromRequest()(request)
+        if (bound.errors.nonEmpty) {
+          Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)(request)))
 
         } else {
-          Future.successful(fixedAddress(tag, formData, request))
+          val formData = bound.get
+          if (formData.noFixedAddress) {
+            completion(tag, bound.get, noFixedAddress = true, request)
+
+          } else {
+            Future.successful(fixedAddress(tag, formData, request))
+          }
         }
       }
   }
@@ -108,20 +114,23 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
 
   def getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] = Action.async {
     request =>
-      require(tag.nonEmpty)
-      val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
-      val uPostcode = Postcode.normalisePostcode(postcode)
-      lookup.findByPostcode(uPostcode, optNameNo) map {
-        list =>
-          val cu = continue.getOrElse(defaultContinueUrl)
-          val exceededLimit = list.size > cfg(tag).maxAddressesToShow
-          if (list.isEmpty || exceededLimit) {
-            val filledInForm = addressForm.fill(AddressData(guid, cu, noFixedAddress = false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
-            Ok(blankForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit)(request))
+      if (tag.isEmpty || cfg.get(tag).isEmpty) {
+        Future.successful(BadRequest)
+      } else {
+        val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
+        val uPostcode = Postcode.normalisePostcode(postcode)
+        lookup.findByPostcode(uPostcode, optNameNo) map {
+          list =>
+            val cu = continue.getOrElse(defaultContinueUrl)
+            val exceededLimit = list.size > cfg(tag).maxAddressesToShow
+            if (list.isEmpty || exceededLimit) {
+              val filledInForm = addressForm.fill(AddressData(guid, cu, noFixedAddress = false, optNameNo, Some(uPostcode), None, None, None, None, Countries.UK.code))
+              Ok(blankForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit)(request))
 
-          } else {
-            Ok(showAddressListProposalForm(tag, optNameNo, uPostcode, guid, continue, list, edit, request))
-          }
+            } else {
+              Ok(showAddressListProposalForm(tag, optNameNo, uPostcode, guid, continue, list, edit, request))
+            }
+        }
       }
   }
 

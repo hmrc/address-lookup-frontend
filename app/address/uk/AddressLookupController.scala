@@ -110,7 +110,7 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
     request =>
       require(tag.nonEmpty)
       val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
-      val uPostcode = postcode.toUpperCase
+      val uPostcode = Postcode.normalisePostcode(postcode)
       lookup.findByPostcode(uPostcode, optNameNo) map {
         list =>
           val cu = continue.getOrElse(defaultContinueUrl)
@@ -145,7 +145,7 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
 
     if (addressData.uprn.isEmpty) {
       val response = AddressRecordWithEdits(None, addressData.editedAddress, noFixedAddress)
-      keystore.storeSingleResponse(addressData.guid, tag, response) map {
+      keystore.storeSingleResponse(tag, addressData.guid, response) map {
         httpResponse =>
           SeeOther(addressData.continue + "?id=" + addressData.guid)
       }
@@ -155,7 +155,7 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
       lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
         list =>
           val response = AddressRecordWithEdits(list.headOption, addressData.editedAddress, noFixedAddress)
-          keystore.storeSingleResponse(addressData.guid, tag, response) map {
+          keystore.storeSingleResponse(tag, addressData.guid, response) map {
             httpResponse =>
               SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
           }
@@ -169,7 +169,7 @@ class AddressLookupController(lookup: AddressLookupService, keystore: KeystoreSe
     request =>
       require(id.nonEmpty)
       require(tag.nonEmpty)
-      val fuResponse = keystore.fetchSingleResponse(id, tag)
+      val fuResponse = keystore.fetchSingleResponse(tag, id)
       fuResponse.map {
         response: Option[AddressRecordWithEdits] =>
           if (response.isEmpty) {

@@ -27,7 +27,7 @@ object DisplayProposalsPage {
         -1L
       }
     val country = matchingAddresses.headOption.map(_.address.country).getOrElse(Countries.UK)
-    val updatedDetails = AddressData(guid, cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, None, country.code)
+    val updatedDetails = AddressData(guid, cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, ad.county, country.code)
     val editUrl = routes.AddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
     val filledInForm = addressForm.fill(updatedDetails)
     proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)(request)

@@ -28,9 +28,9 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait KeystoreService {
-  def fetchSingleResponse(id: String, tag: String): Future[Option[AddressRecordWithEdits]]
+  def fetchSingleResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]]
 
-  def storeSingleResponse(id: String, tag: String, address: AddressRecordWithEdits): Future[HttpResponse]
+  def storeSingleResponse(tag: String, id: String, address: AddressRecordWithEdits): Future[HttpResponse]
 }
 
 
@@ -45,11 +45,11 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
     val appName = applicationName
   }
 
-  def fetchSingleResponse(id: String, tag: String): Future[Option[AddressRecordWithEdits]] = {
+  def fetchSingleResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]] = {
     require(id.nonEmpty)
     require(tag.nonEmpty)
 
-    val url = s"$endpoint/keystore/address-lookup-exchange/$id"
+    val url = s"$endpoint/keystore/address-lookup/$id"
     // Not using 'GET' because the status and response entity processing would not be appropriate.
     http.doGet(url) map {
       parse(_, tag, url)
@@ -77,12 +77,12 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
   }
 
 
-  def storeSingleResponse(id: String, tag: String, address: AddressRecordWithEdits): Future[HttpResponse] = {
+  def storeSingleResponse(tag: String, id: String, address: AddressRecordWithEdits): Future[HttpResponse] = {
     require(id.nonEmpty)
     require(tag.nonEmpty)
 
     import ResponseWriteable._
-    val url = s"$endpoint/keystore/address-lookup-exchange/$id/data/$tag"
+    val url = s"$endpoint/keystore/address-lookup/$id/data/$tag"
     http.PUT[AddressRecordWithEdits, HttpResponse](url, address)
   }
 }

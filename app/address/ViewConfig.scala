@@ -52,7 +52,15 @@ object ViewConfig {
       baseTitle = "Address entry",
       prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10)
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10),
+
+    "bafe1" -> ViewConfig(
+      pageTitle = "Bank Account Reputation",
+      baseTitle = "Address Details",
+      prompt = "Choose your location",
+      homeUrl = "http://www.gov.uk/",
+      allowManualEntry = true, allowNoFixedAddress = false, maxAddressesToShow = 20, alpha = true)
+
   )
 
   val defaultContinueUrl = "confirmation"

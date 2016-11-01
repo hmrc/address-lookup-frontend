@@ -128,7 +128,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
 
         assert(actual === Some(sr))
         keystoreStub.verify()
-        assert(logger.infos.map(_.message) === List(s"Info:Keystore get j3 id12345 took {}ms"))
+        assert(logger.infos.map(_.message) === List(s"Keystore get j3 id12345 took {}ms"))
       }
     }
 
@@ -146,7 +146,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         assert(actual.status === 204)
         keystoreStub.verify()
         assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
-        assert(logger.infos.map(_.message) === List(s"Info:Keystore put j3 id12345 uprn=4510123533 took {}ms"))
+        assert(logger.infos.map(_.message) === List(s"Keystore put j3 id12345 uprn=4510123533 took {}ms"))
       }
     }
 

@@ -31,7 +31,7 @@ object HmrcBuild extends Build with MicroService {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "address-reputation-store" % "1.22.0" withSources()
+    "uk.gov.hmrc" %% "address-reputation-store" % "2.1.0" withSources()
       excludeAll (ExclusionRule(organization = "org.reactivemongo"), ExclusionRule(organization = "io.netty")),
     "uk.gov.hmrc" %% "frontend-bootstrap" % "6.5.0",
     "uk.gov.hmrc" %% "play-partials" % "4.2.0",

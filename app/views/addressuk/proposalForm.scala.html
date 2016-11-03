@@ -20,7 +20,7 @@
   addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
   selectedUprn: Long,
   canEdit: Boolean,
-  editUrl: String)(implicit request: Request[_])
+  editUrl: String)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import config.Plural._

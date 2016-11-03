@@ -18,7 +18,7 @@
   view: ViewConfig,
   ukAddrForm: Form[address.uk.AddressData],
   noMatchesWereFound: Boolean,
-  exceededLimit: Boolean)(implicit request: Request[_])
+  exceededLimit: Boolean)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 

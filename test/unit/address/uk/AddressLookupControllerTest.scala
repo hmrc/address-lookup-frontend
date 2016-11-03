@@ -1,18 +1,23 @@
 package address.uk
 
 import address.uk.service.AddressLookupService
+import akka.actor.ActorSystem
+import akka.stream.{ActorMaterializer, Materializer}
 import keystore.KeystoreService
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import org.specs2.mock.Mockito
+import org.scalatest.mock.MockitoSugar
 import play.api.mvc.Security
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.SessionCache
 
-class AddressLookupControllerTest extends PlaySpec with Mockito with OneAppPerSuite {
+class AddressLookupControllerTest extends PlaySpec with MockitoSugar with OneAppPerSuite {
 
   val ec = scala.concurrent.ExecutionContext.Implicits.global
+
+  implicit val system = ActorSystem("AddressLookupControllerTest")
+  implicit def mat: Materializer = ActorMaterializer()
 
   trait action {
     val cache = mock[SessionCache]

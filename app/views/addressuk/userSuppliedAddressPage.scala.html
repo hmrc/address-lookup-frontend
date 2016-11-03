@@ -16,7 +16,7 @@
 @import address.ViewConfig
 @(tag: String,
         view: ViewConfig,
-        userSuppliedAddress: uk.gov.hmrc.address.v2.Address)(implicit request: Request[_])
+        userSuppliedAddress: uk.gov.hmrc.address.v2.Address)(implicit request: Request[_], messages: Messages)
 
 @main_template(view = view, bodyClasses = Some("user-supplied-address-page")) {
 

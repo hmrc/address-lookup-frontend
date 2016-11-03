@@ -17,7 +17,7 @@
 @(tag: String,
         view: ViewConfig,
         normativeAddress: uk.gov.hmrc.address.v2.AddressRecord,
-        userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_])
+        userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_], messages: Messages)
 
 @main_template(view = view, bodyClasses = Some("confirmation-page")) {
 

@@ -194,7 +194,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
         val guid = hiddenGuidValue(doc1)
         assert(guid === "abc123")
 
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1%209PY")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=SE1+9PY")) thenReturn(200, "application/json", writeValueAsString(sel9pyList))
 
         val response2 = request("POST", s"$appContext/uk/addresses/j$ix/propose",
           Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK", "house-name-number" -> "", "postcode" -> "SE19PY"),

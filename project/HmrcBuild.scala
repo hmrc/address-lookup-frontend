@@ -15,10 +15,7 @@
  */
 
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
-import play.PlayImport._
+import play.sbt.PlayImport._
 import play.core.PlayVersion
 
 object HmrcBuild extends Build with MicroService {
@@ -33,17 +30,17 @@ object HmrcBuild extends Build with MicroService {
     ws,
     "uk.gov.hmrc" %% "address-reputation-store" % "2.1.0" withSources()
       excludeAll (ExclusionRule(organization = "org.reactivemongo"), ExclusionRule(organization = "io.netty")),
-    "uk.gov.hmrc" %% "frontend-bootstrap" % "6.5.0",
-    "uk.gov.hmrc" %% "play-partials" % "4.2.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "5.0.0",
-    "uk.gov.hmrc" %% "play-config" % "2.0.1",
-    "uk.gov.hmrc" %% "play-json-logger" % "2.1.1",
-    "uk.gov.hmrc" %% "govuk-template" % "4.0.0",
-    "uk.gov.hmrc" %% "play-health" % "1.1.0",
-    "uk.gov.hmrc" %% "play-ui" % "4.14.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "5.3.0",
+    "uk.gov.hmrc" %% "frontend-bootstrap" % "7.5.0",
+    "uk.gov.hmrc" %% "play-partials" % "5.2.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "6.1.0",
+    "uk.gov.hmrc" %% "play-config" % "3.0.0",
+    "uk.gov.hmrc" %% "play-json-logger" % "3.0.0",
+    "uk.gov.hmrc" %% "govuk-template" % "5.0.0",
+    "uk.gov.hmrc" %% "play-health" % "2.0.0",
+    "uk.gov.hmrc" %% "play-ui" % "5.1.0",
+    "uk.gov.hmrc" %% "http-caching-client" % "6.0.0",
     "com.univocity" % "univocity-parsers" % "1.5.6" withSources(),
-    "uk.gov.hmrc" %% "play-async" % "0.2.0",
+    "uk.gov.hmrc" %% "play-async" % "1.0.0",
     "com.fasterxml.uuid" % "java-uuid-generator" % "3.1.3",
     "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
@@ -58,16 +55,16 @@ object HmrcBuild extends Build with MicroService {
   val itDependencies = baseTestDependencies("it")
 
   private def baseTestDependencies(scope: String) = Seq(
-    "org.scalatest" %% "scalatest" % "2.2.4" % scope,
-    "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % scope,
+    "org.scalatest" %% "scalatest" % "2.2.6" % scope,
+    "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope,
     "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % scope,
-    "org.pegdown" % "pegdown" % "1.4.2" % scope,
-    "org.scalatestplus" %% "play" % "1.2.0" % scope,
+    "org.pegdown" % "pegdown" % "1.6.0" % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope,
     "org.jsoup" % "jsoup" % "1.7.3" % scope,
     "org.mockito" % "mockito-all" % "1.10.19" % scope,
     "com.pyruby" % "java-stub-server" % "0.14" % scope,
-    "com.github.tomakehurst" % "wiremock" % "1.58" % scope,
-    "uk.gov.hmrc" %% "hmrctest" % "1.6.0" % scope,
+    "com.github.tomakehurst" % "wiremock" % "2.2.2" % scope,
+    "uk.gov.hmrc" %% "hmrctest" % "2.0.0" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
   )
 

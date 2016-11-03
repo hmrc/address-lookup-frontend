@@ -4,6 +4,8 @@ import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.address.v2.{AddressRecord, Countries}
 import views.html.addressuk.proposalForm
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object DisplayProposalsPage {
 
@@ -12,8 +14,8 @@ object DisplayProposalsPage {
 
   def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
                                   guid: String, continue: Option[String],
-                                  matchingAddresses: List[AddressRecord], edit: Option[Long],
-                                  request: Request[_]): Html = {
+                                  matchingAddresses: List[AddressRecord], edit: Option[Long])
+                                 (implicit request: Request[_]): Html = {
     val ar = if (edit.isDefined) matchingAddresses.find(_.uprn == edit).getOrElse(matchingAddresses.head) else matchingAddresses.head
     val ad = ar.address
     val lines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None
@@ -30,6 +32,6 @@ object DisplayProposalsPage {
     val updatedDetails = AddressData(guid, cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, ad.county, country.code)
     val editUrl = routes.AddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
     val filledInForm = addressForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)(request)
+    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)
   }
 }

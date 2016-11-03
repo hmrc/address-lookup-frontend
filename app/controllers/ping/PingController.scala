@@ -16,10 +16,10 @@
 
 package controllers.ping
 
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-import scala.io.Source
 
 object PingController extends PingController
 
@@ -28,13 +28,13 @@ trait PingController extends FrontendController {
   val versionInfo = {
     val stream = getClass.getResourceAsStream("/provenance.json")
     require(stream != null, "No version provenance file generated in build")
-    val info = Source.fromInputStream(stream).mkString
+    val info = Json.parse(stream)
     stream.close()
     info
   }
 
   def ping() = Action { request =>
-    Ok(versionInfo).withHeaders(CONTENT_TYPE -> JSON)
+    Ok(versionInfo)
   }
 
 }

@@ -3,7 +3,7 @@
 ->         /                            health.Routes
 ->     	   /template                    template.Routes
 
-GET        /admin/metrics               com.kenshoo.play.metrics.MetricsController.metrics
+GET        /admin/metrics               @com.kenshoo.play.metrics.MetricsController.metrics
 
 HEAD       /ping                        controllers.ping.PingController.ping
 GET        /ping                        controllers.ping.PingController.ping

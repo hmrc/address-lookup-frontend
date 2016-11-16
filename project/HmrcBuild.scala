@@ -28,13 +28,13 @@ object HmrcBuild extends Build with MicroService {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "address-reputation-store" % "2.1.0" withSources()
+    "uk.gov.hmrc" %% "address-reputation-store" % "2.3.0" withSources()
       excludeAll (ExclusionRule(organization = "org.reactivemongo"), ExclusionRule(organization = "io.netty")),
-    "uk.gov.hmrc" %% "frontend-bootstrap" % "7.5.0",
+    "uk.gov.hmrc" %% "frontend-bootstrap" % "7.10.0",
     "uk.gov.hmrc" %% "play-partials" % "5.2.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "6.1.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "6.2.0",
     "uk.gov.hmrc" %% "play-config" % "3.0.0",
-    "uk.gov.hmrc" %% "play-json-logger" % "3.0.0",
+    "uk.gov.hmrc" %% "logback-json-logger" % "3.1.0",
     "uk.gov.hmrc" %% "govuk-template" % "5.0.0",
     "uk.gov.hmrc" %% "play-health" % "2.0.0",
     "uk.gov.hmrc" %% "play-ui" % "5.2.0",
@@ -64,7 +64,7 @@ object HmrcBuild extends Build with MicroService {
     "org.mockito" % "mockito-all" % "1.10.19" % scope,
     "com.pyruby" % "java-stub-server" % "0.14" % scope,
     "com.github.tomakehurst" % "wiremock" % "2.2.2" % scope,
-    "uk.gov.hmrc" %% "hmrctest" % "2.0.0" % scope,
+    "uk.gov.hmrc" %% "hmrctest" % "2.1.0" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
   )
 

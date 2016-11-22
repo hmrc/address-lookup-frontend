@@ -47,34 +47,14 @@ class AddressLookupControllerTest extends PlaySpec with MockitoSugar with OneApp
       doc.select("#guid").`val`().nonEmpty mustBe true
     }
 
-    "give bad-request if the tag is blank" in new action {
-      val result = call(controller.getEmptyForm("", Some("abc123"), Some("/here/there/everywhere")), req)
-      status(result) mustBe 400
-    }
-
     "give bad-request if the tag is unknown" in new action {
       val result = call(controller.getEmptyForm("no-such-tag", Some("abc123"), Some("/here/there/everywhere")), req)
-      status(result) mustBe 400
-    }
-
-    "give bad-request if the guid is present but blank" in new action {
-      val result = call(controller.getEmptyForm("j0", Some(""), Some("/here/there/everywhere")), req)
-      status(result) mustBe 400
-    }
-
-    "give bad-request if the continue-url is present but blank" in new action {
-      val result = call(controller.getEmptyForm("j0", Some("abc123"), Some("")), req)
       status(result) mustBe 400
     }
   }
 
 
   "getProposals" should {
-
-    "give bad-request if the tag is blank" in new action {
-      val result = call(controller.getProposals("", "", "SE1 9PY", "abc123", None, None), req)
-      status(result) mustBe 400
-    }
 
     "give bad-request if the tag is unknown" in new action {
       val result = call(controller.getProposals("no-such-tag", "", "SE1 9PY", "abc123", None, None), req)

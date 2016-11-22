@@ -1,11 +1,11 @@
 package address.uk
 
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.address.v2.{AddressRecord, Countries}
+import uk.gov.hmrc.address.v2.{AddressRecord, Country}
 import views.html.addressuk.proposalForm
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
 object DisplayProposalsPage {
 
@@ -14,24 +14,37 @@ object DisplayProposalsPage {
 
   def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
                                   guid: String, continue: Option[String],
-                                  matchingAddresses: List[AddressRecord], edit: Option[Long])
+                                  matchingAddresses: List[AddressRecord], editUprn: Option[Long])
                                  (implicit request: Request[_]): Html = {
-    val ar = if (edit.isDefined) matchingAddresses.find(_.uprn == edit).getOrElse(matchingAddresses.head) else matchingAddresses.head
-    val ad = ar.address
-    val lines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None
-    val cu = continue.getOrElse(defaultContinueUrl)
+    val ar = if (editUprn.isDefined) matchingAddresses.find(_.uprn == editUprn).getOrElse(matchingAddresses.head) else matchingAddresses.head
     val selectedUprn =
       if (matchingAddresses.size == 1) {
         ar.uprn.getOrElse(-1L)
-      } else if (edit.isDefined) {
-        edit.get
+      } else if (editUprn.isDefined) {
+        editUprn.get
       } else {
         -1L
       }
-    val country = matchingAddresses.headOption.map(_.address.country).getOrElse(Countries.UK)
-    val updatedDetails = AddressData(guid, cu, false, nameNo, Some(postcode), ar.uprn.map(_.toString), lines, ad.town, ad.county, country.code)
+
+    val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
+
+    val ad = ar.address
+    val updatedDetails = AddressData(
+      guid = guid,
+      continue = continue.getOrElse(defaultContinueUrl),
+      nameNo = nameNo,
+      prevNameNo = nameNo,
+      postcode = Some(postcode),
+      prevPostcode = Some(postcode),
+      uprn = ar.uprn.map(_.toString),
+      editedLines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None,
+      editedTown = ad.town,
+      editedCounty = ad.county,
+      countryCode = country.map(_.code)
+    )
+
     val editUrl = routes.AddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
     val filledInForm = addressForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, edit.isDefined, editUrl.url)
+    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
   }
 }

@@ -52,7 +52,7 @@ object ViewConfig {
       baseTitle = "Address entry",
       prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10),
+      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 100),
 
     "bafe1" -> ViewConfig(
       pageTitle = "Bank Account Reputation",

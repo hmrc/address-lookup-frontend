@@ -2,7 +2,7 @@ package address.uk
 
 import com.fasterxml.uuid.{EthernetAddress, Generators}
 import config.FrontendGlobal
-import keystore.KeystoreService
+import keystore.MemoService
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.util.JacksonMapper._
@@ -15,7 +15,7 @@ object KeystoreFacadeController extends KeystoreFacadeController(
   FrontendGlobal.executionContext)
 
 
-class KeystoreFacadeController(keystore: KeystoreService, val ec: ExecutionContext) extends FrontendController {
+class KeystoreFacadeController(keystore: MemoService, val ec: ExecutionContext) extends FrontendController {
 
   private implicit val xec = ec
 

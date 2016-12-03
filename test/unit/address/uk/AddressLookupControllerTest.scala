@@ -3,7 +3,7 @@ package address.uk
 import address.uk.service.AddressLookupService
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, Materializer}
-import keystore.KeystoreService
+import keystore.MemoService
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import org.scalatest.mock.MockitoSugar
@@ -22,7 +22,7 @@ class AddressLookupControllerTest extends PlaySpec with MockitoSugar with OneApp
   trait action {
     val cache = mock[SessionCache]
     val lookup = mock[AddressLookupService]
-    val keystore = mock[KeystoreService]
+    val keystore = mock[MemoService]
     val controller = new AddressLookupController(lookup, keystore, ec)
     val req = FakeRequest().withSession(Security.username -> "user")
   }

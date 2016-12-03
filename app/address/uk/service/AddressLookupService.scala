@@ -18,9 +18,10 @@ package address.uk.service
 
 import java.net.URLEncoder
 
-import config.FrontendGlobal
-import config.ConfigHelper._
-import play.api.Play
+//import config.FrontendGlobal
+//import config.ConfigHelper._
+//import play.api.Play
+import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.AddressRecord
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.hooks.HttpHook
@@ -56,8 +57,8 @@ class AddressLookupService(endpoint: String, applicationName: String, ec: Execut
     http.GET[List[AddressRecord]](url + uq)
   }
 
-  def findByPostcode(postcode: String, filter: Option[String]): Future[List[AddressRecord]] = {
-    val pq = "?postcode=" + enc(postcode)
+  def findByPostcode(postcode: Postcode, filter: Option[String]): Future[List[AddressRecord]] = {
+    val pq = "?postcode=" + postcode.urlSafe
     val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
     import osgb.outmodel.v2.AddressReadable._
     http.GET[List[AddressRecord]](url + pq + fq)

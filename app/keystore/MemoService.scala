@@ -27,14 +27,14 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait KeystoreService {
+trait MemoService {
   def fetchSingleResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]]
 
   def storeSingleResponse(tag: String, id: String, address: AddressRecordWithEdits): Future[HttpResponse]
 }
 
 
-class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger, ec: ExecutionContext) extends KeystoreService {
+class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger, ec: ExecutionContext) extends MemoService {
 
   private implicit val xec = ec
 

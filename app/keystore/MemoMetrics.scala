@@ -6,7 +6,7 @@ import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KeystoreMetrics(peer: KeystoreService, logger: SimpleLogger, ec: ExecutionContext) extends KeystoreService {
+class MemoMetrics(peer: MemoService, logger: SimpleLogger, ec: ExecutionContext) extends MemoService {
   private implicit val xec = ec
 
   override def fetchSingleResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]] = {

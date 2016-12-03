@@ -5,8 +5,8 @@ GET    /                                                        address.uk.Addre
 # Main user interface
 GET    /uk/addresses/:tag                                       address.uk.AddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
 POST   /uk/addresses/:tag/propose                               address.uk.AddressLookupController.postForm(tag: String)
-POST   /uk/addresses/:tag/select                                address.uk.AddressLookupController.postSelected(tag: String)
 GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.AddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
+POST   /uk/addresses/:tag/select                                address.uk.AddressLookupController.postSelected(tag: String)
 GET    /uk/addresses/:tag/confirmation                          address.uk.AddressLookupController.confirmation(tag: String, id: String )
 
 # REST

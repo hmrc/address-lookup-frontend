@@ -21,6 +21,7 @@ import uk.gov.hmrc.util.JacksonMapper._
 import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play.OneAppPerSuite
 import stub.StubbedAddressService
+import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -48,14 +49,14 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
 
   "Find By Postcode" should {
     "fetch an empty list ok" in new Context {
-      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE12AB")) thenReturn(200, "application/json", emptyList)
-      val actual = await(service.findByPostcode("NE12AB", None))
+      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE1+2AB")) thenReturn(200, "application/json", emptyList)
+      val actual = await(service.findByPostcode(Postcode("NE1 2AB"), None))
       actual shouldBe Nil
     }
 
     "fetch a list ok" in new Context {
-      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE15XD")) thenReturn(200, "application/json", writeValueAsString(List(ne15xdLike)))
-      val actual = await(service.findByPostcode("NE15XD", None))
+      addressLookupStub.expect(get("/v2/uk/addresses?postcode=NE1+5XD")) thenReturn(200, "application/json", writeValueAsString(List(ne15xdLike)))
+      val actual = await(service.findByPostcode(Postcode("NE1 5XD"), None))
       actual shouldBe List(ne15xdLike)
     }
   }

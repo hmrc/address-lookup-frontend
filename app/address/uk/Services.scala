@@ -19,7 +19,7 @@ package address.uk
 import address.uk.service.AddressLookupService
 import config.FrontendGlobal
 import config.ConfigHelper._
-import keystore.{KeystoreMetrics, KeystoreServiceImpl}
+import keystore.{MemoMetrics, KeystoreServiceImpl}
 import play.api.Play
 
 object Services {
@@ -37,7 +37,7 @@ object Services {
     FrontendGlobal.logger,
     FrontendGlobal.executionContext)
 
-  val metricatedKeystoreService = new KeystoreMetrics(configuredKeystoreService,
+  val metricatedKeystoreService = new MemoMetrics(configuredKeystoreService,
     FrontendGlobal.logger,
     FrontendGlobal.executionContext)
 }

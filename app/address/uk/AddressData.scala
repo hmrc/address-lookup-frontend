@@ -40,9 +40,7 @@ case class AddressData(
                         countryCode: Option[String] = None
                       ) {
 
-  def hasBeenUpdated =
-    (prevNameNo.isDefined && prevNameNo.get != nameNo.get) ||
-    (prevPostcode.isDefined && prevPostcode.get != postcode.get)
+  def hasBeenUpdated: Boolean = (prevNameNo != nameNo) || (prevPostcode != postcode)
 
   def editedAddress: Option[Address] =
     if (editedLines.isDefined || editedTown.isDefined || editedCounty.isDefined) {

@@ -21,7 +21,7 @@ import java.net.URLEncoder
 import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.{FrontendGlobal, PrettyMapper}
+import config.FrontendGlobal
 import keystore.MemoService
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.util.JacksonMapper
+import uk.gov.hmrc.util.{JacksonMapper, PrettyMapper}
 import views.html.addressuk._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -78,7 +78,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
   def postForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-//        println("form1: " + PrettyMapper.writeValueAsString(request.body))
+        //        println("form1: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))

@@ -24,13 +24,13 @@
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>
         <p>Address:</p>
-        <table>
+        <table id="confirmation">
             @if(userSuppliedAddress.isDefined) {
                 <tr><th></th><th>Normative</th><th>User-Supplied</th></tr>
             }
 
-            <tr><th>UPRN</th>
-                <td>@{
+            <tr class="uprn"><th>UPRN</th>
+                <td class="norm">@{
                     normativeAddress.uprn.getOrElse("")
                 }</td>
                 @if(userSuppliedAddress.isDefined) {
@@ -39,8 +39,8 @@
             </tr>
 
             @if(normativeAddress.address.lines.nonEmpty || (userSuppliedAddress.isDefined && userSuppliedAddress.get.lines.nonEmpty)) {
-                <tr><th>Address</th>
-                    <td>@{
+                <tr class="address"><th>Address</th>
+                    <td class="norm">@{
                         normativeAddress.address.lines.headOption.getOrElse("")
                     }
                         @for(line <- normativeAddress.address.lines.tail) {
@@ -48,7 +48,7 @@
                         }
                     </td>
                     @if(userSuppliedAddress.isDefined) {
-                        <td>
+                        <td class="user">
                         @if(userSuppliedAddress.get.lines != normativeAddress.address.lines) {
                             @{
                                 userSuppliedAddress.get.lines.headOption.getOrElse("")
@@ -63,12 +63,12 @@
             }
 
             @if(normativeAddress.address.town.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.town.isDefined)) {
-                <tr><th></th>
-                    <td>@{
+                <tr class="town"><th></th>
+                    <td class="norm">@{
                         normativeAddress.address.town.getOrElse("")
                     }</td>
                     @if(userSuppliedAddress.isDefined) {
-                        <td>
+                        <td class="user">
                         @if(userSuppliedAddress.get.town != normativeAddress.address.town) {
                             @{
                                 userSuppliedAddress.get.town.getOrElse("")
@@ -80,12 +80,12 @@
             }
 
             @if(normativeAddress.address.county.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.county.isDefined)) {
-                <tr><th></th>
-                    <td>@{
+                <tr class="county"><th></th>
+                    <td class="norm">@{
                         normativeAddress.address.county.getOrElse("")
                     }</td>
                     @if(userSuppliedAddress.isDefined) {
-                        <td>
+                        <td class="user">
                         @if(userSuppliedAddress.get.county != normativeAddress.address.county) {
                             @{
                                 userSuppliedAddress.get.county.getOrElse("")
@@ -95,12 +95,12 @@
                 </tr>
             }
 
-            <tr><th></th>
-                <td>@{
+            <tr class="postcode"><th></th>
+                <td class="norm">@{
                     normativeAddress.address.postcode
                 }</td>
                 @if(userSuppliedAddress.isDefined) {
-                    <td>
+                    <td class="user">
                     @if(userSuppliedAddress.get.postcode != normativeAddress.address.postcode) {
                         @{
                             userSuppliedAddress.get.postcode
@@ -110,12 +110,12 @@
             </tr>
 
             @if(normativeAddress.address.subdivision.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.subdivision.isDefined)) {
-                <tr><th></th>
-                    <td>@{
+                <tr class="subd"><th></th>
+                    <td class="norm">@{
                         normativeAddress.address.subdivision.map(_.name).getOrElse("")
                     }</td>
                     @if(userSuppliedAddress.isDefined) {
-                        <td>
+                        <td class="user">
                         @if(userSuppliedAddress.get.subdivision != normativeAddress.address.subdivision) {
                             @{
                                 userSuppliedAddress.get.subdivision.map(_.name).getOrElse("")
@@ -125,12 +125,12 @@
                 </tr>
             }
 
-            <tr><th></th>
-                <td>@{
+            <tr class="country"><th></th>
+                <td class="norm">@{
                     normativeAddress.address.country.code
                 }</td>
                 @if(userSuppliedAddress.isDefined) {
-                    <td>@if(userSuppliedAddress.get.country != normativeAddress.address.country) {
+                    <td class="user">@if(userSuppliedAddress.get.country != normativeAddress.address.country) {
                         @{
                             userSuppliedAddress.get.country.name
                         }
@@ -138,10 +138,13 @@
                 }
             </tr>
 
-            <tr><th>Language</th>
-                <td>@{
+            <tr class="lang"><th>Language</th>
+                <td class="norm">@{
                     normativeAddress.language
                 }</td>
+                @if(userSuppliedAddress.isDefined) {
+                    <td></td>
+                }
             </tr>
         </table>
         <a href="../@{

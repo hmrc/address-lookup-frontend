@@ -23,7 +23,7 @@
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>
         <p>Address:</p>
-        <table>
+        <table id="confirmation">
             <tr><th></th><th>Normative</th><th>User-Supplied</th></tr>
 
             <tr><th>UPRN</th>
@@ -32,9 +32,9 @@
             </tr>
 
             @if(userSuppliedAddress.lines.nonEmpty) {
-                <tr><th>Address</th>
+                <tr class="address"><th>Address</th>
                     <td>-</td>
-                    <td>
+                    <td class="user">
                         @{
                             userSuppliedAddress.lines.headOption.getOrElse("")
                         }
@@ -46,9 +46,9 @@
             }
 
             @if(userSuppliedAddress.town.isDefined) {
-                <tr><th></th>
+                <tr class="town"><th></th>
                     <td>-</td>
-                    <td>
+                    <td class="user">
                     @{
                         userSuppliedAddress.town.getOrElse("")
                     }
@@ -56,43 +56,43 @@
                 </tr>
             }
 
-            <tr><th></th>
+            <tr class="county"><th></th>
                 <td>-</td>
-                <td>
+                <td class="user">
                 @{
                     userSuppliedAddress.county.getOrElse("")
                 }
                 </td>
             </tr>
 
-            <tr><th></th>
+            <tr class="postcode"><th></th>
                 <td>-</td>
-                <td>
+                <td class="user">
                 @{
                     userSuppliedAddress.postcode
                 }
                 </td>
             </tr>
 
-            <tr><th></th>
+            <tr class="subd"><th></th>
                 <td>-</td>
-                <td>
+                <td class="user">
                 @{
                     userSuppliedAddress.subdivision.map(_.name).getOrElse("")
                 }
                 </td>
             </tr>
 
-            <tr><th></th>
+            <tr class="country"><th></th>
                 <td>-</td>
-                <td>
+                <td class="user">
                 @{
                     userSuppliedAddress.country.name
                 }
                 </td>
             </tr>
 
-            <tr><th>Language</th>
+            <tr class="lang"><th>Language</th>
                 <td>-</td>
                 <td></td>
             </tr>

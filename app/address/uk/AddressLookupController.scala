@@ -152,7 +152,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
   def postSelected(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-//        println("form2: " + PrettyMapper.writeValueAsString(request.body))
+        //println("form2: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))

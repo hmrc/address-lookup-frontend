@@ -50,5 +50,7 @@ case class AddressData(
         editedCounty.map(_.trim),
         postcode.get.trim,
         None, Countries.find(countryCode.get).get))
-    } else None
+    } else {
+      None
+    }
 }

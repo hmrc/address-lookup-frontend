@@ -5,8 +5,8 @@ import play.api.data.Forms._
 import uk.gov.hmrc.address.v2.{Address, Countries}
 
 
-object AddressForm {
-  val addressForm = Form[AddressData] {
+object UkAddressForm {
+  val addressForm = Form[UkAddressData] {
     mapping(
       "guid" -> text,
       "continue-url" -> text,
@@ -20,12 +20,12 @@ object AddressForm {
       "town" -> optional(text),
       "county" -> optional(text),
       "country-code" -> optional(text)
-    )(AddressData.apply)(AddressData.unapply)
+    )(UkAddressData.apply)(UkAddressData.unapply)
   }
 }
 
 
-case class AddressData(
+case class UkAddressData(
                         guid: String,
                         continue: String,
                         noFixedAddress: Boolean = false,

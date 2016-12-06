@@ -1,13 +1,16 @@
 # routes
 
-GET    /                                                        address.uk.AddressLookupController.start
+GET    /                                                        address.uk.UkAddressLookupController.start
 
-# Main user interface
-GET    /uk/addresses/:tag                                       address.uk.AddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
-POST   /uk/addresses/:tag/propose                               address.uk.AddressLookupController.postForm(tag: String)
-GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.AddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
-POST   /uk/addresses/:tag/select                                address.uk.AddressLookupController.postSelected(tag: String)
-GET    /uk/addresses/:tag/confirmation                          address.uk.AddressLookupController.confirmation(tag: String, id: String )
+# Main UK user interface
+GET    /uk/addresses/:tag                                       address.uk.UkAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
+POST   /uk/addresses/:tag/propose                               address.uk.UkAddressLookupController.postUkForm(tag: String)
+GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.UkAddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
+POST   /uk/addresses/:tag/select                                address.uk.UkAddressLookupController.postSelected(tag: String)
+GET    /uk/addresses/:tag/confirmation                          address.uk.UkAddressLookupController.confirmation(tag: String, id: String )
+
+# International user interface
+GET    /int/addresses/:tag                                      address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
 
 # REST
 GET    /outcome/:tag/:id                                        address.uk.KeystoreFacadeController.outcome(tag: String, id: String)

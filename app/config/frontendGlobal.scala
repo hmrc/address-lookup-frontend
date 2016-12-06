@@ -16,17 +16,14 @@
 
 package config
 
-import java.io.File
-
 import address.ViewConfig
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
-import play.api.Mode._
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Request
 import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.logging.LoggerFacade
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
@@ -49,7 +46,8 @@ object FrontendGlobal
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html = {
-    val view = ViewConfig(pageTitle, "", "", "")
+    // ideally, we would pass this value in
+    val view = ViewConfig.j0.copy(pageTitle = pageTitle)
     views.html.error_template(view, heading, message)
   }
 
@@ -72,7 +70,7 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
 }
 
 
-object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport{
+object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
 
   override lazy val maskedFormFields = Seq("password")
 

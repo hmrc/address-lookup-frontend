@@ -20,7 +20,7 @@ import com.pyruby.stubserver.StubMethod._
 import uk.gov.hmrc.util.JacksonMapper._
 import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play.OneAppPerSuite
-import stub.StubbedAddressService
+import it.stub.StubbedAddressService
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
 import uk.gov.hmrc.play.test.UnitSpec

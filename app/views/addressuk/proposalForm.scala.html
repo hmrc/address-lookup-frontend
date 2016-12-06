@@ -16,7 +16,7 @@
 @import address.ViewConfig
 @(tag: String,
   view: ViewConfig,
-  ukAddrForm: Form[address.uk.AddressData],
+  ukAddrForm: Form[address.uk.UkAddressData],
   addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
   selectedUprn: Long,
   canEdit: Boolean,
@@ -35,7 +35,7 @@
     <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.AddressLookupController.postSelected(tag), 'id -> "myForm"  ) {
+        @helpers.form( address.uk.routes.UkAddressLookupController.postSelected(tag), 'id -> "myForm"  ) {
             <input type='hidden' id='guid' name='guid' value='@ukAddrForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
             <input type='hidden' id='country-code' name='country-code' value='@ukAddrForm("country-code").value.getOrElse("")' />

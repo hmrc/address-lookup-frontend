@@ -9,7 +9,7 @@ import views.html.addressuk.proposalForm
 
 object DisplayProposalsPage {
 
-  import AddressForm.addressForm
+  import UkAddressForm.addressForm
   import address.ViewConfig._
 
   def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
@@ -29,7 +29,7 @@ object DisplayProposalsPage {
     val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
 
     val ad = ar.address
-    val updatedDetails = AddressData(
+    val updatedDetails = UkAddressData(
       guid = guid,
       continue = continue.getOrElse(defaultContinueUrl),
       nameNo = nameNo,
@@ -43,7 +43,7 @@ object DisplayProposalsPage {
       countryCode = country.map(_.code)
     )
 
-    val editUrl = routes.AddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
+    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
     val filledInForm = addressForm.fill(updatedDetails)
     proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
   }

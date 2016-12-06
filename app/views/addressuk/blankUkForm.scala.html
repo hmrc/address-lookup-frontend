@@ -16,7 +16,7 @@
 @import address.ViewConfig
 @(tag: String,
   view: ViewConfig,
-  ukAddrForm: Form[address.uk.AddressData],
+  ukAddrForm: Form[address.uk.UkAddressData],
   noMatchesWereFound: Boolean,
   exceededLimit: Boolean)(implicit request: Request[_], messages: Messages)
 
@@ -31,8 +31,25 @@
 
     <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
+        <div class="form-group" id="location">
+            <label class="block-label" data-target="UK-Tab" for="location-UK">
+                <input id="location-UK" type="radio" name="radio-inline-group" value="UK" checked="checked" />
+                United Kingdom
+            </label>
+
+            <label class="block-label" data-target="INT-Tab" for="location-international">
+                <input id="location-international" type="radio" name="radio-inline-group" value="INT" />
+                International
+            </label>
+
+            <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
+                <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
+                BFPO
+            </label>
+        </div>
+
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.AddressLookupController.postForm(tag), 'id -> "myForm" ) {
+        @helpers.form( address.uk.routes.UkAddressLookupController.postUkForm(tag), 'id -> "myForm" ) {
             <input type='hidden' id='guid' name='guid' value='@ukAddrForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
             <input type='hidden' id='country-code' name='country-code' value='@ukAddrForm("country-code").value.get' />

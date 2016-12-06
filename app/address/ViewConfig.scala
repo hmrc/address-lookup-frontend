@@ -20,13 +20,15 @@ case class ViewConfig(pageTitle: String,
                       baseTitle: String,
                       prompt: String,
                       homeUrl: String,
-                      allowManualEntry: Boolean = false,
-                      allowNoFixedAddress: Boolean = true,
-                      maxAddressesToShow: Int = 20,
-                      indicator: Option[String] = None,
+                      allowManualEntry: Boolean,
+                      allowNoFixedAddress: Boolean,
+                      allowInternationalAddress: Boolean,
+                      maxAddressesToShow: Int,
+                      indicator: Option[String] = None, // augments the title in the title bar
                       alpha: Boolean = false,
                       beta: Boolean = false) {
-  def title = if (indicator.isDefined) baseTitle + " - " + indicator.get else baseTitle
+
+  def title: String = if (indicator.isDefined) baseTitle + " - " + indicator.get else baseTitle
 }
 
 
@@ -37,7 +39,11 @@ object ViewConfig {
     baseTitle = "Your address",
     prompt = "Choose your location",
     homeUrl = "http://www.gov.uk/",
-    allowManualEntry = true, allowNoFixedAddress = true, maxAddressesToShow = 20, alpha = true)
+    allowManualEntry = true,
+    allowNoFixedAddress = true,
+    allowInternationalAddress = true,
+    maxAddressesToShow = 20,
+    alpha = true)
 
   val cfg = Map(
     "j0" -> j0,
@@ -47,22 +53,32 @@ object ViewConfig {
       baseTitle = "Address entry",
       prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 10, beta = true),
+      allowManualEntry = false,
+      allowNoFixedAddress = false,
+      allowInternationalAddress = true,
+      maxAddressesToShow = 20,
+      beta = true),
 
     "j2" -> ViewConfig(
       pageTitle = "Address lookup",
       baseTitle = "Address entry",
       prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false, allowNoFixedAddress = false, maxAddressesToShow = 100),
+      allowManualEntry = false,
+      allowNoFixedAddress = false,
+      allowInternationalAddress = false,
+      maxAddressesToShow = 100),
 
     "bafe1" -> ViewConfig(
       pageTitle = "Bank Account Reputation",
       baseTitle = "Address Details",
       prompt = "Choose your location",
       homeUrl = "http://www.gov.uk/",
-      allowManualEntry = true, allowNoFixedAddress = false, maxAddressesToShow = 20, alpha = true)
-
+      allowManualEntry = true,
+      allowNoFixedAddress = false,
+      allowInternationalAddress = true,
+      maxAddressesToShow = 20,
+      alpha = true)
   )
 
   val defaultContinueUrl = "confirmation"

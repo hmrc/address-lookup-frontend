@@ -29,23 +29,23 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.{Address, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.util.{JacksonMapper, PrettyMapper}
+import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
-object AddressLookupController extends AddressLookupController(
+object UkAddressLookupController extends UkAddressLookupController(
   Services.configuredAddressLookupService,
   Services.metricatedKeystoreService,
   FrontendGlobal.executionContext)
 
 
-class AddressLookupController(lookup: AddressLookupService, memo: MemoService, val ec: ExecutionContext) extends FrontendController {
+class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService, val ec: ExecutionContext) extends FrontendController {
 
   private implicit val xec = ec
 
-  import AddressForm.addressForm
+  import UkAddressForm.addressForm
   import address.ViewConfig._
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
@@ -54,7 +54,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
   def start: Action[AnyContent] =
     Action {
       implicit request =>
-        Redirect(routes.AddressLookupController.getEmptyForm("j0", None, None))
+        Redirect(routes.UkAddressLookupController.getEmptyForm("j0", None, None))
     }
 
   //-----------------------------------------------------------------------------------------------
@@ -68,20 +68,20 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
   private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String])(implicit request: Request[_]) = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
-    val ad = AddressData(guid = actualGuid, continue = cu, countryCode = Some(UkCode))
+    val ad = UkAddressData(guid = actualGuid, continue = cu, countryCode = Some(UkCode))
     val bound = addressForm.fill(ad)
-    blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)
+    blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  def postForm(tag: String): Action[AnyContent] =
+  def postUkForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
         //        println("form1: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
-          Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
+          Future.successful(BadRequest(blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
 
         } else {
           val addressData = bound.get
@@ -94,21 +94,21 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
         }
     }
 
-  private def fixedAddress(tag: String, formData: AddressData)(implicit request: Request[_]) = {
+  private def fixedAddress(tag: String, formData: UkAddressData)(implicit request: Request[_]) = {
     if (formData.postcode.isEmpty) {
       val formWithError = addressForm.fill(formData).withError("postcode", "A post code is required")
-      BadRequest(blankForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
+      BadRequest(blankUkForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
 
     } else {
       val pc = Postcode.cleanupPostcode(formData.postcode.get)
       if (pc.isEmpty) {
         val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
-        BadRequest(blankForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
+        BadRequest(blankUkForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
 
       } else {
         val cu = Some(formData.continue)
         val nameOrNumber = formData.nameNo.getOrElse("-")
-        val proposalsRoute = routes.AddressLookupController.getProposals(tag, nameOrNumber, pc.get.toString, formData.guid, cu, None)
+        val proposalsRoute = routes.UkAddressLookupController.getProposals(tag, nameOrNumber, pc.get.toString, formData.guid, cu, None)
         SeeOther(proposalsRoute.url)
       }
     }
@@ -132,13 +132,13 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
               val exceededLimit = list.size > cfg(tag).maxAddressesToShow
               if (list.isEmpty || exceededLimit) {
                 val pc = uPostcode.map(_.toString)
-                val ad = AddressData(guid = guid, continue = cu,
+                val ad = UkAddressData(guid = guid, continue = cu,
                   nameNo = optNameNo, postcode = pc,
                   prevNameNo = optNameNo, prevPostcode = pc,
                   countryCode = Some(UkCode)
                 )
                 val filledInForm = addressForm.fill(ad)
-                Ok(blankForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
+                Ok(blankUkForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
 
               } else {
                 Ok(showAddressListProposalForm(tag, optNameNo, uPostcode.get.toString, guid, continue, list, edit))
@@ -155,7 +155,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
         //println("form2: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
-          Future.successful(BadRequest(blankForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
+          Future.successful(BadRequest(blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
 
         } else {
           userSelection(tag, bound.get, request)
@@ -163,9 +163,9 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
     }
 
 
-  private def userSelection(tag: String, addressData: AddressData, request: Request[_]): Future[Result] = {
+  private def userSelection(tag: String, addressData: UkAddressData, request: Request[_]): Future[Result] = {
     if (addressData.hasBeenUpdated) {
-      val proposalsRoute = routes.AddressLookupController.getProposals(tag, addressData.nameNo.getOrElse("-"),
+      val proposalsRoute = routes.UkAddressLookupController.getProposals(tag, addressData.nameNo.getOrElse("-"),
         addressData.postcode.getOrElse("-"), addressData.guid, Some(addressData.continue), None)
       Future(SeeOther(proposalsRoute.url))
 
@@ -175,7 +175,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
   }
 
 
-  private def continueToCompletion(tag: String, addressData: AddressData, request: Request[_]): Future[Result] = {
+  private def continueToCompletion(tag: String, addressData: UkAddressData, request: Request[_]): Future[Result] = {
     val nfa = if (addressData.noFixedAddress) "nfa=1&" else ""
     val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
 
@@ -209,7 +209,7 @@ class AddressLookupController(lookup: AddressLookupService, memo: MemoService, v
         fuResponse.map {
           response: Option[AddressRecordWithEdits] =>
             if (response.isEmpty) {
-              val emptyFormRoute = routes.AddressLookupController.getEmptyForm(tag, None, None)
+              val emptyFormRoute = routes.UkAddressLookupController.getEmptyForm(tag, None, None)
               TemporaryRedirect(emptyFormRoute.url)
             } else {
               val addressRecord = response.get

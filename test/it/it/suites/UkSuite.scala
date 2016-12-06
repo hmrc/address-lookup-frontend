@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
-
-import java.nio.charset.StandardCharsets
+package it.suites
 
 import address.ViewConfig
 import address.uk.AddressRecordWithEdits
 import com.pyruby.stubserver.StubMethod
-import helper.{AppServerTestApi, IntegrationTest}
+import it.helper.{AppServerTestApi, Context}
+import keystore.KeystoreResponse
 import keystore.LenientJacksonMapper._
-import keystore.{KeystoreResponse, KeystoreServiceImpl, MemoMetrics}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.SequentialNestedSuiteExecution
 import org.scalatestplus.play._
+import play.api.Application
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers._
 import uk.gov.hmrc.address.v2.Countries._
 import uk.gov.hmrc.address.v2._
-import uk.gov.hmrc.logging.StubLogger
 
 //-------------------------------------------------------------------------------------------------
 // This is a long test file to ensure that everything runs in sequence, not overlapping.
@@ -41,7 +37,13 @@ import uk.gov.hmrc.logging.StubLogger
 // Use the Folds, Luke!!!
 //-------------------------------------------------------------------------------------------------
 
-class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi with SequentialNestedSuiteExecution {
+class UkSuite(val context: Context)(implicit val app: Application) extends PlaySpec with AppServerTestApi {
+
+  private def addressLookupStub = context.addressLookupStub
+
+  private def keystoreStub = context.keystoreStub
+
+  private def appContext = context.appContext
 
   private val en = "en"
   private val NewcastleUponTyne = Some("Newcastle upon Tyne")
@@ -65,95 +67,6 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
   val sr = AddressRecordWithEdits(Some(ne15xdLike), Some(edited), false)
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
-
-  "keystore" must {
-
-    "fetchResponse" must {
-      "return an address record when matched" in {
-        val logger = new StubLogger(true)
-        keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(KeystoreResponse(Map("j3" -> sr)))
-        keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
-
-        val actual = await(service.fetchSingleResponse("j3", "id12345"))
-
-        assert(actual === Some(sr))
-        keystoreStub.verify()
-        assert(logger.isEmpty, logger.all)
-      }
-
-      "return none when not matched" in {
-        val logger = new StubLogger(true)
-        keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
-
-        val actual = await(service.fetchSingleResponse("j3", "id12345"))
-
-        assert(actual === None)
-        keystoreStub.verify()
-        assert(logger.isEmpty, logger.all)
-      }
-    }
-
-    "storeResponse" must {
-      "send the address record to the keystore" in {
-        val logger = new StubLogger(true)
-        keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
-        keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
-
-        val actual = await(service.storeSingleResponse("j3", "id12345", sr))
-
-        assert(actual.status === 204)
-        keystoreStub.verify()
-        assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
-        assert(logger.isEmpty, logger.all)
-      }
-    }
-
-    "fetchResponse with metrics" must {
-      "return an address record when matched" in {
-        val logger = new StubLogger(true)
-        keystoreStub.clearExpectations()
-        val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val service = new MemoMetrics(peer, logger, ec)
-        val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(KeystoreResponse(Map("j3" -> sr)))
-        keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
-
-        val actual = await(service.fetchSingleResponse("j3", "id12345"))
-
-        assert(actual === Some(sr))
-        keystoreStub.verify()
-        assert(logger.infos.map(_.message) === List(s"Keystore get j3 id12345 took {}ms"))
-      }
-    }
-
-    "storeResponse with metrics" must {
-      "send the address record to the keystore" in {
-        val logger = new StubLogger(true)
-        keystoreStub.clearExpectations()
-        val peer = new KeystoreServiceImpl(keystoreEndpoint, "foo", logger, ec)
-        val service = new MemoMetrics(peer, logger, ec)
-        val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
-        keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
-
-        val actual = await(service.storeSingleResponse("j3", "id12345", sr))
-
-        assert(actual.status === 204)
-        keystoreStub.verify()
-        assert(stubMethod.body === writeValueAsString(sr).getBytes(StandardCharsets.UTF_8))
-        assert(logger.infos.map(_.message) === List(s"Keystore put j3 id12345 uprn=4510123533 took {}ms"))
-      }
-    }
-
-  }
-
 
   "entry form errors" must {
     "when postcode is left blank, remain on the entry form" in {
@@ -601,7 +514,7 @@ class UnigrationTest extends PlaySpec with IntegrationTest with AppServerTestApi
   }
 
   private def step1EntryForm(params: String = ""): (Seq[(String, String)], Document) = {
-    val response = get(appContext + s"/uk/addresses/" + params)
+    val response = get(context.appContext + s"/uk/addresses/" + params)
     verifyEntryForm(response)
   }
 

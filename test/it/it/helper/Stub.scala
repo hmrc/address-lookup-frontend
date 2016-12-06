@@ -14,22 +14,35 @@
  * limitations under the License.
  */
 
-package controllers
+package it.helper
 
-import helper.{AppServerTestApi, IntegrationTest}
-import org.scalatestplus.play._
-import play.api.test.Helpers._
+import com.pyruby.stubserver.{Expectation, StubMethod, StubServer}
 
-class PingTest extends PlaySpec with IntegrationTest with AppServerTestApi {
+class Stub {
 
-  "ping resource" must {
-    "give a successful response" in {
-      get("/ping").status mustBe OK
-    }
+  val server = new StubServer()
 
-    "give version information in the response body" in {
-      (get("/ping").json \ "version").as[String] must not be empty
-    }
+  def start() {
+    server.start()
   }
 
+  def stop() {
+    server.stop()
+  }
+
+  def clearExpectations() {
+    server.clearExpectations()
+  }
+
+  def expect(method: StubMethod): Expectation = {
+    server.expect(method)
+  }
+
+  def verify() {
+    server.verify()
+  }
+
+  def endpoint = s"http://localhost:${
+    server.getLocalPort
+  }"
 }

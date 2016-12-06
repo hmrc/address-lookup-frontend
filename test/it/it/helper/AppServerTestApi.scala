@@ -17,7 +17,7 @@
  *
  */
 
-package helper
+package it.helper
 
 import akka.util.ByteString
 import org.scalatest.Assertions
@@ -29,7 +29,9 @@ import scala.annotation.tailrec
 import scala.concurrent.duration.{Duration, SECONDS}
 
 trait AppServerTestApi extends Assertions {
-  def appEndpoint: String
+  def context: Context
+
+  def appEndpoint: String = context.appEndpoint
 
   def app: Application
 

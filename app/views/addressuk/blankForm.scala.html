@@ -58,8 +58,13 @@
             @if(noMatchesWereFound) {
                 <div class="form-group">
                     <div class="warning-box">
-                        <h3>No addresses were found for this postcode</h3>
-                        <p>Please enter a postcode or select 'edit this address'.</p>
+                        @if(ukAddrForm("house-name-number").value.isDefined) {
+                            <h3>No addresses were found for this postcode and building name/number.</h3>
+                            <p>Please enter a different postcode or building name/number.</p>
+                        } else {
+                            <h3>No addresses were found for this postcode.</h3>
+                            <p>Please enter a different postcode.</p>
+                        }
                     </div>
                 </div>
             }
@@ -67,7 +72,7 @@
             @if(exceededLimit) {
                 <div class="form-group">
                     <div class="warning-box">
-                        <h3>More than @view.maxAddressesToShow addresses were found</h3>
+                        <h3>More than @view.maxAddressesToShow addresses were found.</h3>
                         <p>Please enter the first line of your address.</p>
                     </div>
                 </div>

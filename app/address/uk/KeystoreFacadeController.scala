@@ -30,7 +30,7 @@ class KeystoreFacadeController(keystore: MemoService, val ec: ExecutionContext) 
   }
 
   private def fetch(tag: String, id: String): Future[Result] = {
-    keystore.fetchSingleResponse(tag, id) map {
+    keystore.fetchSingleUkResponse(tag, id) map {
       address =>
         if (address.isEmpty)
           NotFound

@@ -11,6 +11,8 @@ GET    /uk/addresses/:tag/confirmation                          address.uk.UkAdd
 
 # International user interface
 GET    /int/addresses/:tag                                      address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
+POST   /int/addresses/:tag/submit                               address.international.IntAddressLookupController.postSelected(tag: String)
+GET    /int/addresses/:tag/confirmation                         address.international.IntAddressLookupController.confirmation(tag: String, id: String )
 
 # REST
 GET    /outcome/:tag/:id                                        address.uk.KeystoreFacadeController.outcome(tag: String, id: String)

@@ -29,7 +29,7 @@ class UnigrationTest extends PlaySpec with AppServerUnderTest with SequentialNes
   override def runNestedSuites(args: Args): Status = {
     val s = new PSuites(
       new KeystoreSuite(this)(app),
-      new UkSuite(this)(app),
+//      new UkSuite(this)(app),
       new IntSuite(this)(app),
       new PingSuite(this)(app)
     )

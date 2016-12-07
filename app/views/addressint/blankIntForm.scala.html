@@ -31,28 +31,31 @@
 
     <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
-        <div class="form-group" id="location">
-            <label class="block-label" data-target="UK-Tab" for="location-UK">
-                <input id="location-UK" type="radio" name="radio-inline-group" value="UK" />
-                United Kingdom
-            </label>
+        @if(view.allowInternationalAddress) {
+            <div class="form-group" id="location">
+                <label class="block-label" data-target="UK-Tab" for="location-UK">
+                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK"
+                    onclick="window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)'"/>
+                    United Kingdom
+                </label>
 
-            <label class="block-label" data-target="INT-Tab" for="location-international">
-                <input id="location-international" type="radio" name="radio-inline-group" value="INT" checked="checked" />
-                International
-            </label>
+                <label class="block-label" data-target="INT-Tab" for="location-international">
+                    <input id="location-international" type="radio" name="radio-inline-group" value="INT" checked="checked" />
+                    International
+                </label>
 
-            <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
-                <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
-                BFPO
-            </label>
-        </div>
+                <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
+                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
+                    BFPO
+                </label>
+            </div>
+        }
 
         <div class="panel panel-border-narrow" id='UK-Tab'>
-        @helpers.form( address.uk.routes.UkAddressLookupController.postUkForm(tag), 'id -> "myForm" ) {
+        @helpers.form( address.international.routes.IntAddressLookupController.postSelected(tag), 'id -> "myForm" ) {
             <input type='hidden' id='guid' name='guid' value='@intAddrForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@intAddrForm("continue-url").value.get' />
-            <input type='hidden' id='prev-country' name='preev-country' value='@intAddrForm("prev-country").value' />
+            <input type='hidden' id='prev-country' name='prev-country' value='@intAddrForm("prev-country").value' />
 
             <dl  class=' @if(intAddrForm("country").hasErrors) {error}'  >
 

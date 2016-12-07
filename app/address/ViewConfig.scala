@@ -34,40 +34,28 @@ case class ViewConfig(pageTitle: String,
 
 object ViewConfig {
 
-  val j0 = ViewConfig(
+  val live1 = ViewConfig(
     pageTitle = "Address lookup",
     baseTitle = "Your address",
     prompt = "Choose your location",
     homeUrl = "http://www.gov.uk/",
-    allowManualEntry = true,
-    allowNoFixedAddress = true,
-    allowInternationalAddress = true,
-    maxAddressesToShow = 20,
-    alpha = true)
+    allowManualEntry = false,
+    allowNoFixedAddress = false,
+    allowInternationalAddress = false,
+    maxAddressesToShow = 20)
+
+  val alpha1 = live1.copy(alpha = true)
+
+  val beta1 = live1.copy(beta = true)
+
+  //---------------------------------------------------------------------------
 
   val cfg = Map(
-    "j0" -> j0,
+    "j0" -> alpha1.copy(allowManualEntry = true, allowNoFixedAddress = true),
 
-    "j1" -> ViewConfig(
-      pageTitle = "Address lookup",
-      baseTitle = "Address entry",
-      prompt = "Enter the address",
-      homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false,
-      allowNoFixedAddress = false,
-      allowInternationalAddress = true,
-      maxAddressesToShow = 20,
-      beta = true),
+    "j1" -> beta1.copy(allowInternationalAddress = true),
 
-    "j2" -> ViewConfig(
-      pageTitle = "Address lookup",
-      baseTitle = "Address entry",
-      prompt = "Enter the address",
-      homeUrl = "http://www.gov.uk/",
-      allowManualEntry = false,
-      allowNoFixedAddress = false,
-      allowInternationalAddress = false,
-      maxAddressesToShow = 100),
+    "j2" -> live1.copy(baseTitle = "Address entry", prompt = "Enter the address", maxAddressesToShow = 100),
 
     "bafe1" -> ViewConfig(
       pageTitle = "Bank Account Reputation",

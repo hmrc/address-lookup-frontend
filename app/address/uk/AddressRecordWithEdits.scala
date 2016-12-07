@@ -1,9 +1,7 @@
 package address.uk
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsPath, Reads, Writes}
-import uk.gov.hmrc.address.v2.{Address, AddressRecord}
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.address.v2.{Address, AddressRecord, Country, LocalCustodian}
 
 
 case class AddressRecordWithEdits(normativeAddress: Option[AddressRecord],
@@ -11,25 +9,11 @@ case class AddressRecordWithEdits(normativeAddress: Option[AddressRecord],
                                   noFixedAddress: Boolean)
 
 
-object ResponseReadable {
-
-  import osgb.outmodel.v2.AddressReadable._
-
-  implicit val AddressRecordWEReads: Reads[AddressRecordWithEdits] = (
-    (JsPath \ "normativeAddress").readNullable[AddressRecord] and
-      (JsPath \ "userSuppliedAddress").readNullable[Address] and
-      (JsPath \ "noFixedAddress").read[Boolean]) (AddressRecordWithEdits.apply _)
-
+object AddressRecordWithEdits {
+  implicit val f0: OFormat[Country] = Json.format[Country]
+  implicit val f1: OFormat[LocalCustodian] = Json.format[LocalCustodian]
+  implicit val f2: OFormat[Address] = Json.format[Address]
+  implicit val f3: OFormat[AddressRecord] = Json.format[AddressRecord]
+  implicit val f4: OFormat[AddressRecordWithEdits] = Json.format[AddressRecordWithEdits]
 }
 
-
-object ResponseWriteable {
-
-  import osgb.outmodel.v2.AddressWriteable._
-
-  implicit val AddressRecordWEWrites: Writes[AddressRecordWithEdits] = (
-    (JsPath \ "normativeAddress").writeNullable[AddressRecord] and
-      (JsPath \ "userSuppliedAddress").writeNullable[Address] and
-      (JsPath \ "noFixedAddress").write[Boolean]) (unlift(AddressRecordWithEdits.unapply))
-
-}

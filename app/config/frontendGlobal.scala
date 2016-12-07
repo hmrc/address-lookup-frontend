@@ -47,7 +47,7 @@ object FrontendGlobal
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html = {
     // ideally, we would pass this value in
-    val view = ViewConfig.j0.copy(pageTitle = pageTitle)
+    val view = ViewConfig.alpha1.copy(pageTitle = pageTitle)
     views.html.error_template(view, heading, message)
   }
 
@@ -78,5 +78,6 @@ object AuditFilter extends FrontendAuditFilter with RunMode with AppName with Mi
 
   override lazy val auditConnector = FrontendAuditConnector
 
-  override def controllerNeedsAuditing(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsAuditing
+  override def controllerNeedsAuditing(controllerName: String) = false
+   // TODO should be -- ControllerConfiguration.paramsForController(controllerName).needsAuditing
 }

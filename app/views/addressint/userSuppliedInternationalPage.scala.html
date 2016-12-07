@@ -1,0 +1,65 @@
+@*
+* Copyright 2016 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+@import address.ViewConfig
+@(tag: String,
+        view: ViewConfig,
+        userSuppliedAddress: uk.gov.hmrc.address.v2.International)(implicit request: Request[_], messages: Messages)
+
+@main_template(view = view, bodyClasses = Some("user-supplied-address-page")) {
+
+    <div class="govuk-box-highlight">
+        <h2 class="bold-large">Application complete</h2>
+        <p>Address:</p>
+        <table id="confirmation">
+            @if(userSuppliedAddress.lines.nonEmpty) {
+                <tr class="address"><th></th>
+                    <td class="user">
+                        @{
+                            userSuppliedAddress.lines.headOption.getOrElse("")
+                        }
+                        @for(line <- userSuppliedAddress.lines.tail) {
+                            <br/> @line
+                        }
+                    </td>
+                </tr>
+            }
+
+            @if(userSuppliedAddress.postcode.isDefined) {
+                <tr class="postcode"><th>Zip/postcode</th>
+                    <td class="user">
+                    @{
+                        userSuppliedAddress.postcode.get
+                    }
+                    </td>
+                </tr>
+            }
+
+            @if(userSuppliedAddress.country.isDefined) {
+                <tr class="country"><th>Country</th>
+                    <td class="user">
+                    @{
+                        userSuppliedAddress.country.get.name
+                    }
+                    </td>
+                </tr>
+            }
+        </table>
+        <a href="../@{
+            tag
+        }">Start again</a>
+    </div>
+
+}

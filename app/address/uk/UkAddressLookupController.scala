@@ -181,7 +181,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
 
     if (addressData.uprn.isEmpty) {
       val response = AddressRecordWithEdits(None, addressData.editedAddress, addressData.noFixedAddress)
-      memo.storeSingleResponse(tag, addressData.guid, response) map {
+      memo.storeSingleUkResponse(tag, addressData.guid, response) map {
         httpResponse =>
           SeeOther(addressData.continue + "?id=" + addressData.guid)
       }
@@ -191,7 +191,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
       lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
         list =>
           val response = AddressRecordWithEdits(list.headOption, addressData.editedAddress, addressData.noFixedAddress)
-          memo.storeSingleResponse(tag, addressData.guid, response) map {
+          memo.storeSingleUkResponse(tag, addressData.guid, response) map {
             httpResponse =>
               SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
           }
@@ -205,7 +205,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
     TaggedAction.withTag(tag).async {
       implicit request =>
         require(id.nonEmpty)
-        val fuResponse = memo.fetchSingleResponse(tag, id)
+        val fuResponse = memo.fetchSingleUkResponse(tag, id)
         fuResponse.map {
           response: Option[AddressRecordWithEdits] =>
             if (response.isEmpty) {

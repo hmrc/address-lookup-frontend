@@ -20,8 +20,8 @@ import address.ViewConfig
 import address.uk.AddressRecordWithEdits
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
-import keystore.KeystoreResponse
 import keystore.LenientJacksonMapper._
+import keystore.UkKeystoreResponse
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play._
@@ -107,7 +107,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
       //---------- confirmation ----------
       keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/$guid")) thenReturn(200, "application/json",
-        writeValueAsString(KeystoreResponse(Map("j0" -> se1_9py_withoutEdits))))
+        writeValueAsString(UkKeystoreResponse(Map("j0" -> se1_9py_withoutEdits))))
 
       val form1NoFixedAddress = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
         "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> "")
@@ -145,7 +145,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val form2PostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -156,7 +156,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectConfirmationPage(response3)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -193,7 +193,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -213,7 +213,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         assert(page.select("#confirmation .county .user").text.trim === "", response3.body)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -260,7 +260,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       //---------- confirmation ----------
       addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
       keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-        writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
+        writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
 
       val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
         "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202",
@@ -277,7 +277,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       assert(page.select("#confirmation .county .user").text.trim === "Northumbria", response4.body)
 
       keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-        writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
+        writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
 
       val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -323,7 +323,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val form2BRadioSelected = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -334,7 +334,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectConfirmationPage(response4)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -381,7 +381,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510141231")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_b)))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "Royal", "prev-house-name-number" -> "Royal", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510141231")
@@ -392,7 +392,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectConfirmationPage(response4)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -439,7 +439,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -450,7 +450,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectConfirmationPage(response4)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(KeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
@@ -514,7 +514,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
   }
 
   private def step1EntryForm(params: String = ""): (Seq[(String, String)], Document) = {
-    val response = get(context.appContext + s"/uk/addresses/" + params)
+    val response = get(context.appContext + "/uk/addresses/" + params)
     verifyEntryForm(response)
   }
 

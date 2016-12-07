@@ -22,18 +22,18 @@ package it.helper
 import config.FrontendGlobal
 import org.scalatest._
 import org.scalatestplus.play.ServerProvider
-import play.api.{Application, Mode}
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.Results
-import play.api.test.{FakeApplication, Helpers, TestServer}
-import play.api.{Application, Mode}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.{Action, Results}
+import play.api.test.{Helpers, TestServer}
+import play.api.{Application, Mode}
 
 trait Context {
   def addressLookupStub: Stub
+
   def keystoreStub: Stub
+
   def appEndpoint: String
+
   def appContext: String
 }
 
@@ -62,11 +62,12 @@ trait AppServerUnderTest extends SuiteMixin with ServerProvider with AppServerTe
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(appConfiguration)
-    .bindings(bindModules:_*).in(Mode.Test)
+    .bindings(bindModules: _*).in(Mode.Test)
     .routes({
       case ("GET", "/test-only/assets/javascripts/vendor/modernizr.js") => Action {
         Results.Ok
-      }})
+      }
+    })
     .build()
 
   /**

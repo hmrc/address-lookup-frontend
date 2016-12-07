@@ -1,5 +1,6 @@
 package address.uk
 
+import address.ViewConfig
 import address.uk.service.AddressLookupService
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, Materializer}
@@ -19,6 +20,9 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
   implicit val system = ActorSystem("AddressLookupControllerTest")
   implicit def mat: Materializer = ActorMaterializer()
 
+  private val allTags = ViewConfig.cfg.keys.toList.sorted
+  private val tag = allTags.head
+
   trait action {
     val cache = mock[SessionCache]
     val lookup = mock[AddressLookupService]
@@ -30,7 +34,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
   "getEmptyForm" should {
 
     "display new empty form including the supplied guid, continue URL and country code" in new action {
-      val result = call(controller.getEmptyForm("j0", Some("abc123"), Some("/here/there/everywhere")), req)
+      val result = call(controller.getEmptyForm(tag, Some("abc123"), Some("/here/there/everywhere")), req)
       status(result) mustBe 200
       val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1
@@ -40,7 +44,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
     }
 
     "display new empty form including a generated guid if no guid is supplied" in new action {
-      val result = call(controller.getEmptyForm("j0", None, Some("/here/there/everywhere")), req)
+      val result = call(controller.getEmptyForm(tag, None, Some("/here/there/everywhere")), req)
       status(result) mustBe 200
       val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1

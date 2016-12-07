@@ -1,5 +1,6 @@
 package address.uk
 
+import address.PathElements
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.address.v2.{Address, Countries}
@@ -38,7 +39,7 @@ case class UkAddressData(
                         editedTown: Option[String] = None,
                         editedCounty: Option[String] = None,
                         countryCode: Option[String] = None
-                      ) {
+                      ) extends PathElements {
 
   def hasBeenUpdated: Boolean = (prevNameNo != nameNo) || (prevPostcode != postcode)
 

@@ -31,22 +31,25 @@
 
     <label class="form-label-bold" for="location">@{view.prompt}</label>
     <fieldset class="inline">
-        <div class="form-group" id="location">
-            <label class="block-label" data-target="UK-Tab" for="location-UK">
-                <input id="location-UK" type="radio" name="radio-inline-group" value="UK" checked="checked" />
-                United Kingdom
-            </label>
+        @if(view.allowInternationalAddress) {
+            <div class="form-group" id="location">
+                <label class="block-label" data-target="UK-Tab" for="location-UK">
+                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK" checked="checked" />
+                    United Kingdom
+                </label>
 
-            <label class="block-label" data-target="INT-Tab" for="location-international">
-                <input id="location-international" type="radio" name="radio-inline-group" value="INT" />
-                International
-            </label>
+                <label class="block-label" data-target="INT-Tab" for="location-international">
+                    <input id="location-international" type="radio" name="radio-inline-group" value="INT"
+                    onclick="window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, ukAddrForm("guid").value, ukAddrForm("continue-url").value)'"/>
+                    International
+                </label>
 
-            <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
-                <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
-                BFPO
-            </label>
-        </div>
+                <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
+                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
+                    BFPO
+                </label>
+            </div>
+        }
 
         <div class="panel panel-border-narrow" id='UK-Tab'>
         @helpers.form( address.uk.routes.UkAddressLookupController.postUkForm(tag), 'id -> "myForm" ) {

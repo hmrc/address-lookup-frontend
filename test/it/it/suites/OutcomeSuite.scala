@@ -19,20 +19,21 @@ package it.suites
 import java.nio.charset.StandardCharsets
 
 import address.ViewConfig
-import address.uk.AddressRecordWithEdits
-import com.pyruby.stubserver.{StubMethod, StubServer}
-import it.helper.{AppServerTestApi, Context, Stub}
-import keystore.LenientJacksonMapper._
-import keystore.{IntKeystoreResponse, KeystoreServiceImpl, MemoMetrics, UkKeystoreResponse}
+import address.uk.SelectedAddress
+import com.pyruby.stubserver.StubMethod
+import it.helper.{AppServerTestApi, Context}
+import keystore.{KeystoreServiceImpl, MemoMetrics}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play._
 import play.api.Application
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 import uk.gov.hmrc.address.v2.Countries._
 import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.logging.StubLogger
+import uk.gov.hmrc.util.JacksonMapper._
 
 //-------------------------------------------------------------------------------------------------
 // This is a long test file to ensure that everything runs in sequence, not overlapping.
@@ -41,7 +42,7 @@ import uk.gov.hmrc.logging.StubLogger
 // Use the Folds, Luke!!!
 //-------------------------------------------------------------------------------------------------
 
-class KeystoreSuite(val context: Context)(implicit val app: Application) extends PlaySpec with AppServerTestApi {
+class OutcomeSuite(val context: Context)(implicit val app: Application) extends PlaySpec with AppServerTestApi {
 
   private def keystoreStub = context.keystoreStub
 
@@ -64,25 +65,26 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
     Some(LocalCustodian(123, "Tyne & Wear")), "en")
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK)
-  val sr = AddressRecordWithEdits(Some(ne15xdLike), Some(edited), false)
+  val sr = SelectedAddress(Some(ne15xdLike), Some(edited), None)
   val i1 = International(ne15xdLike.address.lines, Some(ne15xdLike.address.postcode), Some(UK))
+  val sai = SelectedAddress(None, None, Some(i1))
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
 
   "keystore" must {
 
-    "fetchSingleUkResponse" must {
+    "UK fetchSingleResponse" must {
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(UkKeystoreResponse(Map("j3" -> sr)))
+        val ksr = keystoreResponseString("j3", sr)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
 
-        val actual = await(service.fetchSingleUkResponse("j3", "id12345"))
+        val actual = await(service.fetchSingleResponse("j3", "id12345"))
 
-        assert(actual === Some(sr))
+        assert(actual === Some(Json.toJson(sr)))
         keystoreStub.verify()
         assert(logger.isEmpty, logger.all)
       }
@@ -94,7 +96,7 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
 
-        val actual = await(service.fetchSingleUkResponse("j3", "id12345"))
+        val actual = await(service.fetchSingleResponse("j3", "id12345"))
 
         assert(actual === None)
         keystoreStub.verify()
@@ -102,18 +104,19 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
       }
     }
 
-    "fetchSingleIntResponse" must {
+    "International fetchSingleResponse" must {
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(IntKeystoreResponse(Map("j3" -> i1)))
+        val ksr = i1Json("j3", i1)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
 
-        val actual = await(service.fetchSingleIntResponse("j3", "id12345"))
+        val actual = await(service.fetchSingleResponse("j3", "id12345"))
 
-        assert(actual === Some(i1))
+        import SelectedAddress._
+        assert(actual === Some(Json.toJson(sai)))
         keystoreStub.verify()
         assert(logger.isEmpty, logger.all)
       }
@@ -125,7 +128,7 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
 
-        val actual = await(service.fetchSingleIntResponse("j3", "id12345"))
+        val actual = await(service.fetchSingleResponse("j3", "id12345"))
 
         assert(actual === None)
         keystoreStub.verify()
@@ -141,7 +144,7 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
         val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 
-        val actual = await(service.storeSingleUkResponse("j3", "id12345", sr))
+        val actual = await(service.storeSingleResponse("j3", "id12345", sr))
 
         assert(actual.status === 204)
         keystoreStub.verify()
@@ -150,19 +153,19 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
       }
     }
 
-    "fetchSingleUkResponse with metrics" must {
+    "fetchSingleResponse with metrics" must {
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
         val peer = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
         val service = new MemoMetrics(peer, logger, ec)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
-        val ksr = writeValueAsString(UkKeystoreResponse(Map("j3" -> sr)))
+        val ksr = keystoreResponseString("j3", sr)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
 
-        val actual = await(service.fetchSingleUkResponse("j3", "id12345"))
+        val actual = await(service.fetchSingleResponse("j3", "id12345"))
 
-        assert(actual === Some(sr))
+        assert(actual === Some(Json.toJson(sr)))
         keystoreStub.verify()
         assert(logger.infos.map(_.message) === List(s"Keystore get j3 id12345 took {}ms"))
       }
@@ -177,7 +180,7 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
         val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 
-        val actual = await(service.storeSingleUkResponse("j3", "id12345", sr))
+        val actual = await(service.storeSingleResponse("j3", "id12345", sr))
 
         assert(actual.status === 204)
         keystoreStub.verify()
@@ -220,6 +223,12 @@ class KeystoreSuite(val context: Context)(implicit val app: Application) extends
     assert(doc.select("body.entry-form").size === 1, response.body)
     (cookies, doc)
   }
+
+  private def keystoreResponseJson(tag: String, sa: SelectedAddress) = Json.toJson(Map("data" -> Map(tag -> sa)))
+
+  private def keystoreResponseString(tag: String, sa: SelectedAddress) = Json.stringify(keystoreResponseJson(tag, sa))
+
+  private def i1Json(tag: String, i: International) = keystoreResponseString(tag, SelectedAddress(None, None, Some(i), false))
 
   private def newCookies(response: WSResponse) = response.cookies.map(c => c.name.get + "=" + c.value.get).map("cookie" -> _)
 

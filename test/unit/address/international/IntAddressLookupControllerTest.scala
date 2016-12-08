@@ -55,14 +55,4 @@ class IntAddressLookupControllerTest extends PlaySpec with MockitoSugar with One
       status(result) mustBe 400
     }
   }
-
-
-  "getProposals" should {
-
-//    "give bad-request if the tag is unknown" in new action {
-//      val result = call(controller.getProposals("no-such-tag", "", "SE1 9PY", "abc123", None, None), req)
-//      status(result) mustBe 400
-//    }
-  }
-
 }

@@ -17,18 +17,18 @@
 package it.suites
 
 import address.ViewConfig
-import address.uk.AddressRecordWithEdits
+import address.uk.SelectedAddress
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
-import keystore.LenientJacksonMapper._
-import keystore.UkKeystoreResponse
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play._
 import play.api.Application
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.address.v2.Countries._
 import uk.gov.hmrc.address.v2._
+import uk.gov.hmrc.util.JacksonMapper._
 
 //-------------------------------------------------------------------------------------------------
 // This is a long test file to ensure that everything runs in sequence, not overlapping.
@@ -64,15 +64,15 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
     Some(LocalCustodian(123, "Tyne & Wear")), "en")
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK)
-  val sr = AddressRecordWithEdits(Some(ne15xdLike), Some(edited), false)
+  val sr = SelectedAddress(Some(ne15xdLike), Some(edited), None)
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
 
   "entry form errors" must {
     "when postcode is left blank, remain on the entry form" in {
       keystoreStub.clearExpectations()
-      val se1_9py_withoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
-      val nfaWithoutEdits = AddressRecordWithEdits(None, None, true)
+      val se1_9py_withoutEdits = SelectedAddress(Some(se1_9py), None, None)
+      val nfaWithoutEdits = SelectedAddress(None, None, None, true)
 
       for (tag <- allTags) {
         //---------- entry form ----------
@@ -97,8 +97,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
     "journey 1: get form without params, post form with no-fixed-address" in {
       keystoreStub.clearExpectations()
-      val se1_9py_withoutEdits = AddressRecordWithEdits(Some(se1_9py), None, false)
-      val nfaWithoutEdits = AddressRecordWithEdits(None, None, true)
+      val se1_9py_withoutEdits = SelectedAddress(Some(se1_9py), None, None)
+      val nfaWithoutEdits = SelectedAddress(None, None, None, true)
 
       //---------- entry form ----------
       val (cookies, doc1) = step1EntryForm("j0")
@@ -106,8 +106,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       val guid: String = hiddenGuidValue(doc1)
 
       //---------- confirmation ----------
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/$guid")) thenReturn(200, "application/json",
-        writeValueAsString(UkKeystoreResponse(Map("j0" -> se1_9py_withoutEdits))))
+      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/$guid")) thenReturn(200, "application/json", keystoreResponseString("j0", se1_9py_withoutEdits))
 
       val form1NoFixedAddress = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
         "no-fixed-address" -> "true", "house-name-number" -> "", "postcode" -> "")
@@ -123,7 +122,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       for (tag <- allTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val ne1_6jn_withoutEdits = SelectedAddress(Some(ne1_6jn_a), None, None)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -144,8 +143,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2PostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -155,14 +153,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         expectConfirmationPage(response3)
 
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
         assert(outcome === ne1_6jn_withoutEdits)
       }
     }
@@ -172,7 +169,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       for (tag <- allTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val ne1_6jn_withoutEdits = SelectedAddress(Some(ne1_6jn_a), None, None)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -192,8 +189,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -212,14 +208,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         assert(page.select("#confirmation .address .user").text.trim === "", response3.body)
         assert(page.select("#confirmation .county .user").text.trim === "", response3.body)
 
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
         assert(outcome === ne1_6jn_withoutEdits)
       }
     }
@@ -230,7 +225,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       addressLookupStub.clearExpectations()
       keystoreStub.clearExpectations()
       val ne1_6jn_edited = ne1_6jn_a.address.copy(lines = List("11B Market Street"), county = Some("Northumbria"))
-      val ne1_6jn_withEdits = AddressRecordWithEdits(Some(ne1_6jn_a), Some(ne1_6jn_edited), false)
+      val ne1_6jn_withEdits = SelectedAddress(Some(ne1_6jn_a), Some(ne1_6jn_edited), None)
 
       //---------- entry form ----------
       val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -259,8 +254,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
       //---------- confirmation ----------
       addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-        writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
+      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
 
       val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
         "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202",
@@ -276,14 +270,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       assert(page.select("#confirmation .county .norm").text.trim === "Tyne & Wear", response4.body)
       assert(page.select("#confirmation .county .user").text.trim === "Northumbria", response4.body)
 
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-        writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withEdits))))
+      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
 
       val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
       keystoreStub.verify()
       assert(outcomeResponse.status === 200)
-      val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+      val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
       assert(outcome === ne1_6jn_withEdits)
     }
 
@@ -292,7 +285,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       for (tag <- allTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val ne1_6jn_withoutEdits = SelectedAddress(Some(ne1_6jn_a), None, None)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -322,8 +315,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BRadioSelected = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -333,14 +325,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         expectConfirmationPage(response4)
 
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
         assert(outcome === ne1_6jn_withoutEdits)
       }
     }
@@ -350,7 +341,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       for (tag <- allTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val ne1_6jn_withoutEdits = SelectedAddress(Some(ne1_6jn_a), None, None)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -380,8 +371,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510141231")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_b)))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "Royal", "prev-house-name-number" -> "Royal", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510141231")
@@ -391,14 +381,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         expectConfirmationPage(response4)
 
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
         assert(outcome === ne1_6jn_withoutEdits)
       }
     }
@@ -408,7 +397,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       for (tag <- allTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val ne1_6jn_withoutEdits = SelectedAddress(Some(ne1_6jn_a), None, None)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -438,8 +427,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         //---------- confirmation ----------
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
           "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
@@ -449,14 +437,13 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         expectConfirmationPage(response4)
 
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(UkKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
         assert(outcome === ne1_6jn_withoutEdits)
       }
     }
@@ -525,6 +512,12 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
     assert(doc.select("body.entry-form").size === 1, response.body)
     (cookies, doc)
   }
+
+  private def keystoreResponseJson(tag: String, sa: SelectedAddress) = Json.toJson(Map("data" -> Map(tag -> sa)))
+
+  private def keystoreResponseString(tag: String, sa: SelectedAddress) = Json.stringify(keystoreResponseJson(tag, sa))
+
+  private def i1Json(tag: String, i: International) = keystoreResponseString(tag, SelectedAddress(None, None, Some(i), false))
 
   private def newCookies(response: WSResponse) = response.cookies.map(c => c.name.get + "=" + c.value.get).map("cookie" -> _)
 

@@ -17,16 +17,17 @@
 package it.suites
 
 import address.ViewConfig
+import address.uk.SelectedAddress
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
-import keystore.IntKeystoreResponse
-import keystore.LenientJacksonMapper._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play._
 import play.api.Application
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.address.v2._
+import uk.gov.hmrc.util.JacksonMapper._
 
 class IntSuite(val context: Context)(implicit val app: Application) extends PlaySpec with AppServerTestApi {
 
@@ -38,6 +39,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
   private val allTags = ViewConfig.cfg.filter(_._2.allowInternationalAddress).keys.toList.sorted
 
   val i1 = International(List("The Metropolitan Museum of Art", "1000 5th Ave", "New York"), Some("NY 10028"), Some(Country("US", "United States")))
+  val sai = SelectedAddress(None, None, Some(i1))
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -47,7 +49,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
     "journey 1: country and address entered and submitted" in {
       for (tag <- allTags) {
         keystoreStub.clearExpectations()
-        //        val ne1_6jn_withoutEdits = AddressRecordWithEdits(Some(ne1_6jn_a), None, false)
+        val i1JsonString = i1Json(tag, i1)
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -56,8 +58,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
         assert(guid === "abc123")
 
         //---------- confirmation ----------
-        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-          writeValueAsString(IntKeystoreResponse(Map(tag -> i1))))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", i1JsonString)
 
         val form2PostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation",
           "country" -> "United States", "code" -> "US", "address" -> "A\nB\nC")
@@ -66,31 +67,19 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
         keystoreStub.verify()
         expectConfirmationPage(response3)
 
-        //        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json",
-        //          writeValueAsString(IntKeystoreResponse(Map(tag -> ne1_6jn_withoutEdits))))
-        //
-        //        val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
-        //
-        //        keystoreStub.verify()
-        //        assert(outcomeResponse.status === 200)
-        //        val outcome = readValue(outcomeResponse.body, classOf[AddressRecordWithEdits])
-        //        assert(outcome === ne1_6jn_withoutEdits)
+        //---------- outcome ----------
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", i1JsonString)
+
+        val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
+
+        keystoreStub.verify()
+        assert(outcomeResponse.status === 200)
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
+        assert(outcome === sai)
       }
     }
   }
 
-
-  //  private def expectProposalForm(response: WSResponse, expectedSize: Int, expectedGuid: String, expectedHouse: String, expectedPostcode: String) {
-  //    assert(response.status === 200, response.body)
-  //    val doc = Jsoup.parse(response.body)
-  //    assert(doc.select("body.proposal-form").size === 1, response.body)
-  //    assert(doc.select("table#Address-table tbody tr").size === expectedSize, response.body)
-  //    assert(hiddenGuidValue(doc) === expectedGuid)
-  //    assert(textBoxValue(doc, "house-name-number") === expectedHouse)
-  //    assert(textBoxValue(doc, "postcode") === expectedPostcode)
-  //    assert(hiddenValue(doc, "prev-house-name-number") === expectedHouse)
-  //    assert(hiddenValue(doc, "prev-postcode") === expectedPostcode)
-  //  }
 
   private def expectConfirmationPage(response: WSResponse) = {
     assert(response.status === 200)
@@ -111,6 +100,12 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
     assert(doc.select("body.entry-form").size === 1, response.body)
     (cookies, doc)
   }
+
+  private def keystoreResponseJson(tag: String, sa: SelectedAddress) = Json.toJson(Map("data" -> Map(tag -> sa)))
+
+  private def keystoreResponseString(tag: String, sa: SelectedAddress) = Json.stringify(keystoreResponseJson(tag, sa))
+
+  private def i1Json(tag: String, i: International) = keystoreResponseString(tag, SelectedAddress(None, None, Some(i), false))
 
   private def newCookies(response: WSResponse) = response.cookies.map(c => c.name.get + "=" + c.value.get).map("cookie" -> _)
 

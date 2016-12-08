@@ -25,9 +25,10 @@ import config.FrontendGlobal
 import keystore.MemoService
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.Postcode
-import uk.gov.hmrc.address.v2.{Address, Countries}
+import uk.gov.hmrc.address.v2.{Address, Countries, International}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
@@ -180,8 +181,8 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
     val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
 
     if (addressData.uprn.isEmpty) {
-      val response = AddressRecordWithEdits(None, addressData.editedAddress, addressData.noFixedAddress)
-      memo.storeSingleUkResponse(tag, addressData.guid, response) map {
+      val response = SelectedAddress(None, addressData.editedAddress, None, addressData.noFixedAddress)
+      memo.storeSingleResponse(tag, addressData.guid, response) map {
         httpResponse =>
           SeeOther(addressData.continue + "?id=" + addressData.guid)
       }
@@ -190,8 +191,8 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
       val uprn = s"uprn=${addressData.uprn.get}&"
       lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
         list =>
-          val response = AddressRecordWithEdits(list.headOption, addressData.editedAddress, addressData.noFixedAddress)
-          memo.storeSingleUkResponse(tag, addressData.guid, response) map {
+          val response = SelectedAddress(list.headOption, addressData.editedAddress, None, addressData.noFixedAddress)
+          memo.storeSingleResponse(tag, addressData.guid, response) map {
             httpResponse =>
               SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
           }
@@ -205,14 +206,15 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
     TaggedAction.withTag(tag).async {
       implicit request =>
         require(id.nonEmpty)
-        val fuResponse = memo.fetchSingleUkResponse(tag, id)
+        val fuResponse = memo.fetchSingleResponse(tag, id)
         fuResponse.map {
-          response: Option[AddressRecordWithEdits] =>
+          response: Option[JsValue] =>
             if (response.isEmpty) {
-              val emptyFormRoute = routes.UkAddressLookupController.getEmptyForm(tag, None, None)
+              val emptyFormRoute = routes.UkAddressLookupController.getEmptyForm(tag, Some(id), None)
               TemporaryRedirect(emptyFormRoute.url)
             } else {
-              val addressRecord = response.get
+              import SelectedAddress._
+              val addressRecord = response.get.as[SelectedAddress]
               if (addressRecord.normativeAddress.isDefined) {
                 Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress.get, addressRecord.userSuppliedAddress))
               } else {

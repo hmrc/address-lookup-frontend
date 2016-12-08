@@ -17,11 +17,7 @@
 package keystore
 
 import address.uk._
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.address.v2.{Country, International}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.logging.SimpleLogger
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPut}
@@ -30,13 +26,9 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MemoService {
-  def fetchSingleUkResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]]
+  def storeSingleResponse(tag: String, id: String, address: SelectedAddress): Future[HttpResponse]
 
-  def storeSingleUkResponse(tag: String, id: String, address: AddressRecordWithEdits): Future[HttpResponse]
-
-  def fetchSingleIntResponse(tag: String, id: String): Future[Option[International]]
-
-  def storeSingleIntResponse(tag: String, id: String, address: International): Future[HttpResponse]
+  def fetchSingleResponse(tag: String, id: String): Future[Option[JsValue]]
 }
 
 
@@ -51,40 +43,22 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
     val appName: String = applicationName
   }
 
-  def fetchSingleUkResponse(tag: String, id: String): Future[Option[AddressRecordWithEdits]] = {
-    fetchSingleResponse[AddressRecordWithEdits](tag, id, parseUkAddress)
-  }
-
-  private def parseUkAddress(tag: String, body: String) = {
-    val ks = LenientJacksonMapper.readValue(body, classOf[UkKeystoreResponse])
-    ks.data.get(tag)
-  }
-
-  def fetchSingleIntResponse(tag: String, id: String): Future[Option[International]] = {
-    fetchSingleResponse[International](tag, id, parseIntAddress)
-  }
-
-  private def parseIntAddress(tag: String, body: String) = {
-    val ks = LenientJacksonMapper.readValue(body, classOf[IntKeystoreResponse])
-    ks.data.get(tag)
-  }
-
-  private def fetchSingleResponse[T](tag: String, id: String, fn: (String, String) => Option[T]): Future[Option[T]] = {
+  def fetchSingleResponse(tag: String, id: String): Future[Option[JsValue]] = {
     require(id.nonEmpty)
     require(tag.nonEmpty)
 
     val url = s"$endpoint/keystore/address-lookup/$id"
     // Not using 'GET' because the status and response entity processing would not be appropriate.
     http.doGet(url) map {
-      parse(_, tag, url, fn)
+      parse(_, tag, url)
     }
   }
 
-  private def parse[T](response: HttpResponse, tag: String, url: String, fn: (String, String) => Option[T]): Option[T] = {
+  private def parse(response: HttpResponse, tag: String, url: String): Option[JsValue] = {
     response.status match {
       case 200 =>
         try {
-          fn(tag, response.body)
+          Some((response.json \ "data" \ tag).get)
         } catch {
           case e: Exception =>
             logger.warn(s"keystore error GET $url ${response.status}", e)
@@ -99,37 +73,13 @@ class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: Sim
   }
 
 
-  def storeSingleUkResponse(tag: String, id: String, address: AddressRecordWithEdits): Future[HttpResponse] = {
+  def storeSingleResponse(tag: String, id: String, address: SelectedAddress): Future[HttpResponse] = {
     require(id.nonEmpty)
     require(tag.nonEmpty)
 
-    import AddressRecordWithEdits._
+    import SelectedAddress._
 
     val url = s"$endpoint/keystore/address-lookup/$id/data/$tag"
-    http.PUT[AddressRecordWithEdits, HttpResponse](url, address)
+    http.PUT[SelectedAddress, HttpResponse](url, address)
   }
-
-
-  def storeSingleIntResponse(tag: String, id: String, address: International): Future[HttpResponse] = {
-    require(id.nonEmpty)
-    require(tag.nonEmpty)
-
-    implicit val f0: OFormat[Country] = Json.format[Country]
-    implicit val f1: OFormat[International] = Json.format[International]
-
-    val url = s"$endpoint/keystore/address-lookup/$id/data/$tag"
-    http.PUT[International, HttpResponse](url, address)
-  }
-}
-
-
-case class UkKeystoreResponse(data: Map[String, AddressRecordWithEdits])
-
-case class IntKeystoreResponse(data: Map[String, International])
-
-
-object LenientJacksonMapper extends ObjectMapper {
-  configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-  registerModule(DefaultScalaModule)
-  setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
 }

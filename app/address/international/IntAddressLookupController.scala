@@ -7,8 +7,8 @@ import config.FrontendGlobal
 import keystore.MemoService
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.address.v2.International
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.addressint._
 
@@ -65,8 +65,9 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
     }
 
   private def continueToCompletion(tag: String, addressData: IntAddressData, request: Request[_]): Future[Result] = {
-    val response = addressData.asInternational
-    memo.storeSingleIntResponse(tag, addressData.guid, response) map {
+    val international = addressData.asInternational
+    val selected = SelectedAddress(None, None, Some(international), false)
+    memo.storeSingleResponse(tag, addressData.guid, selected) map {
       httpResponse =>
         SeeOther(addressData.continue + "?id=" + addressData.guid)
     }
@@ -78,14 +79,16 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
     TaggedAction.withTag(tag).async {
       implicit request =>
         require(id.nonEmpty)
-        val fuResponse = memo.fetchSingleIntResponse(tag, id)
+        val fuResponse = memo.fetchSingleResponse(tag, id)
         fuResponse.map {
-          response: Option[International] =>
+          response: Option[JsValue] =>
             if (response.isEmpty) {
-              val emptyFormRoute = routes.IntAddressLookupController.getEmptyForm(tag, None, None)
+              val emptyFormRoute = routes.IntAddressLookupController.getEmptyForm(tag, Some(id), None)
               TemporaryRedirect(emptyFormRoute.url)
             } else {
-              Ok(userSuppliedInternationalPage(tag, cfg(tag), response.get))
+              import SelectedAddress._
+              val address = response.get.as[SelectedAddress]
+              Ok(userSuppliedInternationalPage(tag, cfg(tag), address.international.get))
             }
         }
     }

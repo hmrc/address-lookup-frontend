@@ -10,12 +10,12 @@ POST   /uk/addresses/:tag/select                                address.uk.UkAdd
 GET    /uk/addresses/:tag/confirmation                          address.uk.UkAddressLookupController.confirmation(tag: String, id: String )
 
 # International user interface
-GET    /int/addresses/:tag                                      address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
-POST   /int/addresses/:tag/submit                               address.international.IntAddressLookupController.postSelected(tag: String)
-GET    /int/addresses/:tag/confirmation                         address.international.IntAddressLookupController.confirmation(tag: String, id: String )
+GET    /int/addresses/:tag                     address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
+POST   /int/addresses/:tag/submit              address.international.IntAddressLookupController.postSelected(tag: String)
+GET    /int/addresses/:tag/confirmation        address.international.IntAddressLookupController.confirmation(tag: String, id: String )
 
 # REST
-GET    /outcome/:tag/:id                                        address.uk.KeystoreFacadeController.outcome(tag: String, id: String)
+GET    /outcome/:tag/:id                       address.outcome.OutcomeController.outcome(tag: String, id: String)
 
 # Other
-GET    /assets/*file                                            controllers.Assets.at(path="/public", file)
+GET    /assets/*file                           controllers.Assets.at(path="/public", file)

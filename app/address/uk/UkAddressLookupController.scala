@@ -215,11 +215,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
             } else {
               import SelectedAddress._
               val addressRecord = response.get.as[SelectedAddress]
-              if (addressRecord.normativeAddress.isDefined) {
-                Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress.get, addressRecord.userSuppliedAddress))
-              } else {
-                Ok(userSuppliedAddressPage(tag, cfg(tag), addressRecord.userSuppliedAddress.getOrElse(noFixedAbodeAddress)))
-              }
+              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
             }
         }
     }

@@ -84,7 +84,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
   private def expectConfirmationPage(response: WSResponse) = {
     assert(response.status === 200)
     val doc = Jsoup.parse(response.body)
-    assert(doc.select("body.user-supplied-address-page").size === 1, response.body)
+    assert(doc.select("body.confirmation-page").size === 1, response.body)
     doc
   }
 

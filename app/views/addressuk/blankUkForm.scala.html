@@ -24,6 +24,11 @@
 
 @main_template(view = view, bodyClasses = Some("entry-form")) {
 
+<script type="text/javascript">
+function showIntTab() {
+    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, ukAddrForm("guid").value, ukAddrForm("continue-url").value)';
+}
+</script>
 <div>
     <h1 class="heading-xlarge">@{view.baseTitle}</h1>
 
@@ -39,8 +44,7 @@
                 </label>
 
                 <label class="block-label" data-target="INT-Tab" for="location-international">
-                    <input id="location-international" type="radio" name="radio-inline-group" value="INT"
-                    onclick="window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, ukAddrForm("guid").value, ukAddrForm("continue-url").value)'"/>
+                    <input id="location-international" type="radio" name="radio-inline-group" value="INT" onclick="showIntTab()"/>
                     International
                 </label>
 

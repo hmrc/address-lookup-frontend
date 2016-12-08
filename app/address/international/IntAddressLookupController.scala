@@ -11,6 +11,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.addressint._
+import views.html.addressuk.confirmationPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -87,8 +88,8 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
               TemporaryRedirect(emptyFormRoute.url)
             } else {
               import SelectedAddress._
-              val address = response.get.as[SelectedAddress]
-              Ok(userSuppliedInternationalPage(tag, cfg(tag), address.international.get))
+              val addressRecord = response.get.as[SelectedAddress]
+              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
             }
         }
     }

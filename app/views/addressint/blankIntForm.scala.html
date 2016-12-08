@@ -24,6 +24,16 @@
 
 @main_template(view = view, bodyClasses = Some("entry-form")) {
 
+<script type="text/javascript">
+function showUkTab() {
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)';
+}
+function copyCountryCode() {
+    var code = $('#country option:selected').data('alternative-spellings').substring(0,2);
+    console.log(code);
+    $('#code').val(code);
+}
+</script>
 <div>
     <h1 class="heading-xlarge">@{view.baseTitle}</h1>
 
@@ -34,8 +44,7 @@
         @if(view.allowInternationalAddress) {
             <div class="form-group" id="location">
                 <label class="block-label" data-target="UK-Tab" for="location-UK">
-                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK"
-                    onclick="window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)'"/>
+                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK" onclick="showUkTab()"/>
                     United Kingdom
                 </label>
 
@@ -51,13 +60,13 @@
             </div>
         }
 
-        <div class="panel panel-border-narrow" id='UK-Tab'>
+        <div class="panel panel-border-narrow">
         @helpers.form( address.international.routes.IntAddressLookupController.postSelected(tag), 'id -> "myForm" ) {
             <input type='hidden' id='guid' name='guid' value='@intAddrForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@intAddrForm("continue-url").value.get' />
-            <input type='hidden' id='prev-country' name='prev-country' value='@intAddrForm("prev-country").value' />
+            <input type='hidden' id='code' name='code' value='@intAddrForm("code").value' />
 
-            <dl  class=' @if(intAddrForm("country").hasErrors) {error}'  >
+            <dl class=' @if(intAddrForm("country").hasErrors) {error}'>
 
                 <label class="form-label-bold" for="country">Country</label>
 
@@ -66,9 +75,9 @@
                 }
 
 
-                <select name="country" id="country" autofocus="autofocus" autocorrect="off" autocomplete="off" >
+                <select name="country" id="country" autofocus="autofocus" autocorrect="off" autocomplete="off" onchange="copyCountryCode()">
                 @for( c <- address.Countries.countries ) {
-                    <option value='@c.name' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(intAddrForm("int-country").value == Some(c.name) )} >@c.name</option>
+                    <option value='@c.name' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(intAddrForm("country").value.contains(c.name) )} >@c.name</option>
                 }
                 </select>
 

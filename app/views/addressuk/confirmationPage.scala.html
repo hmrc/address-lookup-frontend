@@ -13,139 +13,84 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-@import address.ViewConfig
 @(tag: String,
-        view: ViewConfig,
-        normativeAddress: uk.gov.hmrc.address.v2.AddressRecord,
-        userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address])(implicit request: Request[_], messages: Messages)
+        view: address.ViewConfig,
+        normativeAddress: Option[uk.gov.hmrc.address.v2.AddressRecord],
+        userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address],
+        international: Option[uk.gov.hmrc.address.v2.International])(implicit request: Request[_], messages: Messages)
 
 @main_template(view = view, bodyClasses = Some("confirmation-page")) {
 
+    <style type="text/css">
+    #confirmation th.head { padding: .5em; }
+    #confirmation td { background: #fff; padding: .5em; }
+    #confirmation td.empty { background: #eee; }
+    </style>
     <div class="govuk-box-highlight">
         <h2 class="bold-large">Application complete</h2>
         <p>Address:</p>
         <table id="confirmation">
-            @if(userSuppliedAddress.isDefined) {
-                <tr><th></th><th>Normative</th><th>User-Supplied</th></tr>
+            <tr><th></th> <th class="head">Normative</th> <th class="head">User-Supplied</th> <th class="head">International</th></tr>
+
+            @if(normativeAddress.isDefined) {
+                <tr class="uprn"><th>UPRN</th>
+                    <td class="norm">@{normativeAddress.get.uprn}</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                </tr>
             }
 
-            <tr class="uprn"><th>UPRN</th>
-                <td class="norm">@{
-                    normativeAddress.uprn.getOrElse("")
-                }</td>
-                @if(userSuppliedAddress.isDefined) {
-                    <td></td>
-                }
+            <tr class="addr"><th>Address</th>
+                @cellIfList(normativeAddress.isDefined, normativeAddress.get.address.lines, "norm")
+                @cellIfList(userSuppliedAddress.isDefined, userSuppliedAddress.get.lines, "user")
+                @cellIfList(international.isDefined, international.get.lines, "int")
             </tr>
 
-            @if(normativeAddress.address.lines.nonEmpty || (userSuppliedAddress.isDefined && userSuppliedAddress.get.lines.nonEmpty)) {
-                <tr class="address"><th>Address</th>
-                    <td class="norm">@{
-                        normativeAddress.address.lines.headOption.getOrElse("")
-                    }
-                        @for(line <- normativeAddress.address.lines.tail) {
-                            <br/> @line
-                        }
-                    </td>
-                    @if(userSuppliedAddress.isDefined) {
-                        <td class="user">
-                        @if(userSuppliedAddress.get.lines != normativeAddress.address.lines) {
-                            @{
-                                userSuppliedAddress.get.lines.headOption.getOrElse("")
-                            }
-                            @for(line <- userSuppliedAddress.get.lines.tail) {
-                                <br/> @line
-                            }
-                        }
-                        </td>
-                    }
+            @if(normativeAddress.flatMap(_.address.town).isDefined || userSuppliedAddress.flatMap(_.town).isDefined) {
+                <tr class="town"><th>Town</th>
+                    @cellIfOpt(normativeAddress.isDefined, normativeAddress.get.address.town, "norm")
+                    @cellIfOpt(userSuppliedAddress.isDefined, userSuppliedAddress.get.town, "user")
+                    <td class="empty"></td>
                 </tr>
             }
 
-            @if(normativeAddress.address.town.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.town.isDefined)) {
-                <tr class="town"><th></th>
-                    <td class="norm">@{
-                        normativeAddress.address.town.getOrElse("")
-                    }</td>
-                    @if(userSuppliedAddress.isDefined) {
-                        <td class="user">
-                        @if(userSuppliedAddress.get.town != normativeAddress.address.town) {
-                            @{
-                                userSuppliedAddress.get.town.getOrElse("")
-                            }
-                        }
-                        </td>
-                    }
+            @if(normativeAddress.flatMap(_.address.county).isDefined || userSuppliedAddress.flatMap(_.county).isDefined) {
+                <tr class="county"><th>County</th>
+                    @cellIfOpt(normativeAddress.isDefined, normativeAddress.get.address.county, "norm")
+                    @cellIfOpt(userSuppliedAddress.isDefined && userSuppliedAddress.flatMap(_.county) != normativeAddress.flatMap(_.address.county), userSuppliedAddress.get.county, "user")
+                    <td class="empty"></td>
                 </tr>
             }
 
-            @if(normativeAddress.address.county.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.county.isDefined)) {
-                <tr class="county"><th></th>
-                    <td class="norm">@{
-                        normativeAddress.address.county.getOrElse("")
-                    }</td>
-                    @if(userSuppliedAddress.isDefined) {
-                        <td class="user">
-                        @if(userSuppliedAddress.get.county != normativeAddress.address.county) {
-                            @{
-                                userSuppliedAddress.get.county.getOrElse("")
-                            }
-                        }</td>
-                    }
+            @if(normativeAddress.isDefined || userSuppliedAddress.isDefined || international.flatMap(_.postcode).isDefined) {
+                <tr class="postcode"><th>Postcode</th>
+                    @cellIf(normativeAddress.isDefined, normativeAddress.get.address.postcode, "norm")
+                    @cellIfDifferent(userSuppliedAddress.map(_.postcode), normativeAddress.map(_.address.postcode), "user")
+                    @cellIfOpt(international.isDefined, international.get.postcode, "int")
                 </tr>
             }
 
-            <tr class="postcode"><th></th>
-                <td class="norm">@{
-                    normativeAddress.address.postcode
-                }</td>
-                @if(userSuppliedAddress.isDefined) {
-                    <td class="user">
-                    @if(userSuppliedAddress.get.postcode != normativeAddress.address.postcode) {
-                        @{
-                            userSuppliedAddress.get.postcode
-                        }
-                    }</td>
-                }
-            </tr>
-
-            @if(normativeAddress.address.subdivision.isDefined || (userSuppliedAddress.isDefined && userSuppliedAddress.get.subdivision.isDefined)) {
+            @if(normativeAddress.isDefined || userSuppliedAddress.isDefined) {
                 <tr class="subd"><th></th>
-                    <td class="norm">@{
-                        normativeAddress.address.subdivision.map(_.name).getOrElse("")
-                    }</td>
-                    @if(userSuppliedAddress.isDefined) {
-                        <td class="user">
-                        @if(userSuppliedAddress.get.subdivision != normativeAddress.address.subdivision) {
-                            @{
-                                userSuppliedAddress.get.subdivision.map(_.name).getOrElse("")
-                            }
-                        }</td>
-                    }
+                    @cellIfOpt(normativeAddress.isDefined, normativeAddress.get.address.subdivision.map(_.name), "norm")
+                    @cellIfDifferent(userSuppliedAddress.flatMap(_.subdivision), normativeAddress.flatMap(_.address.subdivision), "user")
+                    <td class="empty"></td>
                 </tr>
             }
 
-            <tr class="country"><th></th>
-                <td class="norm">@{
-                    normativeAddress.address.country.code
-                }</td>
-                @if(userSuppliedAddress.isDefined) {
-                    <td class="user">@if(userSuppliedAddress.get.country != normativeAddress.address.country) {
-                        @{
-                            userSuppliedAddress.get.country.name
-                        }
-                    }</td>
-                }
+            <tr class="country"><th>Country</th>
+                @cellIf(normativeAddress.isDefined, normativeAddress.get.address.country.code, "norm")
+                @cellIfDifferent(userSuppliedAddress.map(_.country.name), normativeAddress.map(_.address.country.name), "user")
+                @cellIfOpt(international.isDefined, international.get.country.map(_.name), "int")
             </tr>
 
-            <tr class="lang"><th>Language</th>
-                <td class="norm">@{
-                    normativeAddress.language
-                }</td>
-                @if(userSuppliedAddress.isDefined) {
-                    <td></td>
-                }
-            </tr>
+            @if(normativeAddress.isDefined) {
+                <tr class="lang"><th>Language</th>
+                    <td class="norm">@{normativeAddress.get.language}</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                </tr>
+            }
         </table>
         <a href="../@{
             tag

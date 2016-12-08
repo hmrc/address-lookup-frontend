@@ -39,3 +39,10 @@
     padding: 15px;
 }
 
+#confirmation td {
+    background: #fff;
+}
+
+#confirmation td.empty {
+    background: #eee;
+}

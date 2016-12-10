@@ -1,7 +1,6 @@
 package address.outcome
 
 import address.ViewConfig
-import address.uk.SelectedAddress
 import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, Materializer}
 import keystore.MemoService

@@ -18,9 +18,10 @@ package address.bfpo
 
 import java.net.URLEncoder
 
+import address.outcome.SelectedAddress
 import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
-import address.uk.{SelectedAddress, Services, TaggedAction}
+import address.uk.{Services, TaggedAction}
 import com.fasterxml.uuid.{EthernetAddress, Generators}
 import config.FrontendGlobal
 import keystore.MemoService
@@ -69,7 +70,7 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
   //-----------------------------------------------------------------------------------------------
 
-  def postUkForm(tag: String): Action[AnyContent] =
+  def postFirstForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
         //        println("form1: " + PrettyMapper.writeValueAsString(request.body))
@@ -108,28 +109,27 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
   def getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long]): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        val optNameNo = if (number.isEmpty || number == "-") None else Some(number)
+        val optNumber = if (number.isEmpty || number == "-") None else Some(number)
         val uPostcode = Postcode.cleanupPostcode(postcode)
         if (uPostcode.isEmpty) {
           val bound = bfpoForm.bindFromRequest()(request)
           Future.successful(BadRequest(basicBlankForm(tag, Some(guid), continue)))
 
         } else {
-          lookup.findByPostcode(uPostcode.get, optNameNo) map {
+          lookup.findByPostcode(uPostcode.get, optNumber) map {
             list =>
               val cu = continue.getOrElse(defaultContinueUrl)
-              val exceededLimit = list.size > cfg(tag).maxAddressesToShow
-              if (list.isEmpty || exceededLimit) {
+              if (list.isEmpty) {
                 val pc = uPostcode.map(_.toString)
                 val ad = BfpoData(guid = guid, continue = cu,
-                  number = optNameNo, postcode = pc,
-                  prevNumber = optNameNo, prevPostcode = pc
+                  number = optNumber, postcode = pc,
+                  prevNumber = optNumber, prevPostcode = pc
                 )
                 val filledInForm = bfpoForm.fill(ad)
                 Ok(blankBfpoForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty))
 
               } else {
-                Ok(showAddressListProposalForm(tag, optNameNo, uPostcode.get.toString, guid, continue, list, edit))
+                Ok(showAddressListProposalForm(tag, optNumber, uPostcode.get.toString, guid, continue, list, edit))
               }
           }
         }
@@ -164,9 +164,12 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
 
   private def continueToCompletion(tag: String, bfpoData: BfpoData, request: Request[_]): Future[Result] = {
-    lookup.findByPostcode(Postcode(bfpoData.postcode.get), None) flatMap {
+    val uprn = s"uprn=${bfpoData.uprn.get}&"
+    lookup.findByUprn(bfpoData.uprn.get.toLong) flatMap {
       list =>
-        val response = SelectedAddress(bfpo = Some(bfpoData.toInternational))
+        val response = SelectedAddress(
+          normativeAddress = list.headOption,
+          bfpo = Some(bfpoData.toInternational))
         memo.storeSingleResponse(tag, bfpoData.guid, response) map {
           httpResponse =>
             SeeOther(bfpoData.continue + "?tag=" + tag + "&id=" + bfpoData.guid)

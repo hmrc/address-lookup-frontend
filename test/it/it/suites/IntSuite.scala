@@ -17,7 +17,7 @@
 package it.suites
 
 import address.ViewConfig
-import address.uk.SelectedAddress
+import address.outcome.SelectedAddress
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
 import org.jsoup.Jsoup

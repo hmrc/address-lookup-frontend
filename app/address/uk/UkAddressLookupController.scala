@@ -18,6 +18,7 @@ package address.uk
 
 import java.net.URLEncoder
 
+import address.outcome.SelectedAddress
 import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
@@ -76,7 +77,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
 
   //-----------------------------------------------------------------------------------------------
 
-  def postUkForm(tag: String): Action[AnyContent] =
+  def postFirstForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
         //        println("form1: " + PrettyMapper.writeValueAsString(request.body))

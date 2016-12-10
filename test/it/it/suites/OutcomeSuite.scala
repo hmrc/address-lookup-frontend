@@ -19,7 +19,7 @@ package it.suites
 import java.nio.charset.StandardCharsets
 
 import address.ViewConfig
-import address.uk.SelectedAddress
+import address.outcome.SelectedAddress
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
 import keystore.{KeystoreServiceImpl, MemoMetrics}

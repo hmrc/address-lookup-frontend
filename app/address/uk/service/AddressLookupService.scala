@@ -45,7 +45,7 @@ class AddressLookupService(endpoint: String, applicationName: String, ec: Execut
 
   def findById(id: String): Future[Option[AddressRecord]] = {
     val uq = "/" + enc(id)
-    import osgb.outmodel.v2.AddressReadable._
+    import address.outcome.SelectedAddress._
     http.GET[Option[AddressRecord]](url + uq).recover {
       case e: NotFoundException => None
     }
@@ -53,14 +53,14 @@ class AddressLookupService(endpoint: String, applicationName: String, ec: Execut
 
   def findByUprn(uprn: Long): Future[List[AddressRecord]] = {
     val uq = "?uprn=" + uprn.toString
-    import osgb.outmodel.v2.AddressReadable._
+    import address.outcome.SelectedAddress._
     http.GET[List[AddressRecord]](url + uq)
   }
 
   def findByPostcode(postcode: Postcode, filter: Option[String]): Future[List[AddressRecord]] = {
     val pq = "?postcode=" + postcode.urlSafe
     val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
-    import osgb.outmodel.v2.AddressReadable._
+    import address.outcome.SelectedAddress._
     http.GET[List[AddressRecord]](url + pq + fq)
   }
 

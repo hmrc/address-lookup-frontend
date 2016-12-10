@@ -13,7 +13,8 @@ object BfpoForm {
       "postcode" -> optional(text),
       "number" -> optional(text),
       "prev-postcode" -> optional(text),
-      "prev-number" -> optional(text)
+      "prev-number" -> optional(text),
+      "radio-inline-group" -> optional(text)
     )(BfpoData.apply)(BfpoData.unapply)
   }
 }
@@ -25,7 +26,8 @@ case class BfpoData(
                      postcode: Option[String] = None,
                      number: Option[String] = None,
                      prevPostcode: Option[String] = None,
-                     prevNumber: Option[String] = None
+                     prevNumber: Option[String] = None,
+                     uprn: Option[String] = None
                    ) {
 
   def hasBeenUpdated: Boolean = (prevNumber != number) || (prevPostcode != postcode)

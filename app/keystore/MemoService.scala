@@ -16,6 +16,7 @@
 
 package keystore
 
+import address.outcome.SelectedAddress
 import address.uk._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.logging.SimpleLogger

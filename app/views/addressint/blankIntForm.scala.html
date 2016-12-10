@@ -16,7 +16,7 @@
 @import address.ViewConfig
 @(tag: String,
   view: ViewConfig,
-  intAddrForm: Form[address.international.IntAddressData],
+  addressForm: Form[address.international.IntAddressData],
   noMatchesWereFound: Boolean,
   exceededLimit: Boolean)(implicit request: Request[_], messages: Messages)
 
@@ -26,10 +26,10 @@
 
 <script type="text/javascript">
 function showUkTab() {
-    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)';
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value)';
 }
 function showBfpoTab() {
-    window.location.href = '@address.bfpo.routes.BfpoAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)';
+    window.location.href = '@address.bfpo.routes.BfpoAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value)';
 }
 function copyCountryCode() {
     var code = $('#country option:selected').data('code');
@@ -64,28 +64,28 @@ function copyCountryCode() {
 
         <div class="panel panel-border-narrow">
         @helpers.form( address.international.routes.IntAddressLookupController.postSelected(tag), 'id -> "myForm" ) {
-            <input type='hidden' id='guid' name='guid' value='@intAddrForm("guid").value.get' />
-            <input type='hidden' id='continue-url' name='continue-url' value='@intAddrForm("continue-url").value.get' />
-            <input type='hidden' id='code' name='code' value='@intAddrForm("code").value' />
+            <input type='hidden' id='guid' name='guid' value='@addressForm("guid").value.get' />
+            <input type='hidden' id='continue-url' name='continue-url' value='@addressForm("continue-url").value.get' />
+            <input type='hidden' id='code' name='code' value='@addressForm("code").value' />
 
-            <dl class=' @if(intAddrForm("country").hasErrors) {error}'>
+            <dl class=' @if(addressForm("country").hasErrors) {error}'>
 
                 <label class="form-label-bold" for="country">Country</label>
 
-                @intAddrForm("int-country").errors.map { err =>
+                @addressForm("int-country").errors.map { err =>
                     <dd class="form-hint">@err.message</dd>
                 }
 
 
                 <select name="country" id="country" autofocus="autofocus" autocorrect="off" autocomplete="off" onchange="copyCountryCode()">
                 @for( c <- address.Countries.countriesMenu ) {
-                    <option value='@c.name' data-code='@{c.code}' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(intAddrForm("country").value.contains(c.name) )} >@c.name</option>
+                    <option value='@c.name' data-code='@{c.code}' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(addressForm("country").value.contains(c.name) )} >@c.name</option>
                 }
                 </select>
 
             </dl>
 
-            @helper.textarea(intAddrForm("address"), 'rows -> 5, '_label -> "Address")
+            @helper.textarea(addressForm("address"), 'rows -> 5, '_label -> "Address")
 
             <div class="form-group">
                 <button type="submit" name="submit" value="continue">Continue</button>

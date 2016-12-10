@@ -4,9 +4,10 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.address.v2._
 
 
-case class SelectedAddress(normativeAddress: Option[AddressRecord],
-                           userSuppliedAddress: Option[Address],
-                           international: Option[International],
+case class SelectedAddress(normativeAddress: Option[AddressRecord] = None,
+                           userSuppliedAddress: Option[Address] = None,
+                           international: Option[International] = None,
+                           bfpo: Option[International] = None,
                            noFixedAddress: Boolean = false)
 
 

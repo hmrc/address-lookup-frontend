@@ -16,20 +16,19 @@
 @import address.ViewConfig
 @(tag: String,
   view: ViewConfig,
-  ukAddrForm: Form[address.uk.UkAddressData],
-  noMatchesWereFound: Boolean,
-  exceededLimit: Boolean)(implicit request: Request[_], messages: Messages)
+  bfpoAddrForm: Form[address.bfpo.BfpoData],
+  noMatchesWereFound: Boolean)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 
 @main_template(view = view, bodyClasses = Some("entry-form")) {
 
 <script type="text/javascript">
-function showIntTab() {
-    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, ukAddrForm("guid").value, ukAddrForm("continue-url").value)';
+function showUkTab() {
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, bfpoAddrForm("guid").value, bfpoAddrForm("continue-url").value)';
 }
-function showBfpoTab() {
-    //window.location.href = ...
+function showIntTab() {
+    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, bfpoAddrForm("guid").value, bfpoAddrForm("continue-url").value)';
 }
 </script>
 <div>
@@ -42,7 +41,7 @@ function showBfpoTab() {
         @if(view.allowInternationalAddress) {
             <div class="form-group" id="location">
                 <label class="block-label" data-target="UK-Tab" for="location-UK">
-                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK" checked="checked" />
+                    <input id="location-UK" type="radio" name="radio-inline-group" value="UK" onclick="showUkTab()"/>
                     United Kingdom
                 </label>
 
@@ -52,7 +51,7 @@ function showBfpoTab() {
                 </label>
 
                 <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
-                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" onclick="showBfpoTab()"/>
+                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" checked="checked" />
                     BFPO
                 </label>
             </div>
@@ -60,9 +59,8 @@ function showBfpoTab() {
 
         <div class="panel panel-border-narrow" id='UK-Tab'>
         @helpers.form( address.uk.routes.UkAddressLookupController.postUkForm(tag), 'id -> "myForm" ) {
-            <input type='hidden' id='guid' name='guid' value='@ukAddrForm("guid").value.get' />
-            <input type='hidden' id='continue-url' name='continue-url' value='@ukAddrForm("continue-url").value.get' />
-            <input type='hidden' id='country-code' name='country-code' value='@ukAddrForm("country-code").value.get' />
+            <input type='hidden' id='guid' name='guid' value='@bfpoAddrForm("guid").value.get' />
+            <input type='hidden' id='continue-url' name='continue-url' value='@bfpoAddrForm("continue-url").value.get' />
 
             @if(!noMatchesWereFound && view.allowNoFixedAddress) {
             <div class="form-group">
@@ -74,33 +72,24 @@ function showBfpoTab() {
             }
 
             <div class="form-group">
-                @helper.inputText(ukAddrForm("house-name-number"),  'class -> "form-control",  '_label -> "Building name or number" )
+                @helper.inputText(bfpoAddrForm("house-name-number"),  'class -> "form-control",  '_label -> "Building name or number" )
             </div>
 
 
             <div class="form-group">
-                @helper.inputText(ukAddrForm("postcode"),  'class -> "form-control",  '_label -> "Post code",  'maxlength -> "8"  )
+                @helper.inputText(bfpoAddrForm("postcode"),  'class -> "form-control",  '_label -> "Post code",  'maxlength -> "8"  )
             </div>
 
             @if(noMatchesWereFound) {
                 <div class="form-group">
                     <div class="warning-box">
-                        @if(ukAddrForm("house-name-number").value.isDefined) {
+                        @if(bfpoAddrForm("house-name-number").value.isDefined) {
                             <h3>No addresses were found for this postcode and building name/number.</h3>
                             <p>Please enter a different postcode or building name/number.</p>
                         } else {
                             <h3>No addresses were found for this postcode.</h3>
                             <p>Please enter a different postcode.</p>
                         }
-                    </div>
-                </div>
-            }
-
-            @if(exceededLimit) {
-                <div class="form-group">
-                    <div class="warning-box">
-                        <h3>More than @view.maxAddressesToShow addresses were found.</h3>
-                        <p>Please enter the first line of your address.</p>
                     </div>
                 </div>
             }

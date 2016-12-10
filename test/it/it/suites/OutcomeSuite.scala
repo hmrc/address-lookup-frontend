@@ -228,7 +228,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
 
   private def keystoreResponseString(tag: String, sa: SelectedAddress) = Json.stringify(keystoreResponseJson(tag, sa))
 
-  private def i1Json(tag: String, i: International) = keystoreResponseString(tag, SelectedAddress(None, None, Some(i), false))
+  private def i1Json(tag: String, i: International) = keystoreResponseString(tag, SelectedAddress(international = Some(i)))
 
   private def newCookies(response: WSResponse) = response.cookies.map(c => c.name.get + "=" + c.value.get).map("cookie" -> _)
 

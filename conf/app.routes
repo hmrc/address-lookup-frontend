@@ -9,6 +9,13 @@ GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.UkAdd
 POST   /uk/addresses/:tag/select                                address.uk.UkAddressLookupController.postSelected(tag: String)
 GET    /uk/addresses/:tag/confirmation                          address.uk.UkAddressLookupController.confirmation(tag: String, id: String )
 
+# BFPO user interface
+GET    /bfpo/addresses/:tag                                       address.bfpo.BfpoAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
+POST   /bfpo/addresses/:tag/propose                               address.bfpo.BfpoAddressLookupController.postUkForm(tag: String)
+GET    /bfpo/addresses/:tag/get-proposals/:number/:postcode/:guid address.bfpo.BfpoAddressLookupController.getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long])
+POST   /bfpo/addresses/:tag/select                                address.bfpo.BfpoAddressLookupController.postSelected(tag: String)
+GET    /bfpo/addresses/:tag/confirmation                          address.bfpo.BfpoAddressLookupController.confirmation(tag: String, id: String )
+
 # International user interface
 GET    /int/addresses/:tag                     address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String])
 POST   /int/addresses/:tag/submit              address.international.IntAddressLookupController.postSelected(tag: String)

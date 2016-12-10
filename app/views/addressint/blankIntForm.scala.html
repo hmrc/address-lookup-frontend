@@ -28,9 +28,11 @@
 function showUkTab() {
     window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)';
 }
+function showBfpoTab() {
+    window.location.href = '@address.bfpo.routes.BfpoAddressLookupController.getEmptyForm(tag, intAddrForm("guid").value, intAddrForm("continue-url").value)';
+}
 function copyCountryCode() {
-    var code = $('#country option:selected').data('alternative-spellings').substring(0,2);
-    console.log(code);
+    var code = $('#country option:selected').data('code');
     $('#code').val(code);
 }
 </script>
@@ -54,7 +56,7 @@ function copyCountryCode() {
                 </label>
 
                 <label class="block-label" data-target="BFPO-Tab" for="location-BFPO">
-                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" />
+                    <input id="location-BFPO" type="radio" name="radio-inline-group" value="BFPO" onclick="showBfpoTab()"/>
                     BFPO
                 </label>
             </div>
@@ -76,8 +78,8 @@ function copyCountryCode() {
 
 
                 <select name="country" id="country" autofocus="autofocus" autocorrect="off" autocomplete="off" onchange="copyCountryCode()">
-                @for( c <- address.Countries.countries ) {
-                    <option value='@c.name' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(intAddrForm("country").value.contains(c.name) )} >@c.name</option>
+                @for( c <- address.Countries.countriesMenu ) {
+                    <option value='@c.name' data-code='@{c.code}' data-alternative-spellings='@{c.alternative}' data-relevancy-booster='@{c.relevance.getOrElse("1.0")}' @{"selected=selected".when(intAddrForm("country").value.contains(c.name) )} >@c.name</option>
                 }
                 </select>
 

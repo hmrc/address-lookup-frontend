@@ -67,7 +67,7 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
 
   private def continueToCompletion(tag: String, addressData: IntAddressData, request: Request[_]): Future[Result] = {
     val international = addressData.asInternational
-    val selected = SelectedAddress(None, None, Some(international), false)
+    val selected = SelectedAddress(international = Some(international))
     memo.storeSingleResponse(tag, addressData.guid, selected) map {
       httpResponse =>
         SeeOther(addressData.continue + "?id=" + addressData.guid)

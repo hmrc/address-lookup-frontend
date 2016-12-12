@@ -36,7 +36,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
   private def appContext = context.appContext
 
   private val en = "en"
-  private val allTags = ViewConfig.cfg.filter(_._2.allowInternationalAddress).keys.toList.sorted
+  private val internationalTags = ViewConfig.cfg.filter(_._2.allowInternationalAddress).keys.toList.sorted
 
   val i1 = International(List("The Metropolitan Museum of Art", "1000 5th Ave", "New York"), Some("NY 10028"), Some(Country("US", "United States")))
   val sai = SelectedAddress(None, None, Some(i1))
@@ -47,7 +47,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
   "international address happy-path journeys" must {
 
     "journey 1: country and address entered and submitted" in {
-      for (tag <- allTags) {
+      for (tag <- internationalTags) {
         keystoreStub.clearExpectations()
         val i1JsonString = i1Json(tag, i1)
 

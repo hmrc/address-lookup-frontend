@@ -23,6 +23,7 @@ case class ViewConfig(pageTitle: String,
                       allowManualEntry: Boolean,
                       allowNoFixedAddress: Boolean,
                       allowInternationalAddress: Boolean,
+                      allowBfpo: Boolean,
                       maxAddressesToShow: Int,
                       indicator: Option[String] = None, // augments the title in the title bar
                       alpha: Boolean = false,
@@ -42,6 +43,7 @@ object ViewConfig {
     allowManualEntry = false,
     allowNoFixedAddress = false,
     allowInternationalAddress = false,
+    allowBfpo = false,
     maxAddressesToShow = 20)
 
   val alpha1 = live1.copy(alpha = true)
@@ -53,7 +55,7 @@ object ViewConfig {
   val cfg = Map(
     "j0" -> alpha1.copy(allowManualEntry = true, allowNoFixedAddress = true),
 
-    "j1" -> beta1.copy(allowInternationalAddress = true),
+    "j1" -> beta1.copy(allowInternationalAddress = true, allowBfpo = true),
 
     "j2" -> live1.copy(baseTitle = "Address entry", prompt = "Enter the address", maxAddressesToShow = 100),
 
@@ -65,6 +67,7 @@ object ViewConfig {
       allowManualEntry = true,
       allowNoFixedAddress = false,
       allowInternationalAddress = true,
+      allowBfpo = true,
       maxAddressesToShow = 20,
       alpha = true)
   )

@@ -16,7 +16,7 @@
 @import address.ViewConfig
 @(tag: String,
   view: ViewConfig,
-  addressForm: Form[address.uk.UkAddressData],
+  addressForm: Form[address.bfpo.BfpoData],
   addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
   selectedUprn: Long,
   canEdit: Boolean,
@@ -67,7 +67,7 @@
                             <td><label for='a@{a.uprn.get}'
                                 >@{a.address.printable}
                             </label>
-                            @if(view.allowManualEntry && editUrl.nonEmpty) {
+                            @if(editUrl.nonEmpty) {
                                 <span class="edit-link"><a href="@{editUrl}&edit=@{a.uprn.get}">(edit)</a></span>
                             }
                             </td>

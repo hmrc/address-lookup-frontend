@@ -19,7 +19,7 @@ package address.uk
 import java.net.URLEncoder
 
 import address.outcome.SelectedAddress
-import address.uk.DisplayProposalsPage.showAddressListProposalForm
+import address.uk.UkProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
 import config.FrontendGlobal

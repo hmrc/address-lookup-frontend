@@ -17,10 +17,13 @@
 
 @if(condition) {
     <td class="@{cls}">
-        @{item.headOption}
+    @if(item.nonEmpty) {
+        @{item.head}
         @for(line <- item.tail) {
-            <br/> @line
+            <br/>
+            @line
         }
+    }
     </td>
 } else {
     <td class="empty"></td>

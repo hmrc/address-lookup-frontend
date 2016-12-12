@@ -81,7 +81,7 @@
             <tr class="country"><th>Country</th>
                 @cellIf(normativeAddress.isDefined, normativeAddress.get.address.country.code, "norm")
                 @cellIfDifferent(userSuppliedAddress.map(_.country.name), normativeAddress.map(_.address.country.name), "user")
-                @cellIfOpt(international.isDefined, international.get.country.map(_.name), "int")
+                @cellIfDifferent(international.flatMap(_.country.map(_.name)), normativeAddress.map(_.address.country.name), "int")
             </tr>
 
             @if(normativeAddress.isDefined) {

@@ -18,8 +18,8 @@ package address.bfpo
 
 import java.net.URLEncoder
 
+import address.bfpo.BfpoProposalsPage.showAddressListProposalForm
 import address.outcome.SelectedAddress
-import address.uk.DisplayProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import address.uk.{Services, TaggedAction}
 import com.fasterxml.uuid.{EthernetAddress, Generators}

@@ -48,7 +48,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
   private val en = "en"
   private val BF1_3AA = "BF1 3AA"
   private val lcc = LocalCustodian(123, "Town")
-  private val allTags = ViewConfig.cfg.keys.toList.sorted
+  private val bfpoTags = ViewConfig.cfg.filter(_._2.allowBfpo).keys.toList.sorted
 
   val bf1_3aa = AddressRecord("GB10092787052", Some(10092787052L), Address(List("Bfpo 2"), Some("Bfpo"), None, "BF1 3AA", None, UK), Some(lcc), en)
 
@@ -64,7 +64,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
       val se1_9py_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
       val nfaWithoutEdits = SelectedAddress(None, None, None, None, true)
 
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(tag)
         val csrfToken = hiddenCsrfTokenValue(doc1)
@@ -85,8 +85,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
   "bfpo address happy-path journeys" must {
 
-    "journey 2: postcode entered; two proposals seen; first one picked without editing" in {
-      for (tag <- allTags) {
+    "journey 1: postcode entered; one proposal seen; it is picked without editing" in {
+      for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
         val ne1_6jn_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
@@ -132,8 +132,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
     }
 
 
-    "journey 3a: bfpo number and postcode entered; single proposal seen and accepted without editing" ignore {
-      for (tag <- allTags) {
+    "journey 2: bfpo number and postcode entered; single proposal seen and accepted without editing" in {
+      for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
         val ne1_6jn_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
@@ -148,7 +148,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=BF1+3AA&filter=11")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
 
         val form1NameAndPostcode = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "number" -> "11", "postcode" -> "NE16JN")
+          "number" -> "11", "postcode" -> "BF13AA")
         val response2 = request("POST", s"$appContext/bfpo/addresses/$tag/propose", form1NameAndPostcode, cookies: _*)
 
         addressLookupStub.verify()
@@ -168,12 +168,13 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         assert(page.select("#confirmation .addr .norm").text.trim === bf1_3aa.address.line1, response3.body)
         assert(page.select("#confirmation .town .norm").text.trim === bf1_3aa.address.town.get, response3.body)
         assert(page.select("#confirmation .postcode .norm").text.trim === bf1_3aa.address.postcode, response3.body)
-        assert(page.select("#confirmation .county .norm").text.trim === bf1_3aa.address.county.get, response3.body)
-        assert(page.select("#confirmation .subd .norm").text.trim === bf1_3aa.address.subdivision.get.name, response3.body)
         assert(page.select("#confirmation .country .norm").text.trim === bf1_3aa.address.country.code, response3.body)
 
-        assert(page.select("#confirmation .address .user").text.trim === "", response3.body)
+        assert(page.select("#confirmation .addr .user").text.trim === "", response3.body)
         assert(page.select("#confirmation .county .user").text.trim === "", response3.body)
+
+        assert(page.select("#confirmation .addr .int").text.trim === "", response3.body)
+        assert(page.select("#confirmation .county .int").text.trim === "", response3.body)
 
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
@@ -187,69 +188,69 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
     }
 
 
-    "journey 3b: bfpo number and postcode entered; single proposal accepted and edited" ignore {
-      val tag = "j0"
-      addressLookupStub.clearExpectations()
-      keystoreStub.clearExpectations()
-      val ne1_6jn_edited = bf1_3aa.address.copy(lines = List("11B Market Street"), county = Some("Northumbria"))
-      val ne1_6jn_withEdits = SelectedAddress(Some(bf1_3aa), Some(ne1_6jn_edited), None)
+    "journey 3: bfpo number and postcode entered; single proposal accepted and edited" ignore {
+      for (tag <- bfpoTags) {
+        addressLookupStub.clearExpectations()
+        keystoreStub.clearExpectations()
+        val ne1_6jn_edited = bf1_3aa.address.copy(lines = List("11B Market Street"), county = Some("Northumbria"))
+        val ne1_6jn_withEdits = SelectedAddress(Some(bf1_3aa), Some(ne1_6jn_edited), None)
 
-      //---------- entry form ----------
-      val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
-      val csrfToken = hiddenCsrfTokenValue(doc1)
-      val guid = hiddenGuidValue(doc1)
-      assert(guid === "abc123")
+        //---------- entry form ----------
+        val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
+        val csrfToken = hiddenCsrfTokenValue(doc1)
+        val guid = hiddenGuidValue(doc1)
+        assert(guid === "abc123")
 
-      //---------- proposal form ----------
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=BF1+3AA&filter=11")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
+        //---------- proposal form ----------
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=BF1+3AA&filter=11")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
 
-      val form1NameAndPostcode = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-        "number" -> "11", "postcode" -> "NE16JN")
-      val response2 = request("POST", s"$appContext/bfpo/addresses/$tag/propose", form1NameAndPostcode, cookies: _*)
+        val form1NameAndPostcode = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
+          "number" -> "11", "postcode" -> "BF13AA")
+        val response2 = request("POST", s"$appContext/bfpo/addresses/$tag/propose", form1NameAndPostcode, cookies: _*)
 
-      addressLookupStub.verify()
-      expectProposalForm(response2, 1, guid, "11", "BF1 3AA")
+        addressLookupStub.verify()
+        expectProposalForm(response2, 1, guid, "11", "BF1 3AA")
 
-      //---------- make edit request ----------
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=BF1+3AA&filter=2")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
+        //---------- make edit request ----------
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=BF1+3AA&filter=2")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
 
-      val response3 = request("GET", s"$appContext/bfpo/addresses/$tag/get-proposals/2/BF1%203AA/$guid?continue=confirmation&edit=10092787052", cookies: _*)
+        val response3 = request("GET", s"$appContext/bfpo/addresses/$tag/get-proposals/2/BF1%203AA/$guid?continue=confirmation&edit=10092787052", cookies: _*)
 
-      addressLookupStub.verify()
-      keystoreStub.verify()
-      expectProposalForm(response3, 1, guid, "2", "BF1 3AA")
+        addressLookupStub.verify()
+        keystoreStub.verify()
+        expectProposalForm(response3, 1, guid, "2", "BF1 3AA")
 
-      //---------- confirmation ----------
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10092787052")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
+        //---------- confirmation ----------
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=10092787052")) thenReturn(200, "application/json", writeValueAsString(List(bf1_3aa)))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
 
-      val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-        "number" -> "11", "prev-number" -> "11", "postcode" -> "BF1 3AA", "prev-postcode" -> "BF1 3AA", "radio-inline-group" -> "10092787052",
-        "address-lines" -> "11B Market Street", "town" -> "Newcastle upon Tyne", "county" -> "Northumbria")
+        val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
+          "number" -> "11", "prev-number" -> "11", "postcode" -> "BF1 3AA", "prev-postcode" -> "BF1 3AA", "radio-inline-group" -> "10092787052",
+          "address-lines" -> "11B Market Street", "town" -> "Newcastle upon Tyne", "county" -> "Northumbria")
 
-      val response4 = request("POST", s"$appContext/bfpo/addresses/$tag/select", form2PostcodeAndRadio, cookies: _*)
+        val response4 = request("POST", s"$appContext/bfpo/addresses/$tag/select", form2PostcodeAndRadio, cookies: _*)
 
-      addressLookupStub.verify()
-      keystoreStub.verify()
-      val page = expectConfirmationPage(response4)
-      assert(page.select("#confirmation .addr .norm").text.trim === "11 Market Street", response4.body)
-      assert(page.select("#confirmation .addr .user").text.trim === "11B Market Street", response4.body)
-      assert(page.select("#confirmation .county .norm").text.trim === "Tyne & Wear", response4.body)
-      assert(page.select("#confirmation .county .user").text.trim === "Northumbria", response4.body)
+        addressLookupStub.verify()
+        keystoreStub.verify()
+        val page = expectConfirmationPage(response4)
+        assert(page.select("#confirmation .addr .norm").text.trim === "Bfpo 2", response4.body)
+        assert(page.select("#confirmation .addr .int").text.trim === "11B Market Street", response4.body)
+        assert(page.select("#confirmation .postcode .norm").text.trim === "BF1 3AA", response4.body)
 
-      keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
+        keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
 
-      val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
+        val outcomeResponse = get(s"$appContext/outcome/$tag/$guid")
 
-      keystoreStub.verify()
-      assert(outcomeResponse.status === 200)
-      val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-      assert(outcome === ne1_6jn_withEdits)
+        keystoreStub.verify()
+        assert(outcomeResponse.status === 200)
+        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
+        assert(outcome === ne1_6jn_withEdits)
+      }
     }
 
 
     "journey 4: postcode entered; two proposal seen; bfpo number added; one proposal seen and picked without editing" ignore {
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
         val ne1_6jn_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
@@ -305,7 +306,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
 
     "journey 5: bfpo number and postcode entered; single proposal seen; bfpo number changed; single proposal seen and accepted without editing" ignore {
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
         val ne1_6jn_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
@@ -361,7 +362,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
 
     "journey 6: bfpo number and postcode entered; single proposal seen; bfpo number erased; two proposals seen; first accepted without editing" ignore {
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
         val ne1_6jn_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
@@ -422,7 +423,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
       addressLookupStub.clearExpectations()
       keystoreStub.clearExpectations()
 
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         val response = get(appContext + s"/bfpo/addresses/$tag/get-proposals/-/-/abc123")
         verifyEntryForm(response, 400)
 
@@ -434,7 +435,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
     "landing unexpectedly on the confirmation page causes redirection to the blank form" in {
       addressLookupStub.clearExpectations()
 
-      for (tag <- allTags) {
+      for (tag <- bfpoTags) {
         keystoreStub.clearExpectations()
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/a1c5d2ba")) thenReturn(404, "text/plain", "Not found")
 

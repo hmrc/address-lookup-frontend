@@ -38,6 +38,8 @@
         @helpers.form( address.uk.routes.UkAddressLookupController.postSelected(tag), 'id -> "myForm"  ) {
             <input type='hidden' id='guid' name='guid' value='@addressForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@addressForm("continue-url").value.get' />
+            <input type="hidden" id='back-url' name='back-url' value='@addressForm("back-url").value.getOrElse("")' />
+            <input type="hidden" id='back-text' name='back-text' value='@addressForm("back-text").value.getOrElse("")' />
             <input type='hidden' id='country-code' name='country-code' value='@addressForm("country-code").value.getOrElse("")' />
             <input type='hidden' id='prev-house-name-number' name='prev-house-name-number' value='@addressForm("prev-house-name-number").value.getOrElse("")' />
             <input type='hidden' id='prev-postcode'          name='prev-postcode'          value='@addressForm("prev-postcode").value.getOrElse("")' />
@@ -96,6 +98,13 @@
                 <button type="submit" name="submit" value="continue">Continue</button>
             </div>
         }
+        </div>
+        <div class="grid-wrapper nav">
+            <a class="page-nav__link page-nav__link--previous"
+            title="Navigate to previous page)" rel="prev" href="@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, Some(addressForm.get.guid), Some(addressForm.get.continue), addressForm.get.backUrl, addressForm.get.backText).url">
+                <span class="page-nav__label">Previous</span>
+                <span class="page-nav__title">Address Details</span>
+            </a>
         </div>
     </fieldset>
 

@@ -9,6 +9,8 @@ object BfpoForm {
     mapping(
       "guid" -> text,
       "continue-url" -> text,
+      "back-url" -> optional(text),
+      "back-text" -> optional(text),
       "address-lines" -> optional(text),
       "postcode" -> optional(text),
       "number" -> optional(text),
@@ -22,6 +24,8 @@ object BfpoForm {
 case class BfpoData(
                      guid: String,
                      continue: String,
+                     backUrl: Option[String],
+                     backText: Option[String],
                      lines: Option[String] = None,
                      postcode: Option[String] = None,
                      number: Option[String] = None,

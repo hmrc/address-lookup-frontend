@@ -93,6 +93,14 @@
             <div class="form-group">
                 <button type="submit" name="submit" value="continue">Continue</button>
             </div>
+
+            <div class="grid-wrapper nav">
+                <a class="page-nav__link page-nav__link--previous"
+                title="Navigate to previous page)" rel="prev" href="@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, Some(addressForm.get.guid), Some(addressForm.get.continue), addressForm.get.backUrl, addressForm.get.backText).url">
+                    <span class="page-nav__label">Previous</span>
+                    <span class="page-nav__title">Address Details</span>
+                </a>
+            </div>
         }
         </div>
     </fieldset>

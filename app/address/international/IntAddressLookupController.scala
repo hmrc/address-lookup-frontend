@@ -49,20 +49,20 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
 
   //-----------------------------------------------------------------------------------------------
 
-  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String]): Action[AnyContent] =
+  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).apply {
       implicit request =>
         if (cfg(tag).allowInternationalAddress) {
-          Ok(basicBlankForm(tag, guid, continue))
+          Ok(basicBlankForm(tag, guid, continue, backUrl, backText))
         } else {
           BadRequest("International addresses are not available")
         }
     }
 
-  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String])(implicit request: Request[_]) = {
+  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
-    val ad = IntAddressData(guid = actualGuid, continue = cu)
+    val ad = IntAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText)
     val bound = addressForm.fill(ad)
     blankIntForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)
   }
@@ -72,7 +72,6 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
   def postSelected(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        //println("form2: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankIntForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
@@ -101,7 +100,7 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
         fuResponse.map {
           response: Option[JsValue] =>
             if (response.isEmpty) {
-              val emptyFormRoute = routes.IntAddressLookupController.getEmptyForm(tag, Some(id), None)
+              val emptyFormRoute = routes.IntAddressLookupController.getEmptyForm(tag, Some(id), None, None, None)
               TemporaryRedirect(emptyFormRoute.url)
             } else {
               import SelectedAddress._

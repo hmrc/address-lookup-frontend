@@ -25,10 +25,10 @@
 
 <script type="text/javascript">
 function showUkTab() {
-    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value)';
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
 }
 function showIntTab() {
-    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value)';
+    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
 }
 </script>
 <div>
@@ -61,6 +61,8 @@ function showIntTab() {
         @helpers.form( address.bfpo.routes.BfpoAddressLookupController.postFirstForm(tag), 'id -> "myForm" ) {
             <input type='hidden' id='guid' name='guid' value='@addressForm("guid").value.get' />
             <input type='hidden' id='continue-url' name='continue-url' value='@addressForm("continue-url").value.get' />
+            <input type='hidden' id='back-url' name='back-url' value='@addressForm("back-url").value.getOrElse("")' />
+            <input type='hidden' id='back-text' name='back-text' value='@addressForm("back-text").value.getOrElse("")' />
 
             <div class="form-group">
                 @helper.inputText(addressForm("number"), 'class -> "form-control", '_label -> "BFPO number" )
@@ -87,6 +89,17 @@ function showIntTab() {
 
             <div class="form-group">
                 <button type="submit" name="submit" value="continue">Continue</button>
+            </div>
+
+            <div class="grid-wrapper nav">
+                @if(addressForm("back-url").value.isDefined) {
+                    <a class="page-nav__link page-nav__link--previous"
+                    title="Navigate to previous page)" rel="prev" href="@(addressForm("back-url").value.get)">
+                        <span class="page-nav__label">Previous</span>
+                        <span class="page-nav__title">@addressForm("back-text").value.get</span>
+                    </a>
+
+                }
             </div>
         }
         </div>

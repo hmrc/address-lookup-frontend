@@ -27,6 +27,8 @@ object IntAddressForm {
     mapping(
       "guid" -> text,
       "continue-url" -> text,
+      "back-url" -> optional(text),
+      "back-text" -> optional(text),
       "address" -> optional(text),
       "country" -> optional(text),
       "code" -> optional(text)
@@ -38,6 +40,8 @@ object IntAddressForm {
 case class IntAddressData(
                            guid: String,
                            continue: String,
+                           backUrl: Option[String],
+                           backText: Option[String],
                            address: Option[String] = None,
                            country: Option[String] = None,
                            code: Option[String] = None

@@ -34,7 +34,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
   "getEmptyForm" should {
 
     "display new empty form including the supplied guid, continue URL and country code" in new action {
-      val result = call(controller.getEmptyForm(tag, Some("abc123"), Some("/here/there/everywhere")), req)
+      val result = call(controller.getEmptyForm(tag, Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 200
       val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1
@@ -44,7 +44,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
     }
 
     "display new empty form including a generated guid if no guid is supplied" in new action {
-      val result = call(controller.getEmptyForm(tag, None, Some("/here/there/everywhere")), req)
+      val result = call(controller.getEmptyForm(tag, None, Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 200
       val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1
@@ -52,7 +52,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
     }
 
     "give bad-request if the tag is unknown" in new action {
-      val result = call(controller.getEmptyForm("no-such-tag", Some("abc123"), Some("/here/there/everywhere")), req)
+      val result = call(controller.getEmptyForm("no-such-tag", Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 400
     }
   }
@@ -61,7 +61,7 @@ class UkAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneA
   "getProposals" should {
 
     "give bad-request if the tag is unknown" in new action {
-      val result = call(controller.getProposals("no-such-tag", "", "SE1 9PY", "abc123", None, None), req)
+      val result = call(controller.getProposals("no-such-tag", "", "SE1 9PY", "abc123", None, None, None, None), req)
       status(result) mustBe 400
     }
   }

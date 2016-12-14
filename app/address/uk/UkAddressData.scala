@@ -27,6 +27,8 @@ object UkAddressForm {
     mapping(
       "guid" -> text,
       "continue-url" -> text,
+      "back-url" -> optional(text),
+      "back-text" -> optional(text),
       "no-fixed-address" -> boolean,
       "house-name-number" -> optional(text),
       "postcode" -> optional(text),
@@ -45,6 +47,8 @@ object UkAddressForm {
 case class UkAddressData(
                         guid: String,
                         continue: String,
+                        backUrl: Option[String],
+                        backText: Option[String],
                         noFixedAddress: Boolean = false,
                         nameNo: Option[String] = None,
                         postcode: Option[String] = None,

@@ -29,7 +29,7 @@ object UkProposalsPage {
   import address.ViewConfig._
 
   def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
-                                  guid: String, continue: Option[String],
+                                  guid: String, continue: Option[String], backUrl: Option[String], backText: Option[String],
                                   matchingAddresses: List[AddressRecord], editUprn: Option[Long])
                                  (implicit request: Request[_]): Html = {
     val ar = if (editUprn.isDefined) matchingAddresses.find(_.uprn == editUprn).getOrElse(matchingAddresses.head) else matchingAddresses.head
@@ -48,6 +48,8 @@ object UkProposalsPage {
     val updatedDetails = UkAddressData(
       guid = guid,
       continue = continue.getOrElse(defaultContinueUrl),
+      backUrl = backUrl,
+      backText = backText,
       nameNo = nameNo,
       prevNameNo = nameNo,
       postcode = Some(postcode),
@@ -59,7 +61,7 @@ object UkProposalsPage {
       countryCode = country.map(_.code)
     )
 
-    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None)
+    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None, backUrl, backText)
     val filledInForm = addressForm.fill(updatedDetails)
     proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
   }

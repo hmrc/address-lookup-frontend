@@ -30,6 +30,7 @@ object BfpoProposalsPage {
 
   def showAddressListProposalForm(tag: String, number: Option[String], postcode: String,
                                   guid: String, continue: Option[String],
+                                  backUrl: Option[String], backText: Option[String],
                                   matchingAddresses: List[AddressRecord], editUprn: Option[Long])
                                  (implicit request: Request[_]): Html = {
     val ar = if (editUprn.isDefined) matchingAddresses.find(_.uprn == editUprn).getOrElse(matchingAddresses.head) else matchingAddresses.head
@@ -48,6 +49,8 @@ object BfpoProposalsPage {
     val updatedDetails = BfpoData(
       guid = guid,
       continue = continue.getOrElse(defaultContinueUrl),
+      backUrl = backUrl,
+      backText = backText,
       lines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None,
       postcode = Some(postcode),
       prevPostcode = Some(postcode),
@@ -56,7 +59,7 @@ object BfpoProposalsPage {
       uprn = ar.uprn.map(_.toString)
     )
 
-    val editUrl = routes.BfpoAddressLookupController.getProposals(tag, number.getOrElse("-"), postcode, guid, continue, None)
+    val editUrl = routes.BfpoAddressLookupController.getProposals(tag, number.getOrElse("-"), postcode, guid, continue, None, backUrl, backText)
     val filledInForm = bfpoForm.fill(updatedDetails)
     proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
   }

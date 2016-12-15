@@ -16,13 +16,17 @@
 
 package config
 
+import play.api.Play
 import play.api.Play.{configuration, current}
+import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 object FrontendAuditConnector extends Auditing with AppName {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
@@ -50,3 +54,16 @@ object FrontendSessionCache extends SessionCache with AppName with ServicesConfi
   override lazy val domain = mustGetConfigString(configuration, "cachable.session-cache.domain")
 }
 
+object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
+
+  private def whitelistConfig(key: String): Seq[String] = Play.configuration.getString(key).getOrElse("").split(",").toSeq
+
+  override def whitelist: Seq[String] = whitelistConfig("whitelist")
+
+  override def excludedPaths: Seq[Call] = whitelistConfig("whitelistExcludedCalls").map {
+    path => Call("GET", path)
+  }
+
+  override def destination: Call = Call("GET", "https://www.tax.service.gov.uk/")
+
+}

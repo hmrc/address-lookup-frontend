@@ -21,7 +21,7 @@ import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Request
+import play.api.mvc.{EssentialFilter, Request}
 import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
 import uk.gov.hmrc.crypto.ApplicationCrypto
@@ -57,6 +57,17 @@ object FrontendGlobal
   val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   val logger = new LoggerFacade(Logger.logger)
+
+  lazy val whitelistFilter = {
+    Play.configuration.getBoolean("enableWhitelist") match {
+      case Some(true) => Seq(WhitelistFilter)
+      case _ => Seq.empty
+    }
+  }
+
+  override def filters: Seq[EssentialFilter] =  {
+    whitelistFilter ++ super.filters
+  }
 }
 
 

@@ -38,6 +38,7 @@ object HmrcBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "play-health" % "2.0.0",
     "uk.gov.hmrc" %% "play-ui" % "5.2.0",
     "uk.gov.hmrc" %% "http-caching-client" % "6.0.0",
+    "uk.gov.hmrc" %% "play-whitelist-filter" % "2.0.0",
     "com.univocity" % "univocity-parsers" % "1.5.6" withSources(),
     "uk.gov.hmrc" %% "play-async" % "1.0.0",
     "com.fasterxml.uuid" % "java-uuid-generator" % "3.1.3",

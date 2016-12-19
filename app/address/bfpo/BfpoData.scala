@@ -31,7 +31,7 @@ case class BfpoData(
                      number: Option[String] = None,
                      prevPostcode: Option[String] = None,
                      prevNumber: Option[String] = None,
-                     uprn: Option[String] = None
+                     uprnId: Option[String] = None
                    ) {
 
   def hasBeenUpdated: Boolean = (prevNumber != number) || (prevPostcode != postcode)

@@ -61,13 +61,15 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
 
   //-----------------------------------------------------------------------------------------------
 
-  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
+  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String],
+                   backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).apply {
       implicit request =>
         Ok(basicBlankForm(tag, guid, continue, backUrl, backText))
     }
 
-  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
+  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String],
+                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
     val ad = UkAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText, countryCode = Some(UkCode))
@@ -118,7 +120,8 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
 
   //-----------------------------------------------------------------------------------------------
 
-  def getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
+  def getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String],
+                   editId: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
         val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
@@ -144,7 +147,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
                 Ok(blankUkForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
 
               } else {
-                Ok(showAddressListProposalForm(tag, optNameNo, uPostcode.get.toString, guid, continue, backUrl, backText, list, edit))
+                Ok(showAddressListProposalForm(tag, optNameNo, uPostcode.get.toString, guid, continue, backUrl, backText, list, editId))
               }
           }
         }
@@ -182,7 +185,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
     val nfa = if (addressData.noFixedAddress) "nfa=1&" else ""
     val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
 
-    if (addressData.uprn.isEmpty) {
+    if (addressData.uprnId.isEmpty) {
       val response = SelectedAddress(userSuppliedAddress = addressData.editedAddress, noFixedAddress = addressData.noFixedAddress)
       memo.storeSingleResponse(tag, addressData.guid, response) map {
         httpResponse =>
@@ -190,11 +193,10 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
       }
 
     } else {
-      val uprn = s"uprn=${addressData.uprn.get}&"
-      lookup.findByUprn(addressData.uprn.get.toLong) flatMap {
-        list =>
+      lookup.findById(addressData.uprnId.get) flatMap {
+        normativeAddress =>
           val response = SelectedAddress(
-            normativeAddress = list.headOption,
+            normativeAddress = normativeAddress,
             userSuppliedAddress = addressData.editedAddress,
             noFixedAddress = addressData.noFixedAddress)
           memo.storeSingleResponse(tag, addressData.guid, response) map {

@@ -29,17 +29,21 @@ object UkProposalsPage {
   import address.ViewConfig._
 
   def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
-                                  guid: String, continue: Option[String], backUrl: Option[String], backText: Option[String],
-                                  matchingAddresses: List[AddressRecord], editUprn: Option[Long])
+                                  guid: String, continue: Option[String],
+                                  backUrl: Option[String], backText: Option[String],
+                                  matchingAddresses: List[AddressRecord], editId: Option[String])
                                  (implicit request: Request[_]): Html = {
-    val ar = if (editUprn.isDefined) matchingAddresses.find(_.uprn == editUprn).getOrElse(matchingAddresses.head) else matchingAddresses.head
-    val selectedUprn =
+    val ar =
+      if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
+      else matchingAddresses.head
+
+    val selectedUprnId =
       if (matchingAddresses.size == 1) {
-        ar.uprn.getOrElse(-1L)
-      } else if (editUprn.isDefined) {
-        editUprn.get
+        ar.id
+      } else if (editId.isDefined) {
+        editId.get
       } else {
-        -1L
+        ""
       }
 
     val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
@@ -54,15 +58,17 @@ object UkProposalsPage {
       prevNameNo = nameNo,
       postcode = Some(postcode),
       prevPostcode = Some(postcode),
-      uprn = ar.uprn.map(_.toString),
+      uprnId = Some(ar.id),
       editedLines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None,
       editedTown = ad.town,
       editedCounty = ad.county,
       countryCode = country.map(_.code)
     )
 
-    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue, None, backUrl, backText)
+    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue,
+      None, backUrl, backText)
     val filledInForm = addressForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
+    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprnId,
+      editId.nonEmpty, editUrl.url)
   }
 }

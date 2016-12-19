@@ -143,11 +143,11 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectProposalForm(response2, 2, guid, "", "NE1 6JN")
 
         //---------- confirmation ----------
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510737202")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_a))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2PostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
+          "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510737202")
         val response3 = request("POST", s"$appContext/uk/addresses/$tag/select", form2PostcodeOnly, cookies: _*)
 
         addressLookupStub.verify()
@@ -189,11 +189,11 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectProposalForm(response2, 1, guid, "11", "NE1 6JN")
 
         //---------- confirmation ----------
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510737202")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_a))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
+          "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510737202")
         val response3 = request("POST", s"$appContext/uk/addresses/$tag/select", form2PostcodeAndRadio, cookies: _*)
 
         addressLookupStub.verify()
@@ -247,18 +247,18 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       //---------- make edit request ----------
       addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?postcode=NE1+6JN&filter=11")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
 
-      val response3 = request("GET", s"$appContext/uk/addresses/$tag/get-proposals/11/NE1%206JN/$guid?continue=confirmation&edit=4510737202", cookies: _*)
+      val response3 = request("GET", s"$appContext/uk/addresses/$tag/get-proposals/11/NE1%206JN/$guid?continue=confirmation&editId=GB4510737202", cookies: _*)
 
       addressLookupStub.verify()
       keystoreStub.verify()
       expectProposalForm(response3, 1, guid, "11", "NE1 6JN")
 
       //---------- confirmation ----------
-      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
+      addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510737202")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_a))
       keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withEdits))
 
       val form2PostcodeAndRadio = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-        "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202",
+        "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510737202",
         "address-lines" -> "11B Market Street", "town" -> "Newcastle upon Tyne", "county" -> "Northumbria")
 
       val response4 = request("POST", s"$appContext/uk/addresses/$tag/select", form2PostcodeAndRadio, cookies: _*)
@@ -315,11 +315,11 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectProposalForm(response3, 2, guid, "11", "NE1 6JN")
 
         //---------- confirmation ----------
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510737202")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_a))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BRadioSelected = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
+          "house-name-number" -> "11", "prev-house-name-number" -> "11", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510737202")
         val response4 = request("POST", s"$appContext/uk/addresses/$tag/select", form2BRadioSelected, cookies: _*)
 
         addressLookupStub.verify()
@@ -371,11 +371,11 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectProposalForm(response3, 1, guid, "Royal", "NE1 6JN")
 
         //---------- confirmation ----------
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510141231")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_b)))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510141231")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_b))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "house-name-number" -> "Royal", "prev-house-name-number" -> "Royal", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510141231")
+          "house-name-number" -> "Royal", "prev-house-name-number" -> "Royal", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510141231")
         val response4 = request("POST", s"$appContext/uk/addresses/$tag/select", form2BPostcodeOnly, cookies: _*)
 
         addressLookupStub.verify()
@@ -427,11 +427,11 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         expectProposalForm(response3, 2, guid, "", "NE1 6JN")
 
         //---------- confirmation ----------
-        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses?uprn=4510737202")) thenReturn(200, "application/json", writeValueAsString(List(ne1_6jn_a)))
+        addressLookupStub.expect(StubMethod.get("/v2/uk/addresses/GB4510737202")) thenReturn(200, "application/json", writeValueAsString(ne1_6jn_a))
         keystoreStub.expect(StubMethod.get(s"/keystore/address-lookup/abc123")) thenReturn(200, "application/json", keystoreResponseString(tag, ne1_6jn_withoutEdits))
 
         val form2BPostcodeOnly = Map("csrfToken" -> csrfToken, "guid" -> guid, "continue-url" -> "confirmation", "country-code" -> "UK",
-          "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "4510737202")
+          "house-name-number" -> "", "prev-house-name-number" -> "", "postcode" -> "NE1 6JN", "prev-postcode" -> "NE1 6JN", "radio-inline-group" -> "GB4510737202")
         val response4 = request("POST", s"$appContext/uk/addresses/$tag/select", form2BPostcodeOnly, cookies: _*)
 
         addressLookupStub.verify()

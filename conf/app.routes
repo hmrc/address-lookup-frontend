@@ -5,14 +5,14 @@ GET    /                                                        address.uk.UkAdd
 # Main UK user interface
 GET    /uk/addresses/:tag                                       address.uk.UkAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])
 POST   /uk/addresses/:tag/propose                               address.uk.UkAddressLookupController.postFirstForm(tag: String)
-GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.UkAddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long], backUrl: Option[String], backText:Option[String])
+GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.UkAddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], editId: Option[String], backUrl: Option[String], backText:Option[String])
 POST   /uk/addresses/:tag/select                                address.uk.UkAddressLookupController.postSelected(tag: String)
 GET    /uk/addresses/:tag/confirmation                          address.uk.UkAddressLookupController.confirmation(tag: String, id: String )
 
 # BFPO user interface
 GET    /bfpo/addresses/:tag                                       address.bfpo.BfpoAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])
 POST   /bfpo/addresses/:tag/propose                               address.bfpo.BfpoAddressLookupController.postFirstForm(tag: String)
-GET    /bfpo/addresses/:tag/get-proposals/:number/:postcode/:guid address.bfpo.BfpoAddressLookupController.getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long], backUrl: Option[String], backText: Option[String])
+GET    /bfpo/addresses/:tag/get-proposals/:number/:postcode/:guid address.bfpo.BfpoAddressLookupController.getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], editId: Option[String], backUrl: Option[String], backText: Option[String])
 POST   /bfpo/addresses/:tag/select                                address.bfpo.BfpoAddressLookupController.postSelected(tag: String)
 GET    /bfpo/addresses/:tag/confirmation                          address.bfpo.BfpoAddressLookupController.confirmation(tag: String, id: String )
 

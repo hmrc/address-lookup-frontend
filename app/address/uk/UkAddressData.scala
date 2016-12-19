@@ -45,20 +45,20 @@ object UkAddressForm {
 
 
 case class UkAddressData(
-                        guid: String,
-                        continue: String,
-                        backUrl: Option[String],
-                        backText: Option[String],
-                        noFixedAddress: Boolean = false,
-                        nameNo: Option[String] = None,
-                        postcode: Option[String] = None,
-                        prevNameNo: Option[String] = None,
-                        prevPostcode: Option[String] = None,
-                        uprn: Option[String] = None,
-                        editedLines: Option[String] = None,
-                        editedTown: Option[String] = None,
-                        editedCounty: Option[String] = None,
-                        countryCode: Option[String] = None
+                          guid: String,
+                          continue: String,
+                          backUrl: Option[String],
+                          backText: Option[String],
+                          noFixedAddress: Boolean = false,
+                          nameNo: Option[String] = None,
+                          postcode: Option[String] = None,
+                          prevNameNo: Option[String] = None,
+                          prevPostcode: Option[String] = None,
+                          uprnId: Option[String] = None,
+                          editedLines: Option[String] = None,
+                          editedTown: Option[String] = None,
+                          editedCounty: Option[String] = None,
+                          countryCode: Option[String] = None
                       ) extends PathElements {
 
   def hasBeenUpdated: Boolean = (prevNameNo != nameNo) || (prevPostcode != postcode)

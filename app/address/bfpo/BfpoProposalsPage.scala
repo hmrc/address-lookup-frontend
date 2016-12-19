@@ -31,16 +31,19 @@ object BfpoProposalsPage {
   def showAddressListProposalForm(tag: String, number: Option[String], postcode: String,
                                   guid: String, continue: Option[String],
                                   backUrl: Option[String], backText: Option[String],
-                                  matchingAddresses: List[AddressRecord], editUprn: Option[Long])
+                                  matchingAddresses: List[AddressRecord], editId: Option[String])
                                  (implicit request: Request[_]): Html = {
-    val ar = if (editUprn.isDefined) matchingAddresses.find(_.uprn == editUprn).getOrElse(matchingAddresses.head) else matchingAddresses.head
-    val selectedUprn =
+    val ar =
+      if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
+      else matchingAddresses.head
+
+    val selectedUprnId =
       if (matchingAddresses.size == 1) {
-        ar.uprn.getOrElse(-1L)
-      } else if (editUprn.isDefined) {
-        editUprn.get
+        ar.id
+      } else if (editId.isDefined) {
+        editId.get
       } else {
-        -1L
+        ""
       }
 
     val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
@@ -56,11 +59,11 @@ object BfpoProposalsPage {
       prevPostcode = Some(postcode),
       number = number,
       prevNumber = number,
-      uprn = ar.uprn.map(_.toString)
+      uprnId = Some(ar.id)
     )
 
     val editUrl = routes.BfpoAddressLookupController.getProposals(tag, number.getOrElse("-"), postcode, guid, continue, None, backUrl, backText)
     val filledInForm = bfpoForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprn, editUprn.isDefined, editUrl.url)
+    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprnId, editId.nonEmpty, editUrl.url)
   }
 }

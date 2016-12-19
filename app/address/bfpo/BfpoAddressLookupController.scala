@@ -54,13 +54,15 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
-  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
+  def getEmptyForm(tag: String, guid: Option[String], continue: Option[String],
+                   backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).apply {
       implicit request =>
         Ok(basicBlankForm(tag, guid, continue, backUrl, backText))
     }
 
-  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
+  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String],
+                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
     val ad = BfpoData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText)
@@ -98,7 +100,8 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
       } else {
         val cu = Some(formData.continue)
         val number = formData.number.getOrElse("-")
-        val proposalsRoute = routes.BfpoAddressLookupController.getProposals(tag, number, pc.get.toString, formData.guid, cu, None, formData.backUrl, formData.backText)
+        val proposalsRoute = routes.BfpoAddressLookupController.getProposals(tag, number, pc.get.toString, formData.guid, cu,
+          None, formData.backUrl, formData.backText)
         SeeOther(proposalsRoute.url)
       }
     }
@@ -106,7 +109,8 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
   //-----------------------------------------------------------------------------------------------
 
-  def getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], edit: Option[Long], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
+  def getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String],
+                   editId: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
         val optNumber = if (number.isEmpty || number == "-") None else Some(number)
@@ -130,7 +134,7 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
                 Ok(blankBfpoForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty))
 
               } else {
-                Ok(showAddressListProposalForm(tag, optNumber, uPostcode.get.toString, guid, continue, backUrl, backText, list, edit))
+                Ok(showAddressListProposalForm(tag, optNumber, uPostcode.get.toString, guid, continue, backUrl, backText, list, editId))
               }
           }
         }
@@ -165,11 +169,10 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
 
   private def continueToCompletion(tag: String, bfpoData: BfpoData, request: Request[_]): Future[Result] = {
-    val uprn = s"uprn=${bfpoData.uprn.get}&"
-    lookup.findByUprn(bfpoData.uprn.get.toLong) flatMap {
-      list =>
+    lookup.findById(bfpoData.uprnId.get) flatMap {
+      normativeAddress =>
         val response = SelectedAddress(
-          normativeAddress = list.headOption,
+          normativeAddress = normativeAddress,
           bfpo = Some(bfpoData.toInternational))
         memo.storeSingleResponse(tag, bfpoData.guid, response) map {
           httpResponse =>

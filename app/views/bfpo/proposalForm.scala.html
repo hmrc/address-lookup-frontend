@@ -18,7 +18,7 @@
   view: ViewConfig,
   addressForm: Form[address.bfpo.BfpoData],
   addressList: List[uk.gov.hmrc.address.v2.AddressRecord],
-  selectedUprn: Long,
+  selectedUprnId: String,
   canEdit: Boolean,
   editUrl: String)(implicit request: Request[_], messages: Messages)
 
@@ -57,18 +57,18 @@
                     <tbody>
                     @for(a <- addressList) {
                         <tr>
-                            <td class="selection"><input id='a@{a.uprn.get}'
+                            <td class="selection"><input id='a@{a.id}'
                                 type="radio" name="radio-inline-group"
-                                @if(a.uprn.contains(selectedUprn)) {
+                                @if(a.id==selectedUprnId) {
                                     checked="checked"
                                 }
-                                value='@{a.uprn.get}' />
+                                value='@{a.id}' />
                             </td>
-                            <td><label for='a@{a.uprn.get}'
+                            <td><label for='a@{a.id}'
                                 >@{a.address.printable}
                             </label>
                             @if(editUrl.nonEmpty) {
-                                <span class="edit-link"><a href="@{editUrl}&edit=@{a.uprn.get}">(edit)</a></span>
+                                <span class="edit-link"><a href="@{editUrl}&editId=@{a.id}">(edit)</a></span>
                             }
                             </td>
                         </tr>

@@ -19,7 +19,7 @@ sm --start ADDRESS_LOOKUP_FRONTEND -f
 nice sbt run
 ```
 
-Browse to http://localhost:9028/address-lookup-frontend/
+Browse to http://localhost:9028/lookup-address/
 
 ## Operation Overview
 

@@ -78,7 +78,7 @@ trait AppServerUnderTest extends SuiteMixin with ServerProvider with AppServerTe
 
   override lazy val appEndpoint = s"http://localhost:$port"
 
-  def appContext: String = "/" + FrontendGlobal.appName
+  def appContext: String = "/lookup-address"
 
   abstract override def run(testName: Option[String], args: Args): Status = {
     beforeAppServerStarts()

@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /address-lookup-frontend     app.Routes
+->         /lookup-address              app.Routes
 ->         /                            health.Routes
 ->     	   /template                    template.Routes
 

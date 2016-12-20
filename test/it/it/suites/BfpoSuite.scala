@@ -55,15 +55,14 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK)
-  val sr = SelectedAddress(Some(bf1_3aa), Some(edited), None)
 
   implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
 
   "entry form errors" must {
     "when postcode is left blank, remain on the entry form" in {
       keystoreStub.clearExpectations()
-      val se1_9py_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
-      val nfaWithoutEdits = SelectedAddress(None, None, None, None, true)
+      val se1_9py_withoutEdits = SelectedAddress(normativeAddress = Some(bf1_3aa))
+      val nfaWithoutEdits = SelectedAddress(noFixedAddress = true)
 
       for (tag <- bfpoTags) {
         //---------- entry form ----------
@@ -90,7 +89,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
       for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val bf1_3aa_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
+        val bf1_3aa_withoutEdits = SelectedAddress(normativeAddress = Some(bf1_3aa))
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -137,7 +136,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
       for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val bf1_3aa_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
+        val bf1_3aa_withoutEdits = SelectedAddress(normativeAddress = Some(bf1_3aa))
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")
@@ -254,7 +253,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
       for (tag <- bfpoTags) {
         addressLookupStub.clearExpectations()
         keystoreStub.clearExpectations()
-        val bf1_3aa_withoutEdits = SelectedAddress(Some(bf1_3aa), None, None)
+        val bf1_3aa_withoutEdits = SelectedAddress(normativeAddress = Some(bf1_3aa))
 
         //---------- entry form ----------
         val (cookies, doc1) = step1EntryForm(s"$tag?id=abc123")

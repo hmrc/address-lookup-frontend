@@ -25,10 +25,10 @@
 
 <script type="text/javascript">
 function showUkTab() {
-    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value).url';
 }
 function showIntTab() {
-    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
+    window.location.href = '@address.international.routes.IntAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value).url';
 }
 </script>
 <div>

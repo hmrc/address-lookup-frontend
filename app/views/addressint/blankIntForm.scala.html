@@ -26,10 +26,10 @@
 
 <script type="text/javascript">
 function showUkTab() {
-    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
+    window.location.href = '@address.uk.routes.UkAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value).url';
 }
 function showBfpoTab() {
-    window.location.href = '@address.bfpo.routes.BfpoAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value)';
+    window.location.href = '@address.bfpo.routes.BfpoAddressLookupController.getEmptyForm(tag, addressForm("guid").value, addressForm("continue-url").value, addressForm("back-url").value, addressForm("back-text").value).url';
 }
 function copyCountryCode() {
     var code = $('#country option:selected').data('code');

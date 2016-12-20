@@ -17,22 +17,18 @@
 package address.bfpo
 
 import address.bfpo.BfpoForm.bfpoForm
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.Messages
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.address.v2.{AddressRecord, Country}
+import uk.gov.hmrc.address.v2.AddressRecord
 import views.html.bfpo.proposalForm
 
 object BfpoProposalsPage {
 
   import address.ViewConfig._
 
-  def showAddressListProposalForm(tag: String, number: Option[String], postcode: String,
-                                  guid: String, continue: Option[String],
-                                  backUrl: Option[String], backText: Option[String],
-                                  matchingAddresses: List[AddressRecord], editId: Option[String])
-                                 (implicit request: Request[_]): Html = {
+  def showAddressListProposalForm(tag: String, data: BfpoData, matchingAddresses: List[AddressRecord], editId: Option[String])
+                                 (implicit request: Request[_], messages: Messages): Html = {
     val ar =
       if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
       else matchingAddresses.head
@@ -46,24 +42,20 @@ object BfpoProposalsPage {
         ""
       }
 
-    val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
-
-    val ad = ar.address
-    val updatedDetails = BfpoData(
-      guid = guid,
-      continue = continue.getOrElse(defaultContinueUrl),
-      backUrl = backUrl,
-      backText = backText,
-      lines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None,
-      postcode = Some(postcode),
-      prevPostcode = Some(postcode),
-      number = number,
-      prevNumber = number,
+    val updatedDetails = data.copy(
+      lines = if (ar.address.lines.nonEmpty) Some(ar.address.lines.mkString("\n")) else None,
       uprnId = Some(ar.id)
     )
 
-    val editUrl = routes.BfpoAddressLookupController.getProposals(tag, number.getOrElse("-"), postcode, guid, continue, None, backUrl, backText)
+    val editUrl = routes.BfpoAddressLookupController.getProposals(tag,
+      data.number.getOrElse("-"), data.postcode.getOrElse("-"), data.guid, Some(data.continue),
+      editId, data.backUrl, data.backText)
+
     val filledInForm = bfpoForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprnId, editId.nonEmpty, editUrl.url)
+
+    val indicator = if (data.number.isDefined) "BFPO " + data.number.get else data.postcode.get
+
+    proposalForm(tag, cfg(tag).copy(indicator = Some(indicator)), filledInForm, matchingAddresses,
+      selectedUprnId, editId.nonEmpty, editUrl.url)
   }
 }

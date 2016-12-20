@@ -29,8 +29,8 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.address.uk.Postcode
-import uk.gov.hmrc.address.v2.{Address, Countries}
+import uk.gov.hmrc.address.uk.{Outcode, Postcode}
+import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
@@ -87,21 +87,21 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
     }
 
   private def fixedAddress(tag: String, formData: BfpoData)(implicit request: Request[_]) = {
-    if (formData.postcode.isEmpty) {
-      val formWithError = bfpoForm.fill(formData).withError("postcode", "A post code is required")
+    if (formData.postcode.isEmpty && formData.number.isEmpty) {
+      val formWithError = bfpoForm.fill(formData).withError("postcode", "Either a post code or a BFPO number is required")
       BadRequest(blankBfpoForm(tag, cfg(tag), formWithError, noMatchesWereFound = false))
 
     } else {
-      val pc = Postcode.cleanupPostcode(formData.postcode.get)
-      if (pc.isEmpty) {
+      val pc = formData.postcode.flatMap(Postcode.cleanupPostcode)
+      if (formData.postcode.isDefined && pc.isEmpty) {
         val formWithError = bfpoForm.fill(formData).withError("postcode", "A valid post code is required")
         BadRequest(blankBfpoForm(tag, cfg(tag), formWithError, noMatchesWereFound = false))
 
       } else {
         val cu = Some(formData.continue)
         val number = formData.number.getOrElse("-")
-        val proposalsRoute = routes.BfpoAddressLookupController.getProposals(tag, number, pc.get.toString, formData.guid, cu,
-          None, formData.backUrl, formData.backText)
+        val proposalsRoute = routes.BfpoAddressLookupController.getProposals(tag, number, pc.map(_.toString).getOrElse("-"),
+          formData.guid, cu, None, formData.backUrl, formData.backText)
         SeeOther(proposalsRoute.url)
       }
     }
@@ -109,36 +109,57 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
 
   //-----------------------------------------------------------------------------------------------
 
+  private val BF1 = Outcode("BF1") // covers all BFPO addresses
+
   def getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String],
                    editId: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        val optNumber = if (number.isEmpty || number == "-") None else Some(number)
+        val optNumber = normaliseNumber(number)
         val uPostcode = Postcode.cleanupPostcode(postcode)
-        if (uPostcode.isEmpty) {
-          val bound = bfpoForm.bindFromRequest()(request)
+        val cu = continue.getOrElse(defaultContinueUrl)
+        val pc = uPostcode.map(_.toString)
+        val data = BfpoData(guid = guid, continue = cu,
+          backUrl = backUrl, backText = backText,
+          number = optNumber, postcode = pc,
+          prevNumber = optNumber, prevPostcode = pc
+        )
+        if (optNumber.isEmpty && uPostcode.isEmpty) {
           Future.successful(BadRequest(basicBlankForm(tag, Some(guid), continue, backUrl, backText)))
 
-        } else {
-          lookup.findByPostcode(uPostcode.get, optNumber) map {
-            list =>
-              val cu = continue.getOrElse(defaultContinueUrl)
-              if (list.isEmpty) {
-                val pc = uPostcode.map(_.toString)
-                val ad = BfpoData(guid = guid, continue = cu,
-                  backUrl = backUrl, backText = backText,
-                  number = optNumber, postcode = pc,
-                  prevNumber = optNumber, prevPostcode = pc
-                )
-                val filledInForm = bfpoForm.fill(ad)
-                Ok(blankBfpoForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty))
+        } else if (uPostcode.isDefined) {
+          lookup.findByPostcode(uPostcode.get, None) map {
+            list => showProposals(tag, data, list, editId)
+          }
 
-              } else {
-                Ok(showAddressListProposalForm(tag, optNumber, uPostcode.get.toString, guid, continue, backUrl, backText, list, editId))
-              }
+        } else {
+          lookup.findByOutcode(BF1, number) map {
+            list => showProposals(tag, data, list, editId)
           }
         }
     }
+
+  private def normaliseNumber(number: String) = {
+    val t = number.trim
+    if (number.isEmpty || number == "-") {
+      None
+    } else if (t.toUpperCase.startsWith("BFPO ")) {
+      Some(t.substring(5).trim)
+    } else {
+      Some(t)
+    }
+  }
+
+  private def showProposals(tag: String, data: BfpoData, list: List[AddressRecord], editId: Option[String])
+                           (implicit request: Request[_]) = {
+    if (list.isEmpty) {
+      val filledInForm = bfpoForm.fill(data)
+      Ok(blankBfpoForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty))
+
+    } else {
+      Ok(showAddressListProposalForm(tag, data, list, editId))
+    }
+  }
 
   //-----------------------------------------------------------------------------------------------
 

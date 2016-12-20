@@ -104,7 +104,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
       BadRequest(blankUkForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
 
     } else {
-      val pc = Postcode.cleanupPostcode(formData.postcode.get)
+      val pc = formData.postcode.flatMap(Postcode.cleanupPostcode)
       if (pc.isEmpty) {
         val formWithError = addressForm.fill(formData).withError("postcode", "A valid post code is required")
         BadRequest(blankUkForm(tag, cfg(tag), formWithError, noMatchesWereFound = false, exceededLimit = false))
@@ -124,10 +124,9 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
                    editId: Option[String], backUrl: Option[String], backText: Option[String]): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        val optNameNo = if (nameNo.isEmpty || nameNo == "-") None else Some(nameNo)
+        val optNameNo = normaliseNumber(nameNo)
         val uPostcode = Postcode.cleanupPostcode(postcode)
         if (uPostcode.isEmpty) {
-          val bound = addressForm.bindFromRequest()(request)
           Future.successful(BadRequest(basicBlankForm(tag, Some(guid), continue, backUrl, backText)))
 
         } else {
@@ -135,23 +134,32 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
             list =>
               val cu = continue.getOrElse(defaultContinueUrl)
               val exceededLimit = list.size > cfg(tag).maxAddressesToShow
+              val pc = uPostcode.map(_.toString)
+              val data = UkAddressData(guid = guid, continue = cu,
+                backUrl = backUrl, backText = backText,
+                nameNo = optNameNo, postcode = pc,
+                prevNameNo = optNameNo, prevPostcode = pc,
+                countryCode = Some(UkCode)
+              )
               if (list.isEmpty || exceededLimit) {
-                val pc = uPostcode.map(_.toString)
-                val ad = UkAddressData(guid = guid, continue = cu,
-                  backUrl = backUrl, backText = backText,
-                  nameNo = optNameNo, postcode = pc,
-                  prevNameNo = optNameNo, prevPostcode = pc,
-                  countryCode = Some(UkCode)
-                )
-                val filledInForm = addressForm.fill(ad)
+                val filledInForm = addressForm.fill(data)
                 Ok(blankUkForm(tag, cfg(tag), filledInForm, noMatchesWereFound = list.isEmpty, exceededLimit = exceededLimit))
 
               } else {
-                Ok(showAddressListProposalForm(tag, optNameNo, uPostcode.get.toString, guid, continue, backUrl, backText, list, editId))
+                Ok(showAddressListProposalForm(tag, data, list, editId))
               }
           }
         }
     }
+
+  private def normaliseNumber(number: String) = {
+    val t = number.trim
+    if (number.isEmpty || number == "-") {
+      None
+    } else {
+      Some(t)
+    }
+  }
 
   //-----------------------------------------------------------------------------------------------
 

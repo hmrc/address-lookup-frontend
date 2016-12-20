@@ -16,8 +16,7 @@
 
 package address.uk
 
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.Messages
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.address.v2.{AddressRecord, Country}
@@ -28,11 +27,8 @@ object UkProposalsPage {
   import UkAddressForm.addressForm
   import address.ViewConfig._
 
-  def showAddressListProposalForm(tag: String, nameNo: Option[String], postcode: String,
-                                  guid: String, continue: Option[String],
-                                  backUrl: Option[String], backText: Option[String],
-                                  matchingAddresses: List[AddressRecord], editId: Option[String])
-                                 (implicit request: Request[_]): Html = {
+  def showAddressListProposalForm(tag: String, data: UkAddressData, matchingAddresses: List[AddressRecord], editId: Option[String])
+                                 (implicit request: Request[_], messages: Messages): Html = {
     val ar =
       if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
       else matchingAddresses.head
@@ -48,27 +44,21 @@ object UkProposalsPage {
 
     val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
 
-    val ad = ar.address
-    val updatedDetails = UkAddressData(
-      guid = guid,
-      continue = continue.getOrElse(defaultContinueUrl),
-      backUrl = backUrl,
-      backText = backText,
-      nameNo = nameNo,
-      prevNameNo = nameNo,
-      postcode = Some(postcode),
-      prevPostcode = Some(postcode),
+    val updatedDetails = data.copy(
       uprnId = Some(ar.id),
-      editedLines = if (ad.lines.nonEmpty) Some(ad.lines.mkString("\n")) else None,
-      editedTown = ad.town,
-      editedCounty = ad.county,
+      editedLines = if (ar.address.lines.nonEmpty) Some(ar.address.lines.mkString("\n")) else None,
+      editedTown = ar.address.town,
+      editedCounty = ar.address.county,
       countryCode = country.map(_.code)
     )
 
-    val editUrl = routes.UkAddressLookupController.getProposals(tag, nameNo.getOrElse("-"), postcode, guid, continue,
-      None, backUrl, backText)
+    val editUrl = routes.UkAddressLookupController.getProposals(tag,
+      data.nameNo.getOrElse("-"), data.postcode.get, data.guid, Some(data.continue),
+      editId, data.backUrl, data.backText)
+
     val filledInForm = addressForm.fill(updatedDetails)
-    proposalForm(tag, cfg(tag).copy(indicator = Some(postcode)), filledInForm, matchingAddresses, selectedUprnId,
-      editId.nonEmpty, editUrl.url)
+
+    proposalForm(tag, cfg(tag).copy(indicator = Some(data.postcode.get.toString)), filledInForm, matchingAddresses,
+      selectedUprnId, editId.nonEmpty, editUrl.url)
   }
 }

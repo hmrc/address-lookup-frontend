@@ -31,7 +31,7 @@ class OutcomeControllerTest extends PlaySpec with MockitoSugar with OneAppPerSui
   val ne15xdLike = AddressRecord("GB4510123533", Some(4510123533L),
     Address(List("10 Taylors Court", "Monk Street", "Byker"),
       Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(England), UK),
-    en, Some(LocalCustodian(123, "Tyne & Wear")), None, None, None)
+    en, Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(England), UK)
   val sr = SelectedAddress(Some(ne15xdLike), Some(edited), None)

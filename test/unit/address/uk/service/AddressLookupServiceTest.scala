@@ -45,7 +45,7 @@ class AddressLookupServiceTest extends UnitSpec with OneAppPerSuite
   val ne15xdLike = AddressRecord("GB4510123533", Some(4510123533L),
     Address(List("10 Taylors Court", "Monk Street", "Byker"),
       Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK),
-    "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None)
+    "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
 
   "Find By Postcode" should {
     "fetch an empty list ok" in new Context {

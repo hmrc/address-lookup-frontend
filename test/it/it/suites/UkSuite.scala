@@ -52,16 +52,16 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
   private val lcc = LocalCustodian(123, "Town")
   private val allTags = ViewConfig.cfg.keys.toList.sorted
 
-  val se1_9py = AddressRecord("GB10091836674", Some(10091836674L), Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some(England), UK), en, Some(lcc), None, None, None)
+  val se1_9py = AddressRecord("GB10091836674", Some(10091836674L), Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some(England), UK), en, Some(lcc), None, None, None, None)
 
   // This sample is a length-2 postcode
-  val ne1_6jn_a = AddressRecord("GB4510737202", Some(4510737202L), Address(List("11 Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None)
-  val ne1_6jn_b = AddressRecord("GB4510141231", Some(4510141231L), Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None)
+  val ne1_6jn_a = AddressRecord("GB4510737202", Some(4510737202L), Address(List("11 Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None, None)
+  val ne1_6jn_b = AddressRecord("GB4510141231", Some(4510141231L), Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None, None)
 
   val ne15xdLike = AddressRecord("GB4510123533", Some(4510123533L),
     Address(List("10 Taylors Court", "Monk Street", "Byker"),
       Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK),
-    en, Some(LocalCustodian(123, "Tyne & Wear")), None, None, None)
+    en, Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK)
   val sr = SelectedAddress(Some(ne15xdLike), Some(edited), None)

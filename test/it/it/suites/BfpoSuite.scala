@@ -50,8 +50,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
   private val lcc = LocalCustodian(123, "Town")
   private val bfpoTags = ViewConfig.cfg.filter(_._2.allowBfpo).keys.toList.sorted
 
-  val bf1_3aa = AddressRecord("GB10092787052", Some(10092787052L), Address(List("Bfpo 2"), Some("Bfpo"), None, "BF1 3AA", None, UK), en, Some(lcc), None, None, None)
-  val bf1_3ah = AddressRecord("GB10092786554", Some(10092786554L), Address(List("Bfpo 12"), Some("Bfpo"), None, "BF1 3AH", None, UK), en, Some(lcc), None, None, None)
+  val bf1_3aa = AddressRecord("GB10092787052", Some(10092787052L), Address(List("Bfpo 2"), Some("Bfpo"), None, "BF1 3AA", None, UK), en, Some(lcc), None, None, None, None)
+  val bf1_3ah = AddressRecord("GB10092786554", Some(10092786554L), Address(List("Bfpo 12"), Some("Bfpo"), None, "BF1 3AH", None, UK), en, Some(lcc), None, None, None, None)
 
   val edited = Address(List("10b Taylors Court", "Monk Street", "Byker"),
     Some("Newcastle upon Tyne"), Some("Northumberland"), "NE1 5XD", Some(Countries.England), Countries.UK)

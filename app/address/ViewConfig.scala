@@ -72,9 +72,9 @@ object ViewConfig {
       alpha = true),
 
     "payereg1" -> ViewConfig(
-      pageTitle = "Search address",
-      baseTitle = "Enter the address",
-      prompt = "Choose your location",
+      pageTitle = "Register your company",
+      baseTitle = "Search address",
+      prompt = "Enter the address",
       homeUrl = "http://www.gov.uk/",
       allowManualEntry = true,
       allowNoFixedAddress = false,

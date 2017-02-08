@@ -55,28 +55,24 @@
 
             <div id="found-addresses" class="form-group">
                 <label class="form-label-bold" for="Address-table">Found @{plural(addressList, "address", "addresses")}</label>
-                <table id="Address-table">
-                    <tbody>
+                <fieldset id="Address-table">
+
                     @for(a <- addressList) {
-                        <tr>
-                            <td class="selection"><input id='a@{a.id}'
+                        <label class="block-label" for='a@{a.id}'>
+                                @{a.address.printable}
+                            <input id='a@{a.id}'
                                 type="radio" name="radio-inline-group"
                                 @if(a.id==selectedUprnId) {
                                     checked="checked"
                                 }
                                 value='@{a.id}' />
-                            </td>
-                            <td><label for='a@{a.id}'
-                                >@{a.address.printable}
-                            </label>
-                            @if(view.allowManualEntry && editUrl.nonEmpty) {
-                                <span class="edit-link"><a href="@{editUrl}&editId=@{a.id}">(edit)</a></span>
-                            }
-                            </td>
-                        </tr>
+                        </label>
+                        @if(view.allowManualEntry && editUrl.nonEmpty) {
+                            <span class="edit-link"><a href="@{editUrl}&editId=@{a.id}">edit</a></span>
+                        }
                     }
-                    </tbody>
-                </table>
+
+                </fieldset>
             </div>
 
             @if(view.allowManualEntry && canEdit) {

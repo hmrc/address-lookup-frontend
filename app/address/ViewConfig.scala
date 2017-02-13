@@ -84,5 +84,18 @@ object ViewConfig {
       beta = true)
   )
 
+    "paye1" -> ViewConfig(
+      pageTitle = "Search address",
+      baseTitle = "Enter the address",
+      prompt = "Choose your location",
+      homeUrl = "http://www.gov.uk/",
+      allowManualEntry = true,
+      allowNoFixedAddress = false,
+      allowInternationalAddress = false,
+      allowBfpo = false,
+      maxAddressesToShow = 10,
+      beta = true)
+  )
+
   val defaultContinueUrl = "confirmation"
 }

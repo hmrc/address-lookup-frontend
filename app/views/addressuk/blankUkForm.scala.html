@@ -86,7 +86,7 @@ function showBfpoTab() {
 
             @if(noMatchesWereFound) {
                 <div class="form-group">
-                    <div class="flash">
+                    <div class="warning-box">
                         @if(addressForm("house-name-number").value.isDefined) {
                             <h3>No addresses were found for this postcode and building name/number.</h3>
                             <p>Please enter a different postcode or building name/number.</p>
@@ -100,7 +100,7 @@ function showBfpoTab() {
 
             @if(exceededLimit) {
                 <div class="form-group">
-                    <div class="flash">
+                    <div class="warning-box">
                         <h3>More than @view.maxAddressesToShow addresses were found.</h3>
                         <p>Please enter the first line of your address.</p>
                     </div>

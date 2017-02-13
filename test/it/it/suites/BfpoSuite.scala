@@ -17,7 +17,7 @@
 package it.suites
 
 import address.ViewConfig
-import address.outcome.SelectedAddress
+import address.outcome.{DefaultOutcomeFormat, SelectedAddress}
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
 import org.jsoup.Jsoup
@@ -126,8 +126,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === bf1_3aa_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -182,8 +182,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === bf1_3aa_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -243,8 +243,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === bf1_3aa_withEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === bf1_3aa_withEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -299,8 +299,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === bf1_3aa_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
       }
     }
   }

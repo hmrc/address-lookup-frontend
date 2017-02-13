@@ -52,7 +52,7 @@ class OutcomeControllerTest extends PlaySpec with MockitoSugar with OneAppPerSui
 
       status(result) mustBe 200
       contentType(result) mustBe Some("application/json")
-      contentAsJson(result) mustBe srj
+      contentAsJson(result) mustBe Json.toJson(sr.toDefaultOutcomeFormat)
       verify(keystore).fetchSingleResponse(tag, "abc123")
     }
 
@@ -65,6 +65,86 @@ class OutcomeControllerTest extends PlaySpec with MockitoSugar with OneAppPerSui
       status(result) mustBe 404
       verify(keystore).fetchSingleResponse(tag, "abc123")
     }
+  }
+
+  "default outcome format" should {
+
+    val usa = SelectedAddress(userSuppliedAddress = Some(Address(
+      List("line 1", "line 2", "line 3", "line 4 removed"), Some("town"), Some("county"), "postcode", None, Country("code", "name")
+    )))
+
+    val int = SelectedAddress(international = Some(International(
+      List("line 1", "line 2", "line 3", "line 4", "line 5 removed"), Some("postcode"), Some(Country("code", "name"))
+    )))
+
+    val bfpo = SelectedAddress(bfpo = Some(International(
+      List("line 1", "line 2", "line 3", "line 4", "line 5 removed"), Some("postcode"), Some(Country("code", "name"))
+    )))
+
+    val norm = SelectedAddress(normativeAddress = Some(AddressRecord(
+      "id", None, Address(
+        lines = List("line 1", "line 2", "line 3", "line 4 removed"),
+        town = Some("town"),
+        county = Some("county"),
+        postcode = "postcode",
+        subdivision = None,
+        country = Country("code", "name")
+      ),
+      "language", None, None, None, None, None
+    )))
+
+    "map normative address id" in {
+      norm.toDefaultOutcomeFormat.id must be (Some("id"))
+    }
+
+    "map normative address lines" in {
+      norm.toDefaultOutcomeFormat.address.get.lines must be (Some(List("line 1", "line 2", "line 3", "town")))
+    }
+
+    "map normative address postcode" in {
+      norm.toDefaultOutcomeFormat.address.get.postcode must be (Some("postcode"))
+    }
+
+    "map normative address country" in {
+      norm.toDefaultOutcomeFormat.address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+    }
+
+    "map user supplied address lines" in {
+      usa.toDefaultOutcomeFormat.address.get.lines must be (Some(List("line 1", "line 2", "line 3", "town")))
+    }
+
+    "map user supplied address postcode" in {
+      usa.toDefaultOutcomeFormat.address.get.postcode must be (Some("postcode"))
+    }
+
+    "map user supplied address country" in {
+      usa.toDefaultOutcomeFormat.address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+    }
+
+    "map international address lines" in {
+      int.toDefaultOutcomeFormat.address.get.lines must be (Some(List("line 1", "line 2", "line 3", "line 4")))
+    }
+
+    "map international address postcode" in {
+      int.toDefaultOutcomeFormat.address.get.postcode must be (Some("postcode"))
+    }
+
+    "map international address country" in {
+      int.toDefaultOutcomeFormat.address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+    }
+
+    "map bfpo address lines" in {
+      bfpo.toDefaultOutcomeFormat.address.get.lines must be (Some(List("line 1", "line 2", "line 3", "line 4")))
+    }
+
+    "map bfpo address postcode" in {
+      bfpo.toDefaultOutcomeFormat.address.get.postcode must be (Some("postcode"))
+    }
+
+    "map bfpo address country" in {
+      bfpo.toDefaultOutcomeFormat.address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+    }
+
   }
 
   private def memoResponseJson(tag: String, sa: SelectedAddress) = Json.toJson(Map("data" -> Map(tag -> sa)))

@@ -19,6 +19,7 @@ package address.outcome
 import address.uk.Services
 import config.FrontendGlobal
 import keystore.MemoService
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -48,7 +49,7 @@ class OutcomeController(keystore: MemoService, val ec: ExecutionContext) extends
         if (address.isEmpty)
           NotFound
         else
-          Ok(address.get) //.withHeaders(CONTENT_TYPE -> JSON)
+          Ok(Json.toJson(address.get.as[SelectedAddress].toDefaultOutcomeFormat))
     }
   }
 }

@@ -17,7 +17,7 @@
 package it.suites
 
 import address.ViewConfig
-import address.outcome.SelectedAddress
+import address.outcome.{DefaultOutcomeFormat, SelectedAddress}
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
 import org.jsoup.Jsoup
@@ -74,8 +74,8 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === sai)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === sai.toDefaultOutcomeFormat)
       }
     }
   }

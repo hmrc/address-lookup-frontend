@@ -17,7 +17,7 @@
 package it.suites
 
 import address.ViewConfig
-import address.outcome.SelectedAddress
+import address.outcome.{DefaultOutcomeFormat, SelectedAddress}
 import com.pyruby.stubserver.StubMethod
 import it.helper.{AppServerTestApi, Context}
 import org.jsoup.Jsoup
@@ -160,8 +160,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === ne1_6jn_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -215,8 +215,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === ne1_6jn_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -277,8 +277,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
       keystoreStub.verify()
       assert(outcomeResponse.status === 200)
-      val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-      assert(outcome === ne1_6jn_withEdits)
+      val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+      assert(outcome === ne1_6jn_withEdits.toDefaultOutcomeFormat)
     }
 
 
@@ -332,8 +332,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === ne1_6jn_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -388,8 +388,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === ne1_6jn_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
       }
     }
 
@@ -444,8 +444,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
-        val outcome = readValue(outcomeResponse.body, classOf[SelectedAddress])
-        assert(outcome === ne1_6jn_withoutEdits)
+        val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
       }
     }
   }

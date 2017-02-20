@@ -30,17 +30,13 @@ object UkProposalsPage {
   def showAddressListProposalForm(tag: String, data: UkAddressData, matchingAddresses: List[AddressRecord], editId: Option[String])
                                  (implicit request: Request[_], messages: Messages): Html = {
     val ar =
-      if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
-      else matchingAddresses.head
+      if (editId.isDefined) { matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head) }
+      else { matchingAddresses.head }
 
     val selectedUprnId =
       if (matchingAddresses.size == 1) {
         ar.id
-      } else if (editId.isDefined) {
-        editId.get
-      } else {
-        ""
-      }
+      } else { editId.getOrElse("") }
 
     val country: Option[Country] = matchingAddresses.headOption.map(_.address.country)
 

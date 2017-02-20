@@ -27,13 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 object OutcomeController extends OutcomeController(
-  Services.metricatedKeystoreService,
+  Services.metricatedKeystoreService)(
   FrontendGlobal.executionContext)
 
 
-class OutcomeController(keystore: MemoService, val ec: ExecutionContext) extends FrontendController {
-
-  private implicit val xec = ec
+class OutcomeController(keystore: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
 
   // response contains JSON representation of AddressRecordWithEdits
   def outcome(tag: String, id: String): Action[AnyContent] = Action.async {
@@ -43,13 +41,13 @@ class OutcomeController(keystore: MemoService, val ec: ExecutionContext) extends
       fetch(tag, id)
   }
 
-  private def fetch(tag: String, id: String): Future[Result] = {
-    keystore.fetchSingleResponse(tag, id) map {
+  private def fetch(tag: String, auditRef: String): Future[Result] = {
+    keystore.fetchSingleResponse(tag, auditRef).map {
       address =>
         if (address.isEmpty)
           NotFound
         else
-          Ok(Json.toJson(address.get.as[SelectedAddress].toDefaultOutcomeFormat))
+          Ok(Json.toJson(address.get.as[SelectedAddress].toDefaultOutcomeFormat(auditRef)))
     }
   }
 }

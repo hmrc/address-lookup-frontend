@@ -70,13 +70,13 @@ trait AppServerTestApi extends Assertions {
   def delete(path: String): WSResponse =
     await(newRequest("DELETE", path).withHeaders("User-Agent" -> "xyz").execute())
 
-  def post(path: String, body: String, ct: String = "application/json") =
+  def post(path: String, body: String, ct: String = "application/json"): WSResponse =
     await(newRequest("POST", path, body).withHeaders("Content-Type" -> ct, "User-Agent" -> "xyz").execute())
 
-  def post(path: String, body: Map[String, String]) =
+  def post(path: String, body: Map[String, String]): WSResponse =
     await(newRequest("POST", path, body).withHeaders("User-Agent" -> "xyz").execute())
 
-  def put(path: String, body: String, ct: String = "application/json") =
+  def put(path: String, body: String, ct: String = "application/json"): WSResponse =
     await(newRequest("PUT", path, body).withHeaders("Content-Type" -> ct, "User-Agent" -> "xyz").execute())
 
   //-----------------------------------------------------------------------------------------------
@@ -99,8 +99,8 @@ trait AppServerTestApi extends Assertions {
     } else {
       Thread.sleep(200)
       val step = get(path)
-      if (step.status != OK || step.body != currentBody) true
-      else waitWhile(path, currentBody, timeout - 200)
+      if (step.status != OK || step.body != currentBody) {true}
+      else { waitWhile(path, currentBody, timeout - 200) }
     }
   }
 
@@ -111,8 +111,8 @@ trait AppServerTestApi extends Assertions {
     } else {
       Thread.sleep(200)
       val step = get(path)
-      if (step.status == OK && step.body == currentBody) true
-      else waitUntil(path, currentBody, timeout - 200)
+      if (step.status == OK && step.body == currentBody) { true }
+      else { waitUntil(path, currentBody, timeout - 200) }
     }
   }
 
@@ -122,6 +122,6 @@ trait AppServerTestApi extends Assertions {
 }
 
 class WSResponseDumper(response: WSResponse) {
-  override def toString =
+  override def toString: String =
     "\n  Got " + response.status + ":" + response.body
 }

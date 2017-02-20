@@ -26,17 +26,18 @@ case class SelectedAddress(normativeAddress: Option[AddressRecord] = None,
                            bfpo: Option[International] = None,
                            noFixedAddress: Boolean = false) {
 
-  def toDefaultOutcomeFormat: DefaultOutcomeFormat = {
-    international.map(int => mapInternational(int))
-      .getOrElse(bfpo.map(b => mapBfpo(b))
-        .getOrElse(userSuppliedAddress.map(addr => mapUserSupplied(addr))
-          .getOrElse(normativeAddress.map(norm => mapNormativeAddress(norm))
-            .getOrElse(DefaultOutcomeFormat(None, None)))))
+  def toDefaultOutcomeFormat(auditRef:String): DefaultOutcomeFormat = {
+    international.map(int => mapInternational(int, auditRef))
+      .getOrElse(bfpo.map(b => mapBfpo(b,auditRef))
+        .getOrElse(userSuppliedAddress.map(addr => mapUserSupplied(addr, auditRef))
+          .getOrElse(normativeAddress.map(norm => mapNormativeAddress(norm, auditRef))
+            .getOrElse(DefaultOutcomeFormat(None, auditRef, None)))))
   }
 
-  private def mapInternational(int: International): DefaultOutcomeFormat = {
+  private def mapInternational(int: International, auditRef:String): DefaultOutcomeFormat = {
     DefaultOutcomeFormat(
       None,
+      auditRef,
       Some(DefaultOutcomeFormatAddress(
         Some(int.lines.take(4)),
         int.postcode,
@@ -45,13 +46,14 @@ case class SelectedAddress(normativeAddress: Option[AddressRecord] = None,
     )
   }
 
-  private def mapBfpo(bfpo: International): DefaultOutcomeFormat = {
-    mapInternational(bfpo)
+  private def mapBfpo(bfpo: International, auditRef:String): DefaultOutcomeFormat = {
+    mapInternational(bfpo, auditRef)
   }
 
-  private def mapUserSupplied(addr: Address): DefaultOutcomeFormat = {
+  private def mapUserSupplied(addr: Address, auditRef:String): DefaultOutcomeFormat = {
     DefaultOutcomeFormat(
       None,
+      auditRef,
       Some(DefaultOutcomeFormatAddress(
         Some(addr.lines.take(3) ++ addr.town.map(t => List(t)).getOrElse(List.empty)),
         Some(addr.postcode),
@@ -60,9 +62,10 @@ case class SelectedAddress(normativeAddress: Option[AddressRecord] = None,
     )
   }
 
-  private def mapNormativeAddress(norm: AddressRecord): DefaultOutcomeFormat = {
+  private def mapNormativeAddress(norm: AddressRecord, auditRef:String): DefaultOutcomeFormat = {
     DefaultOutcomeFormat(
       Some(norm.id),
+      auditRef,
       Some(DefaultOutcomeFormatAddress(
         Some(norm.address.lines.take(3) ++ norm.address.town.map(t => List(t)).getOrElse(List.empty)),
         Some(norm.address.postcode),
@@ -92,9 +95,9 @@ object DefaultOutcomeFormat {
   implicit val format3: OFormat[DefaultOutcomeFormat] = Json.format[DefaultOutcomeFormat]
 }
 
-case class DefaultOutcomeFormat(id: Option[String], address: Option[DefaultOutcomeFormatAddress])
+case class DefaultOutcomeFormat(id: Option[String], auditRef:String, address: Option[DefaultOutcomeFormatAddress])
 
-case class DefaultOutcomeFormatAddress(lines: Option[List[String]], postcode: Option[String], country: Option[DefaultOutcomeFormatAddressCountry])
+case class DefaultOutcomeFormatAddress( lines: Option[List[String]], postcode: Option[String], country: Option[DefaultOutcomeFormatAddressCountry])
 
-case class DefaultOutcomeFormatAddressCountry(code: Option[String], name: Option[String])
+case class DefaultOutcomeFormatAddressCountry( code: Option[String], name: Option[String])
 

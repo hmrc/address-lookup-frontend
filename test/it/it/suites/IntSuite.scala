@@ -35,6 +35,8 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
 
   private def appContext = context.appContext
 
+  private val auditRef = "abc123"
+
   private val en = "en"
   private val internationalTags = ViewConfig.cfg.filter(_._2.allowInternationalAddress).keys.toList.sorted
 
@@ -75,7 +77,7 @@ class IntSuite(val context: Context)(implicit val app: Application) extends Play
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === sai.toDefaultOutcomeFormat)
+        assert(outcome === sai.toDefaultOutcomeFormat(auditRef))
       }
     }
   }

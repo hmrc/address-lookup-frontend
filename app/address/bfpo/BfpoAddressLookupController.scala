@@ -16,7 +16,7 @@
 
 package address.bfpo
 
-import java.net.URLEncoder
+//import java.net.URLEncoder
 
 import address.bfpo.BfpoProposalsPage.showAddressListProposalForm
 import address.outcome.SelectedAddress
@@ -30,9 +30,9 @@ import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.{Outcode, Postcode}
-import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries}
+import uk.gov.hmrc.address.v2.AddressRecord
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.util.JacksonMapper
+//import uk.gov.hmrc.util.{JacksonMapper, PrettyMapper}
 import views.html.addressuk._
 import views.html.bfpo.blankBfpoForm
 
@@ -41,13 +41,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object BfpoAddressLookupController extends BfpoAddressLookupController(
   Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService,
+  Services.metricatedKeystoreService)(
   FrontendGlobal.executionContext)
 
 
-class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoService, val ec: ExecutionContext) extends FrontendController {
+class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
 
-  private implicit val xec = ec
 
   import BfpoForm.bfpoForm
   import address.ViewConfig._
@@ -75,7 +74,6 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
   def postFirstForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        //        println("form1: " + PrettyMapper.writeValueAsString(request.body))
         val bound = bfpoForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankBfpoForm(tag, cfg(tag), bound, noMatchesWereFound = false)))
@@ -166,7 +164,6 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
   def postSelected(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        //println("form2: " + PrettyMapper.writeValueAsString(request.body))
         val bound = bfpoForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankBfpoForm(tag, cfg(tag), bound, noMatchesWereFound = false)))
@@ -196,8 +193,7 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
           normativeAddress = normativeAddress,
           bfpo = Some(bfpoData.toInternational))
         memo.storeSingleResponse(tag, bfpoData.guid, response) map {
-          httpResponse =>
-            SeeOther(bfpoData.continue + "?tag=" + tag + "&id=" + bfpoData.guid)
+          _ => SeeOther(bfpoData.continue + "?tag=" + tag + "&id=" + bfpoData.guid)
         }
     }
   }
@@ -217,15 +213,15 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
             } else {
               val addressRecord = response.get.as[SelectedAddress]
               val international = addressRecord.bfpo orElse addressRecord.international
-              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, international))
+              Ok(confirmationPage(id, tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, international))
             }
         }
     }
 
-  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
+//  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
 
-  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
+//  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
 
-  private val UkCode = Countries.UK.code
+//  private val UkCode = Countries.UK.code
 
 }

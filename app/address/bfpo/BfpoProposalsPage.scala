@@ -30,17 +30,13 @@ object BfpoProposalsPage {
   def showAddressListProposalForm(tag: String, data: BfpoData, matchingAddresses: List[AddressRecord], editId: Option[String])
                                  (implicit request: Request[_], messages: Messages): Html = {
     val ar =
-      if (editId.isDefined) matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head)
-      else matchingAddresses.head
+      if (editId.isDefined) { matchingAddresses.find(_.id == editId.get).getOrElse(matchingAddresses.head) }
+      else { matchingAddresses.head }
 
     val selectedUprnId =
       if (matchingAddresses.size == 1) {
         ar.id
-      } else if (editId.isDefined) {
-        editId.get
-      } else {
-        ""
-      }
+      } else { editId.getOrElse("") }
 
     val updatedDetails = data.copy(
       lines = if (ar.address.lines.nonEmpty) Some(ar.address.lines.mkString("\n")) else None,

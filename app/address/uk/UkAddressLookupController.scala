@@ -16,7 +16,7 @@
 
 package address.uk
 
-import java.net.URLEncoder
+//import java.net.URLEncoder
 
 import address.outcome.SelectedAddress
 import address.uk.UkProposalsPage.showAddressListProposalForm
@@ -28,10 +28,11 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.twirl.api.Html
 import uk.gov.hmrc.address.uk.Postcode
-import uk.gov.hmrc.address.v2.{Address, Countries}
+import uk.gov.hmrc.address.v2.Countries
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.util.JacksonMapper
+//import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,13 +40,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object UkAddressLookupController extends UkAddressLookupController(
   Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService,
+  Services.metricatedKeystoreService)(
   FrontendGlobal.executionContext)
 
 
-class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService, val ec: ExecutionContext) extends FrontendController {
+class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
 
-  private implicit val xec = ec
 
   import UkAddressForm.addressForm
   import address.ViewConfig._
@@ -69,10 +69,10 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
     }
 
   private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String],
-                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
+                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]):Html = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
-    val ad = UkAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText, countryCode = Some(UkCode))
+    val ad = UkAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText, countryCode = UkCode)
     val bound = addressForm.fill(ad)
     blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)
   }
@@ -130,7 +130,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
           Future.successful(BadRequest(basicBlankForm(tag, Some(guid), continue, backUrl, backText)))
 
         } else {
-          lookup.findByPostcode(uPostcode.get, optNameNo) map {
+          lookup.findByPostcode(uPostcode.get, optNameNo).map {
             list =>
               val cu = continue.getOrElse(defaultContinueUrl)
               val exceededLimit = list.size > cfg(tag).maxAddressesToShow
@@ -139,7 +139,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
                 backUrl = backUrl, backText = backText,
                 nameNo = optNameNo, postcode = pc,
                 prevNameNo = optNameNo, prevPostcode = pc,
-                countryCode = Some(UkCode)
+                countryCode = UkCode
               )
               if (list.isEmpty || exceededLimit) {
                 val filledInForm = addressForm.fill(data)
@@ -152,7 +152,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
         }
     }
 
-  private def normaliseNumber(number: String) = {
+  private def normaliseNumber(number: String):Option[String] = {
     val t = number.trim
     if (number.isEmpty || number == "-") {
       None
@@ -190,26 +190,24 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
 
 
   private def continueToCompletion(tag: String, addressData: UkAddressData, request: Request[_]): Future[Result] = {
-    val nfa = if (addressData.noFixedAddress) "nfa=1&" else ""
-    val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
+//    val nfa = if (addressData.noFixedAddress) "nfa=1&" else ""
+//    val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
 
     if (addressData.uprnId.isEmpty) {
       val response = SelectedAddress(userSuppliedAddress = addressData.editedAddress, noFixedAddress = addressData.noFixedAddress)
-      memo.storeSingleResponse(tag, addressData.guid, response) map {
-        httpResponse =>
-          SeeOther(addressData.continue + "?id=" + addressData.guid)
+      memo.storeSingleResponse(tag, addressData.guid, response).map {
+        _ => SeeOther(addressData.continue + "?id=" + addressData.guid)
       }
 
     } else {
-      lookup.findById(addressData.uprnId.get) flatMap {
+      lookup.findById(addressData.uprnId.get).flatMap {
         normativeAddress =>
           val response = SelectedAddress(
             normativeAddress = normativeAddress,
             userSuppliedAddress = addressData.editedAddress,
             noFixedAddress = addressData.noFixedAddress)
-          memo.storeSingleResponse(tag, addressData.guid, response) map {
-            httpResponse =>
-              SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
+          memo.storeSingleResponse(tag, addressData.guid, response).map {
+            _ => SeeOther(addressData.continue + "?tag=" + tag + "&id=" + addressData.guid)
           }
       }
     }
@@ -230,15 +228,15 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService,
             } else {
               import SelectedAddress._
               val addressRecord = response.get.as[SelectedAddress]
-              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
+              Ok(confirmationPage(id, tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
             }
         }
     }
 
-  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
+//  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
 
-  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
+//  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
 
-  private val UkCode = Countries.UK.code
+  private val UkCode = Some(Countries.UK.code)
 
 }

@@ -45,6 +45,8 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
 
   private def appContext = context.appContext
 
+  private val auditRef = "abc123"
+
   private val en = "en"
   private val NewcastleUponTyne = Some("Newcastle upon Tyne")
   private val TyneAndWear = Some("Tyne & Wear")
@@ -52,11 +54,27 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
   private val lcc = LocalCustodian(123, "Town")
   private val allTags = ViewConfig.cfg.keys.toList.sorted
 
-  val se1_9py = AddressRecord("GB10091836674", Some(10091836674L), Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some(England), UK), en, Some(lcc), None, None, None, None)
+  val se1_9py = AddressRecord(
+    "GB10091836674",
+    Some(10091836674L),
+    Address(List("Dorset House 27-45", "Stamford Street"), Some("London"), None, "SE1 9PY", Some(England), UK),
+    en, Some(lcc),
+    None, None, None, None)
 
   // This sample is a length-2 postcode
-  val ne1_6jn_a = AddressRecord("GB4510737202", Some(4510737202L), Address(List("11 Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None, None)
-  val ne1_6jn_b = AddressRecord("GB4510141231", Some(4510141231L), Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK), en, Some(lcc), None, None, None, None)
+  val ne1_6jn_a = AddressRecord(
+    "GB4510737202",
+    Some(4510737202L),
+    Address(List("11 Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK),
+    en, Some(lcc),
+    None, None, None, None)
+
+  val ne1_6jn_b = AddressRecord(
+    "GB4510141231", Some(4510141231L),
+    Address(List("Royal House 5-7", "Market Street"), NewcastleUponTyne, TyneAndWear, NE1_6JN, Some(England), UK),
+    en,
+    Some(lcc),
+    None, None, None, None)
 
   val ne15xdLike = AddressRecord("GB4510123533", Some(4510123533L),
     Address(List("10 Taylors Court", "Monk Street", "Byker"),
@@ -161,7 +179,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -216,7 +234,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -278,7 +296,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
       keystoreStub.verify()
       assert(outcomeResponse.status === 200)
       val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-      assert(outcome === ne1_6jn_withEdits.toDefaultOutcomeFormat)
+      assert(outcome === ne1_6jn_withEdits.toDefaultOutcomeFormat(auditRef))
     }
 
 
@@ -333,7 +351,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -389,7 +407,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -445,7 +463,7 @@ class UkSuite(val context: Context)(implicit val app: Application) extends PlayS
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === ne1_6jn_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
   }

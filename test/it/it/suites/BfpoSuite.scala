@@ -45,6 +45,8 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
 
   private def appContext = context.appContext
 
+  private val auditRef = "abc123"
+
   private val en = "en"
   private val BF1_3AA = "BF1 3AA"
   private val lcc = LocalCustodian(123, "Town")
@@ -127,7 +129,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -183,7 +185,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -244,7 +246,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === bf1_3aa_withEdits.toDefaultOutcomeFormat)
+        assert(outcome === bf1_3aa_withEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
 
@@ -300,7 +302,7 @@ class BfpoSuite(val context: Context)(implicit val app: Application) extends Pla
         keystoreStub.verify()
         assert(outcomeResponse.status === 200)
         val outcome = readValue(outcomeResponse.body, classOf[DefaultOutcomeFormat])
-        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat)
+        assert(outcome === bf1_3aa_withoutEdits.toDefaultOutcomeFormat(auditRef))
       }
     }
   }

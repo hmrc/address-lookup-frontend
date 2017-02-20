@@ -15,7 +15,7 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 
 class BfpoAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneAppPerSuite {
 
-  val ec = scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   implicit val system = ActorSystem("AddressLookupControllerTest")
   implicit def mat: Materializer = ActorMaterializer()
@@ -27,7 +27,7 @@ class BfpoAddressLookupControllerTest extends PlaySpec with MockitoSugar with On
     val cache = mock[SessionCache]
     val lookup = mock[AddressLookupService]
     val keystore = mock[MemoService]
-    val controller = new BfpoAddressLookupController(lookup, keystore, ec)
+    val controller = new BfpoAddressLookupController(lookup, keystore)
     val req = FakeRequest().withSession(Security.username -> "user")
   }
 

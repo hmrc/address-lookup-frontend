@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *@
-@(tag: String,
+@(auditRef:String, tag: String,
         view: address.ViewConfig,
         normativeAddress: Option[uk.gov.hmrc.address.v2.AddressRecord],
         userSuppliedAddress: Option[uk.gov.hmrc.address.v2.Address],
@@ -31,6 +31,12 @@
         <p>Address:</p>
         <table id="confirmation">
             <tr><th></th> <th class="head">Normative</th> <th class="head">User-Supplied</th> <th class="head">International/BFPO</th></tr>
+
+            <tr class="uprn"><th>AuditRef</th>
+                <td class="norm">@{auditRef}</td>
+                <td class="empty"></td>
+                <td class="empty"></td>
+            </tr>
 
             @if(normativeAddress.isDefined) {
                 <tr class="uprn"><th>UPRN</th>

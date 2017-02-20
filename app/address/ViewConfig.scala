@@ -46,9 +46,9 @@ object ViewConfig {
     allowBfpo = false,
     maxAddressesToShow = 20)
 
-  val alpha1 = live1.copy(alpha = true)
+  val alpha1:ViewConfig = live1.copy(alpha = true)
 
-  val beta1 = live1.copy(beta = true)
+  val beta1:ViewConfig = live1.copy(beta = true)
 
   //---------------------------------------------------------------------------
 

@@ -34,13 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object IntAddressLookupController extends IntAddressLookupController(
   Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService,
+  Services.metricatedKeystoreService)(
   FrontendGlobal.executionContext)
 
 
-class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService, val ec: ExecutionContext) extends FrontendController {
-
-  private implicit val xec = ec
+class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
 
   import IntAddressForm.addressForm
   import address.ViewConfig._
@@ -85,8 +83,7 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
     val international = addressData.asInternational
     val selected = SelectedAddress(international = Some(international))
     memo.storeSingleResponse(tag, addressData.guid, selected) map {
-      httpResponse =>
-        SeeOther(addressData.continue + "?id=" + addressData.guid)
+      _ => SeeOther(addressData.continue + "?id=" + addressData.guid)
     }
   }
 
@@ -105,7 +102,7 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
             } else {
               import SelectedAddress._
               val addressRecord = response.get.as[SelectedAddress]
-              Ok(confirmationPage(tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
+              Ok(confirmationPage(id, tag, cfg(tag), addressRecord.normativeAddress, addressRecord.userSuppliedAddress, addressRecord.international))
             }
         }
     }

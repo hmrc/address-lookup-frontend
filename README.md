@@ -13,7 +13,7 @@ The roadmap includes support for international addresses.
 In dev mode:
 ```
 sm --start ASSETS_FRONTEND -r 2.232.0
-sm --start KEYSTORE        -r 8.5.0
+sm --start KEYSTORE        -r 8.5.0     (this requires MongoDB to be running)
 sm --start ADDRESS_LOOKUP  -f
 sm --start ADDRESS_LOOKUP_FRONTEND -f
 nice sbt run
@@ -73,6 +73,63 @@ http://address-lookup-frontend.service/address-lookup-frontend/outcome/<tag>/<id
 ```
 
 The tag is the same as used in the first request. This verifies that the end-user didn't switch to a different journey (a 404 would result in that case because the outcome identification would not match).
+
+
+The JSON responce to a valid outcome responce will be in the format of the following schema
+
+```
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {  "type": "string" },
+    "auditRef": { "type": "string" },
+    "address": {
+      "type": "object",
+      "properties": {
+        "lines": {"type": "array",
+          "items": { "type": "string" }
+        },
+        "postcode": {"type": "string" },
+        "country": {
+          "type": "object",
+          "properties": {
+            "code": { "type": "string" },
+            "name": { "type": "string" }
+          }
+        }
+      },
+      "required": ["lines"]
+    }
+  },
+  "required": ["auditRef"]
+}
+
+```
+
+And will looks something like this example:
+
+```
+{
+  "id": "GB1234",
+  "auditRef": "7ca9644c-f383-11e6-9d04-acde48001122",
+  "address": {
+    "lines": [
+      "14A Some Street",
+      "Some Area",
+      "A District",
+      "Some Town"
+    ],
+    "postcode": "FX7A 8BB",
+    "country": {
+      "code": "UK",
+      "name": "United Kingdom"
+    }
+  }
+}
+```
+
+
 
 ## Use Case 1: Entering a new address using postcode lookup
 

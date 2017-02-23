@@ -20,24 +20,20 @@ import address.uk.service.AddressLookupService
 import config.FrontendGlobal
 import config.ConfigHelper._
 import keystore.{MemoMetrics, KeystoreServiceImpl}
-import play.api.Play
 
 object Services {
 
-  lazy val baseUrl = mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint")
+  import scala.concurrent.ExecutionContext.Implicits.global
 
-  val configuredAddressLookupService = new AddressLookupService(
-    mustGetConfigString(Play.current.mode, Play.current.configuration, "addressReputation.endpoint"),
+  def configuredAddressLookupService(environment: play.api.Environment, configuration: play.api.Configuration ) = new AddressLookupService(
+    mustGetConfigString(environment.mode, configuration, "addressReputation.endpoint"),
+    FrontendGlobal.appName)
+
+  private def configuredKeystoreService(environment: play.api.Environment, configuration: play.api.Configuration ) = new KeystoreServiceImpl(
+    mustGetConfigString(environment.mode, configuration, "keystore.endpoint"),
     FrontendGlobal.appName,
-    FrontendGlobal.executionContext)
+    FrontendGlobal.logger)
 
-  val configuredKeystoreService = new KeystoreServiceImpl(
-    mustGetConfigString(Play.current.mode, Play.current.configuration, "keystore.endpoint"),
-    FrontendGlobal.appName,
-    FrontendGlobal.logger,
-    FrontendGlobal.executionContext)
-
-  val metricatedKeystoreService = new MemoMetrics(configuredKeystoreService,
-    FrontendGlobal.logger,
-    FrontendGlobal.executionContext)
+  def metricatedKeystoreService(environment: play.api.Environment, configuration: play.api.Configuration ) = new MemoMetrics(configuredKeystoreService(environment,configuration),
+    FrontendGlobal.logger)
 }

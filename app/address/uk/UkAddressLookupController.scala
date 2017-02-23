@@ -16,39 +16,39 @@
 
 package address.uk
 
-//import java.net.URLEncoder
-
 import address.outcome.SelectedAddress
 import address.uk.UkProposalsPage.showAddressListProposalForm
 import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.FrontendGlobal
+import com.google.inject.{Inject, Singleton}
 import keystore.MemoService
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.Countries
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-//import uk.gov.hmrc.util.JacksonMapper
 import views.html.addressuk._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-object UkAddressLookupController extends UkAddressLookupController(
-  Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService)(
-  FrontendGlobal.executionContext)
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
+
+@Singleton
+class UkAddressLookupController @Inject()(environment: play.api.Environment, configuration: play.api.Configuration)
+                                         (implicit val ec: ExecutionContext, val messagesApi: MessagesApi)
+  extends FrontendController with I18nSupport {
 
 
   import UkAddressForm.addressForm
   import address.ViewConfig._
+
+  lazy val lookup: AddressLookupService = Services.configuredAddressLookupService(environment, configuration)
+  lazy val memo: MemoService = Services.metricatedKeystoreService(environment, configuration)
+
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
@@ -69,7 +69,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
     }
 
   private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String],
-                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]):Html = {
+                             backUrl: Option[String], backText: Option[String])(implicit request: Request[_]): Html = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
     val ad = UkAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText, countryCode = UkCode)
@@ -82,7 +82,6 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
   def postFirstForm(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        //        println("form1: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
@@ -112,7 +111,8 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
       } else {
         val cu = Some(formData.continue)
         val nameOrNumber = formData.nameNo.getOrElse("-")
-        val proposalsRoute = routes.UkAddressLookupController.getProposals(tag, nameOrNumber, pc.get.toString, formData.guid, cu, None, formData.backUrl, formData.backText)
+        val proposalsRoute =
+          routes.UkAddressLookupController.getProposals(tag, nameOrNumber, pc.get.toString, formData.guid, cu, None, formData.backUrl, formData.backText)
         SeeOther(proposalsRoute.url)
       }
     }
@@ -152,7 +152,7 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
         }
     }
 
-  private def normaliseNumber(number: String):Option[String] = {
+  private def normaliseNumber(number: String): Option[String] = {
     val t = number.trim
     if (number.isEmpty || number == "-") {
       None
@@ -166,7 +166,6 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
   def postSelected(tag: String): Action[AnyContent] =
     TaggedAction.withTag(tag).async {
       implicit request =>
-        //println("form2: " + PrettyMapper.writeValueAsString(request.body))
         val bound = addressForm.bindFromRequest()(request)
         if (bound.errors.nonEmpty) {
           Future.successful(BadRequest(blankUkForm(tag, cfg(tag), bound, noMatchesWereFound = false, exceededLimit = false)))
@@ -190,9 +189,6 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
 
 
   private def continueToCompletion(tag: String, addressData: UkAddressData, request: Request[_]): Future[Result] = {
-//    val nfa = if (addressData.noFixedAddress) "nfa=1&" else ""
-//    val ea = if (addressData.editedAddress.isDefined) "edit=" + encJson(addressData.editedAddress.get) else ""
-
     if (addressData.uprnId.isEmpty) {
       val response = SelectedAddress(userSuppliedAddress = addressData.editedAddress, noFixedAddress = addressData.noFixedAddress)
       memo.storeSingleResponse(tag, addressData.guid, response).map {
@@ -233,10 +229,5 @@ class UkAddressLookupController(lookup: AddressLookupService, memo: MemoService)
         }
     }
 
-//  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
-
-//  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
-
   private val UkCode = Some(Countries.UK.code)
-
 }

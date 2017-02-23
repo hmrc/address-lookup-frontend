@@ -16,40 +16,34 @@
 
 package address.bfpo
 
-//import java.net.URLEncoder
-
 import address.bfpo.BfpoProposalsPage.showAddressListProposalForm
 import address.outcome.SelectedAddress
 import address.uk.service.AddressLookupService
 import address.uk.{Services, TaggedAction}
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.FrontendGlobal
+import com.google.inject.{Inject, Singleton}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import keystore.MemoService
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.address.uk.{Outcode, Postcode}
 import uk.gov.hmrc.address.v2.AddressRecord
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-//import uk.gov.hmrc.util.{JacksonMapper, PrettyMapper}
 import views.html.addressuk._
 import views.html.bfpo.blankBfpoForm
-
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
+@Singleton
+class BfpoAddressLookupController @Inject()(environment: play.api.Environment, configuration: play.api.Configuration)
+                                           (implicit val ec: ExecutionContext, val messagesApi: MessagesApi)
+  extends FrontendController with I18nSupport {
 
-object BfpoAddressLookupController extends BfpoAddressLookupController(
-  Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService)(
-  FrontendGlobal.executionContext)
-
-
-class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
-
-
-  import BfpoForm.bfpoForm
+  import address.bfpo.BfpoForm.bfpoForm
   import address.ViewConfig._
+
+  val lookup: AddressLookupService = Services.configuredAddressLookupService(environment, configuration)
+  val memo: MemoService = Services.metricatedKeystoreService(environment, configuration)
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
@@ -217,11 +211,4 @@ class BfpoAddressLookupController(lookup: AddressLookupService, memo: MemoServic
             }
         }
     }
-
-//  private def encJson(value: AnyRef): String = URLEncoder.encode(JacksonMapper.writeValueAsString(value), "ASCII")
-
-//  private val noFixedAbodeAddress = Address(List("No fixed abode"), None, None, "", None, Countries.UK)
-
-//  private val UkCode = Countries.UK.code
-
 }

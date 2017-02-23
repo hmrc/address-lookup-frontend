@@ -7,6 +7,7 @@ import keystore.MemoService
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.{Configuration, Environment}
 import play.api.libs.json.Json
 import play.api.mvc.Security
 import play.api.test.FakeRequest
@@ -39,33 +40,35 @@ class OutcomeControllerTest extends PlaySpec with MockitoSugar with OneAppPerSui
   val sr = SelectedAddress(Some(ne15xdLike), Some(edited), None)
 
   trait action {
-    val keystore = mock[MemoService]
-    val controller = new OutcomeController(keystore)
+    val mockKeystore = mock[MemoService]
+    val controller = new OutcomeController(Environment.simple(), Configuration.load(Environment.simple())) {
+      keystore = mockKeystore
+    }
     val req = FakeRequest().withSession(Security.username -> "user")
   }
 
   "outcome" should {
 
     "return successful JSON response for known parameters" in new action {
-      val srj = Json.toJson(sr)
-      when(keystore.fetchSingleResponse(tag, auditRef)) thenReturn Future.successful(Some(srj))
+      private val srj = Json.toJson(sr)
+      when(mockKeystore.fetchSingleResponse(tag, auditRef)) thenReturn Future.successful(Some(srj))
 
-      val result = call(controller.outcome(tag, auditRef), req)
+      private val result = call(controller.outcome(tag, auditRef), req)
 
       status(result) mustBe 200
       contentType(result) mustBe Some("application/json")
       contentAsJson(result) mustBe Json.toJson(sr.toDefaultOutcomeFormat(auditRef))
-      verify(keystore).fetchSingleResponse(tag, auditRef)
+      verify(mockKeystore).fetchSingleResponse(tag, auditRef)
     }
 
     "return not-found response for unknown parameters" in new action {
-      val srj = Json.toJson(sr)
-      when(keystore.fetchSingleResponse(tag, auditRef)) thenReturn Future.successful(None)
+      private val srj = Json.toJson(sr)
+      when(mockKeystore.fetchSingleResponse(tag, auditRef)) thenReturn Future.successful(None)
 
-      val result = call(controller.outcome(tag, auditRef), req)
+      private val result = call(controller.outcome(tag, auditRef), req)
 
       status(result) mustBe 404
-      verify(keystore).fetchSingleResponse(tag, auditRef)
+      verify(mockKeystore).fetchSingleResponse(tag, auditRef)
     }
   }
 
@@ -96,55 +99,55 @@ class OutcomeControllerTest extends PlaySpec with MockitoSugar with OneAppPerSui
     )))
 
     "map normative address id" in {
-      norm.toDefaultOutcomeFormat(auditRef).id must be (Some("id"))
+      norm.toDefaultOutcomeFormat(auditRef).id must be(Some("id"))
     }
 
     "map normative address lines" in {
-      norm.toDefaultOutcomeFormat(auditRef).address.get.lines must be (Some(List("line 1", "line 2", "line 3", "town")))
+      norm.toDefaultOutcomeFormat(auditRef).address.get.lines must be(Some(List("line 1", "line 2", "line 3", "town")))
     }
 
     "map normative address postcode" in {
-      norm.toDefaultOutcomeFormat(auditRef).address.get.postcode must be (Some("postcode"))
+      norm.toDefaultOutcomeFormat(auditRef).address.get.postcode must be(Some("postcode"))
     }
 
     "map normative address country" in {
-      norm.toDefaultOutcomeFormat(auditRef).address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+      norm.toDefaultOutcomeFormat(auditRef).address.get.country must be(Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
     }
 
     "map user supplied address lines" in {
-      usa.toDefaultOutcomeFormat(auditRef).address.get.lines must be (Some(List("line 1", "line 2", "line 3", "town")))
+      usa.toDefaultOutcomeFormat(auditRef).address.get.lines must be(Some(List("line 1", "line 2", "line 3", "town")))
     }
 
     "map user supplied address postcode" in {
-      usa.toDefaultOutcomeFormat(auditRef).address.get.postcode must be (Some("postcode"))
+      usa.toDefaultOutcomeFormat(auditRef).address.get.postcode must be(Some("postcode"))
     }
 
     "map user supplied address country" in {
-      usa.toDefaultOutcomeFormat(auditRef).address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+      usa.toDefaultOutcomeFormat(auditRef).address.get.country must be(Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
     }
 
     "map international address lines" in {
-      int.toDefaultOutcomeFormat(auditRef).address.get.lines must be (Some(List("line 1", "line 2", "line 3", "line 4")))
+      int.toDefaultOutcomeFormat(auditRef).address.get.lines must be(Some(List("line 1", "line 2", "line 3", "line 4")))
     }
 
     "map international address postcode" in {
-      int.toDefaultOutcomeFormat(auditRef).address.get.postcode must be (Some("postcode"))
+      int.toDefaultOutcomeFormat(auditRef).address.get.postcode must be(Some("postcode"))
     }
 
     "map international address country" in {
-      int.toDefaultOutcomeFormat(auditRef).address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+      int.toDefaultOutcomeFormat(auditRef).address.get.country must be(Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
     }
 
     "map bfpo address lines" in {
-      bfpo.toDefaultOutcomeFormat(auditRef).address.get.lines must be (Some(List("line 1", "line 2", "line 3", "line 4")))
+      bfpo.toDefaultOutcomeFormat(auditRef).address.get.lines must be(Some(List("line 1", "line 2", "line 3", "line 4")))
     }
 
     "map bfpo address postcode" in {
-      bfpo.toDefaultOutcomeFormat(auditRef).address.get.postcode must be (Some("postcode"))
+      bfpo.toDefaultOutcomeFormat(auditRef).address.get.postcode must be(Some("postcode"))
     }
 
     "map bfpo address country" in {
-      bfpo.toDefaultOutcomeFormat(auditRef).address.get.country must be (Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
+      bfpo.toDefaultOutcomeFormat(auditRef).address.get.country must be(Some(DefaultOutcomeFormatAddressCountry(Some("code"), Some("name"))))
     }
 
   }

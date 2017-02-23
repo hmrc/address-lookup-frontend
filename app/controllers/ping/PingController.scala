@@ -16,14 +16,14 @@
 
 package controllers.ping
 
+import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 
-object PingController extends PingController
-
-trait PingController extends FrontendController {
+@Singleton
+class PingController @Inject() extends FrontendController {
 
   val versionInfo = {
     val stream = getClass.getResourceAsStream("/provenance.json")

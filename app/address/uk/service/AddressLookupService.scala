@@ -33,9 +33,8 @@ import uk.gov.hmrc.play.http._
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class AddressLookupService(endpoint: String, applicationName: String, ec: ExecutionContext) {
+class AddressLookupService(endpoint: String, applicationName: String)(implicit ec: ExecutionContext) {
 
-  private implicit val xec = ec
   private val url = s"$endpoint/v2/uk/addresses"
 
   private implicit val hc = HeaderCarrier()

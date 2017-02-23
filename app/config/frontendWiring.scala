@@ -16,7 +16,7 @@
 
 package config
 
-import play.api.Play
+import play.api.{Application, Play}
 import play.api.Play.{configuration, current}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.SessionCache
@@ -28,33 +28,38 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
-object FrontendAuditConnector extends Auditing with AppName {
+trait CurrentApp {
+  protected def app: Application = Play.current
+
+}
+
+object FrontendAuditConnector extends Auditing with AppName with CurrentApp {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
 
-object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode with CurrentApp {
   override val hooks = NoneRequired
 }
 
 
-object FrontendAuthConnector extends AuthConnector with ServicesConfig {
-  val serviceUrl = baseUrl("auth")
+object FrontendAuthConnector extends AuthConnector with ServicesConfig with CurrentApp {
+  val serviceUrl: String = baseUrl("auth")
   lazy val http = WSHttp
 }
 
 
-object FrontendSessionCache extends SessionCache with AppName with ServicesConfig {
+object FrontendSessionCache extends SessionCache with AppName with ServicesConfig with CurrentApp {
 
   import ConfigHelper._
 
   override lazy val http = WSHttp
-  override lazy val defaultSource = appName
-  override lazy val baseUri = baseUrl("keystore")
-  override lazy val domain = mustGetConfigString(configuration, "cachable.session-cache.domain")
+  override lazy val defaultSource: String = appName
+  override lazy val baseUri: String = baseUrl("keystore")
+  override lazy val domain: String = mustGetConfigString(configuration, "cachable.session-cache.domain")
 }
 
-object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
+object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport with CurrentApp {
 
   private def whitelistConfig(key: String): Seq[String] = Play.configuration.getString(key).getOrElse("").split(",").toSeq
 

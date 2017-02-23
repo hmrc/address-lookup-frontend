@@ -18,12 +18,10 @@ package address.international
 
 import address.outcome.SelectedAddress
 import address.uk._
-import address.uk.service.AddressLookupService
 import com.fasterxml.uuid.{EthernetAddress, Generators}
-import config.FrontendGlobal
+import com.google.inject.{Inject, Singleton}
 import keystore.MemoService
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -31,17 +29,18 @@ import views.html.addressint._
 import views.html.addressuk.confirmationPage
 
 import scala.concurrent.{ExecutionContext, Future}
-
-object IntAddressLookupController extends IntAddressLookupController(
-  Services.configuredAddressLookupService,
-  Services.metricatedKeystoreService)(
-  FrontendGlobal.executionContext)
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
+@Singleton
+class IntAddressLookupController @Inject()(environment: play.api.Environment, configuration: play.api.Configuration)
+                                          (implicit val ec: ExecutionContext, val messagesApi: MessagesApi)
+  extends FrontendController with I18nSupport {
 
   import IntAddressForm.addressForm
   import address.ViewConfig._
+
+  lazy val memo: MemoService = Services.metricatedKeystoreService(environment, configuration)
 
   private val uuidGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
@@ -57,7 +56,8 @@ class IntAddressLookupController(lookup: AddressLookupService, memo: MemoService
         }
     }
 
-  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])(implicit request: Request[_]) = {
+  private def basicBlankForm(tag: String, guid: Option[String], continue: Option[String], backUrl: Option[String],
+                             backText: Option[String])(implicit request: Request[_]) = {
     val actualGuid = guid.getOrElse(uuidGenerator.generate.toString)
     val cu = continue.getOrElse(defaultContinueUrl)
     val ad = IntAddressData(guid = actualGuid, continue = cu, backUrl = backUrl, backText = backText)

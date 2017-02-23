@@ -17,21 +17,20 @@
 package address.outcome
 
 import address.uk.Services
-import config.FrontendGlobal
+import com.google.inject.{Inject, Singleton}
 import keystore.MemoService
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-
 import scala.concurrent.{ExecutionContext, Future}
 
 
-object OutcomeController extends OutcomeController(
-  Services.metricatedKeystoreService)(
-  FrontendGlobal.executionContext)
+@Singleton
+class OutcomeController @Inject()(environment: play.api.Environment, configuration: play.api.Configuration)
+                                 (implicit val ec: ExecutionContext)
+  extends FrontendController {
 
-
-class OutcomeController(keystore: MemoService)(implicit val ec: ExecutionContext) extends FrontendController {
+  var keystore: MemoService = Services.metricatedKeystoreService(environment, configuration)
 
   // response contains JSON representation of AddressRecordWithEdits
   def outcome(tag: String, id: String): Action[AnyContent] = Action.async {
@@ -41,13 +40,9 @@ class OutcomeController(keystore: MemoService)(implicit val ec: ExecutionContext
       fetch(tag, id)
   }
 
-  private def fetch(tag: String, auditRef: String): Future[Result] = {
+  private def fetch(tag: String, auditRef: String): Future[Result] =
     keystore.fetchSingleResponse(tag, auditRef).map {
-      address =>
-        if (address.isEmpty)
-          NotFound
-        else
-          Ok(Json.toJson(address.get.as[SelectedAddress].toDefaultOutcomeFormat(auditRef)))
+      case None => NotFound
+      case Some(address) => Ok(Json.toJson(address.as[SelectedAddress].toDefaultOutcomeFormat(auditRef)))
     }
-  }
 }

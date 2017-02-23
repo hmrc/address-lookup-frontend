@@ -53,9 +53,6 @@ object FrontendGlobal
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 
-  // one EC to rule them all - be sure to use it
-  val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
   val logger = new LoggerFacade(Logger.logger)
 
   lazy val whitelistFilter = {
@@ -71,17 +68,17 @@ object FrontendGlobal
 }
 
 
-object ControllerConfiguration extends ControllerConfig {
-  lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
+object ControllerConfiguration extends ControllerConfig with CurrentApp {
+  lazy val controllerConfigs: Config = app.configuration.underlying.as[Config]("controllers")
 }
 
 
 object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport {
-  override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
+  override def controllerNeedsLogging(controllerName: String): Boolean = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
 
-object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
+object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport with CurrentApp {
 
   override lazy val maskedFormFields = Seq("password")
 

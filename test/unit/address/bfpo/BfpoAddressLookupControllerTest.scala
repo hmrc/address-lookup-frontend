@@ -8,7 +8,8 @@ import keystore.MemoService
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.mvc.Security
+import play.api.{Configuration, Environment}
+import play.api.mvc.{AnyContentAsEmpty, Security}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.SessionCache
@@ -16,6 +17,7 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 class BfpoAddressLookupControllerTest extends PlaySpec with MockitoSugar with OneAppPerSuite {
 
   import scala.concurrent.ExecutionContext.Implicits.global
+  import play.api.i18n.Messages.Implicits._
 
   implicit val system = ActorSystem("AddressLookupControllerTest")
   implicit def mat: Materializer = ActorMaterializer()
@@ -24,34 +26,37 @@ class BfpoAddressLookupControllerTest extends PlaySpec with MockitoSugar with On
   private val tag = allTags.head
 
   trait action {
-    val cache = mock[SessionCache]
-    val lookup = mock[AddressLookupService]
-    val keystore = mock[MemoService]
-    val controller = new BfpoAddressLookupController(lookup, keystore)
-    val req = FakeRequest().withSession(Security.username -> "user")
+    private val cache = mock[SessionCache]
+    private val mockLookup = mock[AddressLookupService]
+    private val keystore = mock[MemoService]
+    val controller = new BfpoAddressLookupController(Environment.simple(), Configuration.load(Environment.simple())){
+      override val lookup: AddressLookupService = mockLookup
+      override val memo: MemoService = keystore
+    }
+    val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(Security.username -> "user")
   }
 
   "getEmptyForm" should {
 
     "display new empty form including the supplied guid, continue URL and country code" in new action {
-      val result = call(controller.getEmptyForm(tag, Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
+      private val result = call(controller.getEmptyForm(tag, Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 200
-      val doc = Jsoup.parse(contentAsString(result))
+      private val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1
       doc.select("#guid").`val`() mustBe "abc123"
       doc.select("#continue-url").`val`() mustBe "/here/there/everywhere"
     }
 
     "display new empty form including a generated guid if no guid is supplied" in new action {
-      val result = call(controller.getEmptyForm(tag, None, Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
+      private val result = call(controller.getEmptyForm(tag, None, Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 200
-      val doc = Jsoup.parse(contentAsString(result))
+      private val doc = Jsoup.parse(contentAsString(result))
       doc.select("body.entry-form").size mustBe 1
       doc.select("#guid").`val`().nonEmpty mustBe true
     }
 
     "give bad-request if the tag is unknown" in new action {
-      val result = call(controller.getEmptyForm("no-such-tag", Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
+      private val result = call(controller.getEmptyForm("no-such-tag", Some("abc123"), Some("/here/there/everywhere"), Some("/back"), Some("back")), req)
       status(result) mustBe 400
     }
   }

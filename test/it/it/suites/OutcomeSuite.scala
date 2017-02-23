@@ -69,7 +69,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
   val i1 = International(ne15xdLike.address.lines, Some(ne15xdLike.address.postcode), Some(UK))
   val sai = SelectedAddress(None, None, Some(i1))
 
-  implicit private val ec = scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   "keystore" must {
 
@@ -77,7 +77,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
+        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         val ksr = keystoreResponseString("j3", sr)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
@@ -92,7 +92,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "return none when not matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
+        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
 
@@ -108,7 +108,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
+        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         val ksr = i1Json("j3", i1)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
@@ -124,7 +124,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "return none when not matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
+        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         keystoreStub.expect(stubMethod) thenReturn(404, "text/plain", "")
 
@@ -140,7 +140,7 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "send the address record to the keystore" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
+        val service = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
         val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 
@@ -157,8 +157,8 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "return an address record when matched" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val peer = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
-        val service = new MemoMetrics(peer, logger, ec)
+        val peer = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
+        val service = new MemoMetrics(peer, logger)
         val stubMethod = StubMethod.get("/keystore/address-lookup/id12345")
         val ksr = keystoreResponseString("j3", sr)
         keystoreStub.expect(stubMethod) thenReturn(200, "application/json", ksr)
@@ -175,8 +175,8 @@ class OutcomeSuite(val context: Context)(implicit val app: Application) extends 
       "send the address record to the keystore" in {
         val logger = new StubLogger(true)
         keystoreStub.clearExpectations()
-        val peer = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger, ec)
-        val service = new MemoMetrics(peer, logger, ec)
+        val peer = new KeystoreServiceImpl(keystoreStub.endpoint, "foo", logger)
+        val service = new MemoMetrics(peer, logger)
         val stubMethod = StubMethod.put("/keystore/address-lookup/id12345/data/j3")
         keystoreStub.expect(stubMethod) thenReturn(204, "application/json", "")
 

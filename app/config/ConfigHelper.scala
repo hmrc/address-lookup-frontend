@@ -17,13 +17,12 @@
 package config
 
 import play.api.Mode._
-import play.api.Play._
-import play.api.{Application, Configuration, Play}
+import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.collection.JavaConversions._
 
-object ConfigHelper extends ServicesConfig {
+object ConfigHelper extends ServicesConfig  with CurrentApp {
 
   def mustGetConfigString(config: Configuration, key: String): String = {
     getConfigString(config, key).getOrElse {

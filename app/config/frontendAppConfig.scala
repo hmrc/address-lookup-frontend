@@ -16,7 +16,7 @@
 
 package config
 
-import play.api.Play
+import play.api.{Application, Play}
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -28,16 +28,15 @@ trait AppConfig {
 }
 
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+object FrontendAppConfig extends AppConfig with ServicesConfig with CurrentApp {
   import ConfigHelper._
-
-  lazy val appName = mustGetConfigString(Play.current, "appName")
 
   private val contactHost = getConfigString(configuration, s"contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "MyService"
 
-  override lazy val analyticsToken = mustGetConfigString(Play.current, s"google-analytics.token")
-  override lazy val analyticsHost = mustGetConfigString(Play.current, s"google-analytics.host")
+
+  override lazy val analyticsToken: String = mustGetConfigString(app, s"google-analytics.token")
+  override lazy val analyticsHost: String = mustGetConfigString(app, s"google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }

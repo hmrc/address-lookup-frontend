@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import play.routes.compiler.StaticRoutesGenerator
+import play.routes.compiler.{InjectedRoutesGenerator, StaticRoutesGenerator}
 import sbt.Keys._
 import sbt.Tests.{Group, SubProcess}
 import sbt._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning
+import play.sbt.routes.RoutesCompiler.autoImport._
 
 trait MicroService {
 
@@ -50,7 +51,7 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-      routesGenerator := StaticRoutesGenerator
+      routesGenerator := InjectedRoutesGenerator
     )
     .settings(Provenance.setting)
     .configs(Test)

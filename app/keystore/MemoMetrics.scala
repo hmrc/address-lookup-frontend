@@ -25,8 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 // TODO this should be using the normal metrics APIs
 
-class MemoMetrics(peer: MemoService, logger: SimpleLogger, ec: ExecutionContext) extends MemoService {
-  private implicit val xec = ec
+class MemoMetrics(peer: MemoService, logger: SimpleLogger)(implicit val ec: ExecutionContext) extends MemoService {
 
   override def storeSingleResponse(tag: String, id: String, address: SelectedAddress): Future[HttpResponse] = {
     val now = System.currentTimeMillis

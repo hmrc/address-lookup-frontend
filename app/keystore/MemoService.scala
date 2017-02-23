@@ -33,9 +33,7 @@ trait MemoService {
 }
 
 
-class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger, ec: ExecutionContext) extends MemoService {
-
-  private implicit val xec = ec
+class KeystoreServiceImpl(endpoint: String, applicationName: String, logger: SimpleLogger)(implicit ec: ExecutionContext) extends MemoService {
 
   private implicit val hc = HeaderCarrier()
 

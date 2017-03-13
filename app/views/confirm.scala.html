@@ -1,0 +1,9 @@
+
+@import model.ConfirmableAddress
+@import model.JourneyData
+
+@(id: String, journeyData: JourneyData, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[_], messages: Messages)
+
+@main_template(title = "Confirm Address") {
+  <h1>Confirm Address</h1>
+}

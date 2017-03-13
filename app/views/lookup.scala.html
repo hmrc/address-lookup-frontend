@@ -1,0 +1,23 @@
+
+@import model.Lookup
+@import model.JourneyData
+@import uk.gov.hmrc.play.views.html.helpers
+
+@(id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
+
+@main_template(title = journeyData.lookupPage.title.getOrElse("Lookup Address")) {
+  <h1>@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
+  @helpers.form(controllers.routes.AddressLookupController.select(id)) {
+    <fieldset class="form-field-group">
+      <div class="form-field">
+        @helpers.input(lookupForm("filter"), '_label -> journeyData.lookupPage.filterLabel.getOrElse("Building name or number"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+      </div>
+      <div class="form-field">
+        @helpers.input(lookupForm("postcode"), '_label -> journeyData.lookupPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+      </div>
+      <div class="form-field">
+        <button class="button" type="submit">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>
+      </div>
+    </fieldset>
+  }
+}

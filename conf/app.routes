@@ -1,28 +1,18 @@
-# routes
+# microservice specific routes
 
-GET    /                                                        address.uk.UkAddressLookupController.start
-
-# Main UK user interface
-GET    /uk/addresses/:tag                                       address.uk.UkAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])
-POST   /uk/addresses/:tag/propose                               address.uk.UkAddressLookupController.postFirstForm(tag: String)
-GET    /uk/addresses/:tag/get-proposals/:nameNo/:postcode/:guid address.uk.UkAddressLookupController.getProposals(tag: String, nameNo: String, postcode: String, guid: String, continue: Option[String], editId: Option[String], backUrl: Option[String], backText:Option[String])
-POST   /uk/addresses/:tag/select                                address.uk.UkAddressLookupController.postSelected(tag: String)
-GET    /uk/addresses/:tag/confirmation                          address.uk.UkAddressLookupController.confirmation(tag: String, id: String )
-
-# BFPO user interface
-GET    /bfpo/addresses/:tag                                       address.bfpo.BfpoAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])
-POST   /bfpo/addresses/:tag/propose                               address.bfpo.BfpoAddressLookupController.postFirstForm(tag: String)
-GET    /bfpo/addresses/:tag/get-proposals/:number/:postcode/:guid address.bfpo.BfpoAddressLookupController.getProposals(tag: String, number: String, postcode: String, guid: String, continue: Option[String], editId: Option[String], backUrl: Option[String], backText: Option[String])
-POST   /bfpo/addresses/:tag/select                                address.bfpo.BfpoAddressLookupController.postSelected(tag: String)
-GET    /bfpo/addresses/:tag/confirmation                          address.bfpo.BfpoAddressLookupController.confirmation(tag: String, id: String )
-
-# International user interface
-GET    /int/addresses/:tag                     address.international.IntAddressLookupController.getEmptyForm(tag: String, id: Option[String], continue: Option[String], backUrl: Option[String], backText: Option[String])
-POST   /int/addresses/:tag/submit              address.international.IntAddressLookupController.postSelected(tag: String)
-GET    /int/addresses/:tag/confirmation        address.international.IntAddressLookupController.confirmation(tag: String, id: String )
-
-# REST
-GET    /outcome/:tag/:id                       address.outcome.OutcomeController.outcome(tag: String, id: String)
+POST /init/:journeyName          @controllers.AddressLookupController.init(journeyName: String)
+GET  /no-journey                 @controllers.AddressLookupController.noJourney()
+GET  /confirmed                  @controllers.AddressLookupController.confirmed
+GET  /:id/lookup                 @controllers.AddressLookupController.lookup(id: String)
+GET  /:id/select                 @controllers.AddressLookupController.select(id: String)
+POST /:id/select                 @controllers.AddressLookupController.handleSelect(id: String)
+GET  /:id/edit                   @controllers.AddressLookupController.edit(id: String)
+POST /:id/edit                   @controllers.AddressLookupController.handleEdit(id: String)
+GET  /:id/confirm                @controllers.AddressLookupController.confirm(id: String)
+POST /:id/confirm                @controllers.AddressLookupController.handleConfirm(id: String)
 
 # Other
+
 GET    /assets/*file                           controllers.Assets.at(path="/public", file)
+
+

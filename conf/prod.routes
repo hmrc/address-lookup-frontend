@@ -1,10 +1,6 @@
 # Add all the application routes to the app.routes file
-->         /lookup-address              app.Routes
-->         /                            health.Routes
-->     	   /template                    template.Routes
+->         /lookup-address            app.Routes
+->         /                          health.Routes
+->     	   /template                  template.Routes
 
-GET        /admin/metrics               @com.kenshoo.play.metrics.MetricsController.metrics
-
-HEAD       /ping                        controllers.ping.PingController.ping
-GET        /ping                        controllers.ping.PingController.ping
-
+GET        /admin/metrics             @com.kenshoo.play.metrics.MetricsController.metrics

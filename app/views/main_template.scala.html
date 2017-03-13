@@ -1,20 +1,5 @@
-@*
-* Copyright 2016 HM Revenue & Customs
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*@
-
-@(view: address.ViewConfig,
+@import config.FrontendAppConfig
+@(title: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -22,33 +7,7 @@
   scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.layouts
-@import config._
 
-@stylesheets = {
-    <link rel="stylesheet" type="text/css" href="assets/jquery-ui.css"/>
-    <link rel="stylesheet" type="text/css" href="assets/style.css" />
-}
-
-@scripts = {
-    <script src="assets/vendor/jquery.min.js"></script>
-    <script src="assets/vendor/jquery-ui.min.js"></script>
-    <script src="assets/vendor/jquery.form.min.js"></script>
-    <script src="assets/vendor/jquery.select-to-autocomplete.js"></script>
-    <script src="assets/selection-buttons.js"></script>
-    <script src="assets/redirect.js"></script>
-    <script src="assets/application.js"></script>
-    <script>
-            (function($){
-                $(function(){
-                    $('select').selectToAutocomplete();
-                });
-            })(jQuery);
-    </script>
-}
-
-@head = {
-    @layouts.head(Some(stylesheets), Some(scripts))
-}
 
 @serviceInfoContent = {}
 
@@ -60,7 +19,7 @@
 
 
 @govuk_wrapper(appConfig = FrontendAppConfig,
-               view = view,
+               title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,
@@ -69,4 +28,3 @@
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
 )
-

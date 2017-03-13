@@ -1,0 +1,9 @@
+
+@import model.Edit
+@import model.JourneyData
+
+@(id: String, journeyData: JourneyData, editForm: Form[Edit])(implicit request: Request[_], messages: Messages)
+
+@main_template(title = "Edit Address") {
+  <h1>Edit Address</h1>
+}

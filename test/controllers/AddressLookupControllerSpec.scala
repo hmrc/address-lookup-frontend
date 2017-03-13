@@ -6,6 +6,7 @@ import model.{JourneyData, LookupPage, ProposedAddress}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, JourneyRepository}
@@ -21,6 +22,8 @@ class AddressLookupControllerSpec
     with ScalaFutures {
 
   implicit lazy val materializer = app.materializer
+
+  implicit val hc = HeaderCarrier()
 
   class Scenario(journeyConfig: Map[String, JourneyData] = Map.empty,
                  var journeyData: Map[String, JourneyData] = Map.empty,
@@ -75,6 +78,15 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.init("foo"), req)
       contentAsString(res) must be (s"$endpoint/lookup-address/bar/lookup")
+    }
+
+    "permit user to supply custom continueUrl" in new Scenario(
+      journeyConfig = Map("foo" -> basicJourney),
+      id = Some("bar")
+    ) {
+      val r = req.withFormUrlEncodedBody("continueUrl" -> "http://google.com")
+      contentAsString(controller.init("foo").apply(r)) must be (s"$endpoint/lookup-address/bar/lookup")
+      journeyRepository.get("bar").futureValue.get.continueUrl must be ("http://google.com")
     }
 
   }
@@ -152,6 +164,7 @@ class AddressLookupControllerSpec
     "display a list of proposals given postcode and filter parameters" in new Scenario(
       proposals = Seq(ProposedAddress("GB1234567890", "AA1 BB2"))
     ) {
+      // TODO proposals test
     }
 
   }

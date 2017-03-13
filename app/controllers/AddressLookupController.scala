@@ -24,6 +24,12 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
 
+  val initForm = Form(
+    mapping(
+      "continueUrl" -> optional(text(0, 255))
+    )(Init.apply)(Init.unapply)
+  )
+
   val lookupForm = Form(
     mapping(
       "filter" -> optional(text(0, 255)),
@@ -57,15 +63,26 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL
   def init(journeyName: String) = Action.async { implicit req =>
-    val id = uuid
-    try {
-      // TODO init should do put, too
-      val journey = journeyRepository.init(journeyName)
-      journeyRepository.put(id, journey)
-        .map(success => Ok(s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-    } catch {
-      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
-    }
+    println(req.body)
+    initForm.bindFromRequest().fold(
+      errors => Future.successful(BadRequest),
+      ini => {
+        val id = uuid
+        try {
+          // TODO init should do put, too
+          val journey = journeyRepository.init(journeyName)
+          println(ini)
+          val j = ini.continueUrl match {
+            case Some(url) => journey.copy(continueUrl = url)
+            case None => journey
+          }
+          journeyRepository.put(id, j)
+            .map(success => Ok(s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+        } catch {
+          case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
+        }
+      }
+    )
   }
 
   // GET  /no-journey
@@ -226,3 +243,5 @@ case class Proposals(proposals: Option[Seq[ProposedAddress]]) {
 }
 
 case class Confirmed(id: String)
+
+case class Init(continueUrl: Option[String])

@@ -19,11 +19,19 @@ class ModelSpec extends WordSpec with MustMatchers {
 
   "a proposal" should {
 
-    // TODO this test is not yet complete, obviously!
     "transform to a confirmable address" in {
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"), Some("county"), Countries.England)
-      val conf = prop.toConfirmableAddress
-      val expected = ConfirmableAddress("TODO")
+      val auditRef = "audit ref"
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), Some("town"), Some("county"), Countries.England)
+      val conf = prop.toConfirmableAddress(auditRef)
+      val expected = ConfirmableAddress(
+        auditRef,
+        Some(prop.addressId),
+        address = ConfirmableAddressDetails(
+          Some(prop.lines.take(3) ++ List(prop.town.get)),
+          Some(prop.postcode),
+          Some(prop.country)
+        )
+      )
       conf must be (expected)
     }
 

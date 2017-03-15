@@ -14,6 +14,12 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
 
 }
 
+case class ConfirmPage(title: Option[String] = None,
+                       heading: Option[String] = None,
+                       infoSubheading: Option[String] = None,
+                       infoMessage: Option[String] = None,
+                       submitLabel: Option[String] = None)
+
 case class LookupPage(title: Option[String] = None,
                       heading: Option[String] = None,
                       filterLabel: Option[String] = None,
@@ -34,7 +40,8 @@ case class JourneyData(continueUrl: String,
                        selectedAddress: Option[ConfirmableAddress] = None,
                        confirmedAddress: Option[ConfirmableAddress] = None,
                        lookupPage: LookupPage = LookupPage(),
-                       selectPage: SelectPage = SelectPage())
+                       selectPage: SelectPage = SelectPage(),
+                       confirmPage: ConfirmPage = ConfirmPage())
 
 case class ProposedAddress(addressId: String,
                            postcode: String,
@@ -43,7 +50,25 @@ case class ProposedAddress(addressId: String,
                            county: Option[String] = None,
                            country: Country = Countries.UK) {
 
-  def toConfirmableAddress: ConfirmableAddress = ConfirmableAddress("TODO")
+  def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
+    auditRef,
+    Some(addressId),
+    ConfirmableAddressDetails(
+      Some(toLines),
+      Some(postcode),
+      Some(country)
+    )
+  )
+
+  private def toLines: List[String] = {
+    town match {
+      case Some(town) => lines.take(3) ++ List(town)
+      case None => county match {
+        case Some(county) => lines.take(3) ++ List(county)
+        case None => lines.take(4)
+      }
+    }
+  }
 
   // TODO verify description format
   def toDescription: String = {
@@ -57,23 +82,34 @@ case class ProposedAddress(addressId: String,
 }
 
 case class ConfirmableAddress(auditRef: String,
-                              id: Option[String] = None) {
+                              id: Option[String] = None,
+                              address: ConfirmableAddressDetails = ConfirmableAddressDetails()) {
 
   def toEdit: Edit = ???
+
+  def toDescription: String = address.toDescription
 
 }
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
                                      postcode: Option[String] = None,
-                                     country: Option[Country] = None)
+                                     country: Option[Country] = None) {
+
+  def toDescription: String = {
+    (lines.getOrElse(List.empty) ++ postcode.toList ++ country.toList.map(_.name)).mkString(", ") + "."
+  }
+
+}
 
 // JSON serialization companions
 
 object JourneyData {
 
   implicit val countryFormat = Json.format[Country]
+  implicit val confirmPageFormat = Json.format[ConfirmPage]
   implicit val selectPageFormat = Json.format[SelectPage]
   implicit val lookupPageFormat = Json.format[LookupPage]
+  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
   implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
   implicit val journeyDataFormat = Json.format[JourneyData]
@@ -82,6 +118,8 @@ object JourneyData {
 
 object ConfirmableAddress {
 
+  implicit val countryFormat = Json.format[Country]
+  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
   implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
 
 }

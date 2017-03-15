@@ -66,6 +66,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     else v.unwrapped().toString
   }
 
+  // TODO ensure all potential config values are mapped
   private def journey(key: String, journeys: ConfigObject): JourneyData = {
     val j = journeys.get(key).asInstanceOf[ConfigObject]
     val l = Option(j.get("lookupPage").asInstanceOf[ConfigObject])

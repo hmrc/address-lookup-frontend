@@ -5,6 +5,7 @@ import com.gu.scalatest.JsoupShouldMatchers
 import model.{JourneyData, LookupPage, ProposedAddress}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -168,6 +169,18 @@ class AddressLookupControllerSpec
       val html = contentAsString(res).asBodyFragment
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Next")
+    }
+
+  }
+
+  "handle select" should {
+
+    "redirect to confirm page" in new Scenario(
+      journeyData = Map("foo" -> basicJourney.copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+    ) {
+      val res = controller.handleSelect("foo").apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
+      status(res) must be (303)
+      header(HeaderNames.LOCATION, res) must be (Some(routes.AddressLookupController.confirm("foo").url))
     }
 
   }

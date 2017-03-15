@@ -1,9 +1,28 @@
 
 @import model.ConfirmableAddress
 @import model.JourneyData
+@import uk.gov.hmrc.play.views.html.helpers
 
 @(id: String, journeyData: JourneyData, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "Confirm Address") {
-  <h1>Confirm Address</h1>
+@main_template(title = journeyData.confirmPage.title.getOrElse("Confirm Address")) {
+  <h1>@{journeyData.confirmPage.heading.getOrElse("Confirm Address")}</h1>
+  @if(selectedAddress.isDefined) {
+    <div class="panel-indent panel-indent--info">
+      @helpers.form(controllers.routes.AddressLookupController.confirm(id)) {
+        <fieldset class="form-field-group">
+          <div class="form-field">
+            <h2>@{journeyData.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>
+            <p>@{journeyData.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the \"Confirm\" button.")}</p>
+            <p>@{selectedAddress.get.toDescription}</p>
+          </div>
+          <div class="form-field">
+            <button type="submit">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>
+          </div>
+        </fieldset>
+      }
+    </div>
+  } else {
+    <p>You have not selected any address. Please <a href="@{routes.AddressLookupController.lookup(id)}">search for and select your address</a>.</p>
+  }
 }

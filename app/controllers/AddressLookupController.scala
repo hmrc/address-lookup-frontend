@@ -128,7 +128,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           journeyData.proposals match {
             case Some(props) => {
               props.filter(_.addressId == selection.addressId).headOption match {
-                case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress))), Redirect(routes.AddressLookupController.confirm(id)))
+                case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
                 case None => (None, BadRequest(views.html.select(id, journeyData, bound, Proposals(Some(props)))))
               }
             }

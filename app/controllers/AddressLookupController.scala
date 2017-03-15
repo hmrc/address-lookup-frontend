@@ -63,7 +63,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL
   def init(journeyName: String) = Action.async { implicit req =>
-    println(req.body)
     initForm.bindFromRequest().fold(
       errors => Future.successful(BadRequest),
       ini => {
@@ -71,7 +70,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         try {
           // TODO init should do put, too
           val journey = journeyRepository.init(journeyName)
-          println(ini)
           val j = ini.continueUrl match {
             case Some(url) => journey.copy(continueUrl = url)
             case None => journey
@@ -110,7 +108,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
         lookup => {
           addressService.find(lookup.postcode, lookup.filter).map { props =>
-            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm, Some("No addresses found. Please try again!"))))
+            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), journeyData.lookupPage.noResultsFoundMessage)))
+            else if (props.size > journeyData.selectPage.proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), journeyData.lookupPage.resultLimitExceededMessage)))
             else (Some(journeyData.copy(proposals = Some(props))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(props)))))
           }
         }

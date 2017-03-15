@@ -11,7 +11,7 @@ class ModelSpec extends WordSpec with MustMatchers {
     "transform to a confirmable address" in {
       val edit = Edit("line1", Some("line2"), Some("line3"), "town", "postcode", Some(Countries.UK.code))
       val conf = edit.toConfirmableAddress
-      val expected = ConfirmableAddress()
+      val expected = ConfirmableAddress("TODO")
       conf must be (expected)
     }
 
@@ -23,7 +23,7 @@ class ModelSpec extends WordSpec with MustMatchers {
     "transform to a confirmable address" in {
       val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"), Some("county"), Countries.England)
       val conf = prop.toConfirmableAddress
-      val expected = ConfirmableAddress()
+      val expected = ConfirmableAddress("TODO")
       conf must be (expected)
     }
 

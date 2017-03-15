@@ -6,7 +6,6 @@ import model.{JourneyData, LookupPage, ProposedAddress}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, JourneyRepository}
@@ -53,7 +52,7 @@ class AddressLookupControllerSpec
     }
 
     val addressService = new AddressService {
-      override def find(postcode: String, filter: Option[String]) = {
+      override def find(postcode: String, filter: Option[String])(implicit hc: HeaderCarrier) = {
         Future.successful(proposals)
       }
     }
@@ -162,9 +161,13 @@ class AddressLookupControllerSpec
   "select" should {
 
     "display a list of proposals given postcode and filter parameters" in new Scenario(
+      journeyData = Map("foo" -> basicJourney),
       proposals = Seq(ProposedAddress("GB1234567890", "AA1 BB2"))
     ) {
-      // TODO proposals test
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "AA1 BB2"))
+      val html = contentAsString(res).asBodyFragment
+      html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Next")
     }
 
   }

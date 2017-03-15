@@ -6,15 +6,15 @@
 
 @(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "Select Address") {
-  <h1>Select Address</h1>
+@main_template(title = journeyData.selectPage.title.getOrElse("Select Address")) {
+  <h1>@{journeyData.selectPage.heading.getOrElse("Select Address")}</h1>
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>
       <div class="form-group">
-        @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions)
+      @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.selectPage.proposalListLabel.getOrElse("Please select one of the following addresses"), '_labelClass -> "block-label")
       </div>
       <div class="form-group">
-        <button type="submit">Next</button>
+        <button type="submit">@{journeyData.selectPage.submitLabel.getOrElse("Next")}</button>
       </div>
     </fieldset>
   }

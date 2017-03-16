@@ -9,7 +9,7 @@
   <h1>@{journeyData.confirmPage.heading.getOrElse("Confirm Address")}</h1>
   @if(selectedAddress.isDefined) {
     <div class="panel-indent panel-indent--info">
-      @helpers.form(controllers.routes.AddressLookupController.confirm(id)) {
+      @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
         <fieldset class="form-field-group">
           <div class="form-field">
             <h2>@{journeyData.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>

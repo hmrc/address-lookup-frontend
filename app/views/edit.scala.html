@@ -1,9 +1,36 @@
 
 @import model.Edit
 @import model.JourneyData
+@import uk.gov.hmrc.play.views.html.helpers
 
-@(id: String, journeyData: JourneyData, editForm: Form[Edit])(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = "Edit Address") {
   <h1>Edit Address</h1>
+  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
+    <fieldset class="form-field-group">
+      <div class="form-field">
+        @helpers.input(editForm("line1"), '_label -> "Line 1", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+      </div>
+      <div class="form-field">
+        @helpers.input(editForm("line2"), '_label -> "Line 2", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+      </div>
+      <div class="form-field">
+        @helpers.input(editForm("line3"), '_label -> "Line 3", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+      </div>
+      <div class="form-field">
+        @helpers.input(editForm("town"), '_label -> "Town", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+      </div>
+      <div class="form-field">
+        @helpers.input(editForm("postcode"), '_label -> "Postcode", '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+      </div>
+      <div class="form-field">
+        @helpers.dropdown(editForm("countryCode"), countries, true, '_label -> "Country", '_inputClass -> "form-control form-control--block")
+      </div>
+      <div class="form-field">
+        <button type="submit">Next</button>
+      </div>
+    </fieldset>
+  }
+
 }

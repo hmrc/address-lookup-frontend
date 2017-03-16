@@ -10,19 +10,27 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{AddressService, JourneyRepository}
+import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
 
 @Singleton
-class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService)
+class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
                                        (implicit val ec: ExecutionContext, val messagesApi: MessagesApi)
   extends FrontendController with I18nSupport with ServicesConfig {
 
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
+
+  // fetch eagerly and await result
+  val countries: Seq[(String, String)] = Await.result(countryService.findAll.map { countries =>
+    countries.map { c =>
+      (c.code -> c.name)
+    }
+  }, 60.seconds)
 
   val initForm = Form(
     mapping(
@@ -45,11 +53,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   val editForm = Form(
     mapping(
-      "line1" -> text(255),
+      "line1" -> text(1, 255),
       "line2" -> optional(text(0, 255)),
       "line3" -> optional(text(0, 255)),
       "town" -> text(1, 255),
-      "postcode" -> text(1, 255),
+      "postcode" -> text(1, 8),
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)
   )
@@ -143,7 +151,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   def edit(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
       val f = if (journeyData.selectedAddress.isDefined) editForm.fill(journeyData.selectedAddress.get.toEdit) else editForm
-      (None, Ok(views.html.edit(id, journeyData, f)))
+      (None, Ok(views.html.edit(id, journeyData, f, countries)))
     }
   }
 
@@ -152,8 +160,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withJourney(id) { journeyData =>
       val bound = editForm.bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.edit(id, journeyData, errors))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress))), Redirect(routes.AddressLookupController.confirm(id)))
+        errors => (None, BadRequest(views.html.edit(id, journeyData, errors, countries))),
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }

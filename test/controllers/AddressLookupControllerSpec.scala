@@ -9,7 +9,8 @@ import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{AddressService, JourneyRepository}
+import services.{AddressService, CountryService, JourneyRepository}
+import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,7 +59,11 @@ class AddressLookupControllerSpec
       }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService) {
+    val countryService = new CountryService {
+      override def findAll = Future.successful(Seq(Country("UK", "United Kingdomm")))
+    }
+
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService) {
       override val addressLookupEndpoint = endpoint
       override protected def uuid: String = id.getOrElse("random-id")
     }

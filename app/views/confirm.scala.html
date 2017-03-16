@@ -15,6 +15,7 @@
             <h2>@{journeyData.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>
             <p>@{journeyData.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the \"Confirm\" button.")}</p>
             <p>@{selectedAddress.get.toDescription}</p>
+            <p><a href="@{routes.AddressLookupController.edit(id)}">Edit this address</a></p>
           </div>
           <div class="form-field">
             <button type="submit">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>

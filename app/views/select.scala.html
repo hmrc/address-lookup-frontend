@@ -11,7 +11,10 @@
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>
       <div class="form-group">
-      @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.selectPage.proposalListLabel.getOrElse("Please select one of the following addresses"), '_labelClass -> "block-label")
+        @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.selectPage.proposalListLabel.getOrElse("Please select one of the following addresses"), '_labelClass -> "block-label")
+      </div>
+      <div class="form-field">
+        <p><a href="@{routes.AddressLookupController.edit(id)}">Enter address manually</a></p>
       </div>
       <div class="form-group">
         <button type="submit">@{journeyData.selectPage.submitLabel.getOrElse("Next")}</button>

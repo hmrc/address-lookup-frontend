@@ -10,13 +10,16 @@
   @if(message.isDefined) {
     <p class="important-notice">@{message.get}</p>
   }
-  @helpers.form(controllers.routes.AddressLookupController.select(id)) {
+  @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
       <div class="form-field">
         @helpers.input(lookupForm("filter"), '_label -> journeyData.lookupPage.filterLabel.getOrElse("Building name or number"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
       <div class="form-field">
         @helpers.input(lookupForm("postcode"), '_label -> journeyData.lookupPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+      </div>
+      <div class="form-field">
+        <p><a href="@{routes.AddressLookupController.edit(id)}">Enter address manually</a></p>
       </div>
       <div class="form-field">
         <button class="button" type="submit">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>

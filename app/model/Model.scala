@@ -40,8 +40,7 @@ case class SelectPage(title: Option[String] = None,
                       heading: Option[String] = None,
                       proposalListLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
-                      proposalListLimit: Option[Int] = None,
-                      noProposalsFoundMessage: Option[String] = None)
+                      proposalListLimit: Option[Int] = None)
 
 case class JourneyData(continueUrl: String,
                        proposals: Option[Seq[ProposedAddress]] = None,
@@ -49,7 +48,10 @@ case class JourneyData(continueUrl: String,
                        confirmedAddress: Option[ConfirmableAddress] = None,
                        lookupPage: LookupPage = LookupPage(),
                        selectPage: SelectPage = SelectPage(),
-                       confirmPage: ConfirmPage = ConfirmPage())
+                       confirmPage: ConfirmPage = ConfirmPage(),
+                       homeNavHref: Option[String] = None,
+                       navTitle: Option[String] = None,
+                       additionalStylesheetUrl: Option[String] = None)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

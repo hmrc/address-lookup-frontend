@@ -1,6 +1,8 @@
 @import config.AppConfig
+@import model.JourneyData
 @(appConfig: AppConfig,
   title: String,
+  journeyData: Option[JourneyData] = None,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -14,21 +16,27 @@
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
+@links = {
+    @if(journeyData.flatMap(_.additionalStylesheetUrl).isDefined) {
+        <link rel="stylesheet" type="text/css" href="@{journeyData.flatMap(_.additionalStylesheetUrl).get}">
+    }
+}
+
 @head = {
     @uiLayouts.head(
-      linkElem = None,
+      linkElem = Some(links),
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="http://www.google.com"
+  <li><a id="homeNavHref" href="@{journeyData.map(_.homeNavHref).getOrElse("http://www.hmrc.gov.uk")}"
          data-journey-click="primary-navigation:Click:Home">Home</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("TODO navTitle journeyData property"),
+      navTitle = journeyData.flatMap(_.navTitle),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))

@@ -1,7 +1,7 @@
 package services
 
 import config.WSHttp
-import model.{JourneyData, LookupPage}
+import model.{ConfirmPage, JourneyData, LookupPage, SelectPage}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.json.{Json, Reads, Writes}
@@ -75,10 +75,30 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "know about j0" in new Scenario() {
       repo.init("j0") must be (JourneyData(
         continueUrl = "/lookup-address/confirmed",
+        homeNavHref = Some("http://www.hmrc.gov.uk/"),
+        navTitle = Some("Address Lookup"),
         lookupPage = LookupPage(
           title = Some("Lookup Address"),
           heading = Some("Your Address"),
-          filterLabel = Some("Building name or number")
+          filterLabel = Some("Building name or number"),
+          postcodeLabel = Some("Postcode"),
+          submitLabel = Some("Find my address"),
+          noResultsFoundMessage = Some("Sorry, we couldn't find anything for that postcode."),
+          resultLimitExceededMessage = Some("There were too many results. Please add additional details to limit the number of results.")
+        ),
+        selectPage = SelectPage(
+          title = Some("Select Address"),
+          heading = Some("Select Address"),
+          proposalListLabel = Some("Please select one of the following addresses"),
+          submitLabel = Some("Next"),
+          proposalListLimit = Some(50)
+        ),
+        confirmPage = ConfirmPage(
+          title = Some("Confirm Address"),
+          heading = Some("Confirm Address"),
+          infoSubheading =  Some("Your selected address"),
+          infoMessage = Some("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."),
+          submitLabel = Some("Confirm")
         )
       ))
     }

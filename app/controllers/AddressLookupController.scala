@@ -117,8 +117,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
         lookup => {
           addressService.find(lookup.postcode, lookup.filter).map { props =>
-            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), journeyData.lookupPage.noResultsFoundMessage)))
-            else if (props.size > journeyData.selectPage.proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), journeyData.lookupPage.resultLimitExceededMessage)))
+            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.lookupPage.noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
+            else if (props.size > journeyData.selectPage.proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.lookupPage.resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
             else (Some(journeyData.copy(proposals = Some(props))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(props)))))
           }
         }
@@ -190,7 +190,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     confirmedForm.bindFromRequest().fold(
       errors => Future.successful(BadRequest),
       confirmed => {
-        withJourney(confirmed.id) { journeyData =>
+        withJourney(confirmed.id, NotFound) { journeyData =>
           if (journeyData.confirmedAddress.isDefined) {
             (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
           } else {
@@ -201,7 +201,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     )
   }
 
-  private def withJourney(id: String)(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
+  private def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
@@ -212,12 +212,12 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
             case None => Future.successful(outcome._2)
           }
         }
-        case None => Future.successful(Redirect(routes.AddressLookupController.noJourney()))
+        case None => Future.successful(noJourney)
       }
     }
   }
 
-  private def withFutureJourney(id: String)(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
+  private def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
@@ -229,7 +229,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
             }
           }
         }
-        case None => Future.successful(Redirect(routes.AddressLookupController.noJourney()))
+        case None => Future.successful(noJourney)
       }
     }
   }

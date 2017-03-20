@@ -8,7 +8,9 @@
 @main_template(title = journeyData.lookupPage.title.getOrElse("Lookup Address")) {
   <h1>@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
   @if(message.isDefined) {
-    <p class="important-notice">@{message.get}</p>
+    <div class="highlight-message highlight-message--full-width">
+      <p>@{message.get}</p>
+    </div>
   }
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">

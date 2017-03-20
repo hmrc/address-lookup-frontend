@@ -32,11 +32,15 @@ class ForeignOfficeCountryService extends CountryService with ServicesConfig {
   // TODO can't imagine list changes often - should we cache results or even keep a local copy?
   override def findAll: Future[Seq[Country]] = {
     implicit val hc = HeaderCarrier()
-    http.GET[Map[String, FcoCountry]](s"$endpoint/records", Seq("page-size" -> "5000")).map { countries =>
-      countries.map { country =>
-        Country(country._2.country, country._2.name)
-      }.toSeq.sortWith(_.name < _.name)
-    }
+//    http.GET[Map[String, FcoCountry]](s"$endpoint/records", Seq("page-size" -> "5000")).map { countries =>
+//      countries.map { country =>
+//        Country(country._2.country, country._2.name)
+//      }.toSeq.sortWith(_.name < _.name)
+//    }
+    // just use a local copy
+    Future.successful(Json.parse(getClass.getResourceAsStream("/countries.json")).as[Map[String, FcoCountry]].map { country =>
+      Country(country._2.country, country._2.name)
+    }.toSeq.sortWith(_.name < _.name))
   }
 
 }

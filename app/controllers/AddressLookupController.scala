@@ -11,6 +11,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
+import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -41,7 +42,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   val lookupForm = Form(
     mapping(
       "filter" -> optional(text(0, 255)),
-      "postcode" -> text(3, 8)
+      "postcode" -> text(3, 8).verifying("The postcode you entered appears to be incomplete or invalid. Please check and try again.", p => Postcode.cleanupPostcode(p).isDefined)
     )(Lookup.apply)(Lookup.unapply)
   )
 

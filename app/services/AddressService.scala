@@ -11,6 +11,7 @@ import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import services.AddressReputationFormats._
+import uk.gov.hmrc.address.uk.Postcode
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,7 +31,7 @@ class AddressLookupAddressService extends AddressService with ServicesConfig {
   val http: HttpGet = WSHttp
 
   override def find(postcode: String, filter: Option[String] = None)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" -> postcode, "filter" -> filter.getOrElse(""))).map { found =>
+    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" -> Postcode.cleanupPostcode(postcode).get.toString, "filter" -> filter.getOrElse(""))).map { found =>
       found.map { addr =>
         ProposedAddress(
           addr.id,

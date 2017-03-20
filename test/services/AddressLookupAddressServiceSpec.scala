@@ -43,7 +43,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
     "find addresses by postcode" in new Scenario(
       resp = Some(HttpResponse(200, Some(Json.toJson(oneAddress))))
     ) {
-      service.find("postcode").futureValue must be (toProposals(oneAddress))
+      service.find("ZZ11 1ZZ").futureValue must be (toProposals(oneAddress))
     }
 
   }

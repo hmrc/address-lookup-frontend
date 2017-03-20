@@ -168,9 +168,9 @@ class AddressLookupControllerSpec
 
     "display a list of proposals given postcode and filter parameters" in new Scenario(
       journeyData = Map("foo" -> basicJourney),
-      proposals = Seq(ProposedAddress("GB1234567890", "AA1 BB2"))
+      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "AA1 BB2"))
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Next")

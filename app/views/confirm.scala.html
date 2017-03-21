@@ -5,7 +5,7 @@
 
 @(id: String, journeyData: JourneyData, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.confirmPage.title.getOrElse("Confirm Address")) {
+@main_template(title = journeyData.confirmPage.title.getOrElse("Confirm Address"), journeyData = Some(journeyData)) {
   <h1>@{journeyData.confirmPage.heading.getOrElse("Confirm Address")}</h1>
   @if(selectedAddress.isDefined) {
     <div class="panel-indent panel-indent--info">

@@ -5,7 +5,7 @@
 
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "Edit Address") {
+@main_template(title = "Edit Address", journeyData = Some(journeyData)) {
   <h1>Edit Address</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">

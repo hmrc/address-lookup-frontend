@@ -51,7 +51,9 @@ case class JourneyData(continueUrl: String,
                        confirmPage: ConfirmPage = ConfirmPage(),
                        homeNavHref: Option[String] = None,
                        navTitle: Option[String] = None,
-                       additionalStylesheetUrl: Option[String] = None)
+                       additionalStylesheetUrl: Option[String] = None,
+                       showPhaseBanner: Boolean = false, // if phase banner is shown, it will default to "beta" unless ...
+                       alphaPhase: Boolean = false) // ... you set "alpha" to be true
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

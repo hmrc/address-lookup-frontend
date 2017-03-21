@@ -71,6 +71,11 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     else v.unwrapped().toString
   }
 
+  private def mustBeBoolean(v: ConfigValue, default: Boolean): Boolean = {
+    if (v == null) default
+    else v.unwrapped().asInstanceOf[Boolean]
+  }
+
   // TODO ensure all potential config values are mapped
   private def journey(key: String, journeys: ConfigObject): JourneyData = {
     val j = journeys.get(key).asInstanceOf[ConfigObject]
@@ -96,7 +101,9 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       additionalStylesheetUrl = maybeString(j.get("additionalStylesheetUrl")),
       lookupPage = lookup,
       selectPage = select,
-      confirmPage = confirm
+      confirmPage = confirm,
+      showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
+      alphaPhase = mustBeBoolean(j.get("alphaPhase"), false)
     )
   }
 

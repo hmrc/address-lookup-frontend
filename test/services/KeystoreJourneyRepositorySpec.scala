@@ -77,6 +77,8 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         continueUrl = "/lookup-address/confirmed",
         homeNavHref = Some("http://www.hmrc.gov.uk/"),
         navTitle = Some("Address Lookup"),
+        showPhaseBanner = false,
+        alphaPhase = false,
         lookupPage = LookupPage(
           title = Some("Lookup Address"),
           heading = Some("Your Address"),

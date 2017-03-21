@@ -6,7 +6,7 @@ import javax.inject.Singleton
 import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
 import config.AddressLookupFrontendSessionCache
-import model.{ConfirmPage, JourneyData, LookupPage, SelectPage}
+import model._
 import uk.gov.hmrc.http.cache.client.HttpCaching
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -82,6 +82,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     val l = Option(j.get("lookupPage").asInstanceOf[ConfigObject])
     val s = Option(j.get("selectPage").asInstanceOf[ConfigObject])
     val c = Option(j.get("confirmPage").asInstanceOf[ConfigObject])
+    val e = Option(j.get("editPage").asInstanceOf[ConfigObject])
     val lookup = l match {
       case Some(l) => LookupPage(maybeString(l.get("title")), maybeString(l.get("heading")), maybeString(l.get("filterLabel")), maybeString(l.get("postcodeLabel")), maybeString(l.get("submitLabel")), maybeString(l.get("resultLimitExceededMessage")), maybeString(l.get("noResultsFoundMessage")))
       case None => LookupPage()
@@ -94,6 +95,10 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case Some(c) => ConfirmPage(maybeString(c.get("title")), maybeString(c.get("heading")), maybeString(c.get("infoSubheading")), maybeString(c.get("infoMessage")), maybeString(c.get("submitLabel")))
       case None => ConfirmPage()
     }
+    val edit = e match {
+      case Some(e) => EditPage(maybeString(e.get("title")), maybeString(e.get("heading")), maybeString(e.get("line1Label")), maybeString(e.get("line2Label")), maybeString(e.get("line3Label")), maybeString(e.get("townLabel")), maybeString(e.get("postcodeLabel")), maybeString(e.get("countryLabel")), maybeString(e.get("submitLabel")))
+      case None => EditPage()
+    }
     JourneyData(
       continueUrl = mustBeString(j.get("continueUrl"), "continueUrl"),
       homeNavHref = maybeString(j.get("homeNavHref")),
@@ -102,6 +107,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       lookupPage = lookup,
       selectPage = select,
       confirmPage = confirm,
+      editPage = edit,
       showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
       alphaPhase = mustBeBoolean(j.get("alphaPhase"), false)
     )

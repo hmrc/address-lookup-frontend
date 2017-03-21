@@ -42,6 +42,16 @@ case class SelectPage(title: Option[String] = None,
                       submitLabel: Option[String] = None,
                       proposalListLimit: Option[Int] = None)
 
+case class EditPage(title: Option[String] = None,
+                    heading: Option[String] = None,
+                    line1Label: Option[String] = None,
+                    line2Label: Option[String] = None,
+                    line3Label: Option[String] = None,
+                    townLabel: Option[String] = None,
+                    postcodeLabel: Option[String] = None,
+                    countryLabel: Option[String] = None,
+                    submitLabel: Option[String] = None)
+
 case class JourneyData(continueUrl: String,
                        proposals: Option[Seq[ProposedAddress]] = None,
                        selectedAddress: Option[ConfirmableAddress] = None,
@@ -49,6 +59,7 @@ case class JourneyData(continueUrl: String,
                        lookupPage: LookupPage = LookupPage(),
                        selectPage: SelectPage = SelectPage(),
                        confirmPage: ConfirmPage = ConfirmPage(),
+                       editPage: EditPage = EditPage(),
                        homeNavHref: Option[String] = None,
                        navTitle: Option[String] = None,
                        additionalStylesheetUrl: Option[String] = None,
@@ -133,6 +144,7 @@ object JourneyData {
   implicit val confirmPageFormat = Json.format[ConfirmPage]
   implicit val selectPageFormat = Json.format[SelectPage]
   implicit val lookupPageFormat = Json.format[LookupPage]
+  implicit val editPageFormat = Json.format[EditPage]
   implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
   implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
   implicit val proposedAddressFormat = Json.format[ProposedAddress]

@@ -5,30 +5,30 @@
 
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "Edit Address", journeyData = Some(journeyData)) {
-  <h1>Edit Address</h1>
+@main_template(title = journeyData.editPage.title.getOrElse("Edit Address"), journeyData = Some(journeyData)) {
+  <h1>@{journeyData.editPage.heading.getOrElse("Edit Address")}</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field">
-        @helpers.input(editForm("line1"), '_label -> "Line 1", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(editForm("line1"), '_label -> journeyData.editPage.line1Label.getOrElse("Line 1"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
       <div class="form-field">
-        @helpers.input(editForm("line2"), '_label -> "Line 2", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(editForm("line2"), '_label -> journeyData.editPage.line2Label.getOrElse("Line 2"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
       <div class="form-field">
-        @helpers.input(editForm("line3"), '_label -> "Line 3", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(editForm("line3"), '_label -> journeyData.editPage.line3Label.getOrElse("Line 3"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
       <div class="form-field">
-        @helpers.input(editForm("town"), '_label -> "Town", '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(editForm("town"), '_label -> journeyData.editPage.townLabel.getOrElse("Town"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
       <div class="form-field">
-        @helpers.input(editForm("postcode"), '_label -> "Postcode", '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+        @helpers.input(editForm("postcode"), '_label -> journeyData.editPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
       </div>
       <div class="form-field">
-        @helpers.dropdown(editForm("countryCode"), countries, true, '_label -> "Country", '_inputClass -> "form-control form-control--block")
+        @helpers.dropdown(editForm("countryCode"), countries, true, '_label -> journeyData.editPage.countryLabel.getOrElse("Country"), '_inputClass -> "form-control form-control--block")
       </div>
       <div class="form-field">
-        <button type="submit">Next</button>
+        <button type="submit">@{journeyData.editPage.submitLabel.getOrElse("Next")}</button>
       </div>
     </fieldset>
   }

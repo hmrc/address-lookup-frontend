@@ -13,7 +13,7 @@
         <fieldset class="form-field-group">
           <div class="form-field">
             <h2>@{journeyData.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>
-            <p>@{journeyData.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.")}</p>
+            <p>@Html(journeyData.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."))</p>
             <p>@{selectedAddress.get.toDescription}</p>
             <p><a href="@{routes.AddressLookupController.edit(id)}">Edit this address</a></p>
           </div>

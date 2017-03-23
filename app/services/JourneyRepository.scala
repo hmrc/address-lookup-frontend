@@ -28,7 +28,7 @@ trait JourneyRepository {
 @Singleton
 class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
 
-  val cacheId = UUID.randomUUID().toString
+  val cacheId = "journey-data"
 
   private val cfg: Map[String, JourneyData] = config("address-lookup-frontend").getObject("journeys").map { journeys =>
     journeys.keySet().asScala.map { key =>

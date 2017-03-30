@@ -25,7 +25,7 @@ The integration process from the perspective of the **calling service** consists
 * The **"user"** completes the journey, following which they will be redirected to the **"off ramp"** URL (which is configured as part of the journey) with an appended `id=:addressId` URL parameter.
 * Using the value of the `id` parameter, you can retrieve the user's confirmed address as JSON by issuing a request to `GET /lookup-address/confirmed?id=:addressId`. 
 
-[![Address Lookup Frontend journey](https://github.com/hmrc/address-lookup-frontend/blob/master/docs/Address%20Lookup%20Frontend.svg)]
+[![Address Lookup Frontend journey](https://raw.githubusercontent.com/hmrc/address-lookup-frontend/master/docs/Address%20Lookup%20Frontend.svg)]
 
 ### Configuring a Journey
 

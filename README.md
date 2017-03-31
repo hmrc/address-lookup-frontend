@@ -14,12 +14,12 @@ During the utilization of `address-lookup-frontend`, four parties are involved:
 
 * A frontend service in the tax platform (the **"calling service"** here).
 * The user-agent (i.e. web browser) and the user who operates it (the **"user"** here).
-* The `address-lookup-frontend` (the **"frontend** here).
+* The `address-lookup-frontend` (the **"frontend"** here).
 * The backend `address-lookup`, containing large national datasets of addresses (the **"backend"** here).
 
 The integration process from the perspective of the **calling service** consists of the following steps:
 
-* [Configure](#Configuring a journey) your journey. You can use the default `j0` journey but some customization is, generally speaking, required in practice.
+* Configure your journey. You can use the default `j0` journey but some customization is, generally speaking, required in practice.
 * Issue a request to `POST /lookup-address/init/:journeyName`. The return body is a string which is the **"on ramp"** URL to which the **"user"** should be redirected.
 * Redirect the **"user"** to the **"on ramp"** URL.
 * The **"user"** completes the journey, following which they will be redirected to the **"off ramp"** URL (which is configured as part of the journey) with an appended `id=:addressId` URL parameter.

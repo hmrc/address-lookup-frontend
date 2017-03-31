@@ -122,7 +122,7 @@ microservice {
 }
 ```
 
-Additional configuration options may be introduced in future. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
+Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
 
 Within the context of `app-config-*`, you would need to override individual keys by specifying the full HOCON path; e.g. `microservice.services.address-lookup-frontend.journeys.yourJourneyName.continueUrl: /some/other/place`. 
 
@@ -134,7 +134,42 @@ Additional custom configuration should be provided by adding entries to `address
 
 ### Initializing a Journey
 
-TODO
+Once you have a configured, named journey, you need to **"initialize"** an instance in order to obtain an "on ramp" URL to which the **"user"** is then redirected. 
+
+Initialization generates an ID which is utilized both to facilitate subsequent retrieval of the **"user's"** confirmed address *and* to prevent arbitrary access to and potential abuse of `address-lookup-frontend` by malicious **"users"**.
+
+An endpoint is provided for initialization:
+
+URL:
+
+* `/init/:journeyName` where `journeyName` is the *configuration key* for the pre-configured journey you wish to initialize
+
+Example URLs:
+
+* `/init/j0`
+
+Methods:
+
+* `POST`
+
+Headers:
+
+* `User-Agent` (required): string
+
+Message Body:
+
+* None currently. Future intent is that you will be able to `POST` a JSON message with journey configuration details.
+
+Status Codes:
+
+* 200 OK: when initialization was successful
+* 404 Not Found: when a configuration for the named journey could not be found
+* 500 Internal Server Error: when, for any (hopefully transient) internal reason, the journey could not be initialized 
+
+Response:
+
+* `Content-Type: text/plain`
+* The body will be an **"on ramp"** URL, appropriate for the journey, to which the user should be redirected. Currently, the journey has a TTL of **60 minutes**.
 
 ### Obtaining the Confirmed Address
 

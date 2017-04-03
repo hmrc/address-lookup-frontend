@@ -1,8 +1,6 @@
 # microservice specific routes
 
-POST /init/:journeyName          @controllers.AddressLookupController.init(journeyName: String)
 GET  /no-journey                 @controllers.AddressLookupController.noJourney()
-GET  /confirmed                  @controllers.AddressLookupController.confirmed
 GET  /:id/lookup                 @controllers.AddressLookupController.lookup(id: String)
 GET  /:id/select                 @controllers.AddressLookupController.select(id: String)
 POST /:id/select                 @controllers.AddressLookupController.handleSelect(id: String)

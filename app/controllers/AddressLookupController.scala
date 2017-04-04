@@ -21,11 +21,61 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
-class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
-                                       (implicit val ec: ExecutionContext, val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport with ServicesConfig {
+class ApiController @Inject()(journeyRepository: JourneyRepository)
+                             (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
+  extends AlfController(journeyRepository) {
 
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
+
+  protected def uuid: String = UUID.randomUUID().toString
+
+  private implicit val initFormat = Json.format[Init]
+
+  val confirmedForm = Form(
+    mapping(
+      "id" -> text(1, 255)
+    )(Confirmed.apply)(Confirmed.unapply)
+  )
+
+  // GET  /init/:journeyName
+  // initialize a new journey and return the "on ramp" URL
+  def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
+    val id = uuid
+    try {
+      // TODO init should do put, too?
+      val journey = journeyRepository.init(journeyName)
+      val j = req.body.continueUrl match {
+        case Some(url) => journey.copy(continueUrl = url)
+        case None => journey
+      }
+      journeyRepository.put(id, j).map(success => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+    } catch {
+      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
+    }
+  }
+
+  // GET  /confirmed?id=:id
+  def confirmed = Action.async { implicit req =>
+    confirmedForm.bindFromRequest().fold(
+      errors => Future.successful(BadRequest),
+      confirmed => {
+        withJourney(confirmed.id, NotFound) { journeyData =>
+          if (journeyData.confirmedAddress.isDefined) {
+            (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
+          } else {
+            (None, NotFound)
+          }
+        }
+      }
+    )
+  }
+
+}
+
+@Singleton
+class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
+                                       (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
+  extends AlfController(journeyRepository) {
 
   // fetch eagerly and await result
   val countries: Seq[(String, String)] = Await.result(countryService.findAll.map { countries =>
@@ -33,8 +83,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       (c.code -> c.name)
     }
   }, 60.seconds)
-
-  private implicit val initFormat = Json.format[Init]
 
   val lookupForm = Form(
     mapping(
@@ -65,23 +113,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       "id" -> text(1, 255)
     )(Confirmed.apply)(Confirmed.unapply)
   )
-
-  // GET  /init/:journeyName
-  // initialize a new journey and return the "on ramp" URL
-  def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
-    val id = uuid
-    try {
-      // TODO init should do put, too?
-      val journey = journeyRepository.init(journeyName)
-      val j = req.body.continueUrl match {
-        case Some(url) => journey.copy(continueUrl = url)
-        case None => journey
-      }
-      journeyRepository.put(id, j).map(success => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-    } catch {
-      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
-    }
-  }
 
   // GET  /no-journey
   // display an error page when a required journey is not available
@@ -176,41 +207,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }
 
-  // GET  /confirmed?id=:id
-  def confirmed = Action.async { implicit req =>
-    confirmedForm.bindFromRequest().fold(
-      errors => Future.successful(BadRequest),
-      confirmed => {
-        withJourney(confirmed.id, NotFound) { journeyData =>
-          if (journeyData.confirmedAddress.isDefined) {
-            (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
-          } else {
-            (None, NotFound)
-          }
-        }
-      }
-    )
-  }
+}
 
-  private def doInit(journeyName: String, init: Option[Init])(implicit request: Request[Any]): Future[Result] = {
-    val id = uuid
-    try {
-      // TODO init should do put, too
-      val journey = journeyRepository.init(journeyName)
-      val j = init match {
-        case Some(ini) => ini.continueUrl match {
-          case Some(url) => journey.copy(continueUrl = url)
-          case None => journey
-        }
-        case None => journey
-      }
-      journeyRepository.put(id, j).map(success => Ok(s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-    } catch {
-      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
-    }
-  }
+abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
+                                      (implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi)
+  extends FrontendController with I18nSupport with ServicesConfig {
 
-  private def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
+  protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
@@ -226,7 +229,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }
 
-  private def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
+  protected def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
@@ -242,8 +245,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       }
     }
   }
-
-  protected def uuid: String = UUID.randomUUID().toString
 
 }
 

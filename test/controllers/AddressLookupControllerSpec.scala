@@ -67,7 +67,9 @@ class AddressLookupControllerSpec
       override def findAll = Future.successful(Seq(Country("UK", "United Kingdomm")))
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService) {
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService)
+
+    val api = new ApiController(journeyRepository) {
       override val addressLookupEndpoint = endpoint
       override protected def uuid: String = id.getOrElse("random-id")
     }
@@ -77,7 +79,7 @@ class AddressLookupControllerSpec
   "initializing a journey" should {
 
     "fail given an invalid journey name" in new Scenario {
-      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
+      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
       status(res) must be (404)
     }
 
@@ -85,7 +87,7 @@ class AddressLookupControllerSpec
       journeyConfig = Map("foo" -> basicJourney),
       id = Some("bar")
     ) {
-      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
+      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
       status(res) must be (ACCEPTED)
       header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/bar/lookup"))
     }
@@ -94,7 +96,7 @@ class AddressLookupControllerSpec
       journeyConfig = Map("foo" -> basicJourney),
       id = Some("bar")
     ) {
-      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(Some("http://google.com")))))
+      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(Some("http://google.com")))))
       status(res) must be (ACCEPTED)
       header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/bar/lookup"))
       journeyRepository.get("bar").futureValue.get.continueUrl must be ("http://google.com")

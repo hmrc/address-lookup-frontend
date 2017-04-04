@@ -20,57 +20,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-@Singleton
-class ApiController @Inject()(journeyRepository: JourneyRepository)
-                             (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
-  extends AlfController(journeyRepository) {
 
-  val addressLookupEndpoint = baseUrl("address-lookup-frontend")
-
-  protected def uuid: String = UUID.randomUUID().toString
-
-  private implicit val initFormat = Json.format[Init]
-
-  val confirmedForm = Form(
-    mapping(
-      "id" -> text(1, 255)
-    )(Confirmed.apply)(Confirmed.unapply)
-  )
-
-  // GET  /init/:journeyName
-  // initialize a new journey and return the "on ramp" URL
-  def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
-    val id = uuid
-    try {
-      // TODO init should do put, too?
-      val journey = journeyRepository.init(journeyName)
-      val j = req.body.continueUrl match {
-        case Some(url) => journey.copy(continueUrl = url)
-        case None => journey
-      }
-      journeyRepository.put(id, j).map(success => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-    } catch {
-      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
-    }
-  }
-
-  // GET  /confirmed?id=:id
-  def confirmed = Action.async { implicit req =>
-    confirmedForm.bindFromRequest().fold(
-      errors => Future.successful(BadRequest),
-      confirmed => {
-        withJourney(confirmed.id, NotFound) { journeyData =>
-          if (journeyData.confirmedAddress.isDefined) {
-            (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
-          } else {
-            (None, NotFound)
-          }
-        }
-      }
-    )
-  }
-
-}
 
 @Singleton
 class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)

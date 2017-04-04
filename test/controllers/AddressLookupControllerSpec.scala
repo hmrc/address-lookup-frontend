@@ -2,13 +2,13 @@
 package controllers
 
 import com.gu.scalatest.JsoupShouldMatchers
+import controllers.api.ApiController
 import model.{JourneyData, LookupPage, ProposedAddress}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, JourneyRepository}

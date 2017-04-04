@@ -7,6 +7,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, JourneyRepository}
@@ -25,6 +27,8 @@ class AddressLookupControllerSpec
   implicit lazy val materializer = app.materializer
 
   implicit val hc = HeaderCarrier()
+
+  implicit val f = Json.format[Init]
 
   class Scenario(journeyConfig: Map[String, JourneyData] = Map.empty,
                  var journeyData: Map[String, JourneyData] = Map.empty,
@@ -73,7 +77,7 @@ class AddressLookupControllerSpec
   "initializing a journey" should {
 
     "fail given an invalid journey name" in new Scenario {
-      val res = call(controller.init("foo"), req)
+      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
       status(res) must be (404)
     }
 
@@ -81,16 +85,18 @@ class AddressLookupControllerSpec
       journeyConfig = Map("foo" -> basicJourney),
       id = Some("bar")
     ) {
-      val res = call(controller.init("foo"), req)
-      contentAsString(res) must be (s"$endpoint/lookup-address/bar/lookup")
+      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
+      status(res) must be (ACCEPTED)
+      header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/bar/lookup"))
     }
 
     "permit user to supply custom continueUrl" in new Scenario(
       journeyConfig = Map("foo" -> basicJourney),
       id = Some("bar")
     ) {
-      val r = req.withFormUrlEncodedBody("continueUrl" -> "http://google.com")
-      contentAsString(controller.init("foo").apply(r)) must be (s"$endpoint/lookup-address/bar/lookup")
+      val res = call(controller.init("foo"), req.withJsonBody(Json.toJson(Init(Some("http://google.com")))))
+      status(res) must be (ACCEPTED)
+      header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/bar/lookup"))
       journeyRepository.get("bar").futureValue.get.continueUrl must be ("http://google.com")
     }
 

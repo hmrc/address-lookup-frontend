@@ -73,7 +73,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
   "init" should {
 
     "know about continue URL" in new Scenario() {
-      repo.init("j0").continueUrl must be ("/lookup-address/confirmed")
+      repo.init("j0").continueUrl must be ("/api/confirmed")
     }
 
     "know about homeNavRef" in new Scenario() {

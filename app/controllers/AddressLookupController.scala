@@ -10,14 +10,15 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc._
+import play.mvc.Http.HeaderNames
 import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
 class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
@@ -33,11 +34,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }, 60.seconds)
 
-  val initForm = Form(
-    mapping(
-      "continueUrl" -> optional(text(0, 255))
-    )(Init.apply)(Init.unapply)
-  )
+  private implicit val initFormat = Json.format[Init]
 
   val lookupForm = Form(
     mapping(
@@ -71,25 +68,19 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   // GET  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL
-  def init(journeyName: String) = Action.async { implicit req =>
-    initForm.bindFromRequest().fold(
-      errors => Future.successful(BadRequest),
-      ini => {
-        val id = uuid
-        try {
-          // TODO init should do put, too
-          val journey = journeyRepository.init(journeyName)
-          val j = ini.continueUrl match {
-            case Some(url) => journey.copy(continueUrl = url)
-            case None => journey
-          }
-          journeyRepository.put(id, j)
-            .map(success => Ok(s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-        } catch {
-          case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
-        }
+  def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
+    val id = uuid
+    try {
+      // TODO init should do put, too?
+      val journey = journeyRepository.init(journeyName)
+      val j = req.body.continueUrl match {
+        case Some(url) => journey.copy(continueUrl = url)
+        case None => journey
       }
-    )
+      journeyRepository.put(id, j).map(success => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+    } catch {
+      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
+    }
   }
 
   // GET  /no-journey
@@ -199,6 +190,24 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         }
       }
     )
+  }
+
+  private def doInit(journeyName: String, init: Option[Init])(implicit request: Request[Any]): Future[Result] = {
+    val id = uuid
+    try {
+      // TODO init should do put, too
+      val journey = journeyRepository.init(journeyName)
+      val j = init match {
+        case Some(ini) => ini.continueUrl match {
+          case Some(url) => journey.copy(continueUrl = url)
+          case None => journey
+        }
+        case None => journey
+      }
+      journeyRepository.put(id, j).map(success => Ok(s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+    } catch {
+      case e: IllegalArgumentException => Future.successful(NotFound(e.getMessage))
+    }
   }
 
   private def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {

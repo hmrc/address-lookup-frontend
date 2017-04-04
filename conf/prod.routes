@@ -1,6 +1,6 @@
 # Add all the application routes to the app.routes file
-->         /lookup-address            app.Routes
 ->         /api                       api.Routes
+->         /lookup-address            app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 

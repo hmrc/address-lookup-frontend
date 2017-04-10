@@ -16,33 +16,31 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {
 
-  def findAll: Future[Seq[Country]]
+  def findAll: Seq[Country]
+
+  // to match uk.gov.hmrc.address.v2.Countries and serve as a comprehensive replacement
+  def find(code: String): Option[Country]
 
 }
 
 @Singleton
-class ForeignOfficeCountryService extends CountryService with ServicesConfig {
+class ForeignOfficeCountryService extends CountryService {
 
   implicit val fcoCountryFormat = Json.format[FcoCountry]
 
-  val endpoint = baseUrl("country-register")
+  private val countries: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countries.json")).as[Map[String, FcoCountry]].map { country =>
+    Country(country._2.country, country._2.name)
+  }.toSeq.sortWith(_.name < _.name)
 
-  val http: WSGet = WSHttp
+  override def findAll: Seq[Country] = countries
 
-  // TODO can't imagine list changes often - should we cache results or even keep a local copy?
-  override def findAll: Future[Seq[Country]] = {
-    implicit val hc = HeaderCarrier()
-//    http.GET[Map[String, FcoCountry]](s"$endpoint/records", Seq("page-size" -> "5000")).map { countries =>
-//      countries.map { country =>
-//        Country(country._2.country, country._2.name)
-//      }.toSeq.sortWith(_.name < _.name)
-//    }
-    // just use a local copy
-    Future.successful(Json.parse(getClass.getResourceAsStream("/countries.json")).as[Map[String, FcoCountry]].map { country =>
-      Country(country._2.country, country._2.name)
-    }.toSeq.sortWith(_.name < _.name))
+  override def find(code: String): Option[Country] = {
+    val filtered = countries.filter(_.code == code)
+    filtered.headOption
   }
 
 }
 
 case class FcoCountry(country: String, name: String)
+
+object ForeignOfficeCountryService extends ForeignOfficeCountryService

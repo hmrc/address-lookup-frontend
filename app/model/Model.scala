@@ -2,6 +2,7 @@
 package model
 
 import play.api.libs.json.Json
+import services.ForeignOfficeCountryService
 import uk.gov.hmrc.address.v2.{Countries, Country}
 
 case class Lookup(filter: Option[String], postcode: String)
@@ -16,7 +17,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
       Some(postcode),
-      countryCode.flatMap(code => Countries.find(code))
+      countryCode.flatMap(code => ForeignOfficeCountryService.find(code))
     )
   )
 
@@ -71,7 +72,7 @@ case class ProposedAddress(addressId: String,
                            lines: List[String] = List.empty,
                            town: Option[String] = None,
                            county: Option[String] = None,
-                           country: Country = Countries.UK) {
+                           country: Country = ForeignOfficeCountryService.find("GB").getOrElse(Country("GB", "United Kingdom"))) {
 
   def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
@@ -116,23 +117,32 @@ case class ConfirmableAddress(auditRef: String,
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
                                      postcode: Option[String] = None,
-                                     country: Option[Country] = None) {
+                                     country: Option[Country] = ForeignOfficeCountryService.find("GB")) {
 
   def toDescription: String = {
     (lines.getOrElse(List.empty) ++ postcode.toList ++ country.toList.map(_.name)).mkString(", ") + "."
   }
 
-  // TODO refine
-  def toEdit: Edit = Edit(
-    lines.map { lines =>
+  def toEdit: Edit = {
+    val el = editLines
+    Edit(el._1, el._2, el._3, el._4, postcode.getOrElse(""), country.map(_.code))
+  }
+
+  def editLines: (String, Option[String], Option[String], String) = {
+    val l1 = lines.map { lines =>
       lines.lift(0).getOrElse("")
-    }.getOrElse(""),
-    lines.flatMap(_.lift(1)),
-    lines.flatMap(_.lift(2)),
-    lines.flatMap(_.lastOption).getOrElse(""),
-    postcode.getOrElse(""),
-    country.map(_.code)
-  )
+    }.getOrElse("")
+    val l2 = lines.flatMap(l => {
+      if (l.length > 2) l.lift(1) else None
+    })
+    val l3 = lines.flatMap(l => {
+      if (l.length > 3) l.lift(2) else None
+    })
+    val l4 = lines.flatMap(l => {
+      if (l.length > 1) l.lastOption else None
+    }).getOrElse("")
+    (l1, l2, l3, l4)
+  }
 
 }
 

@@ -1,24 +1,20 @@
 
 package controllers
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 import model._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc._
-import play.mvc.Http.HeaderNames
 import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 
 
@@ -27,12 +23,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  // fetch eagerly and await result
-  val countries: Seq[(String, String)] = Await.result(countryService.findAll.map { countries =>
-    countries.map { c =>
-      (c.code -> c.name)
-    }
-  }, 60.seconds)
+  val countries: Seq[(String, String)] = countryService.findAll.map { c =>
+    (c.code -> c.name)
+  }
 
   val lookupForm = Form(
     mapping(

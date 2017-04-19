@@ -27,6 +27,11 @@
       <div class="form-field">
         @helpers.dropdown(editForm("countryCode"), countries, true, '_label -> journeyData.editPage.countryLabel.getOrElse("Country"), '_inputClass -> "form-control form-control--block")
       </div>
+      @if(journeyData.editPage.showSearchAgainLink) {
+        <div class="form-field">
+          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.editPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+        </div>
+      }
       <div class="form-field">
         <button type="submit">@{journeyData.editPage.submitLabel.getOrElse("Next")}</button>
       </div>

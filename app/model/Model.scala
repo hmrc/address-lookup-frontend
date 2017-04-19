@@ -51,7 +51,9 @@ case class EditPage(title: Option[String] = None,
                     townLabel: Option[String] = None,
                     postcodeLabel: Option[String] = None,
                     countryLabel: Option[String] = None,
-                    submitLabel: Option[String] = None)
+                    submitLabel: Option[String] = None,
+                    showSearchAgainLink: Boolean = false,
+                    searchAgainLinkText: Option[String] = None)
 
 case class JourneyData(continueUrl: String,
                        proposals: Option[Seq[ProposedAddress]] = None,

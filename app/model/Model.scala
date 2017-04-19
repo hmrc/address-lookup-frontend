@@ -37,7 +37,8 @@ case class LookupPage(title: Option[String] = None,
                       postcodeLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
                       resultLimitExceededMessage: Option[String] = None,
-                      noResultsFoundMessage: Option[String] = None)
+                      noResultsFoundMessage: Option[String] = None,
+                      manualAddress: Option[String] = None)
 
 case class SelectPage(title: Option[String] = None,
                       heading: Option[String] = None,

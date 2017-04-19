@@ -62,7 +62,7 @@
             <div class="phase-banner-alpha">
                 <div>
                     <strong class="phase-tag">ALPHA</strong>
-                    <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+                    <span>This is a new service – your <a href="@{journeyData.map(_.phaseFeedbackLink).getOrElse("/help/alpha")}">feedback</a> will help us to improve it.</span>
                 </div>
             </div>
         } else {
@@ -70,7 +70,7 @@
                 <div>
                     <strong class="phase-tag">Beta</strong>
                     <span>
-                        This part of GOV.UK is being rebuilt – <a href="/help/beta">find out what this means</a>
+                        This part of GOV.UK is being rebuilt – <a href="@{journeyData.map(_.phaseFeedbackLink).getOrElse("/help/beta")}">find out what this means</a>
                     </span>
                 </div>
             </div>

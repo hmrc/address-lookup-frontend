@@ -29,7 +29,7 @@
         <button class="button" type="submit" id="continue">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>
       </div>
       <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">Enter address manually</a></p>
+        <p><a href="@{routes.AddressLookupController.lookup(id)}" id="manualAddress">Enter address manually</a></p>
       </div>
     </fieldset>
   }

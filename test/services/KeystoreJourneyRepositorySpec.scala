@@ -196,6 +196,10 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       repo.init("j0").editPage.submitLabel must be (Some("Next"))
     }
 
+    "know about phase feedback link" in new Scenario() {
+      repo.init("j0").phaseFeedbackLink must be (Some("#"))
+    }
+
   }
 
 }

@@ -72,7 +72,8 @@ case class JourneyData(continueUrl: String,
                        additionalStylesheetUrl: Option[String] = None,
                        showPhaseBanner: Boolean = false, // if phase banner is shown, it will default to "beta" unless ...
                        alphaPhase: Boolean = false, // ... you set "alpha" to be true
-                       phaseFeedbackLink: Option[String] = None)
+                       phaseFeedbackLink: Option[String] = None,
+                       showBackButtons: Boolean = false)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

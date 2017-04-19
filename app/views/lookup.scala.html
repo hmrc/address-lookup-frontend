@@ -6,6 +6,11 @@
 @(id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.lookupPage.title.getOrElse("Lookup Address"), journeyData = Some(journeyData)) {
+  @if(journeyData.showBackButtons) {
+    <div>
+      <a class="back-link" href="javascript:history.back()">Back</a>
+    </div>
+  }
   <h1>@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
   @if(message.isDefined) {
     <div class="highlight-message highlight-message--full-width">

@@ -6,6 +6,11 @@
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.editPage.title.getOrElse("Edit Address"), journeyData = Some(journeyData)) {
+  @if(journeyData.showBackButtons) {
+    <div>
+      <a class="back-link" href="javascript:history.back()">Back</a>
+    </div>
+  }
   <h1>@{journeyData.editPage.heading.getOrElse("Edit Address")}</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">

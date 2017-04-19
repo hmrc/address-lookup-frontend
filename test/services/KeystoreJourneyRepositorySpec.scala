@@ -224,6 +224,10 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       repo.init("j0").confirmPage.searchAgainLinkText must be (Some("Search again"))
     }
 
+    "know about show back buttons option" in new Scenario() {
+      repo.init("j0").showBackButtons must be (true)
+    }
+
   }
 
 }

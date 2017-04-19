@@ -110,7 +110,8 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       editPage = edit,
       showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
       alphaPhase = mustBeBoolean(j.get("alphaPhase"), false),
-      phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink"))
+      phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink")),
+      showBackButtons = mustBeBoolean(j.get("showBackButtons"), false)
     )
   }
 

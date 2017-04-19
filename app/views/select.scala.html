@@ -7,6 +7,11 @@
 @(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.selectPage.title.getOrElse("Select Address"), journeyData = Some(journeyData)) {
+  @if(journeyData.showBackButtons) {
+    <div>
+      <a class="back-link" href="javascript:history.back()">Back</a>
+    </div>
+  }
   <h1>@{journeyData.selectPage.heading.getOrElse("Select Address")}</h1>
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>

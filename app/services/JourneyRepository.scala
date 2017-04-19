@@ -88,7 +88,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => LookupPage()
     }
     val select = s match {
-      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")))
+      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), mustBeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")))
       case None => SelectPage()
     }
     val confirm = c match {

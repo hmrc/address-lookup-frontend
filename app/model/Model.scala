@@ -41,7 +41,9 @@ case class SelectPage(title: Option[String] = None,
                       heading: Option[String] = None,
                       proposalListLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
-                      proposalListLimit: Option[Int] = None)
+                      proposalListLimit: Option[Int] = None,
+                      showSearchAgainLink: Boolean = false,
+                      searchAgainLinkText: Option[String] = None)
 
 case class EditPage(title: Option[String] = None,
                     heading: Option[String] = None,

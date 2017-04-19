@@ -208,6 +208,14 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       repo.init("j0").editPage.searchAgainLinkText must be (Some("Search again"))
     }
 
+    "know about select page search again link option" in new Scenario() {
+      repo.init("j0").selectPage.showSearchAgainLink must be (true)
+    }
+
+    "know about select page search again link test" in new Scenario() {
+      repo.init("j0").selectPage.searchAgainLinkText must be (Some("Search again"))
+    }
+
   }
 
 }

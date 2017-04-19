@@ -13,9 +13,9 @@
       <div class="form-group">
         @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.selectPage.proposalListLabel.getOrElse("Please select one of the following addresses"), '_labelClass -> "block-label")
       </div>
-      @if(journeyData.editPage.showSearchAgainLink) {
+      @if(journeyData.selectPage.showSearchAgainLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.editPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.selectPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
         </div>
       }
       <div class="form-field">

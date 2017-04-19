@@ -17,6 +17,11 @@
             <p>@{selectedAddress.get.toDescription}</p>
             <p><a href="@{routes.AddressLookupController.edit(id)}">Edit this address</a></p>
           </div>
+          @if(journeyData.confirmPage.showSearchAgainLink) {
+            <div class="form-field">
+              <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+            </div>
+          }
           <div class="form-field">
             <button type="submit">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>
           </div>

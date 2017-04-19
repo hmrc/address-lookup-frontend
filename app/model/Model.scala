@@ -27,7 +27,9 @@ case class ConfirmPage(title: Option[String] = None,
                        heading: Option[String] = None,
                        infoSubheading: Option[String] = None,
                        infoMessage: Option[String] = None,
-                       submitLabel: Option[String] = None)
+                       submitLabel: Option[String] = None,
+                       showSearchAgainLink: Boolean = false,
+                       searchAgainLinkText: Option[String] = None)
 
 case class LookupPage(title: Option[String] = None,
                       heading: Option[String] = None,

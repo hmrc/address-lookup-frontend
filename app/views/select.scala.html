@@ -18,17 +18,14 @@
       <div class="form-group">
         @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.selectPage.proposalListLabel.getOrElse("Please select one of the following addresses"), '_labelClass -> "block-label")
       </div>
+      <div class="form-field">
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="editAddress">@{journeyData.selectPage.editAddressLinkText.getOrElse("Edit address")}</a></p>
+      </div>
       @if(journeyData.selectPage.showSearchAgainLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.selectPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+          <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgain">@{journeyData.selectPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
         </div>
       }
-      <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="editAddress">@{journeyData.selectPage.editAddress.getOrElse("Edit address")}</a></p>
-      </div>
-      <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgain">@{journeyData.selectPage.searchAgain.getOrElse("Search again")}</a></p>
-      </div>
       <div class="form-group">
         <button class="button" type="submit" id="continue">@{journeyData.selectPage.submitLabel.getOrElse("Next")}</button>
       </div>

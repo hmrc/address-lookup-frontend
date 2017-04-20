@@ -88,11 +88,11 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => LookupPage()
     }
     val select = s match {
-      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), mustBeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")))
+      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), mustBeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")), maybeString(s.get("editAddressLinkText")))
       case None => SelectPage()
     }
     val confirm = c match {
-      case Some(c) => ConfirmPage(maybeString(c.get("title")), maybeString(c.get("heading")), maybeString(c.get("infoSubheading")), maybeString(c.get("infoMessage")), maybeString(c.get("submitLabel")), mustBeBoolean(c.get("showSearchAgainLink"), false), maybeString(c.get("searchAgainLinkText")))
+      case Some(c) => ConfirmPage(maybeString(c.get("title")), maybeString(c.get("heading")), mustBeBoolean(c.get("showSubHeadingAndInfo"), false), maybeString(c.get("infoSubheading")), maybeString(c.get("infoMessage")), maybeString(c.get("submitLabel")), mustBeBoolean(c.get("showSearchAgainLink"), false), maybeString(c.get("searchAgainLinkText")))
       case None => ConfirmPage()
     }
     val edit = e match {

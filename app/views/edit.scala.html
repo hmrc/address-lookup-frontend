@@ -6,31 +6,62 @@
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.editPage.title.getOrElse("Edit Address"), journeyData = Some(journeyData)) {
+
   @if(journeyData.showBackButtons) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
+
+  @helpers.errorSummary(
+    "There are errors on this page.", editForm
+  )
+
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.editPage.heading.getOrElse("Edit Address")}</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
-        @helpers.input(editForm("line1"), '_label -> journeyData.editPage.line1Label.getOrElse("Line 1"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(
+          editForm("line1"),
+          '_label -> journeyData.editPage.line1Label.getOrElse("Line 1"),
+          '_inputClass -> "form-control--block")
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(editForm("line2"), '_label -> journeyData.editPage.line2Label.getOrElse("Line 2"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(
+          editForm("line2"),
+          '_label -> journeyData.editPage.line2Label.getOrElse("Line 2"),
+          '_inputClass -> "form-control--block"
+        )
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(editForm("line3"), '_label -> journeyData.editPage.line3Label.getOrElse("Line 3"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(
+          editForm("line3"),
+          '_label -> journeyData.editPage.line3Label.getOrElse("Line 3"),
+          '_inputClass -> "form-control--block"
+        )
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(editForm("town"), '_label -> journeyData.editPage.townLabel.getOrElse("Town"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(
+          editForm("town"),
+          '_label -> journeyData.editPage.townLabel.getOrElse("Town"),
+          '_inputClass -> "form-control--block"
+        )
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(editForm("postcode"), '_label -> journeyData.editPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+        @helpers.input(
+          editForm("postcode"),
+          '_label -> journeyData.editPage.postcodeLabel.getOrElse("Postcode"),
+          '_inputClass -> "form-control--block input--small"
+        )
       </div>
       <div class="form-field">
-        @helpers.dropdown(editForm("countryCode"), countries, true, '_label -> journeyData.editPage.countryLabel.getOrElse("Country"), '_inputClass -> "form-control form-control--block")
+        @helpers.dropdown(
+          editForm("countryCode"),
+          countries,
+          true,
+          '_label -> journeyData.editPage.countryLabel.getOrElse("Country"),
+          '_inputClass -> "form-control--block"
+        )
       </div>
       @if(journeyData.editPage.showSearchAgainLink) {
         <div class="form-field spaced-below">

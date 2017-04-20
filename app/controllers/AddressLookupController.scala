@@ -29,8 +29,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   val lookupForm = Form(
     mapping(
-      "filter" -> optional(text(0, 255)),
-      "postcode" -> text(3, 8).verifying("The postcode you entered appears to be incomplete or invalid. Please check and try again.", p => Postcode.cleanupPostcode(p).isDefined)
+      "filter" -> optional(text.verifying("Your house name/number needs to be fewer than 256 characters", txt => txt.length < 256)),
+      "postcode" -> text.verifying("The postcode you entered appears to be incomplete or invalid. Please check and try again.", p => Postcode.cleanupPostcode(p).isDefined)
     )(Lookup.apply)(Lookup.unapply)
   )
 
@@ -42,11 +42,17 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   val editForm = Form(
     mapping(
-      "line1" -> text(1, 255),
-      "line2" -> optional(text(0, 255)),
-      "line3" -> optional(text(0, 255)),
-      "town" -> text(1, 255),
-      "postcode" -> text(1, 8),
+      "line1" -> text
+        .verifying("The first line of your address needs to be fewer than 256 characters", _.length < 256)
+        .verifying("This field is required", _.length > 0),
+      "line2" -> optional(text.verifying("The second line of your address needs to be fewer than 256 characters", _.length < 256)),
+      "line3" -> optional(text.verifying("The third line of your address needs to be fewer than 256 characters", _.length < 256)),
+      "town" -> text
+        .verifying("The fourth line of your address needs to be fewer than 256 characters", _.length < 256)
+        .verifying("This field is required", _.length > 0),
+      "postcode" -> text
+        .verifying("The postcode needs to be fewer than 9 characters", _.length < 9)
+        .verifying("This field is required", _.length > 0),
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)
   )

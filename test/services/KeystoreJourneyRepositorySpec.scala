@@ -228,6 +228,10 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       repo.init("j0").showBackButtons must be (true)
     }
 
+    "know about HMRC branding option" in new Scenario() {
+      repo.init("j0").includeHMRCBranding must be (true)
+    }
+
   }
 
 }

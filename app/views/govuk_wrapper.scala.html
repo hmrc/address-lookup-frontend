@@ -83,8 +83,8 @@
     @uiLayouts.serviceInfo(
       betaBanner = phaseBanner,
       includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent)),
-      includeHMRCBranding = journey.flatMap(_.includeHMRCBranding)
+      serviceInfoContent = Some(serviceInfoContent),
+      includeHMRCBranding = journeyData.map(_.includeHMRCBranding).getOrElse(true))
 }
 
 @mainContentHeader = {

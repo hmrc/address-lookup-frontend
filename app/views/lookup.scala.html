@@ -11,7 +11,7 @@
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
-  <h1>@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
+  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
   @if(message.isDefined) {
     <div class="highlight-message highlight-message--full-width">
       <p>@{message.get}</p>
@@ -19,17 +19,17 @@
   }
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
-      <div class="form-field">
+      <div class="form-field spaced-below">
         @helpers.input(lookupForm("filter"), '_label -> journeyData.lookupPage.filterLabel.getOrElse("Building name or number"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
       </div>
-      <div class="form-field">
+      <div class="form-field spaced-below">
         @helpers.input(lookupForm("postcode"), '_label -> journeyData.lookupPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
       </div>
-      <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id)}">Enter address manually</a></p>
+      <div class="form-field spaced-below">
+        <button class="button" type="submit" id="continue">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>
       </div>
       <div class="form-field">
-        <button class="button" type="submit">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.lookupPage.manualAddressLinkText.getOrElse("Enter address manually")}</a></p>
       </div>
     </fieldset>
   }

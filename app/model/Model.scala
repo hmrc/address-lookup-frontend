@@ -25,6 +25,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
 
 case class ConfirmPage(title: Option[String] = None,
                        heading: Option[String] = None,
+                       showSubHeadingAndInfo: Boolean = false,
                        infoSubheading: Option[String] = None,
                        infoMessage: Option[String] = None,
                        submitLabel: Option[String] = None,
@@ -37,7 +38,8 @@ case class LookupPage(title: Option[String] = None,
                       postcodeLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
                       resultLimitExceededMessage: Option[String] = None,
-                      noResultsFoundMessage: Option[String] = None)
+                      noResultsFoundMessage: Option[String] = None,
+                      manualAddressLinkText: Option[String] = None)
 
 case class SelectPage(title: Option[String] = None,
                       heading: Option[String] = None,
@@ -45,7 +47,8 @@ case class SelectPage(title: Option[String] = None,
                       submitLabel: Option[String] = None,
                       proposalListLimit: Option[Int] = None,
                       showSearchAgainLink: Boolean = false,
-                      searchAgainLinkText: Option[String] = None)
+                      searchAgainLinkText: Option[String] = None,
+                      editAddressLinkText: Option[String] = None)
 
 case class EditPage(title: Option[String] = None,
                     heading: Option[String] = None,

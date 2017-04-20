@@ -116,9 +116,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/edit
   def edit(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      val f = if (journeyData.selectedAddress.isDefined) editForm.fill(journeyData.selectedAddress.get.toEdit) else editForm
-      (None, Ok(views.html.edit(id, journeyData, f, countries)))
+      val f = addressOrDefault(journeyData.selectedAddress)
+      (None, Ok(views.html.edit(id, journeyData, editForm.fill(f), countries)))
     }
+  }
+
+  private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress]): Edit = {
+    oAddr map (_.toEdit) getOrElse Edit("", None, None, "", "", Some("GB"))
   }
 
   // POST /:id/edit

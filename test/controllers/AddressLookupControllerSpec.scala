@@ -3,7 +3,7 @@ package controllers
 
 import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
-import model.{JourneyData, LookupPage, ProposedAddress}
+import model._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
@@ -197,6 +197,22 @@ class AddressLookupControllerSpec
       header(HeaderNames.LOCATION, res) must be (Some(routes.AddressLookupController.confirm("foo").url))
     }
 
+  }
+
+  "Calling addressOrDefault" should {
+    "return an address when called with a defined option" in new Scenario(
+      journeyData = Map("foo" -> basicJourney.copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+    ) {
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
+      val tstEdit = Edit("", None, None, "", "postCode", Some("GB"))
+      controller.addressOrDefault(Some(tstAddress)) must be (tstEdit)
+    }
+    "return an address when called with an empty option" in new Scenario(
+      journeyData = Map("foo" -> basicJourney.copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+    ) {
+      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      controller.addressOrDefault(None) must be (tstEdit)
+    }
   }
 
   private def basicJourney: JourneyData = JourneyData("continue")

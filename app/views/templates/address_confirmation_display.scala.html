@@ -1,0 +1,17 @@
+@import model.ConfirmableAddressDetails
+
+@(addr: ConfirmableAddressDetails)
+
+<div id="address">
+    @addr.lines.map { linesList =>
+        @for( (line, index) <- linesList.zipWithIndex ) {
+            <span id="line@{index+1}">@line</span><br>
+        }
+    }
+    @addr.postcode.map { pc =>
+        <span id="postCode">@pc</span><br>
+    }
+    @addr.country.map { ctry =>
+    <span id="country">@{ctry.name}</span>
+    }
+</div>

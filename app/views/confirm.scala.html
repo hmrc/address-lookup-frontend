@@ -1,6 +1,7 @@
 
 @import model.ConfirmableAddress
 @import model.JourneyData
+@import templates.address_confirmation_display
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(id: String, journeyData: JourneyData, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[_], messages: Messages)
@@ -11,29 +12,28 @@
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
-  <h1>@{journeyData.confirmPage.heading.getOrElse("Confirm Address")}</h1>
+  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.confirmPage.heading.getOrElse("Confirm Address")}</h1>
   @if(selectedAddress.isDefined) {
-    <div class="panel-indent panel-indent--info">
-      @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
-        <fieldset class="form-field-group">
-          <div class="form-field">
+    @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
+      <fieldset class="form-field-group">
+        <div class="form-field">
+          @if(journeyData.confirmPage.showSubHeadingAndInfo) {
             <h2>@{journeyData.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>
             <p>@Html(journeyData.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."))</p>
-            <p>@{selectedAddress.get.toDescription}</p>
-            <p><a href="@{routes.AddressLookupController.edit(id)}">Edit this address</a></p>
-          </div>
-          @if(journeyData.confirmPage.showSearchAgainLink) {
-            <div class="form-field">
-              <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
-            </div>
           }
+          @address_confirmation_display(selectedAddress.get.address)
+        </div>
+        @if(journeyData.confirmPage.showSearchAgainLink) {
           <div class="form-field">
-            <button type="submit">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>
+            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="changeLink">@{journeyData.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
           </div>
-        </fieldset>
-      }
-    </div>
+        }
+        <div class="form-field">
+          <button class="button" type="submit" id="continue">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>
+        </div>
+      </fieldset>
+    }
   } else {
-    <p>You have not selected any address. Please <a href="@{routes.AddressLookupController.lookup(id)}">search for and select your address</a>.</p>
+    <p>You have not selected any address. Please <a href="@{routes.AddressLookupController.lookup(id)}" id="lookupLink">search for and select your address</a>.</p>
   }
 }

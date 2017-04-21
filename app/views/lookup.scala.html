@@ -6,11 +6,17 @@
 @(id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.lookupPage.title.getOrElse("Lookup Address"), journeyData = Some(journeyData)) {
+
   @if(journeyData.showBackButtons) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
+
+  @helpers.errorSummary(
+    "There are errors on this page.", lookupForm
+  )
+
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.lookupPage.heading.getOrElse("Your Address")}</h1>
   @if(message.isDefined) {
     <div class="highlight-message highlight-message--full-width">
@@ -20,10 +26,18 @@
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
-        @helpers.input(lookupForm("filter"), '_label -> journeyData.lookupPage.filterLabel.getOrElse("Building name or number"), '_inputClass -> "form-control form-control--block", 'maxlength -> "255")
+        @helpers.input(
+          lookupForm("filter"),
+          '_label -> journeyData.lookupPage.filterLabel.getOrElse("Building name or number"),
+          '_inputClass -> "form-control--block"
+        )
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(lookupForm("postcode"), '_label -> journeyData.lookupPage.postcodeLabel.getOrElse("Postcode"), '_inputClass -> "form-control form-control--block input--small", 'maxlength -> "8")
+        @helpers.input(
+          lookupForm("postcode"),
+          '_label -> journeyData.lookupPage.postcodeLabel.getOrElse("Postcode"),
+          '_inputClass -> "form-control--block input--small"
+        )
       </div>
       <div class="form-field spaced-below">
         <button class="button" type="submit" id="continue">@{journeyData.lookupPage.submitLabel.getOrElse("Find my address")}</button>

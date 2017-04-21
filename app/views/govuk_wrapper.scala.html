@@ -57,24 +57,22 @@
 @footerTop = {}
 @footerLinks = {}
 
+
 @phaseBanner = {
-    @if(journeyData.map(_.showPhaseBanner).getOrElse(false)) {
-        @if(journeyData.map(_.alphaPhase).getOrElse(false)) {
-            <div class="phase-banner-alpha">
-                <div>
-                    <strong class="phase-tag">ALPHA</strong>
-                    <span>This is a new service – your <a href="@{journeyData.map(_.phaseFeedbackLink).getOrElse("/help/alpha")}">feedback</a> will help us to improve it.</span>
+    @journeyData.map{ jData =>
+        @if(jData.showPhaseBanner) {
+            @defining(if(jData.alphaPhase) "alpha" else "beta"){ phase =>
+                <div class="@{phase}-banner" id="phase-banner">
+                    <p>
+                        <strong class="phase-tag" id="phase-tag">@{phase.toUpperCase}</strong>
+                        <span id="phase-banner-content">
+                            @jData.phaseBannerHtml.map(content => Html(content)).getOrElse{
+                                This is a new service – your <a href='@{journeyData.map(_.phaseFeedbackLink).getOrElse(s"/help/$phase")}'>feedback</a> will help us to improve it.
+                            }
+                        </span>
+                    </p>
                 </div>
-            </div>
-        } else {
-            <div class="govuk-beta-label">
-                <div>
-                    <strong class="phase-tag">Beta</strong>
-                    <span>
-                        This part of GOV.UK is being rebuilt – <a href="@{journeyData.map(_.phaseFeedbackLink).getOrElse("/help/beta")}">find out what this means</a>
-                    </span>
-                </div>
-            </div>
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 
 package controllers
 
-import ch.qos.logback.core.joran.spi.ElementSelector
 import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
 import model._

@@ -1,6 +1,7 @@
 
 package controllers
 
+import ch.qos.logback.core.joran.spi.ElementSelector
 import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
 import model._
@@ -171,6 +172,62 @@ class AddressLookupControllerSpec
       html should include element withName("button").withAttrValue("type", "submit").withValue("Make it so")
     }
 
+  }
+
+  "configuring phase banner should" should {
+
+    val noBannerJourney = JourneyData(continueUrl="cont", showPhaseBanner = false)
+    "show no phase banner when deactivated" in new Scenario(
+      journeyData = Map("foo" -> noBannerJourney)
+    ) {
+      val res = call(controller.lookup("foo"), req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("service-info").withValue("")
+    }
+
+    val betaBannerJourney = JourneyData(continueUrl="cont", showPhaseBanner = true)
+    "show a default beta phase banner when activated" in new Scenario(
+      journeyData = Map("foo" -> betaBannerJourney)
+    ) {
+      val res = call(controller.lookup("foo"), req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("phase-tag").withValue("BETA")
+      html should include element withAttrValue("id", "phase-banner-content")
+        .withValue("This is a new service – your feedback will help us to improve it.")
+    }
+
+    val customBetaBannerJourney = JourneyData(continueUrl="cont", showPhaseBanner = true, phaseBannerHtml = Some("html content"))
+    "show a custom beta phase banner when supplied with Html" in new Scenario(
+      journeyData = Map("foo" -> customBetaBannerJourney)
+    ) {
+      val res = call(controller.lookup("foo"), req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("phase-tag").withValue("BETA")
+      html should include element withAttrValue("id", "phase-banner-content")
+        .withValue("html content")
+    }
+
+    val alphaBannerJourney = JourneyData(continueUrl="cont", showPhaseBanner = true, alphaPhase = true)
+    "show a default alpha phase banner when specified" in new Scenario(
+      journeyData = Map("foo" -> alphaBannerJourney)
+    ) {
+      val res = call(controller.lookup("foo"), req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("phase-tag").withValue("ALPHA")
+      html should include element withAttrValue("id", "phase-banner-content")
+        .withValue("This is a new service – your feedback will help us to improve it.")
+    }
+
+    val customAlphaBannerJourney = JourneyData(continueUrl="cont", showPhaseBanner = true, alphaPhase = true, phaseBannerHtml = Some("more html content"))
+    "show a custom alpha phase banner when specified and supplied with Html" in new Scenario(
+      journeyData = Map("foo" -> customAlphaBannerJourney)
+    ) {
+      val res = call(controller.lookup("foo"), req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("phase-tag").withValue("ALPHA")
+      html should include element withAttrValue("id", "phase-banner-content")
+        .withValue("more html content")
+    }
   }
 
   "select" should {

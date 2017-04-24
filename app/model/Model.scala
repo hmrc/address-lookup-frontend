@@ -78,7 +78,8 @@ case class JourneyData(continueUrl: String,
                        phaseFeedbackLink: Option[String] = None,
                        phaseBannerHtml: Option[String] = None,
                        showBackButtons: Boolean = false,
-                       includeHMRCBranding: Boolean = true)
+                       includeHMRCBranding: Boolean = true,
+                       deskProServiceName: Option[String] = None)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

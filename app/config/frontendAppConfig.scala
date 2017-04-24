@@ -8,17 +8,27 @@ trait AppConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+
+  def buildReportAProblemPartialUrl(service: Option[String]): String
+  def buildReportAProblemNonJSUrl(service: Option[String]): String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
+  private val contactFormServiceIdentifier = "AddressLookupFrontend"
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemPartialUrl = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  def buildReportAProblemPartialUrl(service: Option[String]): String = {
+    s"/contact/problem_reports_ajax?service=${service.getOrElse(contactFormServiceIdentifier)}"
+  }
+
+  def buildReportAProblemNonJSUrl(service: Option[String]): String = {
+    s"/contact/problem_reports_nonjs?service=${service.getOrElse(contactFormServiceIdentifier)}"
+  }
 }

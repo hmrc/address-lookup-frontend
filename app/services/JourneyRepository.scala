@@ -113,7 +113,8 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink")),
       phaseBannerHtml = maybeString(j.get("phaseBannerHtml")),
       showBackButtons = mustBeBoolean(j.get("showBackButtons"), false),
-      includeHMRCBranding = mustBeBoolean(j.get("includeHMRCBranding"), true)
+      includeHMRCBranding = mustBeBoolean(j.get("includeHMRCBranding"), true),
+      deskProServiceName = maybeString(j.get("deskProServiceName"))
     )
   }
 

@@ -91,7 +91,9 @@
     }
 }
 
-@getHelpForm = @{uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
+@getHelpForm = @{uiHelpers.reportAProblemLink(
+    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.deskProServiceName)),
+    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.deskProServiceName)))}
 
 @content = {
     @uiLayouts.main_content(

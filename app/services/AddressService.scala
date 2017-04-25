@@ -39,7 +39,8 @@ class AddressLookupAddressService extends AddressService with ServicesConfig {
           addr.address.lines,
           addr.address.town,
           addr.address.county,
-          addr.address.country
+          if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
+          else addr.address.country
         )
       }
     }

@@ -5,7 +5,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import services.AddressReputationFormats._
-import uk.gov.hmrc.address.v2.{Address, AddressRecord, Countries, LocalCustodian}
+import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse, Upstream5xxResponse}
 
@@ -46,17 +46,23 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
       service.find("ZZ11 1ZZ").futureValue must be (toProposals(oneAddress))
     }
 
+    "map UK to GB" in new Scenario(
+      resp = Some(HttpResponse(200, Some(Json.toJson(List(addr(Some("UK")))))))
+    ) {
+      service.find("ZZ11 1ZZ").futureValue.head.country.code must be ("GB")
+    }
+
   }
 
   private val oneAddress = someAddresses()
 
   private def someAddresses(num: Int = 1): List[AddressRecord] = {
     (0 to num).map { i =>
-      addr
+      addr()
     }.toList
   }
 
-  private def addr: AddressRecord = AddressRecord(
+  private def addr(code: Option[String] = Some("GB")): AddressRecord = AddressRecord(
     rndstr(16),
     Some(Random.nextLong()),
     Address(
@@ -65,7 +71,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
       Some(rndstr(8)),
       rndstr(8),
       Some(Countries.England),
-      Countries.UK
+      Country(code.getOrElse("GB"), rndstr(32))
     ),
     "en",
     Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None
@@ -85,9 +91,5 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
       )
     }
   }
-
-
-
-
 
 }

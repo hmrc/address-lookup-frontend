@@ -25,8 +25,13 @@
         </div>
         @if(journeyData.confirmPage.showSearchAgainLink) {
           <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="changeLink">@{journeyData.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
           </div>
+        }
+        @if(journeyData.confirmPage.showChangeLink) {
+        <div class="form-field">
+          <p><a href="@{routes.AddressLookupController.edit(id)}" id="changeLink">@{journeyData.confirmPage.changeLinkText.getOrElse("Edit this address")}</a></p>
+        </div>
         }
         <div class="form-field">
           <button class="button" type="submit" id="continue">@{journeyData.confirmPage.submitLabel.getOrElse("Confirm")}</button>

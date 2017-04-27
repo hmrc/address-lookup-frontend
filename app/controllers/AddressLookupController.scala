@@ -3,6 +3,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import config.FrontendAuditConnector
 import model._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -10,9 +11,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.address.uk.Postcode
+import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.AuditExtensions._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -153,7 +156,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   def handleConfirm(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
       if (journeyData.selectedAddress.isDefined) {
-        (Some(journeyData.copy(confirmedAddress = journeyData.selectedAddress)), Redirect(s"${journeyData.continueUrl}?id=${id}"))
+        val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+        FrontendAuditConnector.sendEvent(new DataEvent("address-lookup-frontend", EventTypes.Succeeded, tags = hc.toAuditTags("ConfirmAddress", req.uri), detail = Map(
+          "auditRef" -> id,
+          "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
+          "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
+        )))
+        (Some(jd), Redirect(s"${journeyData.continueUrl}?id=${id}"))
       } else {
         (None, Redirect(routes.AddressLookupController.confirm(id)))
       }

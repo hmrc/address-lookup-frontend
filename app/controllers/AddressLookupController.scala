@@ -53,11 +53,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       "town" -> text
         .verifying("The fourth line of your address needs to be fewer than 256 characters", _.length < 256)
         .verifying("This field is required", _.length > 0),
-      "postcode" -> text
-        .verifying("The postcode needs to be fewer than 9 characters", _.length < 9)
-        .verifying("This field is required", _.length > 0),
+      "postcode" -> text,
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)
+      .verifying("A postcode is required for UK addresses", edit => edit.countryCode != countryService.GB.code || edit.postcode.length > 0)
+      .verifying("The postcode needs to be fewer than 9 characters for a UK address", edit => edit.countryCode != countryService.GB.code || edit.postcode.length < 9)
   )
 
   val confirmedForm = Form(

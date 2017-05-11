@@ -16,6 +16,8 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {
 
+  val GB: Country
+
   def findAll: Seq[Country]
 
   // to match uk.gov.hmrc.address.v2.Countries and serve as a comprehensive replacement
@@ -27,6 +29,8 @@ trait CountryService {
 class ForeignOfficeCountryService extends CountryService {
 
   implicit val fcoCountryFormat = Json.format[FcoCountry]
+
+  override lazy val GB = find("GB").get
 
   private val countries: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countries.json")).as[Map[String, FcoCountry]].map { country =>
     Country(country._2.country, country._2.name)

@@ -44,6 +44,79 @@ class ModelSpec extends WordSpec with MustMatchers {
       ed2.toConfirmableAddress("audit ref") must be (expected)
     }
 
+    // #1 Scenario: International Address - no postcode
+    "accept international address with no postcode" in {
+      Edit("", None, None, "", "", Some("FR")).isValidPostcode() must be (true)
+    }
+
+    // #2 Scenario Outline: International Address with postcode
+    "accept international address with any postcode (case 1)" in {
+      Edit("", None, None, "", "MN 99555", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 2)" in {
+      Edit("", None, None, "", "A", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 3)" in {
+      Edit("", None, None, "", "1", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 4)" in {
+      Edit("", None, None, "", "999999999999", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 5)" in {
+      Edit("", None, None, "", "ABC123XYZ123", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 6)" in {
+      Edit("", None, None, "", "SW778 2BH", Some("FR")).isValidPostcode() must be (true)
+    }
+    "accept international address with any postcode (case 7)" in {
+      Edit("", None, None, "", "SW1A 1AA", Some("FR")).isValidPostcode() must be (true)
+    }
+
+    // #3 Scenario: UK Address no postcode
+    "accept a UK address with no postcode" in {
+      Edit("", None, None, "", "", Some("GB")).isValidPostcode() must be (true)
+    }
+
+    // #4 Scenario Outline: UK Address with Invalid PostCode
+    "not accept a UK address with an invalid postcode (case 1)" in {
+      Edit("", None, None, "", "MN 99555", Some("GB")).isValidPostcode() must be (false)
+    }
+    "not accept a UK address with an invalid postcode (case 2)" in {
+      Edit("", None, None, "", "A", Some("GB")).isValidPostcode() must be (false)
+    }
+    "not accept a UK address with an invalid postcode (case 3)" in {
+      Edit("", None, None, "", "1", Some("GB")).isValidPostcode() must be (false)
+    }
+    "not accept a UK address with an invalid postcode (case 4)" in {
+      Edit("", None, None, "", "999999999999", Some("GB")).isValidPostcode() must be (false)
+    }
+    "not accept a UK address with an invalid postcode (case 5)" in {
+      Edit("", None, None, "", "ABC123XYZ123", Some("GB")).isValidPostcode() must be (false)
+    }
+    "not accept a UK address with an invalid postcode (case 6)" in {
+      Edit("", None, None, "", "SW778 2BH", Some("GB")).isValidPostcode() must be (false)
+    }
+
+    // #5 Scenario Outline: UK Address with Valid PostCode
+    "accept a UK address with a valid postcode (case 1)" in {
+      Edit("", None, None, "", "SW1A 1AA", Some("GB")).isValidPostcode() must be (true)
+    }
+    "accept a UK address with a valid postcode (case 2)" in {
+      Edit("", None, None, "", "SW11 2BB", Some("GB")).isValidPostcode() must be (true)
+    }
+    "accept a UK address with a valid postcode (case 3)" in {
+      Edit("", None, None, "", "SW7 9YY", Some("GB")).isValidPostcode() must be (true)
+    }
+    "accept a UK address with a valid postcode (case 4)" in {
+      Edit("", None, None, "", "B1 1AA", Some("GB")).isValidPostcode() must be (true)
+    }
+    "accept a UK address with a valid postcode (case 5)" in {
+      Edit("", None, None, "", "E1W 3CC", Some("GB")).isValidPostcode() must be (true)
+    }
+    "accept a UK address with a valid postcode (case 6)" in {
+      Edit("", None, None, "", "B11 6HJ", Some("GB")).isValidPostcode() must be (true)
+    }
+
   }
 
   "a proposal" should {

@@ -3,7 +3,8 @@ package model
 
 import play.api.libs.json.Json
 import services.ForeignOfficeCountryService
-import uk.gov.hmrc.address.v2.{Countries, Country}
+import uk.gov.hmrc.address.uk.Postcode
+import uk.gov.hmrc.address.v2.Country
 
 case class Lookup(filter: Option[String], postcode: String)
 
@@ -20,6 +21,10 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
       countryCode.flatMap(code => ForeignOfficeCountryService.find(code))
     )
   )
+
+  def isValidPostcode(): Boolean = {
+    countryCode.flatMap(code => Some(ForeignOfficeCountryService.GB.code != code || postcode.length == 0 || Postcode.cleanupPostcode(postcode).isDefined)).get
+  }
 
 }
 

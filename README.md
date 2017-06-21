@@ -156,8 +156,6 @@ microservice {
 
 Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
 
-Within the context of `app-config-*`, you would need to override individual keys by specifying the full HOCON path; e.g. `microservice.services.address-lookup-frontend.journeys.yourJourneyName.continueUrl: /some/other/place`. 
-
 #### Delivery of Configuration
 
 Additional custom configuration should be provided by modifying `application.conf` in this repository and issuing a pull request to TxM North.

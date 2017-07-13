@@ -4,6 +4,7 @@ package controllers
 import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
 import model._
+import model.JourneyData._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
@@ -74,6 +75,18 @@ class AddressLookupControllerSpec
     val api = new ApiController(journeyRepository) {
       override val addressLookupEndpoint = endpoint
       override protected def uuid: String = id.getOrElse("random-id")
+    }
+
+  }
+
+  "init journey with config" should {
+
+    "create journey and return the 'on-ramp' URL" in new Scenario(id = Some("quix")) {
+      val config = JourneyConfig(continueUrl = "http://google.com", showPhaseBanner = true)
+      val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(config)))
+      status(res) must be (ACCEPTED)
+      header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/quix/lookup"))
+      journeyRepository.get("quix").futureValue.get.config must be (config)
     }
 
   }

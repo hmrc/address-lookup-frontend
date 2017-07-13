@@ -4,7 +4,8 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 import controllers.{AlfController, Confirmed}
-import model.Init
+import model.{Init, JourneyConfig, JourneyData}
+import model.JourneyData._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.i18n.MessagesApi
@@ -15,9 +16,6 @@ import services.JourneyRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Created by christopher on 04/04/17.
-  */
 @Singleton
 class ApiController @Inject()(journeyRepository: JourneyRepository)
                              (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
@@ -34,6 +32,14 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
       "id" -> text(1, 255)
     )(Confirmed.apply)(Confirmed.unapply)
   )
+
+  // POST /init
+  def initWithConfig = Action.async(parse.json[JourneyConfig]) { implicit req =>
+    val id = uuid
+    journeyRepository.put(id, JourneyData(req.body)).map(success =>
+      Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup")
+    )
+  }
 
   // GET  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL

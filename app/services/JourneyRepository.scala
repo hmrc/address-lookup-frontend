@@ -100,21 +100,23 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => EditPage()
     }
     JourneyData(
-      continueUrl = mustBeString(j.get("continueUrl"), "continueUrl"),
-      homeNavHref = maybeString(j.get("homeNavHref")),
-      navTitle = maybeString(j.get("navTitle")),
-      additionalStylesheetUrl = maybeString(j.get("additionalStylesheetUrl")),
-      lookupPage = lookup,
-      selectPage = select,
-      confirmPage = confirm,
-      editPage = edit,
-      showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
-      alphaPhase = mustBeBoolean(j.get("alphaPhase"), false),
-      phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink")),
-      phaseBannerHtml = maybeString(j.get("phaseBannerHtml")),
-      showBackButtons = mustBeBoolean(j.get("showBackButtons"), false),
-      includeHMRCBranding = mustBeBoolean(j.get("includeHMRCBranding"), true),
-      deskProServiceName = maybeString(j.get("deskProServiceName"))
+      config = JourneyConfig(
+        continueUrl = mustBeString(j.get("continueUrl"), "continueUrl"),
+        homeNavHref = maybeString(j.get("homeNavHref")),
+        navTitle = maybeString(j.get("navTitle")),
+        additionalStylesheetUrl = maybeString(j.get("additionalStylesheetUrl")),
+        lookupPage = lookup,
+        selectPage = select,
+        confirmPage = confirm,
+        editPage = edit,
+        showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
+        alphaPhase = mustBeBoolean(j.get("alphaPhase"), false),
+        phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink")),
+        phaseBannerHtml = maybeString(j.get("phaseBannerHtml")),
+        showBackButtons = mustBeBoolean(j.get("showBackButtons"), false),
+        includeHMRCBranding = mustBeBoolean(j.get("includeHMRCBranding"), true),
+        deskProServiceName = maybeString(j.get("deskProServiceName"))
+      )
     )
   }
 

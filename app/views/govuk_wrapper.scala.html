@@ -17,8 +17,8 @@
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
 @links = {
-    @if(journeyData.flatMap(_.additionalStylesheetUrl).isDefined) {
-        <link rel="stylesheet" type="text/css" href="@{journeyData.flatMap(_.additionalStylesheetUrl).get}">
+    @if(journeyData.flatMap(_.config.additionalStylesheetUrl).isDefined) {
+        <link rel="stylesheet" type="text/css" href="@{journeyData.flatMap(_.config.additionalStylesheetUrl).get}">
     }
 }
 
@@ -31,13 +31,13 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="@{journeyData.map(_.homeNavHref).getOrElse("http://www.hmrc.gov.uk")}"
+  <li><a id="homeNavHref" href="@{journeyData.map(_.config.homeNavHref).getOrElse("http://www.hmrc.gov.uk")}"
          data-journey-click="primary-navigation:Click:Home">Home</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = journeyData.flatMap(_.navTitle),
+      navTitle = journeyData.flatMap(_.config.navTitle),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
@@ -60,14 +60,14 @@
 
 @phaseBanner = {
     @journeyData.map{ jData =>
-        @if(jData.showPhaseBanner) {
-            @defining(if(jData.alphaPhase) "alpha" else "beta"){ phase =>
+        @if(jData.config.showPhaseBanner) {
+            @defining(if(jData.config.alphaPhase) "alpha" else "beta"){ phase =>
                 <div class="@{phase}-banner" id="phase-banner">
                     <p>
                         <strong class="phase-tag" id="phase-tag">@{phase.toUpperCase}</strong>
                         <span id="phase-banner-content">
-                            @jData.phaseBannerHtml.map(content => Html(content)).getOrElse{
-                                This is a new service – your <a href='@{journeyData.map(_.phaseFeedbackLink).getOrElse(s"/help/$phase")}'>feedback</a> will help us to improve it.
+                            @jData.config.phaseBannerHtml.map(content => Html(content)).getOrElse{
+                                This is a new service – your <a href='@{journeyData.map(_.config.phaseFeedbackLink).getOrElse(s"/help/$phase")}'>feedback</a> will help us to improve it.
                             }
                         </span>
                     </p>
@@ -82,7 +82,7 @@
       betaBanner = phaseBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent),
-      includeHMRCBranding = journeyData.map(_.includeHMRCBranding).getOrElse(true))
+      includeHMRCBranding = journeyData.map(_.config.includeHMRCBranding).getOrElse(true))
 }
 
 @mainContentHeader = {
@@ -92,8 +92,8 @@
 }
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(
-    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.deskProServiceName)),
-    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.deskProServiceName)))}
+    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.config.deskProServiceName)),
+    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.config.deskProServiceName)))}
 
 @content = {
     @uiLayouts.main_content(

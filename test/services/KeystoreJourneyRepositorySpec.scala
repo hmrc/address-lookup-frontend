@@ -1,7 +1,7 @@
 package services
 
 import config.WSHttp
-import model.{ConfirmPage, JourneyData, LookupPage, SelectPage}
+import model._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.json.{Json, Reads, Writes}
@@ -15,7 +15,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   implicit val hc = HeaderCarrier()
 
-  val someJourneyData = Some(JourneyData("continue"))
+  val someJourneyData = Some(JourneyData(JourneyConfig("continue")))
 
   val cached = CacheMap("id", Map("id" -> Json.toJson(someJourneyData)))
 
@@ -73,163 +73,163 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
   "init" should {
 
     "know about continue URL" in new Scenario() {
-      repo.init("j0").continueUrl must be ("/api/confirmed")
+      repo.init("j0").config.continueUrl must be ("/api/confirmed")
     }
 
     "know about homeNavRef" in new Scenario() {
-      repo.init("j0").homeNavHref must be (Some("http://www.hmrc.gov.uk/"))
+      repo.init("j0").config.homeNavHref must be (Some("http://www.hmrc.gov.uk/"))
     }
 
     "know about navTitle" in new Scenario() {
-      repo.init("j0").navTitle must be (Some("Address Lookup"))
+      repo.init("j0").config.navTitle must be (Some("Address Lookup"))
     }
 
     "know about showBannerPhase" in new Scenario() {
-      repo.init("j0").showPhaseBanner must be (false)
+      repo.init("j0").config.showPhaseBanner must be (false)
     }
 
     "know about alphaPhase" in new Scenario() {
-      repo.init("j0").alphaPhase must be (false)
+      repo.init("j0").config.alphaPhase must be (false)
     }
 
     "know about lookup page title" in new Scenario() {
-      repo.init("j0").lookupPage.title must be (Some("Lookup Address"))
+      repo.init("j0").config.lookupPage.title must be (Some("Lookup Address"))
     }
 
     "know about lookup page heading" in new Scenario() {
-      repo.init("j0").lookupPage.heading must be (Some("Your Address"))
+      repo.init("j0").config.lookupPage.heading must be (Some("Your Address"))
     }
 
     "know about lookup page filter label" in new Scenario() {
-      repo.init("j0").lookupPage.filterLabel must be (Some("Building name or number"))
+      repo.init("j0").config.lookupPage.filterLabel must be (Some("Building name or number"))
     }
 
     "know about lookup page postcode label" in new Scenario() {
-      repo.init("j0").lookupPage.postcodeLabel must be (Some("Postcode"))
+      repo.init("j0").config.lookupPage.postcodeLabel must be (Some("Postcode"))
     }
 
     "know about lookup page submit label" in new Scenario() {
-      repo.init("j0").lookupPage.submitLabel must be (Some("Find my address"))
+      repo.init("j0").config.lookupPage.submitLabel must be (Some("Find my address"))
     }
 
     "know about lookup page no results message" in new Scenario() {
-      repo.init("j0").lookupPage.noResultsFoundMessage must be (Some("Sorry, we couldn't find anything for that postcode."))
+      repo.init("j0").config.lookupPage.noResultsFoundMessage must be (Some("Sorry, we couldn't find anything for that postcode."))
     }
 
     "know about lookup page result limit exceeded message" in new Scenario() {
-      repo.init("j0").lookupPage.resultLimitExceededMessage must be (Some("There were too many results. Please add additional details to limit the number of results."))
+      repo.init("j0").config.lookupPage.resultLimitExceededMessage must be (Some("There were too many results. Please add additional details to limit the number of results."))
     }
 
     "know about select page title" in new Scenario() {
-      repo.init("j0").selectPage.title must be (Some("Select Address"))
+      repo.init("j0").config.selectPage.title must be (Some("Select Address"))
     }
 
     "know about select page heading" in new Scenario() {
-      repo.init("j0").selectPage.heading must be (Some("Select Address"))
+      repo.init("j0").config.selectPage.heading must be (Some("Select Address"))
     }
 
     "know about select page proposal list labe" in new Scenario() {
-      repo.init("j0").selectPage.proposalListLabel must be (Some("Please select one of the following addresses"))
+      repo.init("j0").config.selectPage.proposalListLabel must be (Some("Please select one of the following addresses"))
     }
 
     "know about select page submit label" in new Scenario() {
-      repo.init("j0").selectPage.submitLabel must be (Some("Next"))
+      repo.init("j0").config.selectPage.submitLabel must be (Some("Next"))
     }
 
     "know about select page proposal list limit" in new Scenario() {
-      repo.init("j0").selectPage.proposalListLimit must be (Some(50))
+      repo.init("j0").config.selectPage.proposalListLimit must be (Some(50))
     }
 
     "know about confirm page title" in new Scenario() {
-      repo.init("j0").confirmPage.title must be (Some("Confirm Address"))
+      repo.init("j0").config.confirmPage.title must be (Some("Confirm Address"))
     }
 
     "know about confirm page heading" in new Scenario() {
-      repo.init("j0").confirmPage.heading must be (Some("Confirm Address"))
+      repo.init("j0").config.confirmPage.heading must be (Some("Confirm Address"))
     }
 
     "know about confirm page info subheading" in new Scenario() {
-      repo.init("j0").confirmPage.infoSubheading must be (Some("Your selected address"))
+      repo.init("j0").config.confirmPage.infoSubheading must be (Some("Your selected address"))
     }
 
     "know about confirm page info message" in new Scenario() {
-      repo.init("j0").confirmPage.infoMessage must be (Some("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."))
+      repo.init("j0").config.confirmPage.infoMessage must be (Some("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."))
     }
 
     "know about confirm page submit label" in new Scenario() {
-      repo.init("j0").confirmPage.submitLabel must be (Some("Confirm"))
+      repo.init("j0").config.confirmPage.submitLabel must be (Some("Confirm"))
     }
 
     "know about edit page title" in new Scenario() {
-      repo.init("j0").editPage.title must be (Some("Edit Address"))
+      repo.init("j0").config.editPage.title must be (Some("Edit Address"))
     }
 
     "know about edit page heading" in new Scenario() {
-      repo.init("j0").editPage.heading must be (Some("Edit Address"))
+      repo.init("j0").config.editPage.heading must be (Some("Edit Address"))
     }
 
     "know about edit page line 1 label" in new Scenario() {
-      repo.init("j0").editPage.line1Label must be (Some("Line 1"))
+      repo.init("j0").config.editPage.line1Label must be (Some("Line 1"))
     }
 
     "know about edit page line 2 label" in new Scenario() {
-      repo.init("j0").editPage.line2Label must be (Some("Line 2"))
+      repo.init("j0").config.editPage.line2Label must be (Some("Line 2"))
     }
 
     "know about edit page line 3 label" in new Scenario() {
-      repo.init("j0").editPage.line3Label must be (Some("Line 3"))
+      repo.init("j0").config.editPage.line3Label must be (Some("Line 3"))
     }
 
     "know about edit page town label" in new Scenario() {
-      repo.init("j0").editPage.townLabel must be (Some("Town"))
+      repo.init("j0").config.editPage.townLabel must be (Some("Town"))
     }
 
     "know about edit page postcode label" in new Scenario() {
-      repo.init("j0").editPage.postcodeLabel must be (Some("Postcode"))
+      repo.init("j0").config.editPage.postcodeLabel must be (Some("Postcode"))
     }
 
     "know about edit page country label" in new Scenario() {
-      repo.init("j0").editPage.countryLabel must be (Some("Country"))
+      repo.init("j0").config.editPage.countryLabel must be (Some("Country"))
     }
 
     "know about edit page submit label" in new Scenario() {
-      repo.init("j0").editPage.submitLabel must be (Some("Next"))
+      repo.init("j0").config.editPage.submitLabel must be (Some("Next"))
     }
 
     "know about phase feedback link" in new Scenario() {
-      repo.init("j0").phaseFeedbackLink must be (Some("#"))
+      repo.init("j0").config.phaseFeedbackLink must be (Some("#"))
     }
 
     "know about edit page search again link option" in new Scenario() {
-      repo.init("j0").editPage.showSearchAgainLink must be (true)
+      repo.init("j0").config.editPage.showSearchAgainLink must be (true)
     }
 
     "know about edit page search again link test" in new Scenario() {
-      repo.init("j0").editPage.searchAgainLinkText must be (Some("Search again"))
+      repo.init("j0").config.editPage.searchAgainLinkText must be (Some("Search again"))
     }
 
     "know about select page search again link option" in new Scenario() {
-      repo.init("j0").selectPage.showSearchAgainLink must be (true)
+      repo.init("j0").config.selectPage.showSearchAgainLink must be (true)
     }
 
     "know about select page search again link test" in new Scenario() {
-      repo.init("j0").selectPage.searchAgainLinkText must be (Some("Search again"))
+      repo.init("j0").config.selectPage.searchAgainLinkText must be (Some("Search again"))
     }
 
     "know about confirm page search again link option" in new Scenario() {
-      repo.init("j0").confirmPage.showSearchAgainLink must be (true)
+      repo.init("j0").config.confirmPage.showSearchAgainLink must be (true)
     }
 
     "know about confirm page search again link test" in new Scenario() {
-      repo.init("j0").confirmPage.searchAgainLinkText must be (Some("Search again"))
+      repo.init("j0").config.confirmPage.searchAgainLinkText must be (Some("Search again"))
     }
 
     "know about show back buttons option" in new Scenario() {
-      repo.init("j0").showBackButtons must be (true)
+      repo.init("j0").config.showBackButtons must be (true)
     }
 
     "know about HMRC branding option" in new Scenario() {
-      repo.init("j0").includeHMRCBranding must be (true)
+      repo.init("j0").config.includeHMRCBranding must be (true)
     }
 
   }

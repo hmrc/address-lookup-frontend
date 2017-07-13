@@ -3,7 +3,8 @@ package controllers.api
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
-import controllers.{AlfController, Confirmed, Init}
+import controllers.{AlfController, Confirmed}
+import model.Init
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.i18n.MessagesApi
@@ -42,7 +43,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
       // TODO init should do put, too?
       val journey = journeyRepository.init(journeyName)
       val j = req.body.continueUrl match {
-        case Some(url) => journey.copy(continueUrl = url)
+        case Some(url) => journey.copy(config = journey.config.copy(continueUrl = url))
         case None => journey
       }
       journeyRepository.put(id, j).map(success => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))

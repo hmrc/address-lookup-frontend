@@ -69,24 +69,28 @@ case class EditPage(title: Option[String] = None,
                     showSearchAgainLink: Boolean = false,
                     searchAgainLinkText: Option[String] = None)
 
-case class JourneyData(continueUrl: String,
+case class JourneyData(config: JourneyConfig,
                        proposals: Option[Seq[ProposedAddress]] = None,
                        selectedAddress: Option[ConfirmableAddress] = None,
-                       confirmedAddress: Option[ConfirmableAddress] = None,
-                       lookupPage: LookupPage = LookupPage(),
-                       selectPage: SelectPage = SelectPage(),
-                       confirmPage: ConfirmPage = ConfirmPage(),
-                       editPage: EditPage = EditPage(),
-                       homeNavHref: Option[String] = None,
-                       navTitle: Option[String] = None,
-                       additionalStylesheetUrl: Option[String] = None,
-                       showPhaseBanner: Boolean = false, // if phase banner is shown, it will default to "beta" unless ...
-                       alphaPhase: Boolean = false, // ... you set "alpha" to be true,
-                       phaseFeedbackLink: Option[String] = None,
-                       phaseBannerHtml: Option[String] = None,
-                       showBackButtons: Boolean = false,
-                       includeHMRCBranding: Boolean = true,
-                       deskProServiceName: Option[String] = None)
+                       confirmedAddress: Option[ConfirmableAddress] = None)
+
+case class Init(continueUrl: Option[String])
+
+case class JourneyConfig(continueUrl: String,
+                         lookupPage: LookupPage = LookupPage(),
+                         selectPage: SelectPage = SelectPage(),
+                         confirmPage: ConfirmPage = ConfirmPage(),
+                         editPage: EditPage = EditPage(),
+                         homeNavHref: Option[String] = None,
+                         navTitle: Option[String] = None,
+                         additionalStylesheetUrl: Option[String] = None,
+                         showPhaseBanner: Boolean = false, // if phase banner is shown, it will default to "beta" unless ...
+                         alphaPhase: Boolean = false, // ... you set "alpha" to be true,
+                         phaseFeedbackLink: Option[String] = None,
+                         phaseBannerHtml: Option[String] = None,
+                         showBackButtons: Boolean = false,
+                         includeHMRCBranding: Boolean = true,
+                         deskProServiceName: Option[String] = None)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,
@@ -179,6 +183,7 @@ object JourneyData {
   implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
   implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
+  implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]
 
 }

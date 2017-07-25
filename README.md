@@ -19,152 +19,16 @@ During the utilization of `address-lookup-frontend`, four parties are involved:
 
 The integration process from the perspective of the **calling service** consists of the following steps:
 
-* Configure your journey. You can use the default `j0` journey but some customization is, generally speaking, required in practice.
-* Issue a request to `POST /api/init/:journeyName`. You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
-* Redirect the **"user"** to the **"on ramp"** URL.
+* _Initialize_ a **journey** by issuing a request to `POST /api/init` where the message body is a **journey configuration** JSON message (see below). You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
+* _Redirect_ the **"user"** to the **"on ramp"** URL.
 * The **"user"** completes the journey, following which they will be redirected to the **"off ramp"** URL (which is configured as part of the journey) with an appended `id=:addressId` URL parameter.
 * Using the value of the `id` parameter, you can retrieve the user's confirmed address as JSON by issuing a request to `GET /api/confirmed?id=:addressId`. 
 
 ![Address Lookup Frontend journey](https://raw.githubusercontent.com/hmrc/address-lookup-frontend/master/docs/design.png)
 
-### Configuring a Journey
-
-The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. It is recommended that, for any given address capture scenario that the **"calling servie"** has, a dedicated **"journey configuration"** is created.
-
-#### Configuration Format
-
-The available configuration options are shown below along with their default values (or placeholder examples) and explanatory comments (where necessary):
-
-```hocon
-microservice {
-  services {
-    address-lookup-frontend {
-      journeys {
-        yourJourneyName {
-          # the "off ramp" URL
-          continueUrl = "/lookup-address/confirmed"
-          # value of the link href attribute for the GDS "home" link
-          homeNavHref = "http://www.hmrc.gov.uk/"
-          # the main masthead heading text
-          navTitle = "Address Lookup"
-          # optional URL to provide additional CSS styling. Defaults to None.
-          additionalStylesheetUrl = "/foo/bar/styles.css"
-          # whether or not to show a phase banner (if true AND alphaPhase = false, shows "beta")
-          showPhaseBanner = false
-          # if showPhaseBanner = true AND this = true, will show "alpha" phase banner
-          alphaPhase = false
-          # Optional link to provide a user feedback link for phase banner.
-          phaseFeedbackLink = "/help/alpha"
-          # Optional text (allows HTML tags) for phase banner
-          phaseBannerHtml = "This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."
-          # whether or not to show back buttons on user journey wizard forms
-          showBackButtons = false
-          # whether or not to use HMRC branding
-          includeHMRCBranding = true
-          # Optional: name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.
-          deskProServiceName = "foo"
-          # configuration of the "lookup" page, in which user searches for address using filter + postcode
-          lookupPage {
-            # the html->head->title text
-            title = "Lookup Address"
-            # the heading to display above the lookup form
-            heading = "Your Address"
-            # the input label for the "filter" field
-            filterLabel = "Building name or number"
-            # the input label for the "postcode" field
-            postcodeLabel = "Postcode"
-            # the submit button text (proceeds to the "select" page)
-            submitLabel = "Find my address"
-            # message to display in infobox above lookup form when no results were found
-            noResultsFoundMessage = "Sorry, we couldn't find anything for that postcode."
-            # message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)
-            resultLimitExceededMessage = "There were too many results. Please add additional details to limit the number of results."
-            # Text to use for link to manual address entry form
-            manualAddressLinkText = "Enter address manually"
-          }
-          # configuration of the "select" page, in which user chooses an address from a list of search results
-          selectPage {
-            # the html->head->title text
-            title = "Select Address"
-            # the heading to display above the list of results
-            heading = "Select Address"
-            # the radio group label for the list of results
-            proposalListLabel = "Please select one of the following addresses"
-            # the submit button text (proceeds to the "confirm" page)
-            submitLabel = "Next"
-            # maximum number of results to display (when exceeded, will return user to "lookup" page)
-            proposalListLimit = 50
-            # Whether or not to show "search again" link back to lookup page
-            showSearchAgainLink = false
-            # Link text to use when 'showSearchAgainLink' is true
-            searchAgainLinkText = "Search again"
-            # Link text to use for the "edit adddress" link
-            editAddressLinkText = "Edit address"
-          }
-          # configuration of the "confirm" page, in which the user is requested to confirm a "finalized" form for their address
-          confirmPage {
-            # the html->head->title text
-            title = "Confirm Address"
-            # the main heading to display on the page
-            heading = "Confirm Address"
-            # whether or not to show subheading and info message
-            showSubheadingAndInfo = false
-            # a subheading to display above the "finalized" address
-            infoSubheading = "Your selected address"
-            # an explanatory message to display below the subheading to clarify what we are asking of the user
-            infoMessage = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
-            # the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)
-            submitLabel = "Confirm"
-            # Whether or not to show "search again" link back to lookup page
-            showSearchAgainLink = false
-            # Link text to use when 'showSearchAgainLink' is true
-            searchAgainLinkText = "Search again"
-            # Link text to use for the "edit adddress" link
-            changeLinkText = "Edit this address"
-          }
-          # configuration of the "edit" page, in which the user is permitted to manually enter or modify a selected address
-          editPage {
-            # the html->head->title text
-            title = "Edit Address"
-            # the heading to display above the edit form
-            heading = "Edit Address"
-            # the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field
-            line1Label = "Line 1"
-            # the input label for the "line2" field; an optional field
-            line2Label = "Line 2"
-            # the input label for the "line3" field; an optional field
-            line3Label = "Line 3"
-            # the input label for the "town" field; a REQUIRED field
-            townLabel = "Town"
-            # the input label for the "postcode" field; a REQUIRED field
-            postcodeLabel = "Postcode"
-            # the input label for the "country" drop-down; an optional field (defaults to UK)
-            countryLabel = "Country"
-            # the submit button text (proceeds to the "confirm" page)
-            submitLabel = "Next"
-            # Whether or not to show "search again" link back to lookup page
-            showSearchAgainLink = false
-            # Link text to use when 'showSearchAgainLink' is true
-            searchAgainLinkText = "Search again"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
-
-#### Delivery of Configuration
-
-Additional custom configuration should be provided by modifying `application.conf` in this repository and issuing a pull request to TxM North.
-
-*Please note: changes and additions should be introduced via pull requests which are merged by a member of the TxM North team as it will need to be tested and released.*
-
 ### Initializing a Journey
 
-Once you have a configured, named journey, you need to **"initialize"** an instance in order to obtain an "on ramp" URL to which the **"user"** is then redirected. 
+The first action by any **calling service** must be to **"initialize"** an address lookup **journey** in order to obtain an "on ramp" URL to which the **"user"** is then redirected. 
 
 Initialization generates an ID which is utilized both to facilitate subsequent retrieval of the **"user's"** confirmed address *and* to prevent arbitrary access to and potential abuse of `address-lookup-frontend` by malicious **"users"**.
 
@@ -172,11 +36,7 @@ An endpoint is provided for initialization:
 
 URL:
 
-* `/api/init/:journeyName` where `journeyName` is the *configuration key* for the pre-configured journey you wish to initialize
-
-Example URLs:
-
-* `/api/init/j0`
+* `/api/init`
 
 Methods:
 
@@ -188,12 +48,11 @@ Headers:
 
 Message Body:
 
-* None currently. Future intent is that you will be able to `POST` a JSON message with journey configuration details.
+* A **journey configuration** message in `application/json` format (see details of the JSON format below)
 
 Status Codes:
 
 * 202 Accepted: when initialization was successful
-* 404 Not Found: when a configuration for the named journey could not be found
 * 500 Internal Server Error: when, for any (hopefully transient) internal reason, the journey could not be initialized 
 
 Response:
@@ -201,7 +60,191 @@ Response:
 * No content
 * The `Location` header will specify an **"on ramp"** URL, appropriate for the journey, to which the user should be redirected. Currently, the journey has a TTL of **60 minutes**.
 
+### Configuring a Journey
+
+The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init` (see above).
+
+It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
+
+#### Configuration JSON Format
+
+Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init`.
+
+It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
+
+```json
+{
+  "continueUrl" : "/lookup-address/confirmed",
+  "homeNavHref" : "http://www.hmrc.gov.uk/",
+  "navTitle" : "Address Lookup",
+  "showPhaseBanner" : false,
+  "alphaPhase" : false,
+  "phaseFeedbackLink" : "/help/alpha",
+  "phaseBannerHtml" : "This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it.",
+  "showBackButtons": false,
+  "includeHMRCBranding" : true,
+  "deskProServiceName" : "",
+  "lookupPage" : {
+    "title" : "Lookup Address",
+    "heading" : "Your Address",
+    "filterLabel" : "Building name or number",
+    "postcodeLabel" : "Postcode",
+    "submitLabel" : "Find my address",
+    "noResultsFoundMessage" : "Sorry, we couldn't find anything for that postcode.",
+    "resultLimitExceededMessage" : "There were too many results. Please add additional details to limit the number of results.",
+    "manualAddressLinkText" : "Enter address manually"
+  },
+  "selectPage" : {
+    "title" : "Select Address",
+    "heading" : "Select Address",
+    "proposalListLabel" : "Please select one of the following addresses",
+    "submitLabel" : "Next",
+    "proposalListLimit" : 50,
+    "showSearchAgainLink" : false,
+    "searchAgainLinkText" : "Search again",
+    "editAddressLinkText" : "Edit address"
+  },
+  "confirmPage" : {
+    "title" : "Confirm Address",
+    "heading" : "Confirm Address",
+    "infoSubheading" : "Your selected address",
+    "infoMessage" : "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
+    "submitLabel" : "Confirm",
+    "showSearchAgainLink" : false,
+    "searchAgainLinkText" : "Search again",
+    "changeLinkText" : "Edit this address"
+  },
+  "editPage" : {
+    "title" : "Edit Address",
+    "heading" : "Edit Address",
+    "line1Label" : "Line 1",
+    "line2Label" : "Line 2",
+    "line3Label" : "Line 3",
+    "townLabel" : "Town",
+    "postcodeLabel" : "Postcode",
+    "countryLabel" : "Country",
+    "submitLabel" : "Next",
+    "showSearchAgainLink" : false,
+    "searchAgainLinkText" : "Search again"
+  }
+}
+```
+
+#### Top-level configuration JSON object
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`continueUrl`|the "off ramp" URL for a user journey|**Required**|String|N/A|
+|`homeNavHref`|value of the link href attribute for the GDS "home" link|Optional|String|`"http://www.hmrc.gov.uk/"`|
+|`navTitle`|the main masthead heading text|Optional|String|`"Address Lookup"`|
+|`showPhaseBanner`|whether or not to show a phase banner (if `showPhaseBanner == true && alphaPhase == false`, shows "beta")|Optional|Boolean|`false`|
+|`alphaPhase`|if `showPhaseBanner = true && alphaPhase == true`, will show "alpha" phase banner|Optional|Boolean|`false`|
+|`phaseFeedbackLink`|link to provide a user feedback link for phase banner|Optional|String|`"/help/alpha"`|
+|`phaseBannerHtml`|text (allows HTML tags) for phase banner|Optional|String|`"This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."`"
+|`showBackButtons`|whether or not to show back buttons on user journey wizard forms|Optional|Boolean|`false`|
+|`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
+|`deskProServiceName`|name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
+
+#### Lookup page configuration JSON object
+
+Configuration of the "lookup" page, in which user searches for address using filter + postcode. The lookup page configuration is a nested JSON object inside the journey configuration under the `lookupPage` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`title`|the `html->head->title` text|Optional|String|`"Lookup Address"`|
+|`heading`|the heading to display above the lookup form|Optional|String|`"Your Address"`|
+|`filterLabel`|the input label for the "filter" field|Optional|String|`"Building name or number"`|
+|`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"Postcode"`|
+|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find my address"`|
+|`noResultsFoundMessage`|message to display in infobox above lookup form when no results were found|Optional|String|`"Sorry, we couldn't find anything for that postcode."`|
+|`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
+|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"Enter address manually"`|
+
+#### Select page configuration JSON object
+
+Configuration of the "select" page, in which user chooses an address from a list of search results. The select page configuration is a nested JSON object inside the journey configuration under the `selectPage` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`title`|the `html->head->title` text|Optional|String|`"Select Address"`|
+|`heading`|the heading to display above the list of results|Optional|String|`"Select Address"`|
+|`proposalListLabel`|the radio group label for the list of results|Optional|String|`"Please select one of the following addresses"`|
+|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Next"`|
+|`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`50`|
+|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
+|`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+|`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit this address"`|
+
+#### Confirm page configuration JSON object
+
+Configuration of the "confirm" page, in which the user is requested to confirm a "finalized" form for their address. The confirm page configuration is a nested JSON object inside the journey configuration under the `confirmPage` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`title`|the html->head->title text|Optional|String|`"Confirm Address"`|
+|`heading`|the main heading to display on the page|Optional|String|`"Confirm Address"`|
+|`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
+|`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
+|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm"`|
+|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
+|`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+|`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit address"`|
+
+#### Edit page configuration JSON object
+
+Configuration of the "edit" page, in which the user is permitted to manually enter or modify a selected address. The confirm page configuration is a nested JSON object inside the journey configuration under the `editPage` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`title`|the html->head->title text|Optional|String|`"Edit Address"`|
+|`heading`|the heading to display above the edit form|Optional|String|`"Edit Address"`|
+|`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Line 1"`|
+|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Line 2"`|
+|`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Line 3"`|
+|`townLabel`|the input label for the "town" field; a REQUIRED field|Optional|String|`"Town"`|
+|`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postcode"`|
+|`countryLabel`|the input label for the "country" drop-down; an optional field (defaults to UK)|Optional|String|`"Country"`|
+|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Next"`|
+|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
+|`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+
+Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
+
 ### Obtaining the Confirmed Address
+
+Once the user has completed the address lookup journey, they will be redirected to the **off ramp** URL specified in the **journey configuration**. An `id` parameter will be appended to the **off ramp** URL. **Calling services** may use the value of this parameter to obtain the **user's** confirmed address.
+
+URL:
+
+* `/api/confirmed`
+
+Example URLs:
+
+* `/api/confirmed?id=ID_VALUE_FROM_APPENDED_OFF_RAMP_URL_ID_PARAMETER_HERE`
+
+Methods:
+
+* `GET`
+
+Headers:
+
+* `User-Agent` (required): string
+
+Message Body:
+
+* None
+
+Status Codes:
+
+* 200 Ok: when a confirmed address was successfully obtained for the given `ID`
+* 404 Not Found: when no confirmed address was found for the given `ID`
+* 500 Internal Server Error: when, for any (hopefully transient) internal reason, the journey data corresponding to the ID could not be obtained 
+
+Response:
+
+* An `application/json` message which describes a **confirmed address** (see below)
+
+#### Confirmed Address JSON Format
 
 TODO
 

@@ -1,6 +1,5 @@
 package services
 
-import java.util.UUID
 import javax.inject.Singleton
 
 import com.google.inject.ImplementedBy

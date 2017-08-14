@@ -19,8 +19,6 @@ import uk.gov.hmrc.play.audit.AuditExtensions._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-
 @Singleton
 class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)

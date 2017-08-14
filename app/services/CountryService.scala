@@ -3,15 +3,8 @@ package services
 import javax.inject.Singleton
 
 import com.google.inject.ImplementedBy
-import config.WSHttp
 import play.api.libs.json.Json
 import uk.gov.hmrc.address.v2.Country
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http.ws.WSGet
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {

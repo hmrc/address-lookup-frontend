@@ -1,20 +1,19 @@
 
 package services
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import config.WSHttp
 import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
+import services.AddressReputationFormats._
+import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
-import services.AddressReputationFormats._
-import uk.gov.hmrc.address.uk.Postcode
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
@@ -24,7 +23,7 @@ trait AddressService {
 }
 
 @Singleton
-class AddressLookupAddressService extends AddressService with ServicesConfig {
+class AddressLookupAddressService @Inject()(implicit val ec: ExecutionContext) extends AddressService with ServicesConfig {
 
   val endpoint = baseUrl("address-reputation")
 

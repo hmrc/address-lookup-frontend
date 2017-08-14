@@ -16,6 +16,7 @@ import scala.util.Random
 class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
   class Scenario(resp: Option[HttpResponse] = None) {
+    private implicit val ec = play.api.libs.concurrent.Execution.Implicits.defaultContext
     implicit val hc = HeaderCarrier()
     val end = "http://localhost:42"
 
@@ -32,7 +33,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
       override val hooks: Seq[HttpHook] = Seq.empty
     }
 
-    val service = new AddressLookupAddressService() {
+    val service = new AddressLookupAddressService()(ec) {
       override val endpoint = end
       override val http = get
     }

@@ -70,9 +70,9 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     else v.unwrapped().toString
   }
 
-  private def mustBeBoolean(v: ConfigValue, default: Boolean): Boolean = {
-    if (v == null) default
-    else v.unwrapped().asInstanceOf[Boolean]
+  private def maybeBoolean(v: ConfigValue, default: Boolean): Option[Boolean] = {
+    if (v == null) Some(default)
+    else Some(v.unwrapped().asInstanceOf[Boolean])
   }
 
   // TODO ensure all potential config values are mapped
@@ -87,15 +87,15 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => LookupPage()
     }
     val select = s match {
-      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), mustBeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")), maybeString(s.get("editAddressLinkText")))
+      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), maybeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")), maybeString(s.get("editAddressLinkText")))
       case None => SelectPage()
     }
     val confirm = c match {
-      case Some(c) => ConfirmPage(maybeString(c.get("title")), maybeString(c.get("heading")), mustBeBoolean(c.get("showSubHeadingAndInfo"), false), maybeString(c.get("infoSubheading")), maybeString(c.get("infoMessage")), maybeString(c.get("submitLabel")), mustBeBoolean(c.get("showSearchAgainLink"), false), maybeString(c.get("searchAgainLinkText")), mustBeBoolean(c.get("showChangeLink"), true), maybeString(c.get("changeLinkText")))
+      case Some(c) => ConfirmPage(maybeString(c.get("title")), maybeString(c.get("heading")), maybeBoolean(c.get("showSubHeadingAndInfo"), false), maybeString(c.get("infoSubheading")), maybeString(c.get("infoMessage")), maybeString(c.get("submitLabel")), maybeBoolean(c.get("showSearchAgainLink"), false), maybeString(c.get("searchAgainLinkText")), maybeBoolean(c.get("showChangeLink"), true), maybeString(c.get("changeLinkText")))
       case None => ConfirmPage()
     }
     val edit = e match {
-      case Some(e) => EditPage(maybeString(e.get("title")), maybeString(e.get("heading")), maybeString(e.get("line1Label")), maybeString(e.get("line2Label")), maybeString(e.get("line3Label")), maybeString(e.get("townLabel")), maybeString(e.get("postcodeLabel")), maybeString(e.get("countryLabel")), maybeString(e.get("submitLabel")), mustBeBoolean(e.get("showSearchAgainLink"), false), maybeString(e.get("searchAgainLinkText")))
+      case Some(e) => EditPage(maybeString(e.get("title")), maybeString(e.get("heading")), maybeString(e.get("line1Label")), maybeString(e.get("line2Label")), maybeString(e.get("line3Label")), maybeString(e.get("townLabel")), maybeString(e.get("postcodeLabel")), maybeString(e.get("countryLabel")), maybeString(e.get("submitLabel")), maybeBoolean(e.get("showSearchAgainLink"), false), maybeString(e.get("searchAgainLinkText")))
       case None => EditPage()
     }
     JourneyData(
@@ -104,16 +104,16 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
         homeNavHref = maybeString(j.get("homeNavHref")),
         navTitle = maybeString(j.get("navTitle")),
         additionalStylesheetUrl = maybeString(j.get("additionalStylesheetUrl")),
-        lookupPage = lookup,
-        selectPage = select,
-        confirmPage = confirm,
-        editPage = edit,
-        showPhaseBanner = mustBeBoolean(j.get("showPhaseBanner"), false),
-        alphaPhase = mustBeBoolean(j.get("alphaPhase"), false),
+        lookupPage = Some(lookup),
+        selectPage = Some(select),
+        confirmPage = Some(confirm),
+        editPage = Some(edit),
+        showPhaseBanner = maybeBoolean(j.get("showPhaseBanner"), false),
+        alphaPhase = maybeBoolean(j.get("alphaPhase"), false),
         phaseFeedbackLink = maybeString(j.get("phaseFeedbackLink")),
         phaseBannerHtml = maybeString(j.get("phaseBannerHtml")),
-        showBackButtons = mustBeBoolean(j.get("showBackButtons"), false),
-        includeHMRCBranding = mustBeBoolean(j.get("includeHMRCBranding"), true),
+        showBackButtons = maybeBoolean(j.get("showBackButtons"), false),
+        includeHMRCBranding = maybeBoolean(j.get("includeHMRCBranding"), true),
         deskProServiceName = maybeString(j.get("deskProServiceName"))
       )
     )

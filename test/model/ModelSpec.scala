@@ -1,8 +1,9 @@
 package model
 
+import model.JourneyData._
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.Json
 import services.ForeignOfficeCountryService
-import uk.gov.hmrc.address.v2.Countries
 
 class ModelSpec extends WordSpec with MustMatchers {
 
@@ -149,6 +150,72 @@ class ModelSpec extends WordSpec with MustMatchers {
 
     "default country to GB" in {
       ConfirmableAddress("auditRef").address.country must be (ForeignOfficeCountryService.find("GB"))
+    }
+
+  }
+
+  "a journey config" should {
+
+    "be creatable with only continueUrl" in {
+      val json = "{\"continueUrl\":\"http://google.com\"}"
+      val config = Json.parse(json).as[JourneyConfig]
+      config.continueUrl must be ("http://google.com")
+    }
+
+  }
+
+  "a resolved config" should {
+
+    val c = JourneyConfig("http://google.com")
+
+    val cfg = ResolvedJourneyConfig(c)
+
+    "have a default home nav href" in {
+      cfg.homeNavHref must be ("http://www.hmrc.gov.uk")
+    }
+
+    "not show phase banner by default" in {
+      cfg.showPhaseBanner must be (false)
+    }
+
+    "turn alpha phase off by default" in {
+      cfg.alphaPhase must be (false)
+    }
+
+    "have empty phase name by default" in {
+      cfg.phase must be ("")
+    }
+
+    "have beta phase name when phase banner on and alpha phase off" in {
+      cfg.copy(c.copy(showPhaseBanner = Some(true))).phase must be ("beta")
+    }
+
+    "have alpha phase name when phase banner on and alpha phase on" in {
+      cfg.copy(c.copy(showPhaseBanner = Some(true), alphaPhase = Some(true))).phase must be ("alpha")
+    }
+
+    "have default help link" in {
+      cfg.phaseFeedbackLink must be ("/help/")
+    }
+
+    "have beta help link" in {
+      cfg.copy(c.copy(showPhaseBanner = Some(true))).phaseFeedbackLink must be ("/help/beta")
+    }
+
+    "have alpha help link" in {
+      cfg.copy(c.copy(showPhaseBanner = Some(true), alphaPhase = Some(true))).phaseFeedbackLink must be ("/help/alpha")
+    }
+
+    "have default phase banner html" in {
+      cfg.phaseBannerHtml must be (JourneyConfigDefaults.defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
+    }
+
+    "not show back buttons by default" in {
+      cfg.showBackButtons must be (false)
+    }
+
+    "include HMRC branding by default" in {
+      cfg.includeHMRCBranding must be (true)
     }
 
   }

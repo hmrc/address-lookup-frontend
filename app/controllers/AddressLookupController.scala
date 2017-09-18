@@ -10,6 +10,7 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
+import spray.http.Uri
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -88,8 +89,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
         lookup => {
           addressService.find(lookup.postcode, lookup.filter).map { props =>
-            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
-            else if (props.size > journeyData.config.selectPage.proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
+            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
+            else if (props.size > journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
             else (Some(journeyData.copy(proposals = Some(props))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(props)))))
           }
         }
@@ -159,7 +160,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
           "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
         )))
-        (Some(jd), Redirect(s"${journeyData.config.continueUrl}?id=${id}"))
+        (Some(jd), Redirect(Uri(journeyData.config.continueUrl).withQuery("id" -> id).toString()))
       } else {
         (None, Redirect(routes.AddressLookupController.confirm(id)))
       }

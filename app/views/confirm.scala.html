@@ -1,40 +1,39 @@
 
-@import model.ConfirmableAddress
-@import model.JourneyData
+@import model._
 @import templates.address_confirmation_display
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(id: String, journeyData: JourneyData, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.config.confirmPage.title.getOrElse("Confirm Address"), journeyData = Some(journeyData)) {
-  @if(journeyData.config.showBackButtons) {
+@main_template(title = journeyData.resolvedConfig.confirmPage.title, journeyData = Some(journeyData)) {
+  @if(journeyData.config.showBackButtons.getOrElse(false)) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
-  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.config.confirmPage.heading.getOrElse("Confirm Address")}</h1>
+  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.confirmPage.heading}</h1>
   @if(selectedAddress.isDefined) {
     @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
       <fieldset class="form-field-group">
         <div class="form-field">
-          @if(journeyData.config.confirmPage.showSubHeadingAndInfo) {
-            <h2>@{journeyData.config.confirmPage.infoSubheading.getOrElse("Your selected address")}</h2>
-            <p>@Html(journeyData.config.confirmPage.infoMessage.getOrElse("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."))</p>
+          @if(journeyData.resolvedConfig.confirmPage.showSubHeadingAndInfo) {
+            <h2>@{journeyData.resolvedConfig.confirmPage.infoSubheading}</h2>
+            <p>@Html(journeyData.resolvedConfig.confirmPage.infoMessage)</p>
           }
           @address_confirmation_display(selectedAddress.get.address)
         </div>
-        @if(journeyData.config.confirmPage.showSearchAgainLink) {
+        @if(journeyData.resolvedConfig.confirmPage.showSearchAgainLink) {
           <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.config.confirmPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.resolvedConfig.confirmPage.searchAgainLinkText}</a></p>
           </div>
         }
-        @if(journeyData.config.confirmPage.showChangeLink) {
+        @if(journeyData.resolvedConfig.confirmPage.showChangeLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.edit(id)}" id="changeLink">@{journeyData.config.confirmPage.changeLinkText.getOrElse("Edit this address")}</a></p>
+          <p><a href="@{routes.AddressLookupController.edit(id)}" id="changeLink">@{journeyData.resolvedConfig.confirmPage.changeLinkText}</a></p>
         </div>
         }
         <div class="form-field">
-          <button class="button" type="submit" id="continue">@{journeyData.config.confirmPage.submitLabel.getOrElse("Confirm")}</button>
+          <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.confirmPage.submitLabel}</button>
         </div>
       </fieldset>
     }

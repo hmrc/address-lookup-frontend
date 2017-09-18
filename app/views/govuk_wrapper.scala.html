@@ -31,7 +31,7 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="@{journeyData.map(_.config.homeNavHref).getOrElse("http://www.hmrc.gov.uk")}"
+  <li><a id="homeNavHref" href="@{journeyData.map(_.resolvedConfig.homeNavHref).getOrElse("/")}"
          data-journey-click="primary-navigation:Click:Home">Home</a></li>
 }
 
@@ -60,19 +60,13 @@
 
 @phaseBanner = {
     @journeyData.map{ jData =>
-        @if(jData.config.showPhaseBanner) {
-            @defining(if(jData.config.alphaPhase) "alpha" else "beta"){ phase =>
-                <div class="@{phase}-banner" id="phase-banner">
-                    <p>
-                        <strong class="phase-tag" id="phase-tag">@{phase.toUpperCase}</strong>
-                        <span id="phase-banner-content">
-                            @jData.config.phaseBannerHtml.map(content => Html(content)).getOrElse{
-                                This is a new service – your <a href='@{journeyData.map(_.config.phaseFeedbackLink).getOrElse(s"/help/$phase")}'>feedback</a> will help us to improve it.
-                            }
-                        </span>
-                    </p>
-                </div>
-            }
+        @if(jData.resolvedConfig.showPhaseBanner) {
+            <div class="@{jData.resolvedConfig.phase}-banner" id="phase-banner">
+                <p>
+                    <strong class="phase-tag" id="phase-tag">@{jData.resolvedConfig.phase.toUpperCase}</strong>
+                    <span id="phase-banner-content">@Html(jData.resolvedConfig.phaseBannerHtml)</span>
+                </p>
+            </div>
         }
     }
 }
@@ -82,7 +76,8 @@
       betaBanner = phaseBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent),
-      includeHMRCBranding = journeyData.map(_.config.includeHMRCBranding).getOrElse(true))
+      includeHMRCBranding = journeyData.map(_.resolvedConfig.includeHMRCBranding).getOrElse(true)
+    )
 }
 
 @mainContentHeader = {

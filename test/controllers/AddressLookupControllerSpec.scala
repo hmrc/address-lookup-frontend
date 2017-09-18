@@ -82,7 +82,7 @@ class AddressLookupControllerSpec
   "init journey with config" should {
 
     "create journey and return the 'on-ramp' URL" in new Scenario(id = Some("quix")) {
-      val config = JourneyConfig(continueUrl = "http://google.com", showPhaseBanner = true)
+      val config = JourneyConfig(continueUrl = "http://google.com", showPhaseBanner = Some(true))
       val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(config)))
       status(res) must be (ACCEPTED)
       header(HeaderNames.LOCATION, res) must be (Some(s"$endpoint/lookup-address/quix/lookup"))
@@ -146,7 +146,7 @@ class AddressLookupControllerSpec
     }
 
     "allow page title to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = LookupPage(title = Some("Hello!")))))
+      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(title = Some("Hello!"))))))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -154,7 +154,7 @@ class AddressLookupControllerSpec
     }
 
     "allow page heading to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = LookupPage(heading = Some("World!")))))
+      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(heading = Some("World!"))))))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -162,7 +162,7 @@ class AddressLookupControllerSpec
     }
 
     "allow filter label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = LookupPage(filterLabel = Some("Your digs no.")))))
+      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(filterLabel = Some("Your digs no."))))))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -170,7 +170,7 @@ class AddressLookupControllerSpec
     }
 
     "allow postcode label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = LookupPage(postcodeLabel = Some("Your PO, bro")))))
+      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(postcodeLabel = Some("Your PO, bro"))))))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -178,7 +178,7 @@ class AddressLookupControllerSpec
     }
 
     "allow submit label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = LookupPage(submitLabel = Some("Make it so")))))
+      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(submitLabel = Some("Make it so"))))))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -189,7 +189,7 @@ class AddressLookupControllerSpec
 
   "configuring phase banner should" should {
 
-    val noBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = false))
+    val noBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(false)))
     "show no phase banner when deactivated" in new Scenario(
       journeyData = Map("foo" -> noBannerJourney)
     ) {
@@ -198,7 +198,7 @@ class AddressLookupControllerSpec
       html should include element withClass("service-info").withValue("")
     }
 
-    val betaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = true))
+    val betaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true)))
     "show a default beta phase banner when activated" in new Scenario(
       journeyData = Map("foo" -> betaBannerJourney)
     ) {
@@ -209,7 +209,7 @@ class AddressLookupControllerSpec
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
-    val customBetaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = true, phaseBannerHtml = Some("html content")))
+    val customBetaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), phaseBannerHtml = Some("html content")))
     "show a custom beta phase banner when supplied with Html" in new Scenario(
       journeyData = Map("foo" -> customBetaBannerJourney)
     ) {
@@ -220,7 +220,7 @@ class AddressLookupControllerSpec
         .withValue("html content")
     }
 
-    val alphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = true, alphaPhase = true))
+    val alphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), alphaPhase = Some(true)))
     "show a default alpha phase banner when specified" in new Scenario(
       journeyData = Map("foo" -> alphaBannerJourney)
     ) {
@@ -231,7 +231,7 @@ class AddressLookupControllerSpec
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
-    val customAlphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = true, alphaPhase = true, phaseBannerHtml = Some("more html content")))
+    val customAlphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), alphaPhase = Some(true), phaseBannerHtml = Some("more html content")))
     "show a custom alpha phase banner when specified and supplied with Html" in new Scenario(
       journeyData = Map("foo" -> customAlphaBannerJourney)
     ) {

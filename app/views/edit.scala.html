@@ -1,13 +1,12 @@
 
-@import model.Edit
-@import model.JourneyData
+@import model._
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.config.editPage.title.getOrElse("Edit Address"), journeyData = Some(journeyData)) {
+@main_template(title = journeyData.resolvedConfig.editPage.title, journeyData = Some(journeyData)) {
 
-  @if(journeyData.config.showBackButtons) {
+  @if(journeyData.config.showBackButtons.getOrElse(false)) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
@@ -17,40 +16,40 @@
     "There are errors on this page.", editForm
   )
 
-  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.config.editPage.heading.getOrElse("Edit Address")}</h1>
+  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @helpers.input(
           editForm("line1"),
-          '_label -> journeyData.config.editPage.line1Label.getOrElse("Line 1"),
+          '_label -> journeyData.resolvedConfig.editPage.line1Label,
           '_inputClass -> "form-control--block")
       </div>
       <div class="form-field spaced-below">
         @helpers.input(
           editForm("line2"),
-          '_label -> journeyData.config.editPage.line2Label.getOrElse("Line 2"),
+          '_label -> journeyData.resolvedConfig.editPage.line2Label,
           '_inputClass -> "form-control--block"
         )
       </div>
       <div class="form-field spaced-below">
         @helpers.input(
           editForm("line3"),
-          '_label -> journeyData.config.editPage.line3Label.getOrElse("Line 3"),
+          '_label -> journeyData.resolvedConfig.editPage.line3Label,
           '_inputClass -> "form-control--block"
         )
       </div>
       <div class="form-field spaced-below">
         @helpers.input(
           editForm("town"),
-          '_label -> journeyData.config.editPage.townLabel.getOrElse("Town"),
+          '_label -> journeyData.resolvedConfig.editPage.townLabel,
           '_inputClass -> "form-control--block"
         )
       </div>
       <div class="form-field spaced-below">
         @helpers.input(
           editForm("postcode"),
-          '_label -> journeyData.config.editPage.postcodeLabel.getOrElse("Postcode"),
+          '_label -> journeyData.resolvedConfig.editPage.postcodeLabel,
           '_inputClass -> "form-control--block input--small"
         )
       </div>
@@ -59,17 +58,17 @@
           editForm("countryCode"),
           countries,
           false,
-          '_label -> journeyData.config.editPage.countryLabel.getOrElse("Country"),
+          '_label -> journeyData.resolvedConfig.editPage.countryLabel,
           '_inputClass -> "form-control--block"
         )
       </div>
-      @if(journeyData.config.editPage.showSearchAgainLink) {
+      @if(journeyData.resolvedConfig.editPage.showSearchAgainLink) {
         <div class="form-field spaced-below">
-          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.config.editPage.searchAgainLinkText.getOrElse("Search again")}</a></p>
+          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.resolvedConfig.editPage.searchAgainLinkText}</a></p>
         </div>
       }
       <div class="form-field">
-        <button class="button" type="submit" id="continue">@{journeyData.config.editPage.submitLabel.getOrElse("Next")}</button>
+        <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.editPage.submitLabel}</button>
       </div>
     </fieldset>
   }

@@ -75,6 +75,15 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     else Some(v.unwrapped().asInstanceOf[Boolean])
   }
 
+  private def maybeSetOfStrings(v: ConfigValue, key: String): Option[Set[String]] = {
+    if (v == null) None
+    else v.unwrapped() match {
+      case list: java.util.List[String] => Some(list.asScala.toSet)
+      case item: String => Some(Set(item))
+      case _ => throw new IllegalArgumentException(s"$key must be a list of strings")
+    }
+  }
+
   // TODO ensure all potential config values are mapped
   private def journey(key: String, journeys: ConfigObject): JourneyData = {
     val j = journeys.get(key).asInstanceOf[ConfigObject]
@@ -114,7 +123,8 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
         phaseBannerHtml = maybeString(j.get("phaseBannerHtml")),
         showBackButtons = maybeBoolean(j.get("showBackButtons"), false),
         includeHMRCBranding = maybeBoolean(j.get("includeHMRCBranding"), true),
-        deskProServiceName = maybeString(j.get("deskProServiceName"))
+        deskProServiceName = maybeString(j.get("deskProServiceName")),
+        allowedCountryCodes = maybeSetOfStrings(j.get("allowedCountryCodes"), "allowedCountryCodes")
       )
     )
   }

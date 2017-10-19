@@ -6,12 +6,13 @@ import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import services.AddressReputationFormats._
 import uk.gov.hmrc.address.v2._
-import uk.gov.hmrc.play.http.hooks.HttpHook
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse, Upstream5xxResponse}
 
 import scala.collection.immutable.Seq
 import scala.concurrent.Future
 import scala.util.Random
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.hooks.HttpHook
+import uk.gov.hmrc.play.http.ws.WSGet
 
 class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
@@ -20,9 +21,9 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
     implicit val hc = HeaderCarrier()
     val end = "http://localhost:42"
 
-    val get = new HttpGet {
+    val get = new HttpGet with WSGet {
 
-      override protected def doGet(url: String)(implicit hc: HeaderCarrier) = {
+      override def doGet(url: String)(implicit hc: HeaderCarrier) = {
         if (!url.startsWith(s"$end/v2/uk/addresses?")) throw new IllegalArgumentException(s"Unexpected endpoint URL: $url")
         resp match {
           case Some(r) => Future.successful(r)

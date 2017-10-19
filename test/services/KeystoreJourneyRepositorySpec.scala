@@ -6,10 +6,10 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching, SessionCache}
-import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.HeaderCarrier
 
 class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
@@ -23,14 +23,14 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     val sessionCache = new HttpCaching {
 
-      override def cache[A](source: String, cacheId: String, formId: String, body: A)(implicit wts: Writes[A], hc: HeaderCarrier): Future[CacheMap] = {
+      override def cache[A](source: String, cacheId: String, formId: String, body: A)(implicit wts: Writes[A], hc: HeaderCarrier, ec: ExecutionContext): Future[CacheMap] = {
         cacheResponse match {
           case Some(resp) => Future.successful(resp)
           case None => Future.failed(new Exception("Caching failed"))
         }
       }
 
-      override def fetchAndGetEntry[T](source: String, cacheId: String, key: String)(implicit hc: HeaderCarrier, rds: Reads[T]): Future[Option[T]] = {
+      override def fetchAndGetEntry[T](source: String, cacheId: String, key: String)(implicit hc: HeaderCarrier, rds: Reads[T], ec: ExecutionContext): Future[Option[T]] = {
         getResponse match {
           case Some(resp) => Future.successful(Some(resp.asInstanceOf[T]))
           case None => Future.successful(None)

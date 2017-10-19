@@ -11,9 +11,9 @@ import services.AddressReputationFormats._
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {

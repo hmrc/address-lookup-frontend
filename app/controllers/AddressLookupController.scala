@@ -15,10 +15,11 @@ import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions._
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 @Singleton
 class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
@@ -174,7 +175,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
   extends FrontendController with I18nSupport with ServicesConfig {
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
         case Some(journeyData) => {
@@ -190,7 +191,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
   }
 
   protected def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.get(id).flatMap { maybeJournalData =>
       maybeJournalData match {
         case Some(journeyData) => {

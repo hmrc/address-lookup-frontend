@@ -201,7 +201,8 @@ case class JourneyConfig(continueUrl: String,
                          phaseBannerHtml: Option[String] = None,
                          showBackButtons: Option[Boolean] = Some(false),
                          includeHMRCBranding: Option[Boolean] = Some(true),
-                         deskProServiceName: Option[String] = None)
+                         deskProServiceName: Option[String] = None,
+                         allowedCountryCodes: Option[Set[String]] = None)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

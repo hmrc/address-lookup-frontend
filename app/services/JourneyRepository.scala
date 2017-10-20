@@ -8,17 +8,17 @@ import config.AddressLookupFrontendSessionCache
 import model._
 import uk.gov.hmrc.http.cache.client.HttpCaching
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 @ImplementedBy(classOf[KeystoreJourneyRepository])
 trait JourneyRepository {
 
   def init(journeyName: String): JourneyData
 
-  def get(id: String)(implicit hc: HeaderCarrier): Future[Option[JourneyData]]
+  def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]]
 
   def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 
@@ -45,7 +45,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
     }
   }
 
-  override def get(id: String)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+  override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
     cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
   }
 

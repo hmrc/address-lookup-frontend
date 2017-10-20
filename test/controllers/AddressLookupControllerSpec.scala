@@ -14,10 +14,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.address.v2.Country
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 class AddressLookupControllerSpec
   extends PlaySpec
@@ -48,7 +48,7 @@ class AddressLookupControllerSpec
           .getOrElse(throw new IllegalArgumentException(s"Invalid journey name: $journeyName"))
       }
 
-      override def get(id: String)(implicit hc: HeaderCarrier): Future[Option[JourneyData]] = {
+      override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
         Future.successful(journeyData.get(id))
       }
 

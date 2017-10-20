@@ -144,6 +144,7 @@ It is **not** necessary to specify values for all configurable properties. _Only
 |`showBackButtons`|whether or not to show back buttons on user journey wizard forms|Optional|Boolean|`false`|
 |`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
 |`deskProServiceName`|name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
+|`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
 
 #### Lookup page configuration JSON object
 

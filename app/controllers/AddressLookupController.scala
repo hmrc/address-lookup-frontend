@@ -18,7 +18,6 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.audit.AuditExtensions._
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 @Singleton
@@ -121,11 +120,18 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }
 
+  private[controllers] def allowedCountries(countries: Seq[(String, String)], countryCodesOpt: Option[Set[String]]): Seq[(String, String)] = {
+    countryCodesOpt match {
+      case None => countries
+      case Some(countryCodes) =>  countries filter {case (code,_) => countryCodes.contains(code)}
+    }
+  }
+
   // GET  /:id/edit
   def edit(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
       val f = addressOrDefault(journeyData.selectedAddress)
-      (None, Ok(views.html.edit(id, journeyData, editForm.fill(f), countries)))
+      (None, Ok(views.html.edit(id, journeyData, editForm.fill(f), allowedCountries(countries, journeyData.config.allowedCountryCodes))))
     }
   }
 
@@ -138,7 +144,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withJourney(id) { journeyData =>
       val bound = editForm.bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.edit(id, journeyData, errors, countries))),
+        errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
         edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
@@ -176,34 +182,30 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    journeyRepository.get(id).flatMap { maybeJournalData =>
-      maybeJournalData match {
-        case Some(journeyData) => {
-          val outcome = action(journeyData)
-          outcome._1 match {
-            case Some(modifiedJourneyData) => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2)
-            case None => Future.successful(outcome._2)
-          }
+    journeyRepository.get(id).flatMap {
+      case Some(journeyData) => {
+        val outcome = action(journeyData)
+        outcome._1 match {
+          case Some(modifiedJourneyData) => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2)
+          case None => Future.successful(outcome._2)
         }
-        case None => Future.successful(noJourney)
       }
+      case None => Future.successful(noJourney)
     }
   }
 
   protected def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    journeyRepository.get(id).flatMap { maybeJournalData =>
-      maybeJournalData match {
-        case Some(journeyData) => {
-          action(journeyData).flatMap { outcome =>
-            outcome._1 match {
-              case Some(modifiedJourneyData) => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2)
-              case None => Future.successful(outcome._2)
-            }
+    journeyRepository.get(id).flatMap {
+      case Some(journeyData) => {
+        action(journeyData).flatMap { outcome =>
+          outcome._1 match {
+            case Some(modifiedJourneyData) => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2)
+            case None => Future.successful(outcome._2)
           }
         }
-        case None => Future.successful(noJourney)
       }
+      case None => Future.successful(noJourney)
     }
   }
 

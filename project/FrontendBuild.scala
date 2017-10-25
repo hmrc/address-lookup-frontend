@@ -14,6 +14,7 @@ object FrontendBuild extends Build with MicroService {
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % "8.8.0",
+    "uk.gov.hmrc" %% "play-ui" % "7.0.0" force(),
     "uk.gov.hmrc" %% "address-reputation-store" % "2.22.0",
     "uk.gov.hmrc" %% "http-caching-client" % "7.0.0",
     "io.spray" %% "spray-http" % "1.3.4"

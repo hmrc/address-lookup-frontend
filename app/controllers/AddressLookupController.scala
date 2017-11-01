@@ -88,10 +88,12 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       lookupForm.bindFromRequest().fold(
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
         lookup => {
-          addressService.find(lookup.postcode, lookup.filter).map { props =>
-            if (props.isEmpty) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
-            else if (props.size > journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit.getOrElse(props.size)) (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
-            else (Some(journeyData.copy(proposals = Some(props))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(props)))))
+          addressService.find(lookup.postcode, lookup.filter).map {
+            case noneFound if noneFound.isEmpty => (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
+            case oneFound if oneFound.size == 1 => (Some(journeyData.copy(selectedAddress = Some(oneFound.head.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+            case tooManyFound if tooManyFound.size > journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit.getOrElse(tooManyFound.size) =>
+              (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
+            case displayProposals => (Some(journeyData.copy(proposals = Some(displayProposals))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(displayProposals)))))
           }
         }
       )

@@ -245,13 +245,34 @@ class AddressLookupControllerSpec
 
   "select" should {
 
+    "display an error if no addresses were found" in new Scenario(
+      journeyData = Map("foo" -> basicJourney),
+      proposals = Seq()
+    ) {
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("highlight-message").withValue("Sorry, we couldn't find anything for that postcode.")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Find my address")
+    }
+
+    "display a single address on confirmation page" in new Scenario(
+      journeyData = Map("foo" -> basicJourney),
+      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", lines = List("line1", "line2"), town = Some("town"), county = Some("county")))
+    ) {
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+
+      status(res) must be (303)
+      header(HeaderNames.LOCATION, res) must be (Some(routes.AddressLookupController.confirm("foo").url))
+    }
+
     "display a list of proposals given postcode and filter parameters" in new Scenario(
       journeyData = Map("foo" -> basicJourney),
-      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"))
+      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"), ProposedAddress("GB1234567891", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
+      html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Next")
     }
 

@@ -54,3 +54,23 @@
 #confirmation td.empty {
     background: #eee;
 }
+
+
+/*
+  Removes bottom margin from last .block-label element so that the left error border lines up with the bottom of the content,
+  This is a temporary fix before we upgrade to latest radio buttons and checkboxes.
+  Which uses the multiple-choice class that has css that does this
+
+  The code below can be deleted when we bump play-ui and HMRC AF to adopt the new radio buttons and checkboxes
+*/
+@media (min-width: 641px) {
+  .block-label:last-of-type,
+  .block-label:last-child {
+    margin: 0;
+  }
+}
+
+.form-field:last-of-type,
+.form-field:last-child {
+    margin-bottom: 0;
+}

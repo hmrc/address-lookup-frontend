@@ -1,0 +1,25 @@
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@import model._
+
+@(id: String, journeyData: JourneyData, postcode: Option[String] = None)(implicit request: Request[_], messages: Messages)
+
+@main_template(title = "No results found", journeyData = Some(journeyData)) {
+
+    @if(journeyData.resolvedConfig.showBackButtons) {
+        <div>
+            <a class="back-link" href="javascript:history.back()">Back</a>
+        </div>
+    }
+
+    <h1 class="form-title heading-xlarge" id="pageHeading">We can't find any addresses for @{postcode.getOrElse("that postcode")}</h1>
+
+    @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
+        <div class="form-group">
+            <button class="button" type="submit" id="continue">Try again</button>
+        </div>
+    }
+
+    <a href="@{routes.AddressLookupController.edit(id)}" id="enterManual">Enter address manually</a>
+}

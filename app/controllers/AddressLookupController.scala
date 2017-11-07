@@ -12,6 +12,7 @@ import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import spray.http.Uri
 import uk.gov.hmrc.address.uk.Postcode
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -79,24 +80,42 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }
 
+  sealed trait ResultsCount
+  case class OneResult(res: ProposedAddress) extends ResultsCount
+  case class ResultsList(res: Seq[ProposedAddress]) extends ResultsCount
+  case object NoResults extends ResultsCount
+  case object TooManyResults extends ResultsCount
+
   // GET  /:id/select
   // show a list of proposals from lookup parameters; always do the remote lookup as the parameters may have changed
   // go back to the lookup form on form binding error
   // we could optimize this to check whether or not parameters have changed but not really worth the effort at present
   def select(id: String) = Action.async { implicit req =>
     withFutureJourney(id) { journeyData =>
-      lookupForm.bindFromRequest().fold(
+      lookupForm.bindFromRequest() fold (
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
-        lookup => {
-          addressService.find(lookup.postcode, lookup.filter).map {
-            case noneFound if noneFound.isEmpty => (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).noResultsFoundMessage.getOrElse("Sorry, we couldn't find anything for that postcode.")))))
-            case oneFound if oneFound.size == 1 => (Some(journeyData.copy(selectedAddress = Some(oneFound.head.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-            case tooManyFound if tooManyFound.size > journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit.getOrElse(tooManyFound.size) =>
-              (None, Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage()).resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results.")))))
-            case displayProposals => (Some(journeyData.copy(proposals = Some(displayProposals))), Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(displayProposals)))))
-          }
+        lookup => handleLookup(id, journeyData, lookup) map {
+          case OneResult(address)     => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
+          case ResultsList(addresses) => Some(journeyData.copy(proposals = Some(addresses))) -> Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(addresses)), lookup.filter))
+          case TooManyResults         => None -> Ok(views.html.lookup(id, journeyData, lookupForm.fill(lookup), Some(journeyData.config.lookupPage.getOrElse(LookupPage())
+                                                   .resultLimitExceededMessage.getOrElse("There were too many results. Please add additional details to limit the number of results."))))
+          case NoResults              => None -> Ok(views.html.no_results(id, journeyData, Some(lookup.postcode)))
         }
       )
+    }
+  }
+
+  private def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
+    addressService.find(lookup.postcode, lookup.filter).flatMap {
+      case noneFound if noneFound.isEmpty =>
+        if (lookup.filter.isDefined) {
+          handleLookup(id: String, journeyData, lookup.copy(filter = None))
+        } else {
+          Future.successful(NoResults)
+        }
+      case oneFound if oneFound.size == 1 => Future.successful(OneResult(oneFound.head))
+      case tooManyFound if tooManyFound.size > journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults)
+      case displayProposals => Future.successful(ResultsList(displayProposals))
     }
   }
 
@@ -106,13 +125,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withJourney(id) { journeyData =>
       val bound = selectForm.bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.select(id, journeyData, errors, Proposals(journeyData.proposals)))),
+        errors => (None, BadRequest(views.html.select(id, journeyData, errors, Proposals(journeyData.proposals), None))),
         selection => {
           journeyData.proposals match {
             case Some(props) => {
-              props.filter(_.addressId == selection.addressId).headOption match {
+              props.find(_.addressId == selection.addressId) match {
                 case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-                case None => (None, BadRequest(views.html.select(id, journeyData, bound, Proposals(Some(props)))))
+                case None => (None, BadRequest(views.html.select(id, journeyData, bound, Proposals(Some(props)), None)))
               }
             }
             case None => (None, Redirect(routes.AddressLookupController.lookup(id)))

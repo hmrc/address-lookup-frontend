@@ -3,7 +3,7 @@
 
 @import model._
 
-@(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals)(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals, filter: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.resolvedConfig.selectPage.title, journeyData = Some(journeyData)) {
 
@@ -18,6 +18,12 @@
   )
 
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
+  @if(filter.isDefined) {
+  <div>
+    <p>We can’t find an exact match for that search. Here are the closest results.</p>
+  </div>
+  }
+
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>
       <div class="form-group">

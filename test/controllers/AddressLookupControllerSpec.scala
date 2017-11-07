@@ -245,14 +245,14 @@ class AddressLookupControllerSpec
 
   "select" should {
 
-    "display an error if no addresses were found" in new Scenario(
+    "display an error page if no addresses were found" in new Scenario(
       journeyData = Map("foo" -> basicJourney),
       proposals = Seq()
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html should include element withClass("highlight-message").withValue("Sorry, we couldn't find anything for that postcode.")
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Find my address")
+
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Try again")
     }
 
     "display a single address on confirmation page" in new Scenario(

@@ -1,0 +1,45 @@
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@import model._
+
+@(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean)(implicit request: Request[_], messages: Messages)
+
+@main_template(title = "No results found", journeyData = Some(journeyData)) {
+
+    @if(journeyData.resolvedConfig.showBackButtons) {
+        <div>
+            <a class="back-link" href="javascript:history.back()">Back</a>
+        </div>
+    }
+
+    <h1 class="form-title heading-xlarge" id="pageHeading">
+        @if(firstLookup) {
+            Your search has too many results
+        } else {
+            We couldn't find any results for that property name or number
+        }
+    </h1>
+
+    <table>
+        <caption class="text--left">You searched for:</caption>
+        <tbody>
+        <tr>
+            <td>Property name or number</td>
+            <td>@{lookup.filter.getOrElse("")}</td>
+        </tr>
+        <tr>
+            <td>Postcode</td>
+            <td>@{lookup.postcode}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
+        <div class="form-group">
+            <button class="button" type="submit" id="continue">Try again</button>
+        </div>
+    }
+
+    <a href="@{routes.AddressLookupController.edit(id)}" id="enterManual">Enter address manually</a>
+}

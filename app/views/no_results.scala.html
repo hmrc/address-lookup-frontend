@@ -3,7 +3,7 @@
 
 @import model._
 
-@(id: String, journeyData: JourneyData, postcode: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyData, postcode: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = "No results found", journeyData = Some(journeyData)) {
 
@@ -13,7 +13,7 @@
         </div>
     }
 
-    <h1 class="form-title heading-xlarge" id="pageHeading">We can't find any addresses for @{postcode.getOrElse("that postcode")}</h1>
+    <h1 class="form-title heading-xlarge" id="pageHeading">We can't find any addresses for @{postcode}</h1>
 
     @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
         <div class="form-group">

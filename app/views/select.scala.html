@@ -3,7 +3,7 @@
 
 @import model._
 
-@(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals, filter: Option[String])(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.resolvedConfig.selectPage.title, journeyData = Some(journeyData)) {
 
@@ -18,11 +18,20 @@
   )
 
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
-  @if(filter.isDefined) {
-  <div>
-    <p>We can’t find an exact match for that search. Here are the closest results.</p>
-  </div>
+  @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
+    @if(firstSearch) {
+      <div>
+        <p>We can’t find an exact match for that search. Here are the closest results.</p>
+      </div>
+    } else {
+      <div>
+        <p>We couldn't find any results for "@{lookup.get.filter.get}"</p>
+        <p>Here are all the results for @{lookup.get.postcode}</p>
+      </div>
+    }
   }
+
+  </br>
 
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>

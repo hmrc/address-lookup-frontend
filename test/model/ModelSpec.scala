@@ -1,8 +1,9 @@
 package model
 
+import com.fasterxml.jackson.core.JsonParseException
 import model.JourneyData._
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsPath, JsResultException, Json}
 import services.ForeignOfficeCountryService
 
 class ModelSpec extends WordSpec with MustMatchers {
@@ -218,6 +219,44 @@ class ModelSpec extends WordSpec with MustMatchers {
       cfg.includeHMRCBranding must be (true)
     }
 
+  }
+
+  "A timeout" should {
+    "throw error" when {
+      "timeoutAmount is less than 120 seconds" in {
+        val errorMsgContent = "Timeout duration must be greater than 120 seconds"
+        def parseJson = Json.parse(
+          """
+            |{
+            | "continueUrl" : "continue",
+            | "timeout" : {
+            |   "timeoutAmount" : 80,
+            |   "timeoutUrl" : "timeout"
+            | }
+            |}
+          """.stripMargin).as[JourneyConfig]
+
+        intercept[JsResultException](parseJson)
+      }
+    }
+
+    "create journey config with a timeout" when {
+      "timeoutAmount is less than 120 seconds" in {
+
+        val parsedJson = Json.parse(
+          """
+            |{
+            | "continueUrl" : "continue",
+            | "timeout" : {
+            |   "timeoutAmount" : 120,
+            |   "timeoutUrl" : "timeout"
+            | }
+            |}
+          """.stripMargin).as[JourneyConfig]
+
+        parsedJson.timeout mustBe Some(Timeout(120,"timeout"))
+      }
+    }
   }
 
 }

@@ -343,6 +343,27 @@ class AddressLookupControllerSpec
     }
   }
 
+  "renewSession" should {
+    "return 200 when hit" in new Scenario{
+      val result = controller.renewSession()(req)
+      status(result) mustBe 200
+      contentType(result) mustBe Some("image/jpeg")
+      await(result).body.dataStream.toString.contains("""renewSession.jpg""") mustBe true
+    }
+  }
+
+  "destroySession" should {
+    "redirect to timeout url and get rid of headers" in new Scenario{
+      val fakeRequest = req.withHeaders("testSession" -> "present")
+
+      val result = controller.destroySession("timeoutUrl")(fakeRequest)
+
+      status(result) mustBe 303
+      headers(result) contains "testSession" mustBe false
+      redirectLocation(result) mustBe Some("timeoutUrl")
+    }
+  }
+
   private def basicJourney: JourneyData = JourneyData(JourneyConfig("continue"))
 
 }

@@ -126,6 +126,10 @@ It is **not** necessary to specify values for all configurable properties. _Only
     "submitLabel" : "Next",
     "showSearchAgainLink" : false,
     "searchAgainLinkText" : "Search again"
+  },
+  "timeout" : {
+    "timeoutAmount" : 900,
+    "timeoutUrl" : "http://service/timeout-uri"
   }
 }
 ```
@@ -208,6 +212,15 @@ Configuration of the "edit" page, in which the user is permitted to manually ent
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Next"`|
 |`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+
+#### Timeout Configuration JSON object (Optional)
+
+Configuration of the timeout popup in which user is shown a popup allowing them to extend their session before it times out. The timeout configuration is a nested JSON object inside the journey configuration under the `timeout` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
+|`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
 
 Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
 

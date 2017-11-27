@@ -17,7 +17,11 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   val someJourneyData = Some(JourneyData(JourneyConfig("continue")))
 
+  val someJourneyDataWithTimeout = Some(JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl")))))
+
   val cached = CacheMap("id", Map("id" -> Json.toJson(someJourneyData)))
+
+  val cachedWithTimeout = CacheMap("id", Map("id" -> Json.toJson(someJourneyDataWithTimeout)))
 
   class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JourneyData] = None) {
 
@@ -59,6 +63,11 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "fetch entry" in new Scenario(getResponse = someJourneyData) {
       repo.get("any id").futureValue must be (someJourneyData)
     }
+
+    "fetch entry with a timeout" in new Scenario(getResponse = someJourneyDataWithTimeout) {
+      repo.get("any id").futureValue must be (someJourneyDataWithTimeout)
+    }
+
 
   }
 

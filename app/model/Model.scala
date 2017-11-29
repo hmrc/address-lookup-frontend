@@ -1,13 +1,17 @@
 
 package model
 
-import play.api.libs.json.Json
+import play.api.libs.json._
+import play.api.libs.json.Reads._
+import play.api.libs.functional.syntax._
 import services.ForeignOfficeCountryService
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.Country
 import JourneyConfigDefaults._
 
 case class Lookup(filter: Option[String], postcode: String)
+
+case class Timeout(timeoutAmount: Int, timeoutUrl: String)
 
 case class Select(addressId: String)
 
@@ -202,7 +206,8 @@ case class JourneyConfig(continueUrl: String,
                          showBackButtons: Option[Boolean] = Some(false),
                          includeHMRCBranding: Option[Boolean] = Some(true),
                          deskProServiceName: Option[String] = None,
-                         allowedCountryCodes: Option[Set[String]] = None)
+                         allowedCountryCodes: Option[Set[String]] = None,
+                         timeout: Option[Timeout] = None)
 
 case class ProposedAddress(addressId: String,
                            postcode: String,
@@ -295,6 +300,10 @@ object JourneyData {
   implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
   implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
+  implicit val timeoutFormat: Format[Timeout] = (
+    (JsPath \ "timeoutAmount").format[Int](min(120)) and
+      (JsPath \ "timeoutUrl").format[String]
+    )(Timeout.apply, unlift(Timeout.unapply))
   implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]
 

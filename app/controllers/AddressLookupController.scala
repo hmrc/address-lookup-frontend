@@ -1,6 +1,7 @@
 
 package controllers
 
+import java.io.File
 import javax.inject.{Inject, Singleton}
 
 import config.FrontendAuditConnector
@@ -195,6 +196,15 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     }
   }
 
+  // GET /renewSession
+  def renewSession: Action[AnyContent] = Action { implicit req =>
+    Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
+  }
+
+  // GET /destroySession
+  def destroySession(timeoutUrl: String): Action[AnyContent] = Action { implicit req =>
+    Redirect(timeoutUrl).withNewSession
+  }
 }
 
 abstract class AlfController @Inject()(journeyRepository: JourneyRepository)

@@ -18,7 +18,7 @@ import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
 
-  def find(postcode: String, filter: Option[String] = None)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
+  def find(postcode: String, filter: Option[String] = None,isukMode:Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
 
 }
 
@@ -29,8 +29,10 @@ class AddressLookupAddressService @Inject()(implicit val ec: ExecutionContext) e
 
   val http: HttpGet = WSHttp
 
-  override def find(postcode: String, filter: Option[String] = None)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" -> Postcode.cleanupPostcode(postcode).get.toString, "filter" -> filter.getOrElse(""))).map { found =>
+  override def find(postcode: String, filter: Option[String] = None,isukMode:Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
+    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
+      Postcode.cleanupPostcode(postcode).get.toString,
+      "filter" -> filter.getOrElse(""))).map { found =>
       found.map { addr =>
         ProposedAddress(
           addr.id,
@@ -41,7 +43,7 @@ class AddressLookupAddressService @Inject()(implicit val ec: ExecutionContext) e
           if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
           else addr.address.country
         )
-      }
+      }.filterNot( a => isukMode && a.country.code != "GB")
     }
   }
 

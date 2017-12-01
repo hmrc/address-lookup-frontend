@@ -44,7 +44,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     )(Select.apply)(Select.unapply)
   )
 
-  val editForm = Form(
+  def editForm(ukMode: Boolean) = Form(
     mapping(
       "line1" -> text
         .verifying("The first line of your address needs to be fewer than 256 characters", _.length < 256)
@@ -54,10 +54,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       "town" -> text
         .verifying("The fourth line of your address needs to be fewer than 256 characters", _.length < 256)
         .verifying("This field is required", _.length > 0),
-      "postcode" -> text,
+      "postcode" -> default(text,""),
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)
-      .verifying("The postcode is invalid", edit => edit.isValidPostcode())
+      .verifying("The postcode is invalid", edit => edit.isValidPostcode(ukMode))
   )
 
   val confirmedForm = Form(
@@ -107,7 +107,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   private def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
     val addressLimit = journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit
-    addressService.find(lookup.postcode, lookup.filter).flatMap {
+    addressService.find(lookup.postcode, lookup.filter,journeyData.config.isukMode).flatMap {
       case noneFound if noneFound.isEmpty =>
         if (lookup.filter.isDefined) {
           handleLookup(id: String, journeyData, lookup.copy(filter = None), firstLookup = false) //TODO Pass a boolean through to show no results were found and this is a retry?
@@ -152,8 +152,12 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/edit
   def edit(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      val f = addressOrDefault(journeyData.selectedAddress)
-      (None, Ok(views.html.edit(id, journeyData, editForm.fill(f), allowedCountries(countries, journeyData.config.allowedCountryCodes))))
+      val formFilled = editForm(journeyData.config.isukMode).fill(addressOrDefault(journeyData.selectedAddress))
+      if (journeyData.config.isukMode) {
+        (None, Ok(views.html.ukModeEdit(id, journeyData, formFilled, allowedCountries(Seq.empty, journeyData.config.allowedCountryCodes))))
+      } else {
+        (None, Ok(views.html.edit(id, journeyData, formFilled, allowedCountries(countries, journeyData.config.allowedCountryCodes))))
+      }
     }
   }
 
@@ -164,10 +168,14 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // POST /:id/edit
   def handleEdit(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      val bound = editForm.bindFromRequest()
+      val bound = editForm(journeyData.config.isukMode).bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+        errors =>
+          if(journeyData.config.isukMode)
+            (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(Seq.empty, journeyData.config.allowedCountryCodes))))
+              else
+          (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id,journeyData.config.isukMode)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -216,14 +224,12 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
     journeyRepository.get(id).flatMap {
       case Some(journeyData) => {
         val outcome = action(journeyData)
-        outcome._1 match {
-          case Some(modifiedJourneyData) => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2)
-          case None => Future.successful(outcome._2)
-        }
+        outcome._1.fold(Future.successful(outcome._2))(modifiedJourneyData => journeyRepository.put(id, modifiedJourneyData).map(success => outcome._2))
       }
       case None => Future.successful(noJourney)
     }
   }
+
 
   protected def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -239,7 +245,6 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
       case None => Future.successful(noJourney)
     }
   }
-
 }
 
 case class Proposals(proposals: Option[Seq[ProposedAddress]]) {

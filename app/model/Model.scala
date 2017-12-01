@@ -17,20 +17,22 @@ case class Select(addressId: String)
 
 case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
 
-  def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
+  def toConfirmableAddress(auditRef: String, isukMode:Boolean): ConfirmableAddress = ConfirmableAddress(
     auditRef,
     None,
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
-      Some(postcode),
-      countryCode.flatMap(code => ForeignOfficeCountryService.find(code))
+      if(isukMode) None else Some(postcode),
+      countryCode.fold(if(isukMode) ForeignOfficeCountryService.find("GB") else None)(code => ForeignOfficeCountryService.find(code))
     )
   )
 
-  def isValidPostcode(): Boolean = {
-    countryCode.flatMap(code => Some(ForeignOfficeCountryService.GB.code != code || postcode.length == 0 || Postcode.cleanupPostcode(postcode).isDefined)).get
+  def isValidPostcode(ukMode:Boolean): Boolean = {
+    countryCode.fold(ukMode && postcode.isEmpty){
+      case _ if (ukMode && !postcode.isEmpty) => false
+      case a if (!ukMode) => a != ForeignOfficeCountryService.GB.code || postcode.isEmpty || Postcode.cleanupPostcode(postcode).isDefined
+    }
   }
-
 }
 
 object JourneyConfigDefaults {
@@ -57,6 +59,8 @@ object JourneyConfigDefaults {
   val LOOKUP_PAGE_POSTCODE_LABEL = "Postcode"
   val LOOKUP_PAGE_SUBMIT_LABEL = "Find my address"
   val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "Enter address manually"
+  // Uk Only Mode
+  val UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address doesn't have a postcode"
 
   val SELECT_PAGE_TITLE = "Select Address"
   val SELECT_PAGE_HEADING = "Select Address"
@@ -73,7 +77,7 @@ object JourneyConfigDefaults {
 // but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
 case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val continueUrl: String = cfg.continueUrl
-  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()))
+  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()),cfg.isukMode)
   val selectPage: ResolvedSelectPage = ResolvedSelectPage(cfg.selectPage.getOrElse(SelectPage()))
   val confirmPage: ResolvedConfirmPage = ResolvedConfirmPage(cfg.confirmPage.getOrElse(ConfirmPage()))
   val editPage: ResolvedEditPage = ResolvedEditPage(cfg.editPage.getOrElse(EditPage()))
@@ -88,6 +92,7 @@ case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val phaseBannerHtml: String = cfg.phaseBannerHtml.getOrElse(defaultPhaseBannerHtml(phaseFeedbackLink))
   val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(false)
   val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
+  val allowedCountryCodes: Option[Set[String]] = if(cfg.isukMode) Some(Set("GB")) else cfg.allowedCountryCodes
 }
 
 case class ResolvedConfirmPage(p: ConfirmPage) {
@@ -114,7 +119,7 @@ case class ConfirmPage(title: Option[String] = None,
                        showChangeLink: Option[Boolean] = Some(false),
                        changeLinkText: Option[String] = None)
 
-case class ResolvedLookupPage(p: LookupPage) {
+case class ResolvedLookupPage(p: LookupPage,isukMode:Boolean) {
   val title: String = p.title.getOrElse(LOOKUP_PAGE_TITLE)
   val heading: String = p.heading.getOrElse(LOOKUP_PAGE_HEADING)
   val filterLabel: String = p.filterLabel.getOrElse(LOOKUP_PAGE_FILTER_LABEL)
@@ -123,7 +128,7 @@ case class ResolvedLookupPage(p: LookupPage) {
   // TODO
   val resultLimitExceededMessage: Option[String] = None
   val noResultsFoundMessage: Option[String] = None
-  val manualAddressLinkText: String = p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+  val manualAddressLinkText: String = if(isukMode) UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT else p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
 }
 
 case class LookupPage(title: Option[String] = None,
@@ -207,7 +212,11 @@ case class JourneyConfig(continueUrl: String,
                          includeHMRCBranding: Option[Boolean] = Some(true),
                          deskProServiceName: Option[String] = None,
                          allowedCountryCodes: Option[Set[String]] = None,
-                         timeout: Option[Timeout] = None)
+                         timeout: Option[Timeout] = None,
+                         ukMode: Option[Boolean] = None){
+
+  def isukMode = ukMode.fold(false)(a => if(a) a else false)
+}
 
 case class ProposedAddress(addressId: String,
                            postcode: String,

@@ -130,7 +130,8 @@ It is **not** necessary to specify values for all configurable properties. _Only
   "timeout" : {
     "timeoutAmount" : 900,
     "timeoutUrl" : "http://service/timeout-uri"
-  }
+  },
+  "ukMode": false
 }
 ```
 
@@ -149,7 +150,7 @@ It is **not** necessary to specify values for all configurable properties. _Only
 |`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
 |`deskProServiceName`|name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
 |`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
-
+|`ukMode`|enable uk only Lookup and Edit mode|Optional|Boolean|`None`|
 #### Lookup page configuration JSON object
 
 Configuration of the "lookup" page, in which user searches for address using filter + postcode. The lookup page configuration is a nested JSON object inside the journey configuration under the `lookupPage` property.
@@ -223,6 +224,12 @@ Configuration of the timeout popup in which user is shown a popup allowing them 
 |`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
 
 Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
+
+#### ukMode (Optional)
+
+When enabled:
+
+Lookup returns Only UK Addresses; 1 link on Lookup Page is overridden; Edit Address Mode removes option to change country (Defaults to United Kingdom) and omits postcode field.
 
 ### Obtaining the Confirmed Address
 

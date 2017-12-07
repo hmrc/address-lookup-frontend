@@ -218,8 +218,8 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       cfg.phaseBannerHtml must be (JourneyConfigDefaults.defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
     }
 
-    "not show back buttons by default" in {
-      cfg.showBackButtons must be (false)
+    "show back buttons by default" in {
+      cfg.showBackButtons must be (true)
     }
 
     "include HMRC branding by default" in {

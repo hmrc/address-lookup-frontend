@@ -5,7 +5,7 @@
 
 @(id: String, journeyData: JourneyData, postcode: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "No results found", journeyData = Some(journeyData)) {
+@main_template(title = "Can’t find any addresses", journeyData = Some(journeyData)) {
 
     @if(journeyData.resolvedConfig.showBackButtons) {
         <div>

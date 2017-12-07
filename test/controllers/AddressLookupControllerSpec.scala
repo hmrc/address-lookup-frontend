@@ -136,14 +136,14 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("title").withValue("Lookup Address")
-      html should include element withName("h1").withValue("Your Address")
+      html should include element withName("title").withValue("Find the address")
+      html should include element withName("h1").withValue("Find the address")
       html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-      html should include element withName("label").withAttrValue("for", "filter").withValue("Building name or number")
+      html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
       html should include element withName("input").withAttrValue("name", "filter")
-      html should include element withName("label").withAttrValue("for", "postcode").withValue("Postcode")
+      html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
       html should include element withName("input").withAttrValue("name", "postcode")
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Find my address")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
     }
 
     "allow page title to be configured" in new Scenario(
@@ -273,7 +273,7 @@ class AddressLookupControllerSpec
       val html = contentAsString(res).asBodyFragment
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Next")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
     }
   }
 

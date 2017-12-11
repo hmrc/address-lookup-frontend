@@ -37,37 +37,38 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
 
 object JourneyConfigDefaults {
 
-  val CONFIRM_PAGE_TITLE = "Confirm Address"
-  val CONFIRM_PAGE_HEADING = "Confirm Address"
+  val CONFIRM_PAGE_TITLE = "Confirm the address"
+  val CONFIRM_PAGE_HEADING = "Review and confirm"
   val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
   val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
-  val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm"
+  val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm and continue"
+  val CONFIRM_PAGE_EDIT_LINK_TEXT = "Edit address"
 
-  val EDIT_PAGE_TITLE = "Edit Address"
-  val EDIT_PAGE_HEADING = "Edit Address"
-  val EDIT_PAGE_LINE1_LABEL = "Line 1"
-  val EDIT_PAGE_LINE2_LABEL = "Line 2"
-  val EDIT_PAGE_LINE3_LABEL = "Line 3"
-  val EDIT_PAGE_TOWN_LABEL = "Town"
-  val EDIT_PAGE_POSTCODE_LABEL = "Postcode"
+  val EDIT_PAGE_TITLE = "Enter the address"
+  val EDIT_PAGE_HEADING = "Enter the address"
+  val EDIT_PAGE_LINE1_LABEL = "Address line 1"
+  val EDIT_PAGE_LINE2_LABEL = "Address line 2 (optional)"
+  val EDIT_PAGE_LINE3_LABEL = "Address line 3 (optional)"
+  val EDIT_PAGE_TOWN_LABEL = "Town/City"
+  val EDIT_PAGE_POSTCODE_LABEL = "Postal code (optional)"
   val EDIT_PAGE_COUNTRY_LABEL = "Country"
   val EDIT_PAGE_SUBMIT_LABEL = "Next"
 
-  val LOOKUP_PAGE_TITLE = "Lookup Address"
-  val LOOKUP_PAGE_HEADING = "Your Address"
-  val LOOKUP_PAGE_FILTER_LABEL = "Building name or number"
-  val LOOKUP_PAGE_POSTCODE_LABEL = "Postcode"
-  val LOOKUP_PAGE_SUBMIT_LABEL = "Find my address"
-  val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "Enter address manually"
+  val LOOKUP_PAGE_TITLE = "Find the address"
+  val LOOKUP_PAGE_HEADING = "Find the address"
+  val LOOKUP_PAGE_FILTER_LABEL = "Property name or number"
+  val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
+  val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
+  val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address doesn't have a UK postcode"
   // Uk Only Mode
   val UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address doesn't have a postcode"
 
-  val SELECT_PAGE_TITLE = "Select Address"
-  val SELECT_PAGE_HEADING = "Select Address"
+  val SELECT_PAGE_TITLE = "Choose the address"
+  val SELECT_PAGE_HEADING = "Choose the address"
   val SELECT_PAGE_PROPOSAL_LIST_LABEL = "Please select one of the following addresses"
-  val SELECT_PAGE_SUBMIT_LABEL = "Next"
+  val SELECT_PAGE_SUBMIT_LABEL = "Continue"
 
-  val EDIT_LINK_TEXT = "Edit this address"
+  val EDIT_LINK_TEXT = "Enter address manually"
   val SEARCH_AGAIN_LINK_TEXT = "Search again"
   def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
 
@@ -90,7 +91,7 @@ case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   }
   val phaseFeedbackLink: String = cfg.phaseFeedbackLink.getOrElse(s"/help/${phase}")
   val phaseBannerHtml: String = cfg.phaseBannerHtml.getOrElse(defaultPhaseBannerHtml(phaseFeedbackLink))
-  val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(false)
+  val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
   val allowedCountryCodes: Option[Set[String]] = if(cfg.isukMode) Some(Set("GB")) else cfg.allowedCountryCodes
 }
@@ -104,8 +105,8 @@ case class ResolvedConfirmPage(p: ConfirmPage) {
   val submitLabel: String = p.submitLabel.getOrElse(CONFIRM_PAGE_SUBMIT_LABEL)
   val showSearchAgainLink: Boolean = p.showSearchAgainLink.getOrElse(false)
   val searchAgainLinkText: String = p.searchAgainLinkText.getOrElse(SEARCH_AGAIN_LINK_TEXT)
-  val showChangeLink: Boolean = p.showChangeLink.getOrElse(false)
-  val changeLinkText: String = p.changeLinkText.getOrElse(EDIT_LINK_TEXT)
+  val showChangeLink: Boolean = p.showChangeLink.getOrElse(true)
+  val changeLinkText: String = p.changeLinkText.getOrElse(CONFIRM_PAGE_EDIT_LINK_TEXT)
 }
 
 case class ConfirmPage(title: Option[String] = None,
@@ -116,7 +117,7 @@ case class ConfirmPage(title: Option[String] = None,
                        submitLabel: Option[String] = None,
                        showSearchAgainLink: Option[Boolean] = Some(false),
                        searchAgainLinkText: Option[String] = None,
-                       showChangeLink: Option[Boolean] = Some(false),
+                       showChangeLink: Option[Boolean] = Some(true),
                        changeLinkText: Option[String] = None)
 
 case class ResolvedLookupPage(p: LookupPage,isukMode:Boolean) {
@@ -208,7 +209,7 @@ case class JourneyConfig(continueUrl: String,
                          alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
                          phaseFeedbackLink: Option[String] = None,
                          phaseBannerHtml: Option[String] = None,
-                         showBackButtons: Option[Boolean] = Some(false),
+                         showBackButtons: Option[Boolean] = Some(true),
                          includeHMRCBranding: Option[Boolean] = Some(true),
                          deskProServiceName: Option[String] = None,
                          allowedCountryCodes: Option[Set[String]] = None,

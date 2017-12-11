@@ -1,5 +1,6 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
+@import views.html.helpers.{alfErrorSummary, alfInputRadioGroup}
 
 @import model._
 
@@ -13,8 +14,8 @@
     </div>
   }
 
-  @helpers.errorSummary(
-    "There are errors on this page.", selectForm
+  @alfErrorSummary(
+    "This page has errors", selectForm
   )
 
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
@@ -36,10 +37,7 @@
   @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
     <fieldset>
       <div class="form-group">
-        @helpers.inputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolvedConfig.selectPage.proposalListLabel, '_labelClass -> "block-label")
-      </div>
-      <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="editAddress">@{journeyData.resolvedConfig.selectPage.editAddressLinkText}</a></p>
+        @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolvedConfig.selectPage.proposalListLabel, '_labelClass -> "block-label")
       </div>
       @if(journeyData.resolvedConfig.selectPage.showSearchAgainLink) {
         <div class="form-field">
@@ -48,6 +46,9 @@
       }
       <div class="form-group">
         <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.selectPage.submitLabel}</button>
+      </div>
+      <div class="form-field">
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="editAddress">@{journeyData.resolvedConfig.selectPage.editAddressLinkText}</a></p>
       </div>
     </fieldset>
   }

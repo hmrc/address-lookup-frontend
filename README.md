@@ -85,43 +85,43 @@ It is **not** necessary to specify values for all configurable properties. _Only
   "includeHMRCBranding" : true,
   "deskProServiceName" : "",
   "lookupPage" : {
-    "title" : "Lookup Address",
-    "heading" : "Your Address",
-    "filterLabel" : "Building name or number",
-    "postcodeLabel" : "Postcode",
-    "submitLabel" : "Find my address",
+    "title" : "Find the address",
+    "heading" : "Find the address",
+    "filterLabel" : "Property name or number",
+    "postcodeLabel" : "UK Postcode",
+    "submitLabel" : "Find address",
     "noResultsFoundMessage" : "Sorry, we couldn't find anything for that postcode.",
     "resultLimitExceededMessage" : "There were too many results. Please add additional details to limit the number of results.",
-    "manualAddressLinkText" : "Enter address manually"
+    "manualAddressLinkText" : "The address doesn't have a UK postcode"
   },
   "selectPage" : {
-    "title" : "Select Address",
-    "heading" : "Select Address",
+    "title" : "Choose the address",
+    "heading" : "Choose the address",
     "proposalListLabel" : "Please select one of the following addresses",
-    "submitLabel" : "Next",
+    "submitLabel" : "Continue",
     "proposalListLimit" : 50,
     "showSearchAgainLink" : false,
     "searchAgainLinkText" : "Search again",
-    "editAddressLinkText" : "Edit address"
+    "editAddressLinkText" : "Enter address manually"
   },
   "confirmPage" : {
-    "title" : "Confirm Address",
-    "heading" : "Confirm Address",
+    "title" : "Confirm the address",
+    "heading" : "Review and confirm",
     "infoSubheading" : "Your selected address",
     "infoMessage" : "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
-    "submitLabel" : "Confirm",
+    "submitLabel" : "Confirm and continue",
     "showSearchAgainLink" : false,
     "searchAgainLinkText" : "Search again",
-    "changeLinkText" : "Edit this address"
+    "changeLinkText" : "Edit address"
   },
   "editPage" : {
-    "title" : "Edit Address",
-    "heading" : "Edit Address",
-    "line1Label" : "Line 1",
-    "line2Label" : "Line 2",
-    "line3Label" : "Line 3",
-    "townLabel" : "Town",
-    "postcodeLabel" : "Postcode",
+    "title" : "Enter the address",
+    "heading" : "Enter the address",
+    "line1Label" : "Address line 1",
+    "line2Label" : "Address line 2 (optional)",
+    "line3Label" : "Address line 3 (optional)",
+    "townLabel" : "Town/City",
+    "postcodeLabel" : "Postal code (optional)",
     "countryLabel" : "Country",
     "submitLabel" : "Next",
     "showSearchAgainLink" : false,
@@ -157,14 +157,14 @@ Configuration of the "lookup" page, in which user searches for address using fil
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
-|`title`|the `html->head->title` text|Optional|String|`"Lookup Address"`|
-|`heading`|the heading to display above the lookup form|Optional|String|`"Your Address"`|
-|`filterLabel`|the input label for the "filter" field|Optional|String|`"Building name or number"`|
-|`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"Postcode"`|
-|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find my address"`|
+|`title`|the `html->head->title` text|Optional|String|`"Find the address"`|
+|`heading`|the heading to display above the lookup form|Optional|String|`"Find the address"`|
+|`filterLabel`|the input label for the "filter" field|Optional|String|`"Property name or number"`|
+|`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"UK postcode"`|
+|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|
 |`noResultsFoundMessage`|message to display in infobox above lookup form when no results were found|Optional|String|`"Sorry, we couldn't find anything for that postcode."`|
 |`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
-|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"Enter address manually"`|
+|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"The address doesn't have a UK postcode"`|
 
 #### Select page configuration JSON object
 
@@ -172,14 +172,14 @@ Configuration of the "select" page, in which user chooses an address from a list
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
-|`title`|the `html->head->title` text|Optional|String|`"Select Address"`|
-|`heading`|the heading to display above the list of results|Optional|String|`"Select Address"`|
+|`title`|the `html->head->title` text|Optional|String|`"Choose the address"`|
+|`heading`|the heading to display above the list of results|Optional|String|`"Choose the address"`|
 |`proposalListLabel`|the radio group label for the list of results|Optional|String|`"Please select one of the following addresses"`|
-|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Next"`|
+|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
 |`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`50`|
 |`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit this address"`|
+|`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Enter address manually"`|
 
 #### Confirm page configuration JSON object
 
@@ -187,13 +187,14 @@ Configuration of the "confirm" page, in which the user is requested to confirm a
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
-|`title`|the html->head->title text|Optional|String|`"Confirm Address"`|
-|`heading`|the main heading to display on the page|Optional|String|`"Confirm Address"`|
+|`title`|the html->head->title text|Optional|String|`"Confirm the address"`|
+|`heading`|the main heading to display on the page|Optional|String|`"Review and confirm"`|
 |`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
 |`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
-|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm"`|
+|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm and continue"`|
 |`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+|`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
 |`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit address"`|
 
 #### Edit page configuration JSON object
@@ -202,13 +203,13 @@ Configuration of the "edit" page, in which the user is permitted to manually ent
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
-|`title`|the html->head->title text|Optional|String|`"Edit Address"`|
-|`heading`|the heading to display above the edit form|Optional|String|`"Edit Address"`|
-|`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Line 1"`|
-|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Line 2"`|
-|`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Line 3"`|
-|`townLabel`|the input label for the "town" field; a REQUIRED field|Optional|String|`"Town"`|
-|`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postcode"`|
+|`title`|the html->head->title text|Optional|String|`"Enter the address"`|
+|`heading`|the heading to display above the edit form|Optional|String|`"Enter the address"`|
+|`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Address line 1"`|
+|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Address line 2 (optional)"`|
+|`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Address line 3 (optional)"`|
+|`townLabel`|the input label for the "town" field; a REQUIRED field|Optional|String|`"Town/City"`|
+|`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postal code (optional)"`|
 |`countryLabel`|the input label for the "country" drop-down; an optional field (defaults to UK)|Optional|String|`"Country"`|
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Next"`|
 |`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|

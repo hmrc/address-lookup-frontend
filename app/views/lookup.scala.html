@@ -1,19 +1,20 @@
 
 @import model._
 @import uk.gov.hmrc.play.views.html.helpers
+@import views.html.helpers.{alfErrorSummary, alfInput}
 
 @(id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.resolvedConfig.lookupPage.title, journeyData = Some(journeyData)) {
 
-  @if(journeyData.config.showBackButtons.getOrElse(false)) {
+  @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
     </div>
   }
 
-  @helpers.errorSummary(
-    "There are errors on this page.", lookupForm
+  @alfErrorSummary(
+    "This page has errors", lookupForm
   )
 
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.lookupPage.heading}</h1>
@@ -25,16 +26,18 @@
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
-        @helpers.input(
+        @alfInput(
           lookupForm("filter"),
           '_label -> journeyData.resolvedConfig.lookupPage.filterLabel,
+          '_inputHint -> "For example, The Mill, Flat A or 37b",
           '_inputClass -> "form-control--block"
         )
       </div>
       <div class="form-field spaced-below">
-        @helpers.input(
+        @alfInput(
           lookupForm("postcode"),
           '_label -> journeyData.resolvedConfig.lookupPage.postcodeLabel,
+          '_inputHint -> "For example, ZZ1 1TA",
           '_inputClass -> "form-control--block input--small"
         )
       </div>

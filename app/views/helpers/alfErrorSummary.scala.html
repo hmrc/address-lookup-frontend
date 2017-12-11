@@ -1,0 +1,35 @@
+@(heading: String,
+  form: Form[_],
+  errorArgs: Seq[String] = Seq.empty,
+  classes: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
+
+<div class="error-summary@if(form.hasErrors) { error-summary--show} @classes.mkString(" ")"
+     id="error-summary-display"
+     role="alert"
+     aria-labelledby="error-summary-heading"
+     tabindex="-1">
+    <h2 id="error-summary-heading" class="h3-heading">@heading</h2>
+    <ul class="error-summary-list">
+    @if(form.hasErrors) {
+        @form.errors.map { error =>
+            @if(error.key != "") {
+                <li role="listitem">
+                    <a href="#@error.key" id="@error.key-error-summary" data-focuses="@error.key" >
+                        @messages(error.message)
+                    </a>
+                </li>
+            } else {
+                @if(error.args.nonEmpty) {
+                    @if(errorArgs.contains(error.args.head)) {
+                        <li role="listitem">
+                            <a href="#@error.args.head" id="@error.args.head-error-summary" data-focuses="@error.args.head">
+                                @messages(error.message, error.args: _*)
+                            </a>
+                        </li>
+                    }
+                }
+            }
+        }
+    }
+    </ul>
+</div>

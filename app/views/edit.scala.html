@@ -66,13 +66,17 @@
             )
             </div>
         } else {
-            @alfInput(editForm("countryCode"), '_type -> "hidden")
-            <div class="form-field">
-                <label for="@countries.head._2">
-                    <span>@journeyData.resolvedConfig.editPage.countryLabel</span>
-                    <input type="text" readonly="" disabled="" class="form-control--block" value="@countries.head._2"/>
-                </label>
-            </div>
+            @defining(countries.head._1) { countryCode =>
+                <input type="hidden" name="countryCode" value="@countryCode"/>
+            }
+            @defining(countries.head._2) { countryName =>
+                <div class="form-field">
+                    <label for="@countryName">
+                        <span>@journeyData.resolvedConfig.editPage.countryLabel</span>
+                        <input type="text" readonly="" disabled="" class="form-control--block" value="@countryName"/>
+                    </label>
+                </div>
+            }
         }
       @if(journeyData.resolvedConfig.editPage.showSearchAgainLink) {
         <div class="form-field spaced-below">

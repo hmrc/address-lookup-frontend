@@ -318,17 +318,6 @@ class AddressLookupControllerSpec
       html should include element(withName("select").withAttrValue("name","countryCode"))
     }
 
-//    "show selection of countries given by allowedCountryCodes if configured" in new Scenario(
-//        journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE", "ZY")))))
-//    ) {
-//      val res = controller.edit("foo").apply(req)
-//      val html = contentAsString(res).asBodyFragment
-//
-//      html should not include element(withName("option").withAttrValue("value", "GB"))
-//      html should include element withName("option").withAttrValue("value", "DE")
-//      html should not include element(withName("option").withAttrValue("value", "ZY"))
-//    }
-
     "show dropdown of countries given by allowedCountryCodes if allowedCountryCodes is configured with several codes" in new Scenario(
       journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB", "FR")))))
     ) {
@@ -340,22 +329,21 @@ class AddressLookupControllerSpec
       html should include element withName("option").withAttrValue("value", "FR")
     }
 
-    "show single country without dropdown given by allowedCountryCodes if allowedCountryCodes is configured with a single country code" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("DE", "Germany"))))),
-        config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE")))))
+    "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
+      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB")))))
     ) {
       val res = controller.edit("foo").apply(req)
       val html = contentAsString(res).asBodyFragment
 
-      html should not include element(withName("option").withAttrValue("value", "DE"))
+      html should not include element(withName("option").withAttrValue("value", "GB"))
 
       html should include element withName("input")
         .withAttrValue("type", "hidden")
-        .withAttrValue("value", "DE")
+        .withAttrValue("value", "GB")
         .withAttrValue("name", "countryCode")
       html should include element withName("input")
         .withAttrValue("type", "text")
-        .withAttrValue("value", "Germany")
+        .withAttrValue("value", "United Kingdom")
         .withAttr("readonly")
         .withAttr("disabled")
     }

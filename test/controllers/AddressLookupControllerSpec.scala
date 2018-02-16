@@ -67,7 +67,7 @@ class AddressLookupControllerSpec
 
     val countryService = new CountryService {
       override val GB = Country("GB", "United Kingdom")
-      override val findAll = Seq(GB, Country("DE", "Germany"))
+      override val findAll = Seq(GB, Country("DE", "Germany"), Country("FR", "France"))
       override def find(code: String) = findAll.find{ case Country(cc, _) => cc == code }
     }
 
@@ -318,30 +318,73 @@ class AddressLookupControllerSpec
       html should include element(withName("select").withAttrValue("name","countryCode"))
     }
 
-    "show selection of countries given by allowedCountryCodes if configured" in new Scenario(
-        journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE", "ZY")))))
+    "show dropdown of countries given by allowedCountryCodes if allowedCountryCodes is configured with several codes" in new Scenario(
+      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB", "FR")))))
+    ) {
+      val res = controller.edit("foo").apply(req)
+      val html = contentAsString(res).asBodyFragment
+
+      html should not include element(withName("option").withAttrValue("value", "DE"))
+      html should include element withName("option").withAttrValue("value", "GB")
+      html should include element withName("option").withAttrValue("value", "FR")
+    }
+
+    "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
+      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB")))))
     ) {
       val res = controller.edit("foo").apply(req)
       val html = contentAsString(res).asBodyFragment
 
       html should not include element(withName("option").withAttrValue("value", "GB"))
-      html should include element withName("option").withAttrValue("value", "DE")
-      html should not include element(withName("option").withAttrValue("value", "ZY"))
+
+      html should include element withName("input")
+        .withAttrValue("type", "hidden")
+        .withAttrValue("value", "GB")
+        .withAttrValue("name", "countryCode")
+      html should include element withName("input")
+        .withAttrValue("type", "text")
+        .withAttrValue("value", "United Kingdom")
+        .withAttr("readonly")
+        .withAttr("disabled")
     }
 
-    "editing an existing address with a country code that is not in the allowedCountryCodes config" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(
-        selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
-        config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE"))))
-      )
-    ) {
-      val res = controller.edit("foo").apply(req)
-      val html = contentAsString(res).asBodyFragment
+    "editing an existing address with a country code that is not in the allowedCountryCodes config" when {
+      "allowedCountryCodes contains multiple countries" in new Scenario(
+        journeyData = Map("foo" -> basicJourney().copy(
+          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
+          config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE", "GB"))))
+        )
+      ) {
+        val res = controller.edit("foo").apply(req)
+        val html = contentAsString(res).asBodyFragment
 
-      html should not include element(withName("option").withAttrValue("value", "FR"))
-      html should not include element(withName("option").withAttrValue("value", "GB"))
-      html should include element withName("option").withAttrValue("value", "DE")
+        html should not include element(withName("option").withAttrValue("value", "FR"))
+        html should include element(withName("option").withAttrValue("value", "GB"))
+        html should include element withName("option").withAttrValue("value", "DE")
+      }
+      "allowedCountryCodes contains a single country" in new Scenario(
+        journeyData = Map("foo" -> basicJourney().copy(
+          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
+          config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE"))))
+        )
+      ) {
+        val res = controller.edit("foo").apply(req)
+        val html = contentAsString(res).asBodyFragment
+
+        html should include element withName("input")
+          .withAttrValue("type", "hidden")
+          .withAttrValue("value", "DE")
+          .withAttrValue("name", "countryCode")
+        html should include element withName("input")
+          .withAttrValue("type", "text")
+          .withAttrValue("value", "Germany")
+          .withAttr("readonly")
+          .withAttr("disabled")
+
+        html should not include element(withName("option").withAttrValue("value", "DE"))
+      }
     }
+
     "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
       journeyData = Map("foo" -> basicJourney(Some(true)))
     ){

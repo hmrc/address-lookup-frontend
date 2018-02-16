@@ -17,6 +17,7 @@
     "This page has errors", editForm
   )
 
+
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
   @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
@@ -54,15 +55,29 @@
           '_inputClass -> "form-control--block input--small"
         )
       </div>
-      <div class="form-field">
-        @helpers.dropdown(
-          editForm("countryCode"),
-          countries,
-          false,
-          '_label -> journeyData.resolvedConfig.editPage.countryLabel,
-          '_inputClass -> "form-control--block"
-        )
-      </div>
+        @if(countries.size > 1) {
+            <div class="form-field">
+            @helpers.dropdown(
+                editForm("countryCode"),
+                countries,
+                false,
+                '_label -> journeyData.resolvedConfig.editPage.countryLabel,
+                '_inputClass -> "form-control--block"
+            )
+            </div>
+        } else {
+            @defining(countries.head._1) { countryCode =>
+                <input type="hidden" name="countryCode" value="@countryCode"/>
+            }
+            @defining(countries.head._2) { countryName =>
+                <div class="form-field">
+                    <label for="@countryName">
+                        <span>@journeyData.resolvedConfig.editPage.countryLabel</span>
+                        <input type="text" readonly="" disabled="" class="form-control--block" value="@countryName"/>
+                    </label>
+                </div>
+            }
+        }
       @if(journeyData.resolvedConfig.editPage.showSearchAgainLink) {
         <div class="form-field spaced-below">
           <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.resolvedConfig.editPage.searchAgainLinkText}</a></p>

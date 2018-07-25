@@ -13,6 +13,9 @@
   }
   <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.confirmPage.heading}</h1>
   @if(selectedAddress.isDefined) {
+    @if(journeyData.resolvedConfig.confirmPage.showConfirmChangeText){
+        <p>@journeyData.resolvedConfig.confirmPage.confirmChangeText</p>
+    }
     @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
       <fieldset class="form-field-group">
         <div class="form-field">

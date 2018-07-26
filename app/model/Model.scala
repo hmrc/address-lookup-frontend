@@ -71,7 +71,7 @@ object JourneyConfigDefaults {
   val EDIT_LINK_TEXT = "Enter address manually"
   val SEARCH_AGAIN_LINK_TEXT = "Search again"
 
-  val CONFIRM_CHANGE_TEXT = "Default message"
+  val CONFIRM_CHANGE_TEXT = "By confirming this change, you agree that the information you have given is complete and correct."
 
   def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
 

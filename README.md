@@ -112,7 +112,8 @@ It is **not** necessary to specify values for all configurable properties. _Only
     "submitLabel" : "Confirm and continue",
     "showSearchAgainLink" : false,
     "searchAgainLinkText" : "Search again",
-    "changeLinkText" : "Edit address"
+    "changeLinkText" : "Edit address",
+    "showConfirmChangeText" : true
   },
   "editPage" : {
     "title" : "Enter the address",
@@ -196,6 +197,8 @@ Configuration of the "confirm" page, in which the user is requested to confirm a
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
 |`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
 |`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit address"`|
+|`showConfirmChangeText`|Whether or not to show "Confirmation text" displayed above the submit button|Optional|Boolean|`false`|
+|`confirmChangeText`|Text displayed above the submit button when 'showConfirmChangeText' is true|Optional|String|`"By confirming this change, you agree that the information you have given is complete and correct."`|
 
 #### Edit page configuration JSON object
 

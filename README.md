@@ -113,7 +113,8 @@ It is **not** necessary to specify values for all configurable properties. _Only
     "showSearchAgainLink" : false,
     "searchAgainLinkText" : "Search again",
     "changeLinkText" : "Edit address",
-    "showConfirmChangeText" : true
+    "showConfirmChangeText" : true,
+    "confirmChangeText" : "By confirming this change, you agree that the information you have given is complete and correct."
   },
   "editPage" : {
     "title" : "Enter the address",

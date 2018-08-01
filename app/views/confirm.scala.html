@@ -33,7 +33,9 @@
         </div>
         }
         @if(journeyData.resolvedConfig.confirmPage.showConfirmChangeText){
-          <p>@journeyData.resolvedConfig.confirmPage.confirmChangeText</p>
+        <div class="form-field">
+          <p id="confirmChangeText">@journeyData.resolvedConfig.confirmPage.confirmChangeText</p>
+        </div>
         }
         <div class="form-field">
           <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.confirmPage.submitLabel}</button>

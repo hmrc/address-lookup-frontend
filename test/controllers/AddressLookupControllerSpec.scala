@@ -289,6 +289,21 @@ class AddressLookupControllerSpec
 
   }
 
+  "confirm" should {
+
+    "allow confirmChangeText to be configured" in new Scenario(
+      journeyData = Map("foo" -> JourneyData(
+        config = JourneyConfig("continue",confirmPage = Some(ConfirmPage(showConfirmChangeText = Some(true), confirmChangeText = Some("I confirm")))),
+        selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
+      ))
+    ) {
+      val res = controller.confirm("foo").apply(req)
+      val html = contentAsString(res).asBodyFragment
+      html should include element withAttrValue("id","confirmChangeText")
+    }
+
+  }
+
   "Calling addressOrDefault" should {
     "return an address when called with a defined option" in new Scenario(
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))

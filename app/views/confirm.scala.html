@@ -32,6 +32,11 @@
           <p><a href="@{routes.AddressLookupController.edit(id)}" id="changeLink">@{journeyData.resolvedConfig.confirmPage.changeLinkText}</a></p>
         </div>
         }
+        @if(journeyData.resolvedConfig.confirmPage.showConfirmChangeText){
+        <div class="form-field">
+          <p id="confirmChangeText">@journeyData.resolvedConfig.confirmPage.confirmChangeText</p>
+        </div>
+        }
         <div class="form-field">
           <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.confirmPage.submitLabel}</button>
         </div>

@@ -17,18 +17,18 @@ case class Select(addressId: String)
 
 case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
 
-  def toConfirmableAddress(auditRef: String, isukMode:Boolean): ConfirmableAddress = ConfirmableAddress(
+  def toConfirmableAddress(auditRef: String, isukMode: Boolean): ConfirmableAddress = ConfirmableAddress(
     auditRef,
     None,
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
-      if(isukMode) None else Some(postcode),
-      countryCode.fold(if(isukMode) ForeignOfficeCountryService.find("GB") else None)(code => ForeignOfficeCountryService.find(code))
+      if (isukMode) None else Some(postcode),
+      countryCode.fold(if (isukMode) ForeignOfficeCountryService.find("GB") else None)(code => ForeignOfficeCountryService.find(code))
     )
   )
 
-  def isValidPostcode(ukMode:Boolean): Boolean = {
-    countryCode.fold(ukMode && postcode.isEmpty){
+  def isValidPostcode(ukMode: Boolean): Boolean = {
+    countryCode.fold(ukMode && postcode.isEmpty) {
       case _ if (ukMode && !postcode.isEmpty) => false
       case a if (!ukMode) => a != ForeignOfficeCountryService.GB.code || postcode.isEmpty || Postcode.cleanupPostcode(postcode).isDefined
     }
@@ -70,6 +70,9 @@ object JourneyConfigDefaults {
 
   val EDIT_LINK_TEXT = "Enter address manually"
   val SEARCH_AGAIN_LINK_TEXT = "Search again"
+
+  val CONFIRM_CHANGE_TEXT = "By confirming this change, you agree that the information you have given is complete and correct."
+
   def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
 
 }
@@ -78,7 +81,7 @@ object JourneyConfigDefaults {
 // but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
 case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val continueUrl: String = cfg.continueUrl
-  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()),cfg.isukMode)
+  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()), cfg.isukMode)
   val selectPage: ResolvedSelectPage = ResolvedSelectPage(cfg.selectPage.getOrElse(SelectPage()))
   val confirmPage: ResolvedConfirmPage = ResolvedConfirmPage(cfg.confirmPage.getOrElse(ConfirmPage()))
   val editPage: ResolvedEditPage = ResolvedEditPage(cfg.editPage.getOrElse(EditPage()))
@@ -93,7 +96,7 @@ case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val phaseBannerHtml: String = cfg.phaseBannerHtml.getOrElse(defaultPhaseBannerHtml(phaseFeedbackLink))
   val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
-  val allowedCountryCodes: Option[Set[String]] = if(cfg.isukMode) Some(Set("GB")) else cfg.allowedCountryCodes
+  val allowedCountryCodes: Option[Set[String]] = if (cfg.isukMode) Some(Set("GB")) else cfg.allowedCountryCodes
 }
 
 case class ResolvedConfirmPage(p: ConfirmPage) {
@@ -107,6 +110,9 @@ case class ResolvedConfirmPage(p: ConfirmPage) {
   val searchAgainLinkText: String = p.searchAgainLinkText.getOrElse(SEARCH_AGAIN_LINK_TEXT)
   val showChangeLink: Boolean = p.showChangeLink.getOrElse(true)
   val changeLinkText: String = p.changeLinkText.getOrElse(CONFIRM_PAGE_EDIT_LINK_TEXT)
+  val showConfirmChangeText: Boolean = p.showConfirmChangeText.getOrElse(false)
+  val confirmChangeText: String = p.confirmChangeText.getOrElse(CONFIRM_CHANGE_TEXT)
+
 }
 
 case class ConfirmPage(title: Option[String] = None,
@@ -118,9 +124,12 @@ case class ConfirmPage(title: Option[String] = None,
                        showSearchAgainLink: Option[Boolean] = Some(false),
                        searchAgainLinkText: Option[String] = None,
                        showChangeLink: Option[Boolean] = Some(true),
-                       changeLinkText: Option[String] = None)
+                       changeLinkText: Option[String] = None,
+                       showConfirmChangeText: Option[Boolean] = Some(false),
+                       confirmChangeText: Option[String] = None
+                      )
 
-case class ResolvedLookupPage(p: LookupPage,isukMode:Boolean) {
+case class ResolvedLookupPage(p: LookupPage, isukMode: Boolean) {
   val title: String = p.title.getOrElse(LOOKUP_PAGE_TITLE)
   val heading: String = p.heading.getOrElse(LOOKUP_PAGE_HEADING)
   val filterLabel: String = p.filterLabel.getOrElse(LOOKUP_PAGE_FILTER_LABEL)
@@ -129,7 +138,7 @@ case class ResolvedLookupPage(p: LookupPage,isukMode:Boolean) {
   // TODO
   val resultLimitExceededMessage: Option[String] = None
   val noResultsFoundMessage: Option[String] = None
-  val manualAddressLinkText: String = if(isukMode) UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT else p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+  val manualAddressLinkText: String = if (isukMode) UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT else p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
 }
 
 case class LookupPage(title: Option[String] = None,
@@ -214,9 +223,9 @@ case class JourneyConfig(continueUrl: String,
                          deskProServiceName: Option[String] = None,
                          allowedCountryCodes: Option[Set[String]] = None,
                          timeout: Option[Timeout] = None,
-                         ukMode: Option[Boolean] = None){
+                         ukMode: Option[Boolean] = None) {
 
-  def isukMode = ukMode.fold(false)(a => if(a) a else false)
+  def isukMode = ukMode.fold(false)(a => if (a) a else false)
 }
 
 case class ProposedAddress(addressId: String,
@@ -313,7 +322,7 @@ object JourneyData {
   implicit val timeoutFormat: Format[Timeout] = (
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
       (JsPath \ "timeoutUrl").format[String]
-    )(Timeout.apply, unlift(Timeout.unapply))
+    ) (Timeout.apply, unlift(Timeout.unapply))
   implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]
 

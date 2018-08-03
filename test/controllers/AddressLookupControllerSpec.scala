@@ -90,6 +90,18 @@ class AddressLookupControllerSpec
       journeyRepository.get("quix").futureValue.get.config must be (config)
     }
 
+    "handle a call to init without confirm change fields" in new Scenario(id = Some("quix")) {
+      //the optional confirm change fields were not in the original release
+      val config = JourneyConfig(
+        continueUrl = "http://google.com",
+        confirmPage = Some(ConfirmPage(
+          showConfirmChangeText = None,
+          confirmChangeText = None))
+      )
+      val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(config)))
+      status(res) must be (ACCEPTED)
+      journeyRepository.get("quix").futureValue.get.config must be (config)
+    }
   }
 
   "initializing a journey" should {

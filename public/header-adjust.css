@@ -1,0 +1,29 @@
+/* This is an local CSS adjustment to the header in the GOV UK template */
+
+/*
+	The template header grid split is
+	1/3 for .header-global that contains the GOV.UK logo and crest
+	1/2's for .header-proposition that contains the service name and sign out link if available
+
+	The below code adjusts .header-global to arbitrary 20% with a min-width so that the logo doesn't break and .header-proposition to 80%
+*/
+
+/*
+	If the name changes (shortens) or the template changes (unlikely), then this will need to be either removed or updated, preferrably removed.
+
+	There is potential for this to be included in HMRC Assets Frontend with a modifier class so that it doesn't break any services using the template, but those with longer names can use the modifier class to adjust their header.
+*/
+
+@media (min-width: 769px) {
+	#global-header.with-proposition .header-wrapper .header-global {
+	    width: 20%;
+	    min-width: 185px;
+	}	
+}
+
+@media (min-width: 769px) {
+	#global-header.with-proposition .header-wrapper .header-proposition {
+	    width: 80%;
+	}
+}
+

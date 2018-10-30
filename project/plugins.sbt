@@ -5,9 +5,9 @@ resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.12")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "1.12.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "1.13.0")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "1.7.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "1.15.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "0.13.0")
 

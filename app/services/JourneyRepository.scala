@@ -46,7 +46,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
   }
 
   override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
-    cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
+      cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
   }
 
   override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
@@ -96,7 +96,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => LookupPage()
     }
     val select = s match {
-      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), maybeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")), maybeString(s.get("editAddressLinkText")))
+      case Some(s) => SelectPage(maybeString(s.get("title")), maybeString(s.get("heading")), maybeString(s.get("headingWithPostcode")), maybeString(s.get("proposalListLabel")), maybeString(s.get("submitLabel")), maybeInt(s.get("proposalListLimit")), maybeBoolean(s.get("showSearchAgainLink"), false), maybeString(s.get("searchAgainLinkText")), maybeString(s.get("editAddressLinkText")))
       case None => SelectPage()
     }
     val confirm = c match {
@@ -104,7 +104,7 @@ class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
       case None => ConfirmPage()
     }
     val edit = e match {
-      case Some(e) => EditPage(maybeString(e.get("title")), maybeString(e.get("heading")), maybeString(e.get("line1Label")), maybeString(e.get("line2Label")), maybeString(e.get("line3Label")), maybeString(e.get("townLabel")), maybeString(e.get("postcodeLabel")), maybeString(e.get("countryLabel")), maybeString(e.get("submitLabel")), maybeBoolean(e.get("showSearchAgainLink"), false), maybeString(e.get("searchAgainLinkText")))
+      case Some(e) => EditPage(maybeString(e.get("title")), maybeString(e.get("heading")), maybeString(e.get("line1Label")), maybeString(e.get("line2Label")), maybeString(e.get("townLabel")), maybeString(e.get("postcodeLabel")), maybeString(e.get("countryLabel")), maybeString(e.get("submitLabel")))
       case None => EditPage()
     }
     JourneyData(

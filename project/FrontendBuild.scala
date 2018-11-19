@@ -9,7 +9,7 @@ object FrontendBuild extends Build with MicroService {
 
   val appName = "address-lookup-frontend"
 
-  override lazy val appDependencies: Seq[ModuleID] = compile ++ test()
+  override lazy val appDependencies: Seq[ModuleID] = compile ++ test() ++ itDependencies
 
   val compile = Seq(
     ws,
@@ -26,7 +26,11 @@ object FrontendBuild extends Build with MicroService {
     "org.jsoup" % "jsoup" % "1.8.1" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope,
-    "com.pyruby" % "java-stub-server" % "0.14" % scope
+
+    "com.github.tomakehurst" % "wiremock" % "2.6.0" % "it"
+
   )
+
+  def itDependencies = test("it")
 
 }

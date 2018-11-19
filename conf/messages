@@ -1,3 +1,4 @@
 # UK only mode
 ukmode.uk.label = United Kingdom
-ukmode.help.text = To use the service, this address must be in the UK.
+ukmode.county.label = County (optional)
+ukmode.postcode.label = UK postcode (optional)

@@ -6,7 +6,7 @@
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = journeyData.resolvedConfig.editPage.title, journeyData = Some(journeyData)) {
-
+<div id="ukEdit"></div>
   @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>
       <a class="back-link" href="javascript:history.back()">Back</a>
@@ -17,50 +17,46 @@
     "This page has errors", editForm
   )
 
-
-  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
-  <div class="spaced-below">@messages("ukmode.help.text")</div><br>
-  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
+  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
+  @helpers.form(routes.AddressLookupController.handleUkEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line1"),
           '_label -> journeyData.resolvedConfig.editPage.line1Label,
-          '_inputClass -> "form-control--block")
+          '_inputClass -> "form-control--block input--medium")
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line2"),
           '_label -> journeyData.resolvedConfig.editPage.line2Label,
-          '_inputClass -> "form-control--block"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line3"),
-          '_label -> journeyData.resolvedConfig.editPage.line3Label,
-          '_inputClass -> "form-control--block"
+          '_inputClass -> "form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("town"),
           '_label -> journeyData.resolvedConfig.editPage.townLabel,
-          '_inputClass -> "form-control--block"
+          '_inputClass -> "form-control--block input--medium"
         )
       </div>
-     <label for="country">@{journeyData.resolvedConfig.editPage.countryLabel}</label>
-      <strong name="country" class="spaced-below">@messages("ukmode.uk.label")</strong>
-
-      @if(journeyData.resolvedConfig.editPage.showSearchAgainLink) {
-        <div class="form-field spaced-below">
-          <p><a href="@{routes.AddressLookupController.lookup(id)}">@{journeyData.resolvedConfig.editPage.searchAgainLinkText}</a></p>
-        </div>
-      }
+      <div class="form-field spaced-below">
+        @alfInput(
+        editForm("line3"),
+        '_label -> messages("ukmode.county.label"),
+        '_inputClass -> "form-control--block input--medium"
+        )
+      </div>
+      <div class="form-field spaced-below">
+        @alfInput(
+        editForm("postcode"),
+        '_label -> messages("ukmode.postcode.label"),
+        '_inputClass -> "form-control--block input--small"
+        )
+      </div>
       <div class="form-field">
         <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.editPage.submitLabel}</button>
       </div>
     </fieldset>
   }
-
 }

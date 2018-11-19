@@ -29,6 +29,7 @@
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" href="@routes.Assets.at("style.css")">
     <link rel="stylesheet" href="@routes.Assets.at("timeout-dialog.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("accessible-autocomplete.min.css")">
 }
 
 @headerNavLinks = {
@@ -45,9 +46,10 @@
 }
 
 @afterHeader = {}
-
+<script src='@controllers.routes.Assets.at("accessible-autocomplete.min.js")' type="text/javascript"></script>
 @timeoutScript(timeoutInSeconds: Int, timeoutUrl: String) = {
     <script src='@controllers.routes.Assets.at("timeout-dialog.js")' type="text/javascript"></script>
+
     <script type="text/javascript" charset="utf-8">$.timeoutDialog({timeout: @timeoutInSeconds, countdown: 30,keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'});var dialogOpen;</script>
 }
 

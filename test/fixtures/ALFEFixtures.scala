@@ -15,6 +15,3 @@ trait ALFEFixtures {
       ("postcode", a.postcode),
       a.countryCode.map(d => ("countryCode", d)).getOrElse(("", "")))
 }
-
-
-

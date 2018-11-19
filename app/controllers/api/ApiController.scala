@@ -65,7 +65,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
       confirmed => {
         withJourney(confirmed.id, NotFound) { journeyData =>
           if (journeyData.confirmedAddress.isDefined) {
-            (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
+            (None, Ok(Json.toJson(journeyData.confirmedAddress.get.stripEmptyLines)))
           } else {
             (None, NotFound)
           }

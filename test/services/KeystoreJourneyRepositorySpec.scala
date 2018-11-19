@@ -184,11 +184,6 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "know about edit page line 2 label" in new Scenario() {
       repo.init("j0").config.editPage.get.line2Label must be (Some("Line 2"))
     }
-
-    "know about edit page line 3 label" in new Scenario() {
-      repo.init("j0").config.editPage.get.line3Label must be (Some("Line 3"))
-    }
-
     "know about edit page town label" in new Scenario() {
       repo.init("j0").config.editPage.get.townLabel must be (Some("Town"))
     }
@@ -207,14 +202,6 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     "know about phase feedback link" in new Scenario() {
       repo.init("j0").config.phaseFeedbackLink must be (Some("#"))
-    }
-
-    "know about edit page search again link option" in new Scenario() {
-      repo.init("j0").config.editPage.get.showSearchAgainLink must be (Some(true))
-    }
-
-    "know about edit page search again link test" in new Scenario() {
-      repo.init("j0").config.editPage.get.searchAgainLinkText must be (Some("Search again"))
     }
 
     "know about select page search again link option" in new Scenario() {

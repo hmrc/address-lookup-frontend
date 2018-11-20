@@ -88,17 +88,6 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
 
       editFormNonuk.bind(data).hasErrors mustBe false
     }
-
-    "default line3 to None if line3 is provided" in {
-      val data = Map(
-        "line1" -> "foo1",
-        "line2" -> "foo2",
-        "line3" -> "foo3",
-        "town" -> "twn",
-        "countryCode" -> "FR")
-
-      editFormNonuk.bind(data).get.line3 mustBe None
-    }
   }
 
   "uk and non uk edit form" should {
@@ -140,7 +129,6 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {
         ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "ZZ11ZZ", None))).hasErrors mustBe false
       }
-
 
       s"$formOfTest return error if line 1 is empty" in {
         val data = Map(
@@ -208,7 +196,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
       ALFForms.constraintString256("foo")(chars256)  mustBe Invalid("Enter a foo using 256 characters or less")
     }
     "return Valid for string < 256" in  {
-      ALFForms.constraintString256("foo")(List.fill(255)("A").reduce(_ + _))  mustBe Valid
+      ALFForms.constraintString256("foo")(chars255)  mustBe Valid
     }
   }
   "constraintMinLength" should {

@@ -9,93 +9,64 @@ import services.ForeignOfficeCountryService
 
 class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
-  "stripEmptyLines" should{
-    "strip empty address lines (all 4)" in {
-      val res = ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("","","","")),Some("wizz"),None)).stripEmptyLines
-      res mustBe ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List.empty),Some("wizz"),None))
-    }
-    "not strip non empty address lines (all 4)" in {
-      val add = ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("1","2","3","4")),Some("wizz"),None))
-      add.stripEmptyLines mustBe add
-    }
-    "strip one address line if empty string" in {
-      val res = ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("1","","3","4")),Some("wizz"),None)).stripEmptyLines
-      res mustBe ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("1","3","4")), Some("wizz"),None))
-    }
-  }
+
   "an edit" should {
-
-    "transform to a confirmable address using toConfirmableAddressUk" in {
-      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "postcode", Some(ForeignOfficeCountryService.find("GB").get.code))
-      val conf = edit.toConfirmableAddressUk("audit ref")
-      val expected = ConfirmableAddress(
-        "audit ref",
-        None,
-        ConfirmableAddressDetails(
-          Some(List("line1", "line2", "town", "line3")),
-          Some("postcode"),
-          ForeignOfficeCountryService.find("GB")
-        )
-      )
-      conf must be (expected)
-    }
-
     "transform to a confirmable address and back again where isukMode == false" in {
-      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "postcode", Some(ForeignOfficeCountryService.find("GB").get.code))
-      val conf = edit.toConfirmableAddressNonUk("audit ref")
+      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
+      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
         ConfirmableAddressDetails(
           Some(List("line1", "line2", "line3", "town")),
-          Some("postcode"),
+          Some("ZZ1 1ZZ"),
           ForeignOfficeCountryService.find("GB")
         )
       )
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
     }
 
     "transform to a confirmable address and back again given less than three lines where isukMode == false" in {
-      val edit = Edit("line1", None, None, "town", "postcode", Some(ForeignOfficeCountryService.find("GB").get.code))
-      val conf = edit.toConfirmableAddressNonUk("audit ref")
+      val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
+      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
         ConfirmableAddressDetails(
           Some(List("line1", "town")),
-          Some("postcode"),
+          Some("ZZ1 1ZZ"),
           ForeignOfficeCountryService.find("GB")
         )
       )
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
     }
 
     "transform to a confirmable address and back again given less than three lines where isukMode == true" in {
-      val edit = Edit("line1", None, None, "town", "foo", Some("GB"))
-      val conf = edit.toConfirmableAddressNonUk("audit ref")
+      val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some("GB"))
+      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
         ConfirmableAddressDetails(
           Some(List("line1", "town")),
-          postcode = Some("foo"),
+          postcode = Some("ZZ1 1ZZ"),
           ForeignOfficeCountryService.find("GB")
         )
       )
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
     }
     "transform to a confirmable address and back where postcode is empty isukMode == true" in {
       val edit = Edit("line1", None, None, "town", "", Some("FR"))
-      val conf = edit.toConfirmableAddressNonUk("audit ref")
+      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
@@ -108,7 +79,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
     }
   }
 
@@ -182,7 +153,6 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       val config = Json.parse(json).as[JourneyConfig]
       config.continueUrl must be ("http://google.com")
     }
-
   }
 
   "a resolved config" should {
@@ -290,6 +260,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
           |    "heading" : "Enter Address",
           |    "line1Label" : "1 Whooo Lane",
           |    "line2Label" : "Whooo Land",
+          |        "line3Label" : "Blank",
           |    "townLabel" : "City World",
           |    "postcodeLabel" : "AA1 99ZZ",
           |    "countryLabel" : "Home Country",
@@ -300,7 +271,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
           |    }
         """.stripMargin).as[JourneyConfig]
       val journeyExpected = JourneyConfig(continueUrl = "cont",editPage = Some(EditPage(title = Some("Enter Address"), heading = Some("Enter Address"),
-        line1Label = Some("1 Whooo Lane"), line2Label = Some("Whooo Land"), townLabel = Some("City World"),
+        line1Label = Some("1 Whooo Lane"), line2Label = Some("Whooo Land"), line3Label = Some("Blank"),  townLabel = Some("City World"),
         postcodeLabel = Some("AA1 99ZZ"), countryLabel = Some("Home Country"), submitLabel = Some("Cont"))))
       parsedJson.editPage.get mustBe journeyExpected.editPage.get
 

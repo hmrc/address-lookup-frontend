@@ -4,6 +4,7 @@ package controllers
 import java.io.File
 
 import config.FrontendAuditConnector
+import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
 import model._
@@ -11,14 +12,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import spray.http.Uri
-import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import countOfResults._
 import utils.PostcodeHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -82,7 +81,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           Future.successful(NoResults)
         }
       case oneFound if oneFound.size == 1 => Future.successful(OneResult(oneFound.head))
-      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup)) //TODO
+      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup))
       case displayProposals => Future.successful(ResultsList(displayProposals, firstLookup))
     }
   }
@@ -131,8 +130,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
     private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
-    oAddr.map(_.toEdit)
-      .map{Edit.convertTownToAddressLine3}.getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode) , Some("GB")))
+    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode) , Some("GB")))
   }
 
   def handleUkEdit(id:String): Action[AnyContent]  = Action.async { implicit req =>
@@ -140,7 +138,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       val validatedForm = isValidPostcode(ukEditForm.bindFromRequest())
       validatedForm.fold(
         errors => (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressUkAndNonUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -151,7 +149,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       val validatedForm = isValidPostcode(nonUkEditForm.bindFromRequest())
       validatedForm.fold(
         errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressNonUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressUkAndNonUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -160,7 +158,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   def confirm(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
       journeyData.selectedAddress.fold((None, Redirect(routes.AddressLookupController.lookup(id))))(_ =>
-      (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress.map(_.stripEmptyLines)))))
+      (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress))))
     }
   }
 

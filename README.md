@@ -120,7 +120,8 @@ It is **not** necessary to specify values for all configurable properties. _Only
     "title" : "Enter the address",
     "heading" : "Enter the address",
     "line1Label" : "Address line 1",
-    "line2Label" : "Address line 2 (optional)",
+    "line2Label" : "Address line 2",
+    "line3Label" : "Address line 3",
     "townLabel" : "Town/City",
     "postcodeLabel" : "Postal code (optional)",
     "countryLabel" : "Country",
@@ -209,7 +210,8 @@ Configuration of the "edit" page, in which the user is permitted to manually ent
 |`title`|the html->head->title text|Optional|String|`"Enter the address"`|
 |`heading`|the heading to display above the edit form|Optional|String|`"Enter the address"`|
 |`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Address line 1"`|
-|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Address line 2 (optional)"`|
+|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Address line 2"`|
+|`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Address line 3"`|
 |`townLabel`|the input label for the "town" field; a REQUIRED field|Optional|String|`"Town/City"`|
 |`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postal code (optional)"`|
 |`countryLabel`|the input label for the "country" drop-down; an optional field (defaults to UK)|Optional|String|`"Country"`|

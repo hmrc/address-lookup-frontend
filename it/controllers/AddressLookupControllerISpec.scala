@@ -291,7 +291,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
         get()
       val res = await(fResponse)
       res.status shouldBe 200
-      res.json shouldBe Json.toJson(ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("1","3","4")),Some("wizz"),None)))
+      res.json shouldBe Json.toJson(ConfirmableAddress("foo",Some("bar"),ConfirmableAddressDetails(Some(List("1","","3","4")),Some("wizz"),None)))
     }
   }
 }

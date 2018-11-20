@@ -399,45 +399,14 @@ class AddressLookupControllerSpec
       val res = controller.confirm("foo").apply(req)
       val html = contentAsString(res).asBodyFragment
       html.getElementById("line1").html mustBe "line1"
-      html.getElementById("line2").html mustBe "line3"
-      intercept[Exception](html.getElementById("line3").html)
+      html.getElementById("line2").html mustBe ""
+      html.getElementById("line3").html mustBe "line3"
       intercept[Exception](html.getElementById("line0").html)
       html.getElementById("postCode").html mustBe "ZZ11 1ZZ"
     }
   }
 
   "Calling addressOrDefault" should {
-
-    "swapping line 3 if empty and town for a uk address" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
-    ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(
-        lines = Some(List("1","2","","4")),
-        postcode = Some("zz11zz"),
-        country = Some(Country("GB", "United Kingdom"))))
-      val tstEdit = Edit("1", Some("2"), Some("4"), "", "ZZ1 1ZZ", Some("GB"))
-      controller.addressOrDefault(Some(tstAddress)) must be (tstEdit)
-    }
-    "dont swap line 3 and town for a non uk address and dont format postcode" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
-    ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(
-        lines = Some(List("1","2","","4")),
-        postcode = Some("ZZ11ZZ"),
-        country = Some(Country("FR", "France"))))
-      val tstEdit = Edit("1", Some("2"), Some(""), "4", "ZZ11ZZ", Some("FR"))
-      controller.addressOrDefault(Some(tstAddress)) must be (tstEdit)
-    }
-    "dont swap line 3 if populated and town for a uk address" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
-    ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(
-        lines = Some(List("1","2","3","4")),
-        postcode = Some("ZZ11ZZ"),
-        country = Some(Country("FR", "France"))))
-      val tstEdit = Edit("1", Some("2"), Some("3"), "4", "ZZ11ZZ", Some("FR"))
-      controller.addressOrDefault(Some(tstAddress)) must be (tstEdit)
-    }
 
     "return an address when called with a defined option removing postcode as its invalid" in new Scenario(
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))

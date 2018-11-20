@@ -1,4 +1,3 @@
 # UK only mode
 ukmode.uk.label = United Kingdom
-ukmode.county.label = County (optional)
 ukmode.postcode.label = UK postcode (optional)

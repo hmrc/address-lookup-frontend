@@ -2,19 +2,18 @@ package controllers.testonly
 
 import com.google.inject.ImplementedBy
 import controllers.api.ApiController
-import javax.inject.{Inject, Singleton}
-import model.{JourneyConfig, JourneyData, ResolvedJourneyConfig}
+import javax.inject.Inject
+import model.JourneyData._
+import model.{JourneyConfig, ResolvedJourneyConfig}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, Request}
-import play.api.mvc.Results._
+import play.api.mvc.{Action, AnyContent}
 import play.mvc.Http.HeaderNames
 import services.JourneyRepository
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import model.JourneyData._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,10 +33,7 @@ trait StubController extends FrontendController with I18nSupport with ServicesCo
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.get(id).map { j =>
-      val journey = j.get.copy(
-        selectedAddress = j.get.selectedAddress.map(_.stripEmptyLines),
-        confirmedAddress = j.get.confirmedAddress.map(_.stripEmptyLines))
-      Ok(Json.prettyPrint(Json.toJson(journey))) }
+      Ok(Json.prettyPrint(Json.toJson(j.get))) }
   }
 
   def resolvedFormWithJourneyConfig =  {

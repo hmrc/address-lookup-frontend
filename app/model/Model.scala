@@ -15,19 +15,9 @@ case class Timeout(timeoutAmount: Int, timeoutUrl: String)
 
 case class Select(addressId: String)
 
-object Edit {
-  val convertTownToAddressLine3: Edit => Edit = (original: Edit) =>
-    if (original.countryCode.contains("GB")) {
-      original.copy(
-        town = original.line3.getOrElse(original.town),
-        line3 = original.line3.fold(Option.empty[String])(_ => Option[String](original.town)),
-        postcode = PostcodeHelper.displayPostcode(original.postcode)
-      )
-    } else original
-}
 case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
 
-  def toConfirmableAddressNonUk(auditRef: String): ConfirmableAddress = ConfirmableAddress(
+    def toConfirmableAddressUkAndNonUk(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
     None,
     ConfirmableAddressDetails(
@@ -36,17 +26,6 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
       countryCode.fold(ForeignOfficeCountryService.find("GB"))(code => ForeignOfficeCountryService.find(code))
     )
   )
-  def toConfirmableAddressUk(auditRef: String): ConfirmableAddress = {
-    ConfirmableAddress(
-      auditRef,
-      None,
-      ConfirmableAddressDetails(
-        Some(List(line1) ++ line2.map(_.toString).toList ++ List(town) ++ line3.map(_.toString).toList),
-        if(postcode.isEmpty) None else Some(postcode),
-        countryCode.fold(ForeignOfficeCountryService.find("GB"))(code => ForeignOfficeCountryService.find(code))
-      )
-    )
-  }
 }
 
 object JourneyConfigDefaults {
@@ -62,6 +41,7 @@ object JourneyConfigDefaults {
   val EDIT_PAGE_HEADING = "Enter the address"
   val EDIT_PAGE_LINE1_LABEL = "Address line 1"
   val EDIT_PAGE_LINE2_LABEL = "Address line 2"
+  val EDIT_PAGE_LINE3_LABEL = "Address line 3"
   val EDIT_PAGE_TOWN_LABEL = "Town/city"
   val EDIT_PAGE_POSTCODE_LABEL = "Postal code (optional)"
   val EDIT_PAGE_COUNTRY_LABEL = "Country"
@@ -188,6 +168,7 @@ case class ResolvedEditPage(p: EditPage) {
   val heading: String = p.heading.getOrElse(EDIT_PAGE_HEADING)
   val line1Label: String = p.line1Label.getOrElse(EDIT_PAGE_LINE1_LABEL)
   val line2Label: String = p.line2Label.getOrElse(EDIT_PAGE_LINE2_LABEL)
+  val line3Label: String = p.line3Label.getOrElse(EDIT_PAGE_LINE3_LABEL)
   val townLabel: String = p.townLabel.getOrElse(EDIT_PAGE_TOWN_LABEL)
   val postcodeLabel: String = p.postcodeLabel.getOrElse(EDIT_PAGE_POSTCODE_LABEL)
   val countryLabel: String = p.countryLabel.getOrElse(EDIT_PAGE_COUNTRY_LABEL)
@@ -198,6 +179,7 @@ case class EditPage(title: Option[String] = None,
                     heading: Option[String] = None,
                     line1Label: Option[String] = None,
                     line2Label: Option[String] = None,
+                    line3Label: Option[String] = None,
                     townLabel: Option[String] = None,
                     postcodeLabel: Option[String] = None,
                     countryLabel: Option[String] = None,
@@ -279,7 +261,6 @@ case class ConfirmableAddress(auditRef: String,
                               address: ConfirmableAddressDetails = ConfirmableAddressDetails()) {
 
   def toEdit: Edit = address.toEdit
-  def stripEmptyLines: ConfirmableAddress = this.copy(address = this.address.copy(lines = address.lines.map(list => list.filter(_.nonEmpty))))
 
   def toDescription: String = address.toDescription
 }
@@ -294,7 +275,7 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 
   def toEdit: Edit = {
     val el = editLines
-    Edit(el._1, el._2, el._3, el._4, postcode.getOrElse(""), country.map(_.code))
+    Edit(el._1, el._2, el._3, el._4, PostcodeHelper.displayPostcode(postcode), country.map(_.code))
   }
 
   def editLines: (String, Option[String], Option[String], String) = {

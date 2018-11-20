@@ -184,6 +184,10 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "know about edit page line 2 label" in new Scenario() {
       repo.init("j0").config.editPage.get.line2Label must be (Some("Line 2"))
     }
+    "know about edit page line 3 label" in new Scenario() {
+      repo.init("j0").config.editPage.get.line3Label must be (Some("Line 3"))
+    }
+
     "know about edit page town label" in new Scenario() {
       repo.init("j0").config.editPage.get.townLabel must be (Some("Town"))
     }

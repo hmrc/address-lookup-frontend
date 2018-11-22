@@ -8,5 +8,4 @@ object IsCountryUK {
       _.address.country.fold(true)(_.code == "GB")
     )
   }
-
 }

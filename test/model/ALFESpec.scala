@@ -13,7 +13,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
   "an edit" should {
     "transform to a confirmable address and back again where isukMode == false" in {
       val edit = Edit("line1", Some("line2"), Some("line3"), "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
-      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
+      val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
@@ -26,12 +26,12 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddress("audit ref") must be (expected)
     }
 
     "transform to a confirmable address and back again given less than three lines where isukMode == false" in {
       val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
-      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
+      val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
@@ -44,12 +44,12 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddress("audit ref") must be (expected)
     }
 
     "transform to a confirmable address and back again given less than three lines where isukMode == true" in {
       val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some("GB"))
-      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
+      val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
@@ -62,11 +62,11 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddress("audit ref") must be (expected)
     }
     "transform to a confirmable address and back where postcode is empty isukMode == true" in {
       val edit = Edit("line1", None, None, "town", "", Some("FR"))
-      val conf = edit.toConfirmableAddressUkAndNonUk("audit ref")
+      val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
         None,
@@ -79,7 +79,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
       conf must be (expected)
       val ed2 = conf.toEdit
       ed2 must be (edit)
-      ed2.toConfirmableAddressUkAndNonUk("audit ref") must be (expected)
+      ed2.toConfirmableAddress("audit ref") must be (expected)
     }
   }
 

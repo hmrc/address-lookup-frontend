@@ -138,7 +138,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       val validatedForm = isValidPostcode(ukEditForm.bindFromRequest())
       validatedForm.fold(
         errors => (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressUkAndNonUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -149,7 +149,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       val validatedForm = isValidPostcode(nonUkEditForm.bindFromRequest())
       validatedForm.fold(
         errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddressUkAndNonUk(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -157,8 +157,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/confirm
   def confirm(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      journeyData.selectedAddress.fold((None, Redirect(routes.AddressLookupController.lookup(id))))(_ =>
-      (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress))))
+      journeyData.selectedAddress
+        .map(_ => (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress))))
+        .getOrElse((None, Redirect(routes.AddressLookupController.lookup(id))))
     }
   }
 

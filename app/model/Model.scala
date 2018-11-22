@@ -17,7 +17,7 @@ case class Select(addressId: String)
 
 case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
 
-    def toConfirmableAddressUkAndNonUk(auditRef: String): ConfirmableAddress = ConfirmableAddress(
+    def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
     None,
     ConfirmableAddressDetails(

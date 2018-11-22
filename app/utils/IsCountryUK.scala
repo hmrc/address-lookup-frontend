@@ -3,9 +3,11 @@ package utils
 import model.ConfirmableAddress
 
 object IsCountryUK {
-  val countryCheck: Option[ConfirmableAddress] => Boolean = (selectedAddress: Option[ConfirmableAddress]) => {
-    selectedAddress.fold(false)(
-      _.address.country.fold(true)(_.code == "GB")
-    )
+  def countryCheck(selectedAddress: Option[ConfirmableAddress]): Boolean = {
+   def isConfirmableAddressInUk(confirmableAddress: ConfirmableAddress): Boolean = { confirmableAddress.address.country
+    .map (_.code == "GB")
+    .getOrElse (true)
+   }
+    selectedAddress.map(isConfirmableAddressInUk).getOrElse(false)
   }
 }

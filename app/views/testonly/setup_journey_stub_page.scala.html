@@ -1,0 +1,17 @@
+@(stubForm:Form[String])(implicit request: Request[_], messages: Messages)
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@main_template(title = "Stub For starting new journey in ALF") {
+
+@helpers.form(controllers.testonly.routes.StubController.submitStubForNewJourney) {
+
+<textarea name="journeyConfig" id="journeyConfig" rows="20" class="form-group">@{stubForm("journeyConfig").value.get}
+</textarea>
+
+    <div class="form-field spaced-below">
+        <button class="button" type="submit" id="continue">Start New Journey</button>
+    </div>
+    }
+}
+

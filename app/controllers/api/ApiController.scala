@@ -1,13 +1,12 @@
 package controllers.api
 
 import java.util.UUID
-import javax.inject.{Inject, Singleton}
 
-import controllers.{AlfController, Confirmed}
-import model.{Init, JourneyConfig, JourneyData}
+import controllers.AlfController
+import forms.ALFForms
+import javax.inject.{Inject, Singleton}
 import model.JourneyData._
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
+import model.{Init, JourneyConfig, JourneyData}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.Action
@@ -26,12 +25,6 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
   protected def uuid: String = UUID.randomUUID().toString
 
   private implicit val initFormat = Json.format[Init]
-
-  val confirmedForm = Form(
-    mapping(
-      "id" -> text(1, 255)
-    )(Confirmed.apply)(Confirmed.unapply)
-  )
 
   // POST /init
   def initWithConfig = Action.async(parse.json[JourneyConfig]) { implicit req =>
@@ -60,8 +53,8 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
 
   // GET  /confirmed?id=:id
   def confirmed = Action.async { implicit req =>
-    confirmedForm.bindFromRequest().fold(
-      errors => Future.successful(BadRequest),
+    ALFForms.confirmedForm.bindFromRequest().fold(
+      _ => Future.successful(BadRequest),
       confirmed => {
         withJourney(confirmed.id, NotFound) { journeyData =>
           if (journeyData.confirmedAddress.isDefined) {

@@ -1,4 +1,3 @@
-
 @import uk.gov.hmrc.play.views.html.helpers
 
 @import model._
@@ -7,39 +6,31 @@
 
 @main_template(title = "No results found", journeyData = Some(journeyData)) {
 
-    @if(journeyData.resolvedConfig.showBackButtons) {
-        <div>
-            <a class="back-link" href="javascript:history.back()">Back</a>
-        </div>
+@if(journeyData.resolvedConfig.showBackButtons) {
+<div>
+    <a class="back-link" href="javascript:history.back()">Back</a>
+</div>
+}
+
+<h1 class="form-title heading-large" id="pageHeading">
+    @if(firstLookup) {
+    There are too many results
+    } else {
+    We cannot find any addresses
     }
+</h1>
 
-    <h1 class="form-title heading-xlarge" id="pageHeading">
-        @if(firstLookup) {
-            Your search has too many results
-        } else {
-            We couldn't find any results for that property name or number
-        }
-    </h1>
+<t>You entered:</t>
+<ul class="list list-bullet">
+    <li>@{lookup.postcode} for postcode</li>
+    <li>@{lookup.filter.fold("nothing for property name or number")(filter => s"'$filter' for name or number")}</li>
+</ul>
+</br>
 
-    <table>
-        <caption class="text--left">You searched for:</caption>
-        <tbody>
-        <tr>
-            <td>Property name or number</td>
-            <td>@{lookup.filter.getOrElse("")}</td>
-        </tr>
-        <tr>
-            <td>Postcode</td>
-            <td>@{lookup.postcode}</td>
-        </tr>
-        </tbody>
-    </table>
+<div class="form-group">
+    <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">Try a new search</button></a>
+</div>
 
-    @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
-        <div class="form-group">
-            <button class="button" type="submit" id="continue">Try again</button>
-        </div>
-    }
 
-    <a href="@{routes.AddressLookupController.edit(id)}" id="enterManual">Enter address manually</a>
+<a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">Enter the address manually</a>
 }

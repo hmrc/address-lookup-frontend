@@ -2,25 +2,33 @@
 package controllers
 
 import java.io.File
-import javax.inject.{Inject, Singleton}
 
 import config.FrontendAuditConnector
+import controllers.countOfResults._
+import forms.ALFForms._
+import javax.inject.{Inject, Singleton}
 import model._
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import spray.http.Uri
-import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.audit.AuditExtensions._
+import utils.PostcodeHelper
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+
+object countOfResults {
+  sealed trait ResultsCount
+  case class OneResult(res: ProposedAddress) extends ResultsCount
+  case class ResultsList(res: Seq[ProposedAddress], firstLookup: Boolean) extends ResultsCount
+  case class TooManyResults(res: Seq[ProposedAddress], firstLookup: Boolean) extends ResultsCount
+  case object NoResults extends ResultsCount
+}
 
 @Singleton
 class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
@@ -31,41 +39,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     (c.code -> c.name)
   }
 
-  val lookupForm = Form(
-    mapping(
-      "filter" -> optional(text.verifying("Your house name/number needs to be fewer than 256 characters", txt => txt.length < 256)),
-      "postcode" -> text.verifying("The postcode you entered appears to be incomplete or invalid. Please check and try again.", p => Postcode.cleanupPostcode(p).isDefined)
-    )(Lookup.apply)(Lookup.unapply)
-  )
-
-  val selectForm = Form(
-    mapping(
-      "addressId" -> text(1, 255)
-    )(Select.apply)(Select.unapply)
-  )
-
-  def editForm(ukMode: Boolean) = Form(
-    mapping(
-      "line1" -> text
-        .verifying("The first line of your address needs to be fewer than 256 characters", _.length < 256)
-        .verifying("This field is required", _.length > 0),
-      "line2" -> optional(text.verifying("The second line of your address needs to be fewer than 256 characters", _.length < 256)),
-      "line3" -> optional(text.verifying("The third line of your address needs to be fewer than 256 characters", _.length < 256)),
-      "town" -> text
-        .verifying("The fourth line of your address needs to be fewer than 256 characters", _.length < 256)
-        .verifying("This field is required", _.length > 0),
-      "postcode" -> default(text,""),
-      "countryCode" -> optional(text(2))
-    )(Edit.apply)(Edit.unapply)
-      .verifying("The postcode is invalid", edit => edit.isValidPostcode(ukMode))
-  )
-
-  val confirmedForm = Form(
-    mapping(
-      "id" -> text(1, 255)
-    )(Confirmed.apply)(Confirmed.unapply)
-  )
-
   // GET  /no-journey
   // display an error page when a required journey is not available
   def noJourney() = Action { implicit req =>
@@ -73,39 +46,32 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   // GET  /:id/lookup
-  // show the lookup form
-  // we could potentially make a debatable minor "improvement" here by pre-populating with previously entered values stored in journeyData
-  def lookup(id: String) = Action.async { implicit req =>
+  def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      (None, Ok(views.html.lookup(id, journeyData, lookupForm)))
+      val formPrePopped = lookupForm.fill(Lookup(filter,PostcodeHelper.displayPostcode(postcode)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.lookup(id, journeyData, formPrePopped)))
     }
   }
 
-  sealed trait ResultsCount
-  case class OneResult(res: ProposedAddress) extends ResultsCount
-  case class ResultsList(res: Seq[ProposedAddress], firstLookup: Boolean) extends ResultsCount
-  case class TooManyResults(res: Seq[ProposedAddress], firstLookup: Boolean) extends ResultsCount
-  case object NoResults extends ResultsCount
-
   // GET  /:id/select
-  // show a list of proposals from lookup parameters; always do the remote lookup as the parameters may have changed
-  // go back to the lookup form on form binding error
-  // we could optimize this to check whether or not parameters have changed but not really worth the effort at present
   def select(id: String) = Action.async { implicit req =>
     withFutureJourney(id) { journeyData =>
       lookupForm.bindFromRequest().fold(
         errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
-        lookup => handleLookup(id, journeyData, lookup) map {
-          case OneResult(address)                     => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
-          case ResultsList(addresses, firstLookup)    => Some(journeyData.copy(proposals = Some(addresses))) -> Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookup), firstLookup))
-          case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.too_many_results(id, journeyData, lookup, firstLookup))
-          case NoResults                              => None -> Ok(views.html.no_results(id, journeyData, lookup.postcode))
+        lookup => {
+          val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
+          handleLookup(id, journeyData, lookup) map {
+            case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
+            case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) -> Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
+            case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
+            case NoResults => None -> Ok(views.html.no_results(id, journeyData, lookupWithFormattedPostcode.postcode))
+          }
         }
       )
     }
   }
 
-  private def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
+  private[controllers] def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
     val addressLimit = journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit
     addressService.find(lookup.postcode, lookup.filter,journeyData.config.isukMode).flatMap {
       case noneFound if noneFound.isEmpty =>
@@ -115,7 +81,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           Future.successful(NoResults)
         }
       case oneFound if oneFound.size == 1 => Future.successful(OneResult(oneFound.head))
-      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup)) //TODO
+      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup))
       case displayProposals => Future.successful(ResultsList(displayProposals, firstLookup))
     }
   }
@@ -150,32 +116,40 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   // GET  /:id/edit
-  def edit(id: String) = Action.async { implicit req =>
+  def edit(id: String, lookUpPostCode: Option[String], uk: Option[Boolean]) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      val formFilled = editForm(journeyData.config.isukMode).fill(addressOrDefault(journeyData.selectedAddress))
-      if (journeyData.config.isukMode) {
-        (None, Ok(views.html.ukModeEdit(id, journeyData, formFilled, allowedCountries(Seq.empty, journeyData.config.allowedCountryCodes))))
+      val editAddress = addressOrDefault(journeyData.selectedAddress,lookUpPostCode)
+      val allowedSeqCountries = (s:Seq[(String,String)]) => allowedCountries(s, journeyData.config.allowedCountryCodes)
+
+      if (journeyData.config.isukMode || uk.contains(true)) {
+        (None, Ok(views.html.ukModeEdit(id, journeyData, ukEditForm.fill(editAddress), allowedSeqCountries(Seq.empty))))
       } else {
-        (None, Ok(views.html.edit(id, journeyData, formFilled, allowedCountries(countries, journeyData.config.allowedCountryCodes))))
+        (None, Ok(views.html.edit(id, journeyData, nonUkEditForm.fill(editAddress), allowedSeqCountries(countries))))
       }
     }
   }
 
-  private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress]): Edit = {
-    oAddr map (_.toEdit) getOrElse Edit("", None, None, "", "", Some("GB"))
+    private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
+    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode) , Some("GB")))
+  }
+
+  def handleUkEdit(id:String): Action[AnyContent]  = Action.async { implicit req =>
+    withJourney(id) { journeyData =>
+      val validatedForm = isValidPostcode(ukEditForm.bindFromRequest())
+      validatedForm.fold(
+        errors => (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+      )
+    }
   }
 
   // POST /:id/edit
-  def handleEdit(id: String) = Action.async { implicit req =>
+  def handleNonUkEdit(id: String): Action[AnyContent] = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      val bound = editForm(journeyData.config.isukMode).bindFromRequest()
-      bound.fold(
-        errors =>
-          if(journeyData.config.isukMode)
-            (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(Seq.empty, journeyData.config.allowedCountryCodes))))
-              else
-          (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
-        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id,journeyData.config.isukMode)))), Redirect(routes.AddressLookupController.confirm(id)))
+      val validatedForm = isValidPostcode(nonUkEditForm.bindFromRequest())
+      validatedForm.fold(
+        errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
+        edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
       )
     }
   }
@@ -183,7 +157,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/confirm
   def confirm(id: String) = Action.async { implicit req =>
     withJourney(id) { journeyData =>
-      (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress)))
+      journeyData.selectedAddress
+        .map(_ => (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress))))
+        .getOrElse((None, Redirect(routes.AddressLookupController.lookup(id))))
     }
   }
 
@@ -256,9 +232,6 @@ case class Proposals(proposals: Option[Seq[ProposedAddress]]) {
       }
     }.getOrElse(Seq.empty)
   }
-
 }
 
 case class Confirmed(id: String)
-
-

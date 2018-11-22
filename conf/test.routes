@@ -1,0 +1,3 @@
+GET  /test-setup                  @controllers.testonly.StubController.showStubPageForJourneyInit
+POST /test-setup                  @controllers.testonly.StubController.submitStubForNewJourney
+GET  /end-of-journey/:id          @controllers.testonly.StubController.showResultOfJourney(id: String)

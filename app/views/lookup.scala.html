@@ -17,7 +17,7 @@
     "This page has errors", lookupForm
   )
 
-  <h1 class="form-title heading-xlarge" id="pageHeading">@{journeyData.resolvedConfig.lookupPage.heading}</h1>
+  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.lookupPage.heading}</h1>
   @if(message.isDefined) {
     <div class="highlight-message highlight-message--full-width">
       <p>@{message.get}</p>
@@ -25,27 +25,28 @@
   }
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
-      <div class="form-field spaced-below">
+
+      <div class="form-field">
         @alfInput(
-          lookupForm("filter"),
-          '_label -> journeyData.resolvedConfig.lookupPage.filterLabel,
-          '_inputHint -> "For example, The Mill, Flat A or 37b",
-          '_inputClass -> "form-control--block"
+        lookupForm("postcode"),
+        '_label -> journeyData.resolvedConfig.lookupPage.postcodeLabel,
+        '_inputClass -> "form-control--block input--small"
         )
       </div>
       <div class="form-field spaced-below">
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolvedConfig.lookupPage.manualAddressLinkText}</a></p>
+      </div>
+      <div class="form-field spaced-below">
         @alfInput(
-          lookupForm("postcode"),
-          '_label -> journeyData.resolvedConfig.lookupPage.postcodeLabel,
-          '_inputHint -> "For example, ZZ1 1TA",
-          '_inputClass -> "form-control--block input--small"
+        lookupForm("filter"),
+        '_label -> journeyData.resolvedConfig.lookupPage.filterLabel,
+        '_inputHint -> "For example, The Mill, 116 or Flat 37a",
+        '_inputClass -> "form-control--block"
         )
       </div>
+
       <div class="form-field spaced-below">
         <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.lookupPage.submitLabel}</button>
-      </div>
-      <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolvedConfig.lookupPage.manualAddressLinkText}</a></p>
       </div>
     </fieldset>
   }

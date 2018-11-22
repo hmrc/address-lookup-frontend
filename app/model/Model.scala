@@ -1,13 +1,13 @@
 
 package model
 
-import play.api.libs.json._
-import play.api.libs.json.Reads._
+import model.JourneyConfigDefaults._
 import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 import services.ForeignOfficeCountryService
-import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2.Country
-import JourneyConfigDefaults._
+import utils.PostcodeHelper
 
 case class Lookup(filter: Option[String], postcode: String)
 
@@ -17,22 +17,15 @@ case class Select(addressId: String)
 
 case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
 
-  def toConfirmableAddress(auditRef: String, isukMode: Boolean): ConfirmableAddress = ConfirmableAddress(
+    def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
     None,
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
-      if (isukMode) None else Some(postcode),
-      countryCode.fold(if (isukMode) ForeignOfficeCountryService.find("GB") else None)(code => ForeignOfficeCountryService.find(code))
+      if(postcode.isEmpty) None else Some(postcode),
+      countryCode.fold(ForeignOfficeCountryService.find("GB"))(code => ForeignOfficeCountryService.find(code))
     )
   )
-
-  def isValidPostcode(ukMode: Boolean): Boolean = {
-    countryCode.fold(ukMode && postcode.isEmpty) {
-      case _ if (ukMode && !postcode.isEmpty) => false
-      case a if (!ukMode) => a != ForeignOfficeCountryService.GB.code || postcode.isEmpty || Postcode.cleanupPostcode(postcode).isDefined
-    }
-  }
 }
 
 object JourneyConfigDefaults {
@@ -42,33 +35,32 @@ object JourneyConfigDefaults {
   val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
   val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
   val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm and continue"
-  val CONFIRM_PAGE_EDIT_LINK_TEXT = "Edit address"
+  val CONFIRM_PAGE_EDIT_LINK_TEXT = "Edit this address"
 
   val EDIT_PAGE_TITLE = "Enter the address"
   val EDIT_PAGE_HEADING = "Enter the address"
   val EDIT_PAGE_LINE1_LABEL = "Address line 1"
-  val EDIT_PAGE_LINE2_LABEL = "Address line 2 (optional)"
-  val EDIT_PAGE_LINE3_LABEL = "Address line 3 (optional)"
-  val EDIT_PAGE_TOWN_LABEL = "Town/City"
+  val EDIT_PAGE_LINE2_LABEL = "Address line 2"
+  val EDIT_PAGE_LINE3_LABEL = "Address line 3"
+  val EDIT_PAGE_TOWN_LABEL = "Town/city"
   val EDIT_PAGE_POSTCODE_LABEL = "Postal code (optional)"
   val EDIT_PAGE_COUNTRY_LABEL = "Country"
-  val EDIT_PAGE_SUBMIT_LABEL = "Next"
+  val EDIT_PAGE_SUBMIT_LABEL = "Continue"
 
   val LOOKUP_PAGE_TITLE = "Find the address"
   val LOOKUP_PAGE_HEADING = "Find the address"
   val LOOKUP_PAGE_FILTER_LABEL = "Property name or number"
   val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
-  val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
-  val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address doesn't have a UK postcode"
-  // Uk Only Mode
-  val UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address doesn't have a postcode"
+  val LOOKUP_PAGE_SUBMIT_LABEL = "Search for the address"
+  val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address does not have a UK postcode"
 
   val SELECT_PAGE_TITLE = "Choose the address"
   val SELECT_PAGE_HEADING = "Choose the address"
+  val SELECT_PAGE_HEADING_WITH_POSTCODE = "Showing all results for "
   val SELECT_PAGE_PROPOSAL_LIST_LABEL = "Please select one of the following addresses"
   val SELECT_PAGE_SUBMIT_LABEL = "Continue"
 
-  val EDIT_LINK_TEXT = "Enter address manually"
+  val EDIT_LINK_TEXT = "Enter the address manually"
   val SEARCH_AGAIN_LINK_TEXT = "Search again"
 
   val CONFIRM_CHANGE_TEXT = "By confirming this change, you agree that the information you have given is complete and correct."
@@ -96,7 +88,7 @@ case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val phaseBannerHtml: String = cfg.phaseBannerHtml.getOrElse(defaultPhaseBannerHtml(phaseFeedbackLink))
   val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
-  val allowedCountryCodes: Option[Set[String]] = if (cfg.isukMode) Some(Set("GB")) else cfg.allowedCountryCodes
+  val allowedCountryCodes: Option[Set[String]] = cfg.allowedCountryCodes
 }
 
 case class ResolvedConfirmPage(p: ConfirmPage) {
@@ -138,7 +130,7 @@ case class ResolvedLookupPage(p: LookupPage, isukMode: Boolean) {
   // TODO
   val resultLimitExceededMessage: Option[String] = None
   val noResultsFoundMessage: Option[String] = None
-  val manualAddressLinkText: String = if (isukMode) UK_LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT else p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+  val manualAddressLinkText: String = p.manualAddressLinkText.getOrElse(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
 }
 
 case class LookupPage(title: Option[String] = None,
@@ -153,6 +145,7 @@ case class LookupPage(title: Option[String] = None,
 case class ResolvedSelectPage(p: SelectPage) {
   val title: String = p.title.getOrElse(SELECT_PAGE_TITLE)
   val heading: String = p.heading.getOrElse(SELECT_PAGE_HEADING)
+  val headingWithPostcode: String = p.headingWithPostcode.getOrElse(SELECT_PAGE_HEADING_WITH_POSTCODE)
   val proposalListLabel: String = p.proposalListLabel.getOrElse(SELECT_PAGE_PROPOSAL_LIST_LABEL)
   val submitLabel: String = p.submitLabel.getOrElse(SELECT_PAGE_SUBMIT_LABEL)
   val showSearchAgainLink: Boolean = p.showSearchAgainLink.getOrElse(false)
@@ -162,6 +155,7 @@ case class ResolvedSelectPage(p: SelectPage) {
 
 case class SelectPage(title: Option[String] = None,
                       heading: Option[String] = None,
+                      headingWithPostcode: Option[String] = None,
                       proposalListLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
                       proposalListLimit: Option[Int] = None,
@@ -179,8 +173,6 @@ case class ResolvedEditPage(p: EditPage) {
   val postcodeLabel: String = p.postcodeLabel.getOrElse(EDIT_PAGE_POSTCODE_LABEL)
   val countryLabel: String = p.countryLabel.getOrElse(EDIT_PAGE_COUNTRY_LABEL)
   val submitLabel: String = p.submitLabel.getOrElse(EDIT_PAGE_SUBMIT_LABEL)
-  val showSearchAgainLink: Boolean = p.showSearchAgainLink.getOrElse(false)
-  val searchAgainLinkText: String = p.searchAgainLinkText.getOrElse(SEARCH_AGAIN_LINK_TEXT)
 }
 
 case class EditPage(title: Option[String] = None,
@@ -191,9 +183,8 @@ case class EditPage(title: Option[String] = None,
                     townLabel: Option[String] = None,
                     postcodeLabel: Option[String] = None,
                     countryLabel: Option[String] = None,
-                    submitLabel: Option[String] = None,
-                    showSearchAgainLink: Option[Boolean] = Some(false),
-                    searchAgainLinkText: Option[String] = None)
+                    submitLabel: Option[String] = None
+                   )
 
 case class JourneyData(config: JourneyConfig,
                        proposals: Option[Seq[ProposedAddress]] = None,
@@ -225,7 +216,7 @@ case class JourneyConfig(continueUrl: String,
                          timeout: Option[Timeout] = None,
                          ukMode: Option[Boolean] = None) {
 
-  def isukMode = ukMode.fold(false)(a => if (a) a else false)
+  def isukMode: Boolean  = ukMode.contains(true)
 }
 
 case class ProposedAddress(addressId: String,
@@ -260,8 +251,7 @@ case class ProposedAddress(addressId: String,
     lines.take(3).mkString(", ") + ", " +
       town.map(_ + ", ").getOrElse("") +
       county.map(_ + ", ").getOrElse("") +
-      postcode + ", " +
-      country.name
+      postcode
   }
 
 }
@@ -273,7 +263,6 @@ case class ConfirmableAddress(auditRef: String,
   def toEdit: Edit = address.toEdit
 
   def toDescription: String = address.toDescription
-
 }
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
@@ -286,7 +275,7 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 
   def toEdit: Edit = {
     val el = editLines
-    Edit(el._1, el._2, el._3, el._4, postcode.getOrElse(""), country.map(_.code))
+    Edit(el._1, el._2, el._3, el._4, PostcodeHelper.displayPostcode(postcode), country.map(_.code))
   }
 
   def editLines: (String, Option[String], Option[String], String) = {
@@ -308,7 +297,6 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 }
 
 // JSON serialization companions
-
 object JourneyData {
 
   implicit val countryFormat = Json.format[Country]

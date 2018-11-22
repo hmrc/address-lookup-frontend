@@ -17,19 +17,13 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-class StubControllerImpl @Inject()(val apiController: ApiController,val  journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends StubController {
-
-}
 object TestSetupForm {
   val form = Form(single(
     "journeyConfig" -> text
   ))
 }
-@ImplementedBy(classOf[StubControllerImpl])
-trait StubController extends FrontendController with I18nSupport with ServicesConfig {
-  val apiController: ApiController
-  val journeyRepository: JourneyRepository
+
+class StubController @Inject()(val apiController: ApiController,val  journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends  FrontendController with I18nSupport with ServicesConfig {
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.get(id).map { j =>

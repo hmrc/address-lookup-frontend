@@ -4,7 +4,8 @@ import model.ConfirmableAddress
 
 object IsCountryUK {
   def countryCheck(selectedAddress: Option[ConfirmableAddress]): Boolean = {
-   def isConfirmableAddressInUk(confirmableAddress: ConfirmableAddress): Boolean = { confirmableAddress.address.country
+   def isConfirmableAddressInUk(confirmableAddress: ConfirmableAddress): Boolean = {
+     confirmableAddress.address.country
     .map (_.code == "GB")
     .getOrElse (true)
    }

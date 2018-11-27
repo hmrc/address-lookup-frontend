@@ -49,7 +49,7 @@ object ALFForms {
       "line1" -> text
         .verifying(constraintString256("first address line"))
         .verifying(constraintMinLength("Enter first line of address")),
-      "line2" -> default[Option[String]](optional(text.verifying(constraintString256("second address line"))), Some("")),
+      "line2" -> optional(text.verifying(constraintString256("second address line"))),
       "line3" -> optional(text.verifying(constraintString256("third address line"))),
       "town" -> text
         .verifying(constraintString256("town or city"))

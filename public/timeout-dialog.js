@@ -68,7 +68,9 @@ String.prototype.format = function () {
             close_on_escape: true,
             background_no_scroll: true,
             keep_alive_button_text: 'Resume your session',
-            heading_text: 'You’ve been inactive for a while.'
+            heading_text: 'You’ve been inactive for a while.',
+            minute_text: 'minute',
+            minutes_text: 'minutes'
         }
 
         $.extend(settings, options)
@@ -98,7 +100,7 @@ String.prototype.format = function () {
                 var time = secondsToTime(settings.countdown)
                 var timeout = secondsToTime(settings.timeout)
                 if(time.m == 1) {
-                    settings.time = ' minute'
+                    settings.time = settings.minute_text
                 }
                 $(
                     '<div id="timeout-dialog" class="timeout-dialog" role="dialog" aria-labelledby="timeout-message" tabindex=-1 aria-live="polite">'
@@ -167,12 +169,12 @@ String.prototype.format = function () {
                 var self = this
                 if (counter < 60) {
                     $('.timeout-dialog').removeAttr('aria-live')
-                    $('#timeout-countdown').html(counter + " seconds")
+                    $('#timeout-countdown').html(counter + " " + settings.time)
                 } else {
                     var newCounter = Math.ceil(counter / 60);
-                    var minutesMessage = " minutes"
+                    var minutesMessage = " " + settings.minutes_text
                     if(newCounter == 1) {
-                        minutesMessage = " minute"
+                        minutesMessage = " " + settings.minute_text
                     }
                     if(newCounter < self.currentMin){
                         self.currentMin = newCounter

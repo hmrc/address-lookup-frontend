@@ -9,12 +9,12 @@
 
   @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>
-      <a class="back-link" href="javascript:history.back()">Back</a>
+      <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
     </div>
   }
 
   @alfErrorSummary(
-    "This page has errors", lookupForm
+    messages("common.error.text"), lookupForm
   )
 
   <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.lookupPage.heading}</h1>
@@ -40,7 +40,7 @@
         @alfInput(
         lookupForm("filter"),
         '_label -> journeyData.resolvedConfig.lookupPage.filterLabel,
-        '_inputHint -> "For example, The Mill, 116 or Flat 37a",
+        '_inputHint -> messages("lookup.input.hint.text"),
         '_inputClass -> "form-control--block"
         )
       </div>

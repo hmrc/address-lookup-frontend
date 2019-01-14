@@ -4,33 +4,35 @@
 
 @(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "No results found", journeyData = Some(journeyData)) {
+@main_template(title = messages("too.many.results.title.text"), journeyData = Some(journeyData)) {
 
 @if(journeyData.resolvedConfig.showBackButtons) {
 <div>
-    <a class="back-link" href="javascript:history.back()">Back</a>
+    <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
 </div>
 }
 
-<h1 class="form-title heading-large" id="pageHeading">
-    @if(firstLookup) {
-    There are too many results
+<h1 class="form-title heading-xlarge" id="pageHeading">
+    @{if(firstLookup) {
+    messages("too.many.results.text")
     } else {
-    We cannot find any addresses
+    messages("too.many.cannot.find.text")
+    }
     }
 </h1>
 
-<t>You entered:</t>
+<t>@messages("too.many.you.entered.text")</t>
 <ul class="list list-bullet">
-    <li>@{lookup.postcode} for postcode</li>
-    <li>@{lookup.filter.fold("nothing for property name or number")(filter => s"'$filter' for name or number")}</li>
+    <li>@{lookup.postcode} @messages("common.for.postcode.text")</li>
+    <li>@{lookup.filter.fold(messages("too.many.nothing.text"))(filter => s"'${filter}' ${messages("too.many.name.number.text")}")}</li>
+
 </ul>
 </br>
 
 <div class="form-group">
-    <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">Try a new search</button></a>
+    <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messages("too.many.another.search.text")</button></a>
 </div>
 
+<a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messages("results.manual.entry.text")</a>
 
-<a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">Enter the address manually</a>
 }

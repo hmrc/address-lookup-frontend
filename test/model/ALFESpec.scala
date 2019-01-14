@@ -186,15 +186,15 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "have default help link" in {
-      cfg.phaseFeedbackLink must be ("/help/")
+      cfg.phaseFeedbackLink must be ("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
     }
 
     "have beta help link" in {
-      cfg.copy(c.copy(showPhaseBanner = Some(true))).phaseFeedbackLink must be ("/help/beta")
+      cfg.copy(c.copy(showPhaseBanner = Some(true))).phaseFeedbackLink must be ("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
     }
 
     "have alpha help link" in {
-      cfg.copy(c.copy(showPhaseBanner = Some(true), alphaPhase = Some(true))).phaseFeedbackLink must be ("/help/alpha")
+      cfg.copy(c.copy(showPhaseBanner = Some(true), alphaPhase = Some(true))).phaseFeedbackLink must be ("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
     }
 
     "have default phase banner html" in {

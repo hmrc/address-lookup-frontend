@@ -5,21 +5,21 @@
 
 @(id: String, journeyData: JourneyData, postcode: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "Can’t find any addresses", journeyData = Some(journeyData)) {
+@main_template(title = messages("result.title.text"), journeyData = Some(journeyData)) {
 
-    @if(journeyData.resolvedConfig.showBackButtons) {
-        <div>
-            <a class="back-link" href="javascript:history.back()">Back</a>
-        </div>
-    }
+@if(journeyData.resolvedConfig.showBackButtons) {
+<div>
+    <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+</div>
+}
 
-    <h1 class="form-title heading-large" id="pageHeading">We cannot find any addresses for @{postcode}</h1>
+<h1 class="form-title heading-large" id="pageHeading">@{s"${messages("results.heading.text")} $postcode"}</h1>
 
-    @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
-        <div class="form-group">
-            <button class="button" type="submit" id="continue">Try a different postcode</button>
-        </div>
-    }
+@helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
+<div class="form-group">
+    <button class="button" type="submit" id="continue">@messages("results.diff.postcode.text")</button>
+</div>
+}
 
-    <a href="@{routes.AddressLookupController.edit(id,None,Some(true))}" id="enterManual">Enter the address manually</a>
+<a href="@{routes.AddressLookupController.edit(id,None,Some(true))}" id="enterManual">@messages("results.manual.entry.text")</a>
 }

@@ -84,7 +84,7 @@ case class ResolvedJourneyConfig(cfg: JourneyConfig) {
     case Some(true) => if (alphaPhase) "alpha" else "beta"
     case _ => ""
   }
-  val phaseFeedbackLink: String = cfg.phaseFeedbackLink.getOrElse(s"/help/${phase}")
+  val phaseFeedbackLink: String = cfg.phaseFeedbackLink.getOrElse(s"https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
   val phaseBannerHtml: String = cfg.phaseBannerHtml.getOrElse(defaultPhaseBannerHtml(phaseFeedbackLink))
   val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)

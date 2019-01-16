@@ -1,6 +1,6 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(title = "No Journey") {
-  <h1>No Journey</h1>
+@main_template(title = messages("no.journey.title.text")) {
+  <h1>@messages("no.journey.heading.text")</h1>
 }

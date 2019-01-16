@@ -190,10 +190,10 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
   }
   "constraintString256" should {
     "return invalid for string > 256" in {
-      ALFForms.constraintString256("foo")(chars257) mustBe Invalid("Enter a foo using 256 characters or less")
+      ALFForms.constraintString256("foo")(chars257) mustBe Invalid("foo")
     }
     "return Invalid for string = 256" in {
-      ALFForms.constraintString256("foo")(chars256)  mustBe Invalid("Enter a foo using 256 characters or less")
+      ALFForms.constraintString256("foo")(chars256)  mustBe Invalid("foo")
     }
     "return Valid for string < 256" in  {
       ALFForms.constraintString256("foo")(chars255)  mustBe Valid

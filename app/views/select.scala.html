@@ -8,54 +8,54 @@
 
 @main_template(title = journeyData.resolvedConfig.selectPage.title, journeyData = Some(journeyData)) {
 
-  @if(journeyData.resolvedConfig.showBackButtons) {
-    <div>
-      <a class="back-link" href="javascript:history.back()">Back</a>
-    </div>
-  }
+@if(journeyData.resolvedConfig.showBackButtons) {
+<div>
+    <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+</div>
+}
 
-  @alfErrorSummary(
-    "This page has errors", selectForm
-  )
+@alfErrorSummary(
+messages("common.error.text"), selectForm
+)
 
 @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
 @if(!firstSearch){
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.headingWithPostcode} @{lookup.get.postcode}</h1>
+<h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.headingWithPostcode} @{lookup.get.postcode}</h1>
 } else {
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
+<h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
 }
 
 } else {
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
+<h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.selectPage.heading}</h1>
 }
 
-  @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
-    @if(!firstSearch) {
-      <div class="form-field">
-        <p>We could not find a match with '@{lookup.get.filter.get}'.</p>
-      </div>
-      <div>
-        <p><a href="@{routes.AddressLookupController.lookup(id,Some(lookup.get.postcode),Some(lookup.get.filter.get))}" id="differentAddress">Try a different name or number</a></p>
-      </div>
-    }
-  }
+@if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
+@if(!firstSearch) {
+<div class="form-field">
+    <p>@messages("select.no.results") '@{lookup.get.filter.get}'.</p>
+</div>
+<div>
+    <p><a href="@{routes.AddressLookupController.lookup(id,Some(lookup.get.postcode),Some(lookup.get.filter.get))}" id="differentAddress">@messages("select.different.search")</a></p>
+</div>
+}
+}
 
-  </br>
+</br>
 
-  @helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
+@helpers.form(controllers.routes.AddressLookupController.handleSelect(id)) {
 
-    <fieldset>
+<fieldset>
 
-      <div class="form-group">
+    <div class="form-group">
         @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolvedConfig.selectPage.proposalListLabel, '_labelClass -> "block-label")
-      </div>
-      <div class="form-group">
+    </div>
+    <div class="form-group">
         <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.selectPage.submitLabel}</button>
-      </div>
-      <div class="form-field">
+    </div>
+    <div class="form-field">
         <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.get.postcode),Some(true))}" id="editAddress">@{journeyData.resolvedConfig.selectPage.editAddressLinkText}</a></p>
-      </div>
-    </fieldset>
-  }
+    </div>
+</fieldset>
+}
 }

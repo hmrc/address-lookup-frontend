@@ -1,5 +1,6 @@
 package services
 
+import com.typesafe.config.Config
 import model.ProposedAddress
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -32,6 +33,8 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
       }
 
       override val hooks: Seq[HttpHook] = Seq.empty
+
+      override protected def configuration: Option[Config] = ???
     }
 
     val service = new AddressLookupAddressService()(ec) {

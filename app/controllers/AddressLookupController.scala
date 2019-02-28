@@ -3,7 +3,7 @@ package controllers
 
 import java.io.File
 
-import config.FrontendAuditConnector
+import config.{FrontendAuditConnector, FrontendServicesConfig}
 import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
@@ -16,7 +16,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.PostcodeHelper
 
@@ -193,7 +192,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
 abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
                                       (implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport with ServicesConfig {
+  extends FrontendController with I18nSupport with FrontendServicesConfig {
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))

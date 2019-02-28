@@ -1,13 +1,11 @@
 package services
 
 import javax.inject.Singleton
-
 import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
-import config.AddressLookupFrontendSessionCache
+import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
 import model._
 import uk.gov.hmrc.http.cache.client.HttpCaching
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,7 +23,7 @@ trait JourneyRepository {
 }
 
 @Singleton
-class KeystoreJourneyRepository extends JourneyRepository with ServicesConfig {
+class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesConfig {
 
   val cacheId = "journey-data"
 

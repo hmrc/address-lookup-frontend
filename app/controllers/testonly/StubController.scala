@@ -1,6 +1,7 @@
 package controllers.testonly
 
 import com.google.inject.ImplementedBy
+import config.FrontendServicesConfig
 import controllers.api.ApiController
 import javax.inject.Inject
 import model.JourneyData._
@@ -12,7 +13,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import play.mvc.Http.HeaderNames
 import services.JourneyRepository
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -23,7 +23,10 @@ object TestSetupForm {
   ))
 }
 
-class StubController @Inject()(val apiController: ApiController,val  journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends  FrontendController with I18nSupport with ServicesConfig {
+class StubController @Inject()(val apiController: ApiController,val  journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi)
+  extends FrontendController
+    with I18nSupport
+    with FrontendServicesConfig {
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.get(id).map { j =>

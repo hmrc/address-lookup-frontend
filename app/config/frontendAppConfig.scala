@@ -1,7 +1,6 @@
 package config
 
 import play.api.Play.{configuration, current}
-import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
   val analyticsToken: String
@@ -13,7 +12,7 @@ trait AppConfig {
   def buildReportAProblemNonJSUrl(service: Option[String]): String
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 

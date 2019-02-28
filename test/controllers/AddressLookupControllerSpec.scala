@@ -649,7 +649,7 @@ class AddressLookupControllerSpec
       val result = controller.renewSession()(req)
       status(result) mustBe 200
       contentType(result) mustBe Some("image/jpeg")
-      await(result).body.dataStream.toString.contains("""renewSession.jpg""") mustBe true
+      headers(result).get("Content-Disposition").exists(_.contains("renewSession.jpg")) mustBe true
     }
   }
   "destroySession" should {

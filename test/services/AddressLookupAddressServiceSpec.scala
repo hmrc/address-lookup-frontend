@@ -1,9 +1,11 @@
 package services
 
+import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import model.ProposedAddress
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Play
 import play.api.libs.json.Json
 import services.AddressReputationFormats._
 import uk.gov.hmrc.address.v2._
@@ -34,7 +36,9 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
 
       override val hooks: Seq[HttpHook] = Seq.empty
 
-      override protected def configuration: Option[Config] = ???
+      override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
+
+      override protected def actorSystem: ActorSystem = akka.actor.ActorSystem()
     }
 
     val service = new AddressLookupAddressService()(ec) {

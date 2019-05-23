@@ -22,6 +22,7 @@ import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import itutil.config.IntegrationTestConstants.testCsrfToken
 import play.api.http.HeaderNames
 import play.api.libs.Crypto
 import play.api.libs.json.{JsObject, Json}
@@ -48,6 +49,7 @@ trait LoginStub extends SessionCookieBaker {
   def getSessionCookie(additionalData: Map[String, String] = Map(), userId: String = defaultUser, sessionId: String = SessionId): String = {
     cookieValue(cookieData(additionalData, userId, sessionId))
   }
+  def sessionCookieWithCSRF = getSessionCookie(Map("csrfToken" -> testCsrfToken()))
 }
 
 trait SessionCookieBaker {

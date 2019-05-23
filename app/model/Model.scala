@@ -104,7 +104,6 @@ case class ResolvedConfirmPage(p: ConfirmPage) {
   val changeLinkText: String = p.changeLinkText.getOrElse(CONFIRM_PAGE_EDIT_LINK_TEXT)
   val showConfirmChangeText: Boolean = p.showConfirmChangeText.getOrElse(false)
   val confirmChangeText: String = p.confirmChangeText.getOrElse(CONFIRM_CHANGE_TEXT)
-
 }
 
 case class ConfirmPage(title: Option[String] = None,
@@ -217,6 +216,7 @@ case class JourneyConfig(continueUrl: String,
                          ukMode: Option[Boolean] = None) {
 
   def isukMode: Boolean  = ukMode.contains(true)
+
 }
 
 case class ProposedAddress(addressId: String,
@@ -263,6 +263,7 @@ case class ConfirmableAddress(auditRef: String,
   def toEdit: Edit = address.toEdit
 
   def toDescription: String = address.toDescription
+
 }
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,

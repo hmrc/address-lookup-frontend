@@ -25,7 +25,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import itutil.config.{AddressRecordConstants, IntegrationTestConstants}
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.libs.ws.{WSClient, WSRequest}
+import play.api.libs.ws.WSClient
 
 object WireMockHelper {
   val wiremockPort = 11111
@@ -52,9 +52,9 @@ trait WireMockHelper {
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  //TODO Replace hard coded host with config based value
-  def buildClient(path: String, journeyID: String = "Jid123", lookUpOrApi: String = "lookup-address"):WSRequest =
-    ws.url(s"http://localhost:$port/$lookUpOrApi/$journeyID/$path").withFollowRedirects(false)
+  def buildClientLookupAddress(path: String, journeyID: String = "Jid123") = ws.url(s"http://localhost:$port/lookup-address/$journeyID/$path").withFollowRedirects(false)
+
+  def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings
 

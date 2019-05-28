@@ -1,6 +1,6 @@
 package controllers
 
-import itutil.{IntegrationSpecBase, WireMockHelper}
+import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants._
 import model.{ConfirmableAddress, ConfirmableAddressDetails}
@@ -20,13 +20,13 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "lookup?postcode=AB11+1AB&filter=bar")
+      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> testFilterValue))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> testFilterValue))
     }
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
@@ -34,13 +34,14 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "lookup?postcode=AB11 1AB")
+
+      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> ""))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> ""))
     }
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
@@ -48,13 +49,13 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "lookup?filter=bar")
+      val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> testFilterValue))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> testFilterValue))
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
@@ -62,13 +63,14 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "lookup")
+
+      val fResponse = buildClientLookupAddress(path = "lookup")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> ""))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> ""))
     }
   }
 
@@ -77,9 +79,9 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit?uk=true").
-        withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck").
-        get()
+      val fResponse = buildClientLookupAddress(path = "edit?uk=true")
+        .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
+        .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
@@ -89,11 +91,10 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
     "return non uk edit and not error with showSearchAgainLink and searchAgainLinkText in the json should not error when uk param not provided" in {
       val config = (Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject] - "editPage") ++
         Json.obj("editPage" -> Json.obj("showSearchAgainLink" -> true, "searchAgainLinkText" -> "foo"))
-
       stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -106,28 +107,32 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit?lookUpPostCode=AB11+++1AB&uk=true")
+      val fResponse = buildClientLookupAddress(path = "edit?lookUpPostCode=AB11+++1AB&uk=true")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
+
       testElementExists(res, EditPage.ukEditId)
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode))
     }
 
     "return the UK edit page with no pre-popped postcode if param not provided AND UK mode is false but uk param provided" in {
-      stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
+      val testConfigWithAddressAndNotUkMode = testJourneyDataWithMinimalJourneyConfig.copy(
+        selectedAddress = None, config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false))
+      )
 
+      stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
       res.status shouldBe OK
       testElementExists(res, EditPage.ukEditId)
-      testOnPageValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode))
+      testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode))
     }
 
     "redirect to the UK edit page if uk param provided and UK mode is true" in {
@@ -139,7 +144,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit?uk=true")
+      val fResponse = buildClientLookupAddress(path = "edit?uk=true")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -157,7 +162,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -170,7 +175,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -182,32 +187,26 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
 
   "handleEditNonUk" should {
     "return 400 if all fields are missing and return nonUkEdit page" in {
-      stubKeystore(
-        session = testJourneyId,
-        theData = Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
-          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject],
-        status = OK)
+      stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject], OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
 
       res.status shouldBe BAD_REQUEST
+      labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+        "line1" -> "This field is required Address line 1",
+        "line2" -> "Address line 2"))
       testElementExists(res, EditPage.nonUkEditId)
     }
     s"return 303 if form is valid and redirect to ${controllers.routes.AddressLookupController.confirm("")}" in {
-      stubKeystore(
-        session = testJourneyId,
-        theData = Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
-          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject],
-        status = OK)
-
+      stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject], OK)
       stubKeystoreSave(testJourneyId, Json.obj(), OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -233,7 +232,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
         status = OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient("ukEdit").
+      val fResponse = buildClientLookupAddress("ukEdit").
         withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
@@ -248,10 +247,11 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
           config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject],
         status = OK)
 
+      stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject], OK)
       stubKeystoreSave(testJourneyId, Json.obj(), OK)
 
       val sessionCookie = sessionCookieWithCSRF
-      val fResponse = buildClient("ukEdit").
+      val fResponse = buildClientLookupAddress("ukEdit").
         withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck").
         post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -274,7 +274,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfig.copy(confirmedAddress = Some(testConfirmedAddress))
       stubKeystore(testJourneyId, Json.toJson(configWithConfirmedAddress).as[JsObject], OK)
 
-      val fResponse = buildClient(path = "confirm?id=Jid123", lookUpOrApi = "api")
+      val fResponse = buildClientAPI("confirmed?id=Jid123")
         .withHeaders(HeaderNames.COOKIE -> sessionCookie, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)

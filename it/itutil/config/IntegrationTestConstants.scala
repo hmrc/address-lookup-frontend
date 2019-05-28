@@ -4,7 +4,8 @@ import java.util.UUID
 
 import model._
 import play.api.libs.json._
-import uk.gov.hmrc.address.v2.Country
+import uk.gov.hmrc.address.v2.LocalCustodian
+import uk.gov.hmrc.address.v2.{Address, AddressRecord, Country}
 
 object IntegrationTestConstants {
   val testJourneyId = "Jid123"
@@ -145,10 +146,6 @@ object AddressRecordConstants {
     "logicalState" -> Json.toJson("logicalState"),
     "streetClassification" -> "streetClassification"
   )
-}
-
-object SessionKeyConstants {
-  val csrfTokenKey = "csrfToken"
 }
 
 object PageElementConstants {

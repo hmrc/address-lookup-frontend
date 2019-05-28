@@ -23,21 +23,21 @@ import uk.gov.hmrc.play.test.UnitSpec
 trait IntegrationSpecBase extends UnitSpec with LoginStub
   with GivenWhenThen
   with OneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
-  with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig {
+  with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig with PageContentHelper {
 
-  val mockHost = WiremockHelper.wiremockHost
-  val mockPort = WiremockHelper.wiremockPort
+  val mockHost = WireMockHelper.wiremockHost
+  val mockPort = WireMockHelper.wiremockPort
 
-  override def beforeEach() = {
+  override def beforeEach(): Unit = {
     resetWiremock()
   }
 
-  override def beforeAll() = {
+  override def beforeAll(): Unit = {
     super.beforeAll()
     startWiremock()
   }
 
-  override def afterAll() = {
+  override def afterAll(): Unit = {
     stopWiremock()
     super.afterAll()
   }

@@ -18,7 +18,7 @@ object IntegrationTestConstants {
   val testAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
   val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testAddress)
 
-  val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = "A url"))
+  val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = "Aurl"))
   val testConfigWithAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testAddress)))
   val testConfigWithoutAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = None)
   val testConfigDefaultAsJson = Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject]

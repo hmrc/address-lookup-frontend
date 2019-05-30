@@ -18,7 +18,7 @@
 
 @links = {
     @if(journeyData.flatMap(_.config.additionalStylesheetUrl).isDefined) {
-        <link rel="stylesheet" type="text/css" href="@{journeyData.flatMap(_.config.additionalStylesheetUrl).get}">
+        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.config.additionalStylesheetUrl).get}">
     }
 }
 

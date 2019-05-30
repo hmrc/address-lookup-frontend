@@ -115,7 +115,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       )
 
       stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
-      val fResponse = buildClientLookupAddress(path = "edit")
+      val fResponse = buildClientLookupAddress(path = "edit?uk=true")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -204,7 +204,6 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       res.status shouldBe SEE_OTHER
-      testElementExists(res, EditPage.nonUkEditId)
     }
   }
 
@@ -247,7 +246,6 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       res.status shouldBe SEE_OTHER
-      testElementExists(res, EditPage.ukEditId)
     }
   }
 

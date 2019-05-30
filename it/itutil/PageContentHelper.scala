@@ -29,6 +29,18 @@ trait PageContentHelper { unitSpec: UnitSpec =>
 
   def testElementExists(response: Future[WSResponse], elementId: String): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementById(elementId)
+    doc.getElementById(elementId) should not be null
+  }
+  def testElementDoesntExist(response: Future[WSResponse], elementId: String): Unit = {
+    val doc = getDocFromResponse(response)
+      doc.getElementById(elementId) shouldBe null
+  }
+  def testCustomPartsOfGovWrapperElementsForDefaultConfig(response: Future[WSResponse]): Unit = {
+    val doc = getDocFromResponse(response)
+    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
+    testElementDoesntExist(response,"phase-banner")
+    testElementDoesntExist(response,"customStyleSheet")
+    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
+    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=AddressLookupFrontend""")
   }
 }

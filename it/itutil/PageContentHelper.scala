@@ -1,5 +1,7 @@
 package itutil
 
+import java.util
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -18,6 +20,8 @@ trait PageContentHelper { unitSpec: UnitSpec =>
     def link(id: String): Elements = doc.select(s"a[id=$id")
     def submitButton: Elements = doc.select("button[type=submit]")
     def input(id: String) = doc.select(s"input[id=$id]")
+    def paras = doc.select("p")
+    def errorSummary = doc.select("div[id=error-summary-display]")
   }
 
   def value(value: String): HavePropertyMatcher[Elements, String] =
@@ -71,6 +75,34 @@ trait PageContentHelper { unitSpec: UnitSpec =>
           "label text",
           label,
           labelElem.text()
+        )
+      }
+    }
+
+  def errorSummaryMessage(id: String, message: String): HavePropertyMatcher[Elements, String] =
+    new HavePropertyMatcher[Elements, String] {
+      def apply(element: Elements) = {
+        val errorMessage = element.select(s"a[id=$id-error-summary]")
+
+        HavePropertyMatchResult(
+          errorMessage.text() == message,
+          "error summary errors",
+          message,
+          errorMessage.text()
+        )
+      }
+    }
+
+  def errorMessage(message: String): HavePropertyMatcher[Elements, String] =
+    new HavePropertyMatcher[Elements, String] {
+      def apply(element: Elements) = {
+        val errorMessage = element.parents.first.select("span[class=error-notification")
+
+        HavePropertyMatchResult(
+          errorMessage.text() == message,
+          "input error message",
+          message,
+          errorMessage.text()
         )
       }
     }

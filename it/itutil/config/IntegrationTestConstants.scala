@@ -38,6 +38,13 @@ object IntegrationTestConstants {
     manualAddressLinkText = Some("lookup-manualAddressLinkText")
   )
 
+  val testLookupConfig = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig)))).as[JsObject]
+  val testLookupConfigNoBackButtons = Json.toJson(
+    JourneyData(
+      JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig), showBackButtons = Some(false))
+    )
+  ).as[JsObject]
+
   val fullSelectPageConfig = SelectPage(
     title = Some("select-title"),
     heading = Some("select-heading"),
@@ -146,12 +153,14 @@ object AddressRecordConstants {
     "logicalState" -> Json.toJson("logicalState"),
     "streetClassification" -> "streetClassification"
   )
+
 }
 
 object PageElementConstants {
   object LookupPage {
     val postcodeId  = "postcode"
     val filterId    = "filter"
+    val manualAddressLink = "manualAddress"
   }
 
   object EditPage {

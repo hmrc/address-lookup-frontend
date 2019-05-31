@@ -4,8 +4,7 @@ import java.util.UUID
 
 import model._
 import play.api.libs.json._
-import uk.gov.hmrc.address.v2.LocalCustodian
-import uk.gov.hmrc.address.v2.{Address, AddressRecord, Country}
+import uk.gov.hmrc.address.v2.Country
 
 object IntegrationTestConstants {
   val testJourneyId = "Jid123"
@@ -84,30 +83,42 @@ object IntegrationTestConstants {
     submitLabel = Some("edit-submitLabel")
   )
 
-  val fullDefaultJourneyConfigModel = JourneyConfig(
-    continueUrl = "continueUrl",
-    lookupPage = Some(fullLookupPageConfig),
-    selectPage = Some(fullSelectPageConfig),
-    confirmPage = Some(fullConfirmPageConfig),
-    editPage = Some(fullEditPageConfig),
-    homeNavHref = Some("HOME_NAV_REF"),
-    navTitle = Some("NAV_TITLE"),
-    additionalStylesheetUrl = Some("ADDITIONAL_STYLESHEET_URL"),
-    showPhaseBanner = Some(true),
-    alphaPhase = Some(true),
-    phaseFeedbackLink = Some("PHASE_FEEDBACK_LINK"),
-    phaseBannerHtml = Some("PHASE_BANNER_HTML"),
-    showBackButtons = Some(true),
-    includeHMRCBranding = Some(true),
-    deskProServiceName = Some("DESKPRO_SERVICE_NAME"),
-    allowedCountryCodes = Some(Set("GB", "AB", "CD")),
-    timeout = Some(Timeout(
-      timeoutAmount = 1,
-      timeoutUrl = "TIMEOUT_URL"
-    )),
-    ukMode = Some(true)
-  )
+  def fullDefaultJourneyConfigModelWithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
+
+    def returnNoneOrConfig[A](configOption: Option[A]) = if(allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
+      JourneyConfig (
+        continueUrl = "continueUrl",
+        lookupPage = Some(fullLookupPageConfig),
+        selectPage = Some(fullSelectPageConfig.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
+        confirmPage = Some(fullConfirmPageConfig.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
+        editPage = Some(fullEditPageConfig),
+        homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
+        navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
+        additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
+        showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
+        alphaPhase = Some(allBooleanSetAndAppropriateOptions),
+        phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
+        phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML")),
+        showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
+        includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
+        deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
+        allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
+        timeout = returnNoneOrConfig(Some(Timeout(
+          timeoutAmount = 120,
+          timeoutUrl = "TIMEOUT_URL"
+        ))),
+        ukMode = Some(allBooleanSetAndAppropriateOptions)
+      )
+    }
+
+  def journeyDataWithSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true)) = Json.toJson(
+    JourneyData(
+      journeyConfig,
+      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testAddress))
+    )).as[JsObject]
 }
+
+
 
 object AddressRecordConstants {
   val addressRecordSeqJson: JsValue = Json.arr(

@@ -109,4 +109,31 @@ trait PageContentHelper { unitSpec: UnitSpec =>
     doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=AddressLookupFrontend""")
   }
 
+  def testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(response: Future[WSResponse], navTitle:String): Unit = {
+    val doc = getDocFromResponse(response)
+    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe navTitle
+    doc.getElementById("phase-tag").text() shouldBe "ALPHA"
+    doc.getElementById("phase-banner-content").text() shouldBe "PHASE_BANNER_HTML"
+    testElementExists(response,"phase-banner")
+    doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
+    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=DESKPRO_SERVICE_NAME"
+    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=DESKPRO_SERVICE_NAME""")
+    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe true
+    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
+    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+  }
+
+  def testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(response: Future[WSResponse]): Unit = {
+    val doc = getDocFromResponse(response)
+    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
+    doc.getElementById("phase-tag") shouldBe null
+    doc.getElementById("phase-banner-content") shouldBe null
+    testElementDoesntExist(response,"phase-banner")
+    testElementDoesntExist(response,"customStyleSheet")
+    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
+    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=AddressLookupFrontend""")
+    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false
+    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe false
+    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+  }
 }

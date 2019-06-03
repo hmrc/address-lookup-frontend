@@ -156,7 +156,7 @@ object AddressRecordConstants {
     ),
     "language" -> "language2",
     "localCustodian" -> Json.obj(
-      "id" -> 1,
+      "code" -> 1,
       "name" -> "Custodian"
     ),
     "location" -> Json.toJson(Seq(1.2, 2.1)),

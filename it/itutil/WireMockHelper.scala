@@ -83,13 +83,14 @@ trait WireMockHelper {
   }
 
   def stubALBEGET(
-    postcode: String = IntegrationTestConstants.testPostCode,
+    postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
     filter: Option[String] = None,
     expectedStatus: Int = 200,
     addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
 
-    val alfBackendURL = s"/address-lookup/v2/uk/addresses?postcode=$postcode" + filter.fold("")(f => s"&filter=$f")
-    stubFor(get(urlMatching(alfBackendURL))
+    val alfBackendURL = "/v2/uk/addresses"
+
+    stubFor(get(urlPathEqualTo(alfBackendURL))
       .willReturn(aResponse().
         withStatus(expectedStatus).
         withBody(

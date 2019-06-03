@@ -25,7 +25,6 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.getElementsByClass("back-link").first().text() shouldBe "Back"
       doc.getElementsByTag("title").first().text() shouldBe "Confirm the address"
 
-
       doc.getElementById("pageHeading").text() shouldBe "Review and confirm"
       doc.getElementById("changeLink").text() shouldBe "Edit this address"
       doc.getElementById("continue").text() shouldBe "Confirm and continue"

@@ -34,17 +34,17 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
-  val journeyConfigV2Json: JsValue = Json.parse(s"""{"version":2, "config":$journeyOptionsMinimalJson, "labels":$emptyJson}""")
+  val journeyConfigV2Json: JsValue = Json.parse(s"""{"version":2, "options":$journeyOptionsMinimalJson, "labels":$emptyJson}""")
 
   val journeyConfigV2Minimal = JourneyConfigV2(2, journeyOptionsMinimal, None)
-  val journeyConfigV2MinimalJson: JsValue = Json.parse(s"""{"version":2, "config":$journeyOptionsMinimalJson}""")
-  val journeyConfigV2MissingVersionJson: JsValue = Json.parse(s"""{"config":$journeyOptionsMinimalJson}""")
+  val journeyConfigV2MinimalJson: JsValue = Json.parse(s"""{"version":2, "options":$journeyOptionsMinimalJson}""")
+  val journeyConfigV2MissingVersionJson: JsValue = Json.parse(s"""{"options":$journeyOptionsMinimalJson}""")
   val journeyConfigV2MissingConfigJson: JsValue = Json.parse(s"""{"version":2}""")
 
   val journeyDataV2Full = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      config = JourneyOptions(
+      options = JourneyOptions(
         continueUrl = "testContinueUrl",
         homeNavHref = Some("tesNavtHref"),
         additionalStylesheetUrl = Some("testStylesheetUrl"),
@@ -172,7 +172,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     """{
       |   "config":{
       |      "version":2,
-      |      "config":{
+      |      "options":{
       |         "continueUrl":"testContinueUrl",
       |         "homeNavHref":"tesNavtHref",
       |         "additionalStylesheetUrl":"testStylesheetUrl",
@@ -303,7 +303,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
   val journeyDataV2Minimal = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      config = JourneyOptions(
+      options = JourneyOptions(
         continueUrl = "testContinueUrl",
         None, None, None, None, None, None, None, None, None, None, None, None, None
       ),
@@ -315,7 +315,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     """{
       |   "config":{
       |      "version":2,
-      |      "config":{
+      |      "options":{
       |         "continueUrl":"testContinueUrl"
       |      }
       |   }
@@ -349,7 +349,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.fromJson[JourneyConfigV2](journeyConfigV2MissingVersionJson) mustBe JsError(JsPath \ "version", ValidationError("error.path.missing"))
     }
     "fail to read from json with journey options missing" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingConfigJson) mustBe JsError(JsPath \ "config", ValidationError("error.path.missing"))
+      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingConfigJson) mustBe JsError(JsPath \ "options", ValidationError("error.path.missing"))
     }
 
     "write to json with minimal data" in {

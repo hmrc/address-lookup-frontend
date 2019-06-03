@@ -17,7 +17,7 @@ object JourneyDataV2 {
 
 case class JourneyConfigV2(
                             version: Int,
-                            config: JourneyOptions,
+                            options: JourneyOptions,
                             labels: Option[JourneyLabels]
                           )
 

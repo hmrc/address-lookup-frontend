@@ -128,10 +128,12 @@ trait PageContentHelper { unitSpec: UnitSpec =>
     val doc = getDocFromResponse(response)
     doc.getElementById(elementId) should not be null
   }
+
   def testElementDoesntExist(response: Future[WSResponse], elementId: String): Unit = {
     val doc = getDocFromResponse(response)
       doc.getElementById(elementId) shouldBe null
   }
+
   def testCustomPartsOfGovWrapperElementsForDefaultConfig(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
     doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""

@@ -14,15 +14,19 @@ object IntegrationTestConstants {
   val testFilterValue = "bar"
   val testAuditRef = "auditRef"
   val testAddressId = Some("addressId")
-  val testAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2","Line 3","Telford")), Some(testPostCode), Some(Country("FR", "France")))
-  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testAddress)
+  val testNonUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
+  val testFullNonUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2", "Line 3", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
+  val testUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("GB", "United Kingdom")))
+  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)
+  val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)
 
   val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = "Aurl"))
-  val testConfigWithAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testAddress)))
+  val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
+  val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)))
+  val testConfigWithUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)))
   val testConfigWithoutAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = None)
   val testConfigDefaultAsJson = Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject]
   val testConfigWithoutAddressAsJson = Json.toJson(testConfigWithoutAddress).as[JsObject]
-
   val testConfigNotUkMode = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false))
   val testConfigNotUkModeCustomEditConfig = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false),
           editPage = Some(EditPage(Some("Custom Title"),
@@ -36,10 +40,12 @@ object IntegrationTestConstants {
                      Some("Custom Continue")
           )))
 
-  val testConfigWithAddressNotUkMode = testConfigWithAddress.copy(config = testConfigNotUkMode)
-  val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithAddress.copy(config = testConfigNotUkModeCustomEditConfig)
+  val testConfigWithAddressNotUkMode = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkMode)
+  val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkModeCustomEditConfig)
 
   val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode).as[JsObject]
+  val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", selectPage = Some(SelectPage(proposalListLimit = Some(50)))))).as[JsObject]
+
   val testConfigWithAddressNotUkModeCustomEditConfigAsJson = Json.toJson(testConfigWithAddressNotUkModeCustomEditConfig).as[JsObject]
 
   val fullLookupPageConfig = LookupPage(
@@ -54,6 +60,7 @@ object IntegrationTestConstants {
   )
 
   val testLookupConfig = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig)))).as[JsObject]
+
   val testLookupConfigNoBackButtons = Json.toJson(
     JourneyData(
       JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig), showBackButtons = Some(false))
@@ -66,11 +73,17 @@ object IntegrationTestConstants {
     headingWithPostcode = Some("select-headingWithPostcode"),
     proposalListLabel = Some("select-proposalListLabel"),
     submitLabel = Some("select-submitLabel"),
-    proposalListLimit = Some(1),
+    proposalListLimit = Some(50),
     showSearchAgainLink = Some(true),
     searchAgainLinkText = Some("select-searchAgainLinkText"),
     editAddressLinkText = Some("select-editAddressLinkText")
   )
+
+  val testSelectConfigNoBackButtons = Json.toJson(
+    JourneyData(
+      JourneyConfig(continueUrl = "A url", selectPage = Some(fullSelectPageConfig), showBackButtons = Some(false))
+    )
+  ).as[JsObject]
 
   val fullConfirmPageConfig = ConfirmPage(
     title = Some("confirm-title"),
@@ -101,39 +114,39 @@ object IntegrationTestConstants {
 
   def fullDefaultJourneyConfigModelWithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
 
-    def returnNoneOrConfig[A](configOption: Option[A]) = if(allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
-      JourneyConfig (
-        continueUrl = "continueUrl",
-        lookupPage = Some(fullLookupPageConfig),
-        selectPage = Some(fullSelectPageConfig.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
-        confirmPage = Some(fullConfirmPageConfig.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
-        editPage = Some(fullEditPageConfig),
-        homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
-        navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
-        additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
-        showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
-        alphaPhase = Some(allBooleanSetAndAppropriateOptions),
-        phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
-        phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML")),
-        showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
-        includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
-        deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
-        allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
-        timeout = returnNoneOrConfig(Some(Timeout(
-          timeoutAmount = 120,
-          timeoutUrl = "TIMEOUT_URL"
-        ))),
-        ukMode = Some(allBooleanSetAndAppropriateOptions)
-      )
-    }
+    def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
+
+    JourneyConfig(
+      continueUrl = "continueUrl",
+      lookupPage = Some(fullLookupPageConfig),
+      selectPage = Some(fullSelectPageConfig.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
+      confirmPage = Some(fullConfirmPageConfig.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
+      editPage = Some(fullEditPageConfig),
+      homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
+      navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
+      additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
+      showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
+      alphaPhase = Some(allBooleanSetAndAppropriateOptions),
+      phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
+      phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML")),
+      showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
+      includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
+      deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
+      allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
+      timeout = returnNoneOrConfig(Some(Timeout(
+        timeoutAmount = 120,
+        timeoutUrl = "TIMEOUT_URL"
+      ))),
+      ukMode = Some(allBooleanSetAndAppropriateOptions)
+    )
+  }
 
   def journeyDataWithSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true)) = Json.toJson(
     JourneyData(
       journeyConfig,
-      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testAddress))
+      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress))
     )).as[JsObject]
 }
-
 
 
 object AddressRecordConstants {
@@ -142,7 +155,7 @@ object AddressRecordConstants {
       id = "id1",
       lines = Seq("line1", "line2"),
       town = "town1",
-      postcode = "AB1 1AB",
+      postcode = "AB11 1AB",
       country = Country("GB", "Great Britain")
     ),
     addressRecordJson(
@@ -181,17 +194,32 @@ object AddressRecordConstants {
     "streetClassification" -> "streetClassification"
   )
 
+  def addressRecordJsonList(numberOfRepeats: Int): JsValue = {
+    Json.toJson(
+      (1 to numberOfRepeats) map {
+        _ =>
+          addressRecordJson(
+            id = s"id-${UUID.randomUUID().toString}",
+            lines = Seq("line1", "line2"),
+            town = "town1",
+            postcode = "AB11 1AB",
+            country = Country("GB", "Great Britain")
+          )
+      } toList
+    )
+  }
+
 }
 
 object PageElementConstants {
   object LookupPage {
-    val postcodeId  = "postcode"
-    val filterId    = "filter"
+    val postcodeId = "postcode"
+    val filterId = "filter"
     val manualAddressLink = "manualAddress"
   }
 
   object EditPage {
-    val ukEditId      = "ukEdit"
-    val nonUkEditId   = "nonUkEdit"
+    val ukEditId = "ukEdit"
+    val nonUkEditId = "nonUkEdit"
   }
 }

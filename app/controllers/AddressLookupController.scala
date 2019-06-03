@@ -60,7 +60,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {
-            case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
+            case OneResult(address) => println("!234567890" + address)
+              Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
             case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) -> Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
             case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
             case NoResults => None -> Ok(views.html.no_results(id, journeyData, lookupWithFormattedPostcode.postcode))

@@ -64,7 +64,7 @@ trait WireMockHelper {
       .willReturn(aResponse().
         withStatus(status).
         withBody(
-          Json.obj("id" -> "journey-data","data" -> Json.obj(session -> theData)).toString()
+          Json.obj("id" -> "journey-data", "data" -> Json.obj(session -> theData)).toString()
         )
       )
     )
@@ -82,20 +82,36 @@ trait WireMockHelper {
     )
   }
 
-  def stubALBEGET(
-    postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
-    filter: Option[String] = None,
-    expectedStatus: Int = 200,
-    addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
+  def stubGetAddressFromBEWithFilter(postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
+                                     expectedStatus: Int = 200,
+                                     addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
 
     val alfBackendURL = "/v2/uk/addresses"
 
     stubFor(get(urlPathEqualTo(alfBackendURL))
-      .willReturn(aResponse().
-        withStatus(expectedStatus).
-        withBody(
-          addressJson.toString()
-        )
+      .withQueryParam("postcode", equalTo("AB11 1AB"))
+      .withQueryParam("filter", equalTo("bar"))
+      .willReturn(
+        aResponse()
+          .withStatus(expectedStatus)
+          .withBody(addressJson.toString())
+      )
+    )
+  }
+
+  def stubGetAddressFromBE(postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
+                           expectedStatus: Int = 200,
+                           addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
+
+    val alfBackendURL = "/v2/uk/addresses"
+
+    stubFor(get(urlPathEqualTo(alfBackendURL))
+      .withQueryParam("postcode", equalTo("AB11 1AB"))
+      .withQueryParam("filter", equalTo(""))
+      .willReturn(
+        aResponse()
+          .withStatus(expectedStatus)
+          .withBody(addressJson.toString())
       )
     )
   }

@@ -1,18 +1,16 @@
-package pages
+package controllers
 
-import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
-import play.api.http.HeaderNames
-import play.api.http.Status.{OK, BAD_REQUEST}
-import play.api.libs.json.Json
-import play.api.test.FakeApplication
 import model.JourneyConfigDefaults._
+import play.api.http.Status._
+import play.api.http.HeaderNames
+import play.api.test.FakeApplication
 
 import scala.util.Random
 
-class LookupPageSpec extends IntegrationSpecBase {
+class LookupPageISpec extends IntegrationSpecBase {
 
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
@@ -35,8 +33,14 @@ class LookupPageSpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
+        testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
+
         doc.title shouldBe LOOKUP_PAGE_TITLE
         doc.h1.text() shouldBe LOOKUP_PAGE_HEADING
+
+        doc.select("a[class=back-link]") should have(
+          text("Back")
+        )
 
         doc.input(LookupPage.postcodeId) should have(
           label(LOOKUP_PAGE_POSTCODE_LABEL),
@@ -56,7 +60,7 @@ class LookupPageSpec extends IntegrationSpecBase {
         doc.submitButton.text() shouldBe "Search for the address"
       }
 
-      "show the default 'postcode not entered' error message" in {
+      "Show the default 'postcode not entered' error message" in {
         stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
@@ -80,7 +84,7 @@ class LookupPageSpec extends IntegrationSpecBase {
         )
       }
 
-      "show the default 'invalid postcode' error message" in {
+      "Show the default 'invalid postcode' error message" in {
         stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
@@ -104,7 +108,7 @@ class LookupPageSpec extends IntegrationSpecBase {
         )
       }
 
-      "show the default 'filter invalid' error messages" in {
+      "Show the default 'filter invalid' error messages" in {
         stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
@@ -128,27 +132,10 @@ class LookupPageSpec extends IntegrationSpecBase {
           value(filterValue)
         )
       }
-
-      "display the back button" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigDefaultAsJson, OK)
-
-        val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
-
-        res.status shouldBe OK
-
-        doc.select("a[class=back-link]") should have(
-          text("Back")
-        )
-      }
     }
 
-    "provided with custom content" should {
-      "render the page with custom content" in {
+    "Provided with custom content" should {
+      "Render the page with custom content" in {
         stubKeystore(testJourneyId, testLookupConfig, OK)
         stubKeystoreSave(testJourneyId, testLookupConfig, OK)
 
@@ -162,6 +149,10 @@ class LookupPageSpec extends IntegrationSpecBase {
 
         doc.title shouldBe fullLookupPageConfig.title.get
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
+
+        doc.select("a[class=back-link]") should have(
+          text("Back")
+        )
 
         doc.input(LookupPage.postcodeId) should have(
           label(fullLookupPageConfig.postcodeLabel.get),
@@ -195,7 +186,91 @@ class LookupPageSpec extends IntegrationSpecBase {
 
         doc.select("a[class=back-link]") should not have(
           text("Back")
+          )
+      }
+    }
+
+    "Provided with config with all booleans set to true" should {
+      "Render the page correctly with custom elements" in {
+        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
+        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
+
+        val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+        val doc = getDocFromResponse(res)
+
+        res.status shouldBe OK
+
+        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
+
+        doc.title shouldBe fullLookupPageConfig.title.get
+        doc.h1.text() shouldBe fullLookupPageConfig.heading.get
+
+        doc.select("a[class=back-link]") should have(
+          text("Back")
         )
+
+        doc.input(LookupPage.postcodeId) should have(
+          label(fullLookupPageConfig.postcodeLabel.get),
+          value(testPostCode)
+        )
+
+        doc.input(LookupPage.filterId) should have(
+          label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint),
+          value(testFilterValue)
+        )
+
+        doc.link(LookupPage.manualAddressLink) should have(
+          href(routes.AddressLookupController.edit(testJourneyId).url),
+          text(fullLookupPageConfig.manualAddressLinkText.get)
+        )
+
+        doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
+      }
+    }
+
+    "Provided with config where all the default values are overriden with the default values" should {
+      "Render " in {
+        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(
+          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
+        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(
+          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
+
+        val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+        val doc = getDocFromResponse(res)
+
+        res.status shouldBe OK
+
+        testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
+
+        doc.title shouldBe fullLookupPageConfig.title.get
+        doc.h1.text() shouldBe fullLookupPageConfig.heading.get
+
+        doc.select("a[class=back-link]") should have(
+          text("Back")
+        )
+
+        doc.input(LookupPage.postcodeId) should have(
+          label(fullLookupPageConfig.postcodeLabel.get),
+          value(testPostCode)
+        )
+
+        doc.input(LookupPage.filterId) should have(
+          label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint),
+          value(testFilterValue)
+        )
+
+        doc.link(LookupPage.manualAddressLink) should have(
+          href(routes.AddressLookupController.edit(testJourneyId).url),
+          text(fullLookupPageConfig.manualAddressLinkText.get)
+        )
+
+        doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
       }
     }
   }

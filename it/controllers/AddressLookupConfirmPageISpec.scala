@@ -30,7 +30,9 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.getElementById("changeLink").text() shouldBe "Edit this address"
       doc.getElementById("continue").text() shouldBe "Confirm and continue"
       doc.getElementById("line1").text() shouldBe "1 High Street"
-      doc.getElementById("line2").text() shouldBe "Telford"
+      doc.getElementById("line2").text() shouldBe "Line 2"
+      doc.getElementById("line3").text() shouldBe "Line 3"
+      doc.getElementById("line4").text() shouldBe "Telford"
       doc.getElementById("postCode").text() shouldBe "AB11 1AB"
       doc.getElementById("country").text() shouldBe "France"
       doc.getElementsByTag("h2").select(":containsOwn(Your selected address)").size() shouldBe 0

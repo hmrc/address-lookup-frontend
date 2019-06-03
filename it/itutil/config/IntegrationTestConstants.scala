@@ -15,7 +15,7 @@ object IntegrationTestConstants {
   val testFilterValue = "bar"
   val testAuditRef = "auditRef"
   val testAddressId = Some("addressId")
-  val testAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
+  val testAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2","Line 3","Telford")), Some(testPostCode), Some(Country("FR", "France")))
   val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testAddress)
 
   val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = "Aurl"))
@@ -23,9 +23,25 @@ object IntegrationTestConstants {
   val testConfigWithoutAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = None)
   val testConfigDefaultAsJson = Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject]
   val testConfigWithoutAddressAsJson = Json.toJson(testConfigWithoutAddress).as[JsObject]
+
   val testConfigNotUkMode = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false))
+  val testConfigNotUkModeCustomEditConfig = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false),
+          editPage = Some(EditPage(Some("Custom Title"),
+                     Some("Custom Heading"),
+                     Some("Custom Line1"),
+                     Some("Custom Line2"),
+                     Some("Custom Line3"),
+                     Some("Custom Town"),
+                     Some("Custom Postcode"),
+                     Some("Custom Country"),
+                     Some("Custom Continue")
+          )))
+
   val testConfigWithAddressNotUkMode = testConfigWithAddress.copy(config = testConfigNotUkMode)
+  val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithAddress.copy(config = testConfigNotUkModeCustomEditConfig)
+
   val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode).as[JsObject]
+  val testConfigWithAddressNotUkModeCustomEditConfigAsJson = Json.toJson(testConfigWithAddressNotUkModeCustomEditConfig).as[JsObject]
 
   val fullLookupPageConfig = LookupPage(
     title = Some("lookup-title"),

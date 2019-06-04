@@ -304,10 +304,8 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        None, None, None, None, None, None, None, None, None, None, None, None, None
-      ),
-      labels = None
+        continueUrl = "testContinueUrl"
+      )
     )
   )
 
@@ -472,4 +470,174 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     }
   }
 
+
+  "ResolvedJourneyConfigV2" should {
+    "return a full model without defaulting any values" in {
+      val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Full.config
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig)
+
+      originalJourneyConfig.version mustBe resolvedJourneyConfig.version
+
+      originalJourneyConfig.options.continueUrl mustBe resolvedJourneyConfig.options.continueUrl
+      originalJourneyConfig.options.homeNavHref must contain(resolvedJourneyConfig.options.homeNavHref)
+      originalJourneyConfig.options.additionalStylesheetUrl mustBe resolvedJourneyConfig.options.additionalStylesheetUrl
+      originalJourneyConfig.options.phaseFeedbackLink must contain(resolvedJourneyConfig.options.phaseFeedbackLink)
+      originalJourneyConfig.options.deskProServiceName mustBe resolvedJourneyConfig.options.deskProServiceName
+      originalJourneyConfig.options.showPhaseBanner must contain(resolvedJourneyConfig.options.showPhaseBanner)
+      originalJourneyConfig.options.alphaPhase must contain(resolvedJourneyConfig.options.alphaPhase)
+      resolvedJourneyConfig.options.phase mustBe "alpha"
+      originalJourneyConfig.options.showBackButtons must contain(resolvedJourneyConfig.options.showBackButtons)
+      originalJourneyConfig.options.includeHMRCBranding must contain(resolvedJourneyConfig.options.includeHMRCBranding)
+      originalJourneyConfig.options.ukMode must contain(resolvedJourneyConfig.options.isUkMode)
+      originalJourneyConfig.options.allowedCountryCodes mustBe resolvedJourneyConfig.options.allowedCountryCodes
+
+      originalJourneyConfig.options.selectPageConfig.get.proposalListLimit mustBe resolvedJourneyConfig.options.selectPageConfig.proposalListLimit
+      originalJourneyConfig.options.selectPageConfig.get.showSearchAgainLink must contain(resolvedJourneyConfig.options.selectPageConfig.showSearchAgainLink)
+
+      originalJourneyConfig.options.confirmPageConfig.get.showChangeLink must contain(resolvedJourneyConfig.options.confirmPageConfig.showChangeLink)
+      originalJourneyConfig.options.confirmPageConfig.get.showSubHeadingAndInfo must contain(resolvedJourneyConfig.options.confirmPageConfig.showSubHeadingAndInfo)
+      originalJourneyConfig.options.confirmPageConfig.get.showSearchAgainLink must contain(resolvedJourneyConfig.options.confirmPageConfig.showSearchAgainLink)
+      originalJourneyConfig.options.confirmPageConfig.get.showConfirmChangeText must contain(resolvedJourneyConfig.options.confirmPageConfig.showConfirmChangeText)
+
+      originalJourneyConfig.options.timeoutConfig mustBe resolvedJourneyConfig.options.timeoutConfig
+
+      originalJourneyConfig.labels.get.en.get.appLevelLabels.get.navTitle mustBe resolvedJourneyConfig.labels.en.appLevelLabels.navTitle
+      originalJourneyConfig.labels.get.en.get.appLevelLabels.get.phaseBannerHtml must contain(resolvedJourneyConfig.labels.en.appLevelLabels.phaseBannerHtml)
+
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.title must contain(resolvedJourneyConfig.labels.en.selectPageLabels.title)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.heading must contain(resolvedJourneyConfig.labels.en.selectPageLabels.heading)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.headingWithPostcode must contain(resolvedJourneyConfig.labels.en.selectPageLabels.headingWithPostcode)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.proposalListLabel must contain(resolvedJourneyConfig.labels.en.selectPageLabels.proposalListLabel)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.en.selectPageLabels.submitLabel)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.en.selectPageLabels.searchAgainLinkText)
+      originalJourneyConfig.labels.get.en.get.selectPageLabels.get.editAddressLinkText must contain(resolvedJourneyConfig.labels.en.selectPageLabels.editAddressLinkText)
+
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.title must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.title)
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.heading must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.heading)
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.filterLabel must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.filterLabel)
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.postcodeLabel)
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.submitLabel)
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.noResultsFoundMessage mustBe resolvedJourneyConfig.labels.en.lookupPageLabels.noResultsFoundMessage
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.resultLimitExceededMessage mustBe resolvedJourneyConfig.labels.en.lookupPageLabels.resultLimitExceededMessage
+      originalJourneyConfig.labels.get.en.get.lookupPageLabels.get.manualAddressLinkText must contain(resolvedJourneyConfig.labels.en.lookupPageLabels.manualAddressLinkText)
+
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.title must contain(resolvedJourneyConfig.labels.en.editPageLabels.title)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.heading must contain(resolvedJourneyConfig.labels.en.editPageLabels.heading)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.line1Label must contain(resolvedJourneyConfig.labels.en.editPageLabels.line1Label)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.line2Label must contain(resolvedJourneyConfig.labels.en.editPageLabels.line2Label)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.line3Label must contain(resolvedJourneyConfig.labels.en.editPageLabels.line3Label)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.townLabel must contain(resolvedJourneyConfig.labels.en.editPageLabels.townLabel)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.en.editPageLabels.postcodeLabel)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.countryLabel must contain(resolvedJourneyConfig.labels.en.editPageLabels.countryLabel)
+      originalJourneyConfig.labels.get.en.get.editPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.en.editPageLabels.submitLabel)
+
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.title must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.title)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.heading must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.heading)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.infoSubheading must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.infoSubheading)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.infoMessage must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.infoMessage)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.submitLabel)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.searchAgainLinkText)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.changeLinkText must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.changeLinkText)
+      originalJourneyConfig.labels.get.en.get.confirmPageLabels.get.confirmChangeText must contain(resolvedJourneyConfig.labels.en.confirmPageLabels.confirmChangeText)
+
+      resolvedJourneyConfig.labels.cy mustBe None
+
+    }
+
+    "return a full model with all possible default values" in {
+      val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Minimal.config
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig)
+
+      resolvedJourneyConfig.version mustBe originalJourneyConfig.version
+
+      resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
+      resolvedJourneyConfig.options.homeNavHref mustBe "http://www.hmrc.gov.uk"
+      resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
+      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+      resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
+      resolvedJourneyConfig.options.showPhaseBanner mustBe false
+      resolvedJourneyConfig.options.alphaPhase mustBe false
+      resolvedJourneyConfig.options.phase mustBe ""
+      resolvedJourneyConfig.options.showBackButtons mustBe true
+      resolvedJourneyConfig.options.includeHMRCBranding mustBe true
+      resolvedJourneyConfig.options.isUkMode mustBe false
+      resolvedJourneyConfig.options.allowedCountryCodes mustBe None
+
+      resolvedJourneyConfig.options.selectPageConfig.proposalListLimit mustBe None
+      resolvedJourneyConfig.options.selectPageConfig.showSearchAgainLink mustBe false
+
+      resolvedJourneyConfig.options.confirmPageConfig.showChangeLink mustBe true
+      resolvedJourneyConfig.options.confirmPageConfig.showSubHeadingAndInfo mustBe false
+      resolvedJourneyConfig.options.confirmPageConfig.showSearchAgainLink mustBe false
+      resolvedJourneyConfig.options.confirmPageConfig.showConfirmChangeText mustBe false
+
+      resolvedJourneyConfig.options.timeoutConfig mustBe None
+
+      resolvedJourneyConfig.labels.en.appLevelLabels.navTitle mustBe None
+      resolvedJourneyConfig.labels.en.appLevelLabels.phaseBannerHtml mustBe JourneyConfigDefaults.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+
+      resolvedJourneyConfig.labels.en.selectPageLabels.title mustBe JourneyConfigDefaults.SELECT_PAGE_TITLE
+      resolvedJourneyConfig.labels.en.selectPageLabels.heading mustBe JourneyConfigDefaults.SELECT_PAGE_HEADING
+      resolvedJourneyConfig.labels.en.selectPageLabels.headingWithPostcode mustBe JourneyConfigDefaults.SELECT_PAGE_HEADING_WITH_POSTCODE
+      resolvedJourneyConfig.labels.en.selectPageLabels.proposalListLabel mustBe JourneyConfigDefaults.SELECT_PAGE_PROPOSAL_LIST_LABEL
+      resolvedJourneyConfig.labels.en.selectPageLabels.submitLabel mustBe JourneyConfigDefaults.SELECT_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.en.selectPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.en.selectPageLabels.editAddressLinkText mustBe JourneyConfigDefaults.EDIT_LINK_TEXT
+
+      resolvedJourneyConfig.labels.en.lookupPageLabels.title mustBe JourneyConfigDefaults.LOOKUP_PAGE_TITLE
+      resolvedJourneyConfig.labels.en.lookupPageLabels.heading mustBe JourneyConfigDefaults.LOOKUP_PAGE_HEADING
+      resolvedJourneyConfig.labels.en.lookupPageLabels.filterLabel mustBe JourneyConfigDefaults.LOOKUP_PAGE_FILTER_LABEL
+      resolvedJourneyConfig.labels.en.lookupPageLabels.postcodeLabel mustBe JourneyConfigDefaults.LOOKUP_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.en.lookupPageLabels.submitLabel mustBe JourneyConfigDefaults.LOOKUP_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.en.lookupPageLabels.noResultsFoundMessage mustBe None
+      resolvedJourneyConfig.labels.en.lookupPageLabels.resultLimitExceededMessage mustBe None
+      resolvedJourneyConfig.labels.en.lookupPageLabels.manualAddressLinkText mustBe JourneyConfigDefaults.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+
+      resolvedJourneyConfig.labels.en.editPageLabels.title mustBe JourneyConfigDefaults.EDIT_PAGE_TITLE
+      resolvedJourneyConfig.labels.en.editPageLabels.heading mustBe JourneyConfigDefaults.EDIT_PAGE_HEADING
+      resolvedJourneyConfig.labels.en.editPageLabels.line1Label mustBe JourneyConfigDefaults.EDIT_PAGE_LINE1_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.line2Label mustBe JourneyConfigDefaults.EDIT_PAGE_LINE2_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.line3Label mustBe JourneyConfigDefaults.EDIT_PAGE_LINE3_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.townLabel mustBe JourneyConfigDefaults.EDIT_PAGE_TOWN_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.postcodeLabel mustBe JourneyConfigDefaults.EDIT_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.countryLabel mustBe JourneyConfigDefaults.EDIT_PAGE_COUNTRY_LABEL
+      resolvedJourneyConfig.labels.en.editPageLabels.submitLabel mustBe JourneyConfigDefaults.EDIT_PAGE_SUBMIT_LABEL
+
+      resolvedJourneyConfig.labels.en.confirmPageLabels.title mustBe JourneyConfigDefaults.CONFIRM_PAGE_TITLE
+      resolvedJourneyConfig.labels.en.confirmPageLabels.heading mustBe JourneyConfigDefaults.CONFIRM_PAGE_HEADING
+      resolvedJourneyConfig.labels.en.confirmPageLabels.infoSubheading mustBe JourneyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
+      resolvedJourneyConfig.labels.en.confirmPageLabels.infoMessage mustBe JourneyConfigDefaults.CONFIRM_PAGE_INFO_MESSAGE_HTML
+      resolvedJourneyConfig.labels.en.confirmPageLabels.submitLabel mustBe JourneyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.en.confirmPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.en.confirmPageLabels.changeLinkText mustBe JourneyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.en.confirmPageLabels.confirmChangeText mustBe JourneyConfigDefaults.CONFIRM_CHANGE_TEXT
+
+      resolvedJourneyConfig.labels.cy mustBe None
+
+    }
+  }
+  "ResolvedJourneyOptions" should {
+    //TODO: isUKMode, provided and false
+    "set the isUkMode to true" in {
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(true))).isUkMode mustBe true
+    }
+    "set the isUkMode to false" when {
+      "ukMode is missing" in {
+        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = None)).isUkMode mustBe false
+      }
+      "ukMode is set to false" in {
+        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(false))).isUkMode mustBe false
+      }
+    }
+
+    "set the phase value to alpha" in {
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true),showPhaseBanner = Some(true))).phase mustBe "alpha"
+    }
+    "set the phase value to beta" in {
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(true))).phase mustBe "beta"
+    }
+    "set the phase value to empty string" in {
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(false))).phase mustBe ""
+    }
+  }
 }

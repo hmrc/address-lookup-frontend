@@ -9,6 +9,7 @@ import services.ForeignOfficeCountryService
 import uk.gov.hmrc.address.v2.Country
 import utils.PostcodeHelper
 
+
 case class Lookup(filter: Option[String], postcode: String)
 
 case class Timeout(timeoutAmount: Int, timeoutUrl: String)
@@ -297,30 +298,38 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 
 }
 
+object CountryFormat {
+  implicit val countryFormat: Format[Country] = Json.format[Country]
+}
+
+object ConfirmableAddressDetails {
+  import CountryFormat._
+  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
+}
+
+
+object ConfirmableAddress {
+  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
+}
+
+object ProposedAddress {
+  import CountryFormat._
+  implicit val proposedAddressFormat = Json.format[ProposedAddress]
+}
+
 // JSON serialization companions
 object JourneyData {
 
-  implicit val countryFormat = Json.format[Country]
   implicit val confirmPageFormat = Json.format[ConfirmPage]
   implicit val selectPageFormat = Json.format[SelectPage]
   implicit val lookupPageFormat = Json.format[LookupPage]
   implicit val editPageFormat = Json.format[EditPage]
-  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
-  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
-  implicit val proposedAddressFormat = Json.format[ProposedAddress]
+
   implicit val timeoutFormat: Format[Timeout] = (
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
       (JsPath \ "timeoutUrl").format[String]
     ) (Timeout.apply, unlift(Timeout.unapply))
   implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]
-
-}
-
-object ConfirmableAddress {
-
-  implicit val countryFormat = Json.format[Country]
-  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
-  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
 
 }

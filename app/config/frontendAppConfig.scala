@@ -16,7 +16,9 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactFormServiceIdentifier = "AddressLookupFrontend"
+  val contactFormServiceIdentifier = "AddressLookupFrontend"
+  val homeUrl = "http://www.hmrc.gov.uk"
+  val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")

@@ -251,7 +251,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
 
   "confirmed" should {
     "return correct address with jid" in {
-      val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfig.copy(confirmedAddress = Some(testConfirmedAddress))
+      val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfig.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))
       stubKeystore(testJourneyId, Json.toJson(configWithConfirmedAddress).as[JsObject], OK)
 
       val fResponse = buildClientAPI("confirmed?id=Jid123")

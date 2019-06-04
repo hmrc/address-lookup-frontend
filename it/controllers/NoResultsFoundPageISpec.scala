@@ -25,7 +25,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
       "Render the 'No results' page" in {
         stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigDefaultAsJson, OK)
-        stubALBEGET(addressJson = Json.toJson(Json.arr()))
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -57,7 +57,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
       "Render the page with expected custom elements" in {
         stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
         stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
-        stubALBEGET(addressJson = Json.toJson(Json.arr()))
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -91,7 +91,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
         stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(
           fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
-        stubALBEGET(addressJson = Json.toJson(Json.arr()))
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -123,7 +123,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
       "Render the 'No results' page without a back button" in {
         stubKeystore(testJourneyId, testLookupConfigNoBackButtons, OK)
         stubKeystoreSave(testJourneyId, testLookupConfigNoBackButtons, OK)
-        stubALBEGET(addressJson = Json.toJson(Json.arr()))
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

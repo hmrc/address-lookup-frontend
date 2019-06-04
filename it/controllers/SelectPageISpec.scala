@@ -19,9 +19,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-        stubALBEGET(
-          addressJson = testResultsList
-        )
+        stubGetAddressFromBE(addressJson = testResultsList)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -59,9 +57,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = addressResultsListBySize(numberOfRepeats = 30)
         stubKeystore(session = testJourneyId, testConfigSelectPageAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigSelectPageAsJson, OK)
-        stubALBEGET(
-          addressJson = testResultsList
-        )
+        stubGetAddressFromBE(addressJson = testResultsList)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -98,9 +94,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 0 results" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-        stubALBEGET(
-          addressJson = addressResultsListBySize(numberOfRepeats = 0)
-        )
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -114,9 +108,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there is 1 result" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-        stubALBEGET(
-          addressJson = addressResultsListBySize(numberOfRepeats = 1)
-        )
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -131,9 +123,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 50 results" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
         stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-        stubALBEGET(
-          addressJson = addressResultsListBySize(numberOfRepeats = 100)
-        )
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -152,9 +142,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-      stubALBEGET(
-        addressJson = testResultsList
-      )
+      stubGetAddressFromBE(addressJson = testResultsList)
 
       val testIds = (testResultsList \\ "id").map {
         testId => testId.as[String]
@@ -173,9 +161,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-      stubALBEGET(
-        addressJson = testResultsList
-      )
+      stubGetAddressFromBE(addressJson = testResultsList)
+
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
@@ -196,9 +183,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
       stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-      stubALBEGET(
-        addressJson = testResultsList
-      )
+      stubGetAddressFromBE(addressJson = testResultsList)
 
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

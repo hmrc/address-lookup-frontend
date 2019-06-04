@@ -16,68 +16,68 @@ class EditPageISpec extends IntegrationSpecBase {
 
     "when provided with no page config" should {
 
-    "return UK edit page if uk param is true AND UK mode is false" in {
-      stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
+      "return UK edit page if uk param is true AND UK mode is false" in {
+        stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-        .get()
-      val res = await(fResponse)
+        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
 
-      res.status shouldBe OK
-      val document = Jsoup.parse(res.body)
-      testElementExists(res, EditPage.ukEditId)
-      document.title() shouldBe "Enter the address"
-      document.getElementById("pageHeading").text() shouldBe "Enter the address"
-      document.getElementById("continue").text() shouldBe "Continue"
-      Option(document.getElementById("countryCode")).isDefined shouldBe false
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        testElementExists(res, EditPage.ukEditId)
+        document.title shouldBe "Enter the address"
+        document.h1.text shouldBe "Enter the address"
+        document.submitButton.text shouldBe "Continue"
+        testElementDoesntExist(res,"countryCode")
 
-      document.getElementById("line1").`val` shouldBe "1 High Street"
-      document.getElementById("line2").`val` shouldBe "Line 2"
-      document.getElementById("line3").`val` shouldBe "Line 3"
-      document.getElementById("town").`val` shouldBe "Telford"
-      document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.input("line1") should have (value("1 High Street"))
+        document.input("line2") should have (value("Line 2"))
+        document.input("line3") should have (value("Line 3"))
+        document.input("town") should have (value("Telford"))
+        document.input("postcode") should have (value("AB11 1AB"))
+
+        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "line1" -> "Address line 1",
+          "line2" -> "Address line 2",
+          "line3" -> "Address line 3",
+          "town" -> "Town/city",
+          "postcode" -> "UK postcode (optional)"
+        ))
+      }
+
+      "return UK edit page if no uk parameter provided AND UK mode is false" in {
+        stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
+
+        val fResponse = buildClientLookupAddress(path = "edit")
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        testElementExists(res, EditPage.nonUkEditId)
+        document.title() shouldBe "Enter the address"
+        document.getElementById("pageHeading").text() shouldBe "Enter the address"
+        document.getElementById("continue").text() shouldBe "Continue"
+
+        document.getElementById("line1").`val` shouldBe "1 High Street"
+        document.getElementById("line2").`val` shouldBe "Line 2"
+        document.getElementById("line3").`val` shouldBe "Line 3"
+        document.getElementById("town").`val` shouldBe "Telford"
+        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
 
-      labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Address line 1",
-        "line2" -> "Address line 2",
-        "line3" -> "Address line 3",
-        "town" -> "Town/city",
-        "postcode" -> "UK postcode (optional)"
-      ))
-    }
-    "return UK edit page if no uk parameter provided AND UK mode is false" in {
-      stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
-
-      val fResponse = buildClientLookupAddress(path = "edit")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-        .get()
-      val res = await(fResponse)
-
-      res.status shouldBe OK
-      val document = Jsoup.parse(res.body)
-      testElementExists(res, EditPage.nonUkEditId)
-      document.title() shouldBe "Enter the address"
-      document.getElementById("pageHeading").text() shouldBe "Enter the address"
-      document.getElementById("continue").text() shouldBe "Continue"
-
-      document.getElementById("line1").`val` shouldBe "1 High Street"
-      document.getElementById("line2").`val` shouldBe "Line 2"
-      document.getElementById("line3").`val` shouldBe "Line 3"
-      document.getElementById("town").`val` shouldBe "Telford"
-      document.getElementById("postcode").`val` shouldBe "AB11 1AB"
-
-
-      labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-              "line1" -> "Address line 1",
-              "line2" -> "Address line 2",
-              "line3" -> "Address line 3",
-              "town" -> "Town/city",
-              "postcode" -> "Postal code (optional)",
-              "countryCode" -> "Country"
-      ))
-    }
+        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "line1" -> "Address line 1",
+          "line2" -> "Address line 2",
+          "line3" -> "Address line 3",
+          "town" -> "Town/city",
+          "postcode" -> "Postal code (optional)",
+          "countryCode" -> "Country"
+        ))
+      }
 
     }
 
@@ -148,6 +148,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
     }
 
-    }
-
   }
+
+}

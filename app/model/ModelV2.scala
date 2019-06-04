@@ -1,5 +1,7 @@
 package model
 
+import config.FrontendAppConfig
+import javax.security.auth.login.AppConfigurationEntry
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json.{Format, JsPath, Json}
@@ -50,13 +52,15 @@ case class JourneyOptions(
 
 case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val continueUrl: String = journeyOptions.continueUrl
-  val homeNavHref: String = journeyOptions.homeNavHref.getOrElse("http://www.hmrc.gov.uk")
+  val homeNavHref: String = journeyOptions.homeNavHref.getOrElse(FrontendAppConfig.homeUrl)
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
-  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(s"https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
-  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(Some("AddressLookupFrontend"))(Some(_))
+  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(FrontendAppConfig.feedbackUrl)
+  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(Some(FrontendAppConfig.contactFormServiceIdentifier))(Some(_))
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)
-  val alphaPhase: Boolean =  journeyOptions.alphaPhase.getOrElse(false)
-  val phase: String = if (showPhaseBanner) { if(alphaPhase) "alpha" else "beta" } else ""
+  val alphaPhase: Boolean = journeyOptions.alphaPhase.getOrElse(false)
+  val phase: String = if (showPhaseBanner) {
+    if (alphaPhase) "alpha" else "beta"
+  } else ""
   val showBackButtons: Boolean = journeyOptions.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = journeyOptions.includeHMRCBranding.getOrElse(true)
   val isUkMode: Boolean = journeyOptions.ukMode.contains(true)
@@ -76,8 +80,8 @@ case class SelectPageConfig(
                            )
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {
-  val proposalListLimit: Option[Int]  = selectPageConfig.proposalListLimit
-  val showSearchAgainLink: Boolean    = selectPageConfig.showSearchAgainLink.getOrElse(false)
+  val proposalListLimit: Option[Int] = selectPageConfig.proposalListLimit
+  val showSearchAgainLink: Boolean = selectPageConfig.showSearchAgainLink.getOrElse(false)
 }
 
 object SelectPageConfig {
@@ -92,10 +96,10 @@ case class ConfirmPageConfig(
                             )
 
 case class ResolvedConfirmPageConfig(confirmPageConfig: ConfirmPageConfig) {
-  val showChangeLink: Boolean         = confirmPageConfig.showChangeLink.getOrElse(true)
-  val showSubHeadingAndInfo: Boolean  = confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
-  val showSearchAgainLink: Boolean    = confirmPageConfig.showSearchAgainLink.getOrElse(false)
-  val showConfirmChangeText: Boolean  = confirmPageConfig.showConfirmChangeText.getOrElse(false)
+  val showChangeLink: Boolean = confirmPageConfig.showChangeLink.getOrElse(true)
+  val showSubHeadingAndInfo: Boolean = confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
+  val showSearchAgainLink: Boolean = confirmPageConfig.showSearchAgainLink.getOrElse(false)
+  val showConfirmChangeText: Boolean = confirmPageConfig.showConfirmChangeText.getOrElse(false)
 }
 
 object ConfirmPageConfig {
@@ -155,7 +159,7 @@ case class AppLevelLabels(
 
 case class ResolvedAppLevelLabels(appLevelLabels: AppLevelLabels, phaseFeedbackLink: String) {
   val navTitle: Option[String] = appLevelLabels.navTitle
-  val phaseBannerHtml: String  = appLevelLabels.phaseBannerHtml.getOrElse(JourneyConfigDefaults.defaultPhaseBannerHtml(phaseFeedbackLink))
+  val phaseBannerHtml: String = appLevelLabels.phaseBannerHtml.getOrElse(JourneyConfigDefaults.defaultPhaseBannerHtml(phaseFeedbackLink))
 }
 
 object AppLevelLabels {

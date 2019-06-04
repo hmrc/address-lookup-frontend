@@ -3,13 +3,14 @@ package itutil
 import java.util
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.defaultAwaitTimeout
 import uk.gov.hmrc.play.test.UnitSpec
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 
 trait PageContentHelper { unitSpec: UnitSpec =>
@@ -17,10 +18,12 @@ trait PageContentHelper { unitSpec: UnitSpec =>
   implicit class ViewTestDoc(doc: Document) {
     def title: Elements = doc.select("title")
     def h1: Elements = doc.select("h1")
+    def h2s = doc.select("h2")
     def link(id: String): Elements = doc.select(s"a[id=$id")
     def submitButton: Elements = doc.select("button[type=submit]")
     def input(id: String) = doc.select(s"input[id=$id]")
     def paras = doc.select("p")
+    def address = doc.select("div[id=address]")
     def errorSummary = doc.select("div[id=error-summary-display]")
   }
 
@@ -75,6 +78,34 @@ trait PageContentHelper { unitSpec: UnitSpec =>
           "label text",
           label,
           labelElem.text()
+        )
+      }
+    }
+
+  def elementWithValue(value: String): HavePropertyMatcher[Elements, String] =
+    new HavePropertyMatcher[Elements, String] {
+      def apply(element: Elements) = {
+        val elem = element.select(s":contains($value)")
+
+        HavePropertyMatchResult(
+          elem.text() == value,
+          "paragraph",
+          value,
+          elem.text()
+        )
+      }
+    }
+
+  def addressLine(id: String, value: String): HavePropertyMatcher[Elements, String] =
+    new HavePropertyMatcher[Elements, String] {
+      def apply(element: Elements) = {
+        val span = element.select(s"span[id=$id]")
+
+        HavePropertyMatchResult(
+          span.text() == value,
+          s"address line $id",
+          value,
+          span.text()
         )
       }
     }

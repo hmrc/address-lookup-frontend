@@ -41,6 +41,7 @@ object IntegrationTestConstants {
 
   val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode).as[JsObject]
   val testConfigWithAddressNotUkModeCustomEditConfigAsJson = Json.toJson(testConfigWithAddressNotUkModeCustomEditConfig).as[JsObject]
+  val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", selectPage = Some(SelectPage(proposalListLimit = Some(50)))))).as[JsObject]
 
   val fullLookupPageConfig = LookupPage(
     title = Some("lookup-title"),
@@ -66,11 +67,12 @@ object IntegrationTestConstants {
     headingWithPostcode = Some("select-headingWithPostcode"),
     proposalListLabel = Some("select-proposalListLabel"),
     submitLabel = Some("select-submitLabel"),
-    proposalListLimit = Some(1),
+    proposalListLimit = Some(50),
     showSearchAgainLink = Some(true),
     searchAgainLinkText = Some("select-searchAgainLinkText"),
     editAddressLinkText = Some("select-editAddressLinkText")
   )
+  val testConfigSelectPageAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", selectPage = Some(fullSelectPageConfig)))).as[JsObject]
 
   val fullConfirmPageConfig = ConfirmPage(
     title = Some("confirm-title"),
@@ -142,7 +144,7 @@ object AddressRecordConstants {
       id = "id1",
       lines = Seq("line1", "line2"),
       town = "town1",
-      postcode = "AB1 1AB",
+      postcode = "AB11 1AB",
       country = Country("GB", "Great Britain")
     ),
     addressRecordJson(
@@ -154,6 +156,20 @@ object AddressRecordConstants {
     )
   )
 
+  def addressResultsListBySize(numberOfRepeats: Int): JsValue = {
+    Json.toJson(
+      (1 to numberOfRepeats) map {
+        _ =>
+          addressRecordJson(
+            id = s"id-${UUID.randomUUID()}",
+            lines = Seq("line1", "line2"),
+            town = "town1",
+            postcode = "AB1 1AB",
+            country = Country("GB", "Great Britain")
+          )
+      } toList
+    )
+  }
   def addressRecordJson(id: String, lines: Seq[String], town: String, postcode: String, country: Country): JsValue = Json.obj(
     "id" -> id,
     "upurn" -> "",
@@ -184,6 +200,7 @@ object AddressRecordConstants {
 }
 
 object PageElementConstants {
+
   object LookupPage {
     val postcodeId  = "postcode"
     val filterId    = "filter"
@@ -191,7 +208,12 @@ object PageElementConstants {
   }
 
   object EditPage {
-    val ukEditId      = "ukEdit"
-    val nonUkEditId   = "nonUkEdit"
+    val ukEditId = "ukEdit"
+    val nonUkEditId = "nonUkEdit"
   }
+
+  object SelectPage {
+    val addressId = "addressId"
+  }
+
 }

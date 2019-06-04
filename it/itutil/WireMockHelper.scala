@@ -81,7 +81,7 @@ trait WireMockHelper {
       )
     )
   }
-
+  
   def stubALBEGET(
     postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
     filter: Option[String] = None,

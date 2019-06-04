@@ -22,6 +22,7 @@ trait PageContentHelper { unitSpec: UnitSpec =>
     def link(id: String): Elements = doc.select(s"a[id=$id")
     def submitButton: Elements = doc.select("button[type=submit]")
     def input(id: String) = doc.select(s"input[id=$id]")
+    def radio(id: String) = doc.select(s"input[type=radio][id=$id]")
     def paras = doc.select("p")
     def address = doc.select("div[id=address]")
     def errorSummary = doc.select("div[id=error-summary-display]")

@@ -6,7 +6,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeApplication
-
+import model.JourneyConfigDefaults._
 
 class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
 
@@ -22,20 +22,27 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.getElementsByClass("back-link").first().text() shouldBe "Back"
-      doc.getElementsByTag("title").first().text() shouldBe "Confirm the address"
 
-      doc.getElementById("pageHeading").text() shouldBe "Review and confirm"
-      doc.getElementById("changeLink").text() shouldBe "Edit this address"
-      doc.getElementById("continue").text() shouldBe "Confirm and continue"
-      doc.getElementById("line1").text() shouldBe "1 High Street"
-      doc.getElementById("line2").text() shouldBe "Line 2"
-      doc.getElementById("line3").text() shouldBe "Line 3"
-      doc.getElementById("line4").text() shouldBe "Telford"
-      doc.getElementById("postCode").text() shouldBe "AB11 1AB"
-      doc.getElementById("country").text() shouldBe "France"
-      doc.getElementsByTag("h2").select(":containsOwn(Your selected address)").size() shouldBe 0
-      doc.getElementsByTag("p").select(":containsOwn(This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.)").size() shouldBe 0
+      doc.select("a[class=back-link]") should have(
+        text("Back")
+      )
+      doc.title shouldBe CONFIRM_PAGE_TITLE
+      doc.h1.text() shouldBe CONFIRM_PAGE_HEADING
+      doc.submitButton.text() shouldBe "Confirm and continue"
+      doc.link("changeLink") should have(
+        text(CONFIRM_PAGE_EDIT_LINK_TEXT)
+      )
+      doc.address should have (
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+      doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
+      doc.h2s should not have elementWithValue("Your selected address")
+
       testElementDoesntExist(res,"searchAgainLink")
       testElementDoesntExist(res,"confirmChangeText")
 
@@ -62,20 +69,31 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.getElementsByClass("back-link").first().text() shouldBe "Back"
-      doc.getElementsByTag("title").first().text() shouldBe "confirm-title"
-
-      doc.getElementById("pageHeading").text() shouldBe "confirm-heading"
-      doc.getElementById("changeLink").text() shouldBe "confirm-changeLinkText"
-      doc.getElementById("continue").text() shouldBe "confirm-submitLabel"
-      doc.getElementById("line1").text() shouldBe "1 High Street"
-      doc.getElementById("line2").text() shouldBe "Telford"
-      doc.getElementById("postCode").text() shouldBe "AB11 1AB"
-      doc.getElementById("country").text() shouldBe "France"
-      doc.getElementsByTag("h2").select(":containsOwn(confirm-infoSubheading)").size() shouldBe 1
-      doc.getElementsByTag("p").select(":containsOwn(confirm-infoMessage)").size() shouldBe 1
-      doc.getElementById("searchAgainLink").text() shouldBe "confirm-searchAgainLinkText"
-      doc.getElementById("changeLink").text() shouldBe "confirm-changeLinkText"
+      doc.select("a[class=back-link]") should have(
+        text("Back")
+      )
+      doc.title shouldBe "confirm-title"
+      doc.h1.text() shouldBe "confirm-heading"
+      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.address should have (
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+      doc.link("changeLink") should have(
+        text("confirm-changeLinkText")
+      )
+      doc.h2s should have(elementWithValue("confirm-infoSubheading"))
+      doc.paras should have(elementWithValue("confirm-infoMessage"))
+      doc.link("searchAgainLink") should have(
+        text("confirm-searchAgainLinkText")
+      )
+      doc.link("changeLink") should have(
+        text("confirm-changeLinkText")
+      )
 
       testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, navTitle = "NAV_TITLE")
       res.status shouldBe OK
@@ -90,16 +108,22 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.getElementsByTag("title").first().text() shouldBe "confirm-title"
-
-      doc.getElementById("pageHeading").text() shouldBe "confirm-heading"
-      doc.getElementById("continue").text() shouldBe "confirm-submitLabel"
-      doc.getElementById("line1").text() shouldBe "1 High Street"
-      doc.getElementById("line2").text() shouldBe "Telford"
-      doc.getElementById("postCode").text() shouldBe "AB11 1AB"
-      doc.getElementById("country").text() shouldBe "France"
-      doc.getElementsByTag("h2").select(":containsOwn(Your selected address)").size() shouldBe 0
-      doc.getElementsByTag("p").select(":containsOwn(This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.)").size() shouldBe 0
+      doc.select("a[class=back-link]") should have(
+        text("Back")
+      )
+      doc.title shouldBe "confirm-title"
+      doc.h1.text() shouldBe "confirm-heading"
+      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.address should have (
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+      doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
+      doc.h2s should not have elementWithValue("Your selected address")
       testElementDoesntExist(res,"searchAgainLink")
       testElementDoesntExist(res,"confirmChangeText")
 
@@ -117,16 +141,22 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.getElementsByTag("title").first().text() shouldBe "confirm-title"
-
-      doc.getElementById("pageHeading").text() shouldBe "Review and confirm"
-      doc.getElementById("continue").text() shouldBe "confirm-submitLabel"
-      doc.getElementById("line1").text() shouldBe "1 High Street"
-      doc.getElementById("line2").text() shouldBe "Telford"
-      doc.getElementById("postCode").text() shouldBe "AB11 1AB"
-      doc.getElementById("country").text() shouldBe "France"
-      doc.getElementsByTag("h2").select(":containsOwn(Your selected address)").size() shouldBe 0
-      doc.getElementsByTag("p").select(":containsOwn(This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.)").size() shouldBe 0
+      doc.select("a[class=back-link]") should have(
+        text("Back")
+      )
+      doc.title shouldBe "confirm-title"
+      doc.h1.text() shouldBe "Review and confirm"
+      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.address should have (
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+      doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
+      doc.h2s should not have elementWithValue("Your selected address")
       testElementDoesntExist(res,"searchAgainLink")
       testElementDoesntExist(res,"confirmChangeText")
 

@@ -5,7 +5,6 @@
 @import model._
 
 @(id: String, journeyData: JourneyData, selectForm: Form[Select], proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean)(implicit request: Request[_], messages: Messages)
-
 @main_template(title = journeyData.resolvedConfig.selectPage.title, journeyData = Some(journeyData)) {
 
 @if(journeyData.resolvedConfig.showBackButtons) {
@@ -54,8 +53,9 @@ messages("common.error.text"), selectForm
         <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.selectPage.submitLabel}</button>
     </div>
     <div class="form-field">
-        <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.get.postcode),Some(true))}" id="editAddress">@{journeyData.resolvedConfig.selectPage.editAddressLinkText}</a></p>
+        <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.fold("")(_.postcode)),Some(true))}" id="editAddress">@{journeyData.resolvedConfig.selectPage.editAddressLinkText}</a></p>
     </div>
 </fieldset>
+
 }
 }

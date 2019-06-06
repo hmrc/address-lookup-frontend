@@ -19,6 +19,7 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
   val contactFormServiceIdentifier = "AddressLookupFrontend"
   val homeUrl = "http://www.hmrc.gov.uk"
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+  val apiVersion2 = 2
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")

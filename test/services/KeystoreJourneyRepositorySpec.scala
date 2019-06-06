@@ -10,6 +10,7 @@ import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching, SessionCache}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.TestConstants._
 
 class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
@@ -234,4 +235,172 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   }
 
+  "Converting a v1 model to a v2 model" when {
+    "all options set" should {
+      "Create a valid v2 model" in new Scenario() {
+        val actual = repo.convertToV2Model(fullV1JourneyData)
+        val expected = fullV2JourneyData
+
+        actual mustEqual expected
+      }
+    }
+
+    "without a selected address" should {
+      "return a V2 model without a selected address" in new Scenario() {
+        val actual = repo.convertToV2Model(fullV1JourneyData.copy(selectedAddress = None))
+        val expected = fullV2JourneyData.copy(selectedAddress = None)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without a confirmed address" should {
+      "return a V2 model without a confirmed address" in new Scenario() {
+        val actual = repo.convertToV2Model(fullV1JourneyData.copy(confirmedAddress = None))
+        val expected = fullV2JourneyData.copy(confirmedAddress = None)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without a list of proposed addresses" should {
+      "return a V2 model without a list of proposed addresses" in new Scenario() {
+        val actual = repo.convertToV2Model(fullV1JourneyData.copy(proposals = None))
+        val expected = fullV2JourneyData.copy(proposals = None)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without lookup page config" should {
+      "return a V2 model without lookup page config" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(lookupPage = None)
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+        val v2Config = fullV2JourneyConfig.copy(labels = Some(JourneyLabels(
+          en = Some(fullV2LanguageLabelsEn.copy(lookupPageLabels = None))
+        )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without select page config" should {
+      "return a V2 model without select page config" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(selectPage = None)
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+        val v2Config = fullV2JourneyConfig.copy(
+          options = fullV2JourneyOptions.copy(selectPageConfig = None),
+          labels = Some(JourneyLabels(
+            en = Some(fullV2LanguageLabelsEn.copy(selectPageLabels = None))
+          )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without edit page config" should {
+      "return a V2 model without edit page config" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(editPage = None)
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+        val v2Config = fullV2JourneyConfig.copy(
+          labels = Some(JourneyLabels(
+            en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
+          )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without confirm page config" should {
+      "return a V2 model without confirm page config" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(confirmPage = None)
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+        val v2Config = fullV2JourneyConfig.copy(
+          options = fullV2JourneyOptions.copy(confirmPageConfig = None),
+          labels = Some(JourneyLabels(
+            en = Some(fullV2LanguageLabelsEn.copy(confirmPageLabels = None))
+          )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without journey options" should {
+      "return a V2 model with all journey options set to none" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(
+          continueUrl = "testUrl",
+          homeNavHref = None,
+          navTitle = None,
+          additionalStylesheetUrl = None,
+          deskProServiceName = None,
+          showPhaseBanner = None,
+          phaseFeedbackLink = None,
+          phaseBannerHtml = None,
+          includeHMRCBranding = None,
+          alphaPhase = None,
+          showBackButtons = None,
+          ukMode = None,
+          allowedCountryCodes = None)
+
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+        val v2Config = fullV2JourneyConfig.copy(
+          options = journeyOptionsMinimal.copy(
+            selectPageConfig = fullV2SelectPageConfig,
+            confirmPageConfig = fullV2ConfirmPageConfig,
+            timeoutConfig = fullV2TimeoutConfig
+          ),
+          labels = Some(JourneyLabels(
+            en = Some(fullV2LanguageLabelsEn.copy(appLevelLabels = None))
+          )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+
+    "without language labels" should {
+      "return a V2 model without language labels" in new Scenario() {
+        val v1Config = fullV1JourneyConfig.copy(
+          lookupPage = None,
+          selectPage = None,
+          editPage = None,
+          confirmPage = None)
+
+        val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
+
+        val v2Config = fullV2JourneyConfig.copy(
+          options = fullV2JourneyOptions.copy(
+            confirmPageConfig = None,
+            selectPageConfig = None
+          ),
+          labels = Some(JourneyLabels(
+            en = Some(fullV2LanguageLabelsEn.copy(
+              lookupPageLabels = None,
+              selectPageLabels = None,
+              editPageLabels = None,
+              confirmPageLabels = None
+            ))
+          )))
+
+        val actual = repo.convertToV2Model(v1JourneyData)
+        val expected = fullV2JourneyData.copy(config = v2Config)
+
+        actual mustEqual expected
+      }
+    }
+  }
 }

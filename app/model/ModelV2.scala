@@ -11,7 +11,9 @@ case class JourneyDataV2(
                           selectedAddress: Option[ConfirmableAddress] = None,
                           confirmedAddress: Option[ConfirmableAddress] = None
                         ) {
+
   val resolveConfigV2 = ResolvedJourneyConfigV2(config)
+
 }
 
 object JourneyDataV2 {

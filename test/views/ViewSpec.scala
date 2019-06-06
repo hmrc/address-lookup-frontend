@@ -10,6 +10,8 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
   implicit class DocumentTest(doc: Document) {
 
+    val getBackLinkText: String =  doc.select(".back-link").text()
+
     val getParagraphAsText: String = doc.getElementsByTag("p").text()
 
     val getBulletPointsAsText: String = doc.getElementsByTag("li").text()

@@ -1,7 +1,6 @@
 package model
 
 import config.FrontendAppConfig
-import javax.security.auth.login.AppConfigurationEntry
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json.{Format, JsPath, Json}
@@ -11,7 +10,9 @@ case class JourneyDataV2(
                           proposals: Option[Seq[ProposedAddress]] = None,
                           selectedAddress: Option[ConfirmableAddress] = None,
                           confirmedAddress: Option[ConfirmableAddress] = None
-                        )
+                        ) {
+  val resolveConfigV2 = ResolvedJourneyConfigV2(config)
+}
 
 object JourneyDataV2 {
   implicit val format: Format[JourneyDataV2] = Json.format[JourneyDataV2]

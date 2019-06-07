@@ -474,6 +474,28 @@ object TestConstants {
       |}
     """.stripMargin)
 
+  val testId = UUID.randomUUID().toString()
+
+  val testBasicLevelJourneyConfigV2 =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl"
+        ),
+        labels = Some(JourneyLabels(
+          en = Some(LanguageLabels(
+            appLevelLabels = None,
+            selectPageLabels = None,
+            lookupPageLabels = None,
+            editPageLabels = None,
+            confirmPageLabels = None
+          )),
+          cy = None
+        ))
+      )
+    )
+
   val testAppLevelJourneyConfigV2 =
     JourneyDataV2(
       config = JourneyConfigV2(
@@ -512,4 +534,50 @@ object TestConstants {
         ))
       )
     )
+
+  val testLookupLevelJourneyConfigV2 =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          homeNavHref = Some("testNavHref"),
+          additionalStylesheetUrl = Some("testStylesheetUrl"),
+          phaseFeedbackLink = None,
+          deskProServiceName = Some("testDeskproName"),
+          showPhaseBanner = Some(true),
+          alphaPhase = Some(true),
+          showBackButtons = Some(true),
+          includeHMRCBranding = Some(true),
+          ukMode = None,
+          allowedCountryCodes = None,
+          selectPageConfig = None,
+          confirmPageConfig = None,
+          timeoutConfig = Some(TimeoutConfig(
+            timeoutAmount = 120,
+            timeoutUrl = "testTimeoutUrl"
+          ))
+        ),
+        labels = Some(JourneyLabels(
+          en = Some(LanguageLabels(
+            appLevelLabels = None,
+            selectPageLabels = None,
+            lookupPageLabels = Some(LookupPageLabels(
+               title = Some("enLookupPageTitle"),
+               heading = Some("enLookupPageHeading"),
+               filterLabel = Some("enFilterLabel"),
+               postcodeLabel = Some("enPostcodeLabel"),
+               submitLabel = Some("enSubmitLabel"),
+               noResultsFoundMessage = Some("enNoResultsFoundMessage"),
+               resultLimitExceededMessage = Some("enResultLimitExceededMessage"),
+               manualAddressLinkText = Some("enManualAddressLinkText")
+            )),
+            editPageLabels = None,
+            confirmPageLabels = None
+          )),
+          cy = None
+        ))
+      )
+    )
+
 }

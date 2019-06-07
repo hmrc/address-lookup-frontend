@@ -4,27 +4,34 @@ import config.WSHttp
 import model._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.libs.json.{Json, Reads, Writes}
-import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching, SessionCache}
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching}
 import utils.TestConstants._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
   implicit val hc = HeaderCarrier()
 
-  val someJourneyData = Some(JourneyData(JourneyConfig("continue")))
+  val journeyData = JourneyData(JourneyConfig("continue"))
+  val someJourneyDataJson = Some(Json.toJson(journeyData))
 
-  val someJourneyDataWithTimeout = Some(JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl")))))
+  val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue")))
+  val someJourneyDataV2Json = Some(Json.toJson(journeyDataV2))
 
-  val cached = CacheMap("id", Map("id" -> Json.toJson(someJourneyData)))
+  val journeyDataWithTimeout = JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl"))))
+  val someJourneyDataWithTimeoutJson = Some(Json.toJson(journeyDataWithTimeout))
 
-  val cachedWithTimeout = CacheMap("id", Map("id" -> Json.toJson(someJourneyDataWithTimeout)))
+  val cached = CacheMap("id", Map("id" -> Json.toJson(journeyData)))
 
-  class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JourneyData] = None) {
+  val cachedV2 = CacheMap("id", Map("id" -> Json.toJson(journeyDataV2)))
+
+  val cachedWithTimeout = CacheMap("id", Map("id" -> Json.toJson(journeyDataWithTimeout)))
+
+  class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JsValue] = None) {
 
     val sessionCache = new HttpCaching {
 
@@ -37,7 +44,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
       override def fetchAndGetEntry[T](source: String, cacheId: String, key: String)(implicit hc: HeaderCarrier, rds: Reads[T], ec: ExecutionContext): Future[Option[T]] = {
         getResponse match {
-          case Some(resp) => Future.successful(Some(resp.asInstanceOf[T]))
+          case Some(resp) => Future.successful(Some(resp.as[T]))
           case None => Future.successful(None)
         }
       }
@@ -61,23 +68,42 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   "get" should {
 
-    "fetch entry" in new Scenario(getResponse = someJourneyData) {
-      repo.get("any id").futureValue must be (someJourneyData)
+    "fetch entry" in new Scenario(getResponse = someJourneyDataJson) {
+      repo.get("any id").futureValue must be (Some(journeyData))
     }
 
-    "fetch entry with a timeout" in new Scenario(getResponse = someJourneyDataWithTimeout) {
-      repo.get("any id").futureValue must be (someJourneyDataWithTimeout)
+    "fetch entry with a timeout" in new Scenario(getResponse = someJourneyDataWithTimeoutJson) {
+      repo.get("any id").futureValue must be (Some(journeyDataWithTimeout))
     }
 
+
+  }
+
+  "getV2" should {
+
+    "fetch entry as a v2 model" when {
+      "stored as a v2 model" in new Scenario(getResponse = someJourneyDataV2Json) {
+        repo.getV2("any id").futureValue must be (Some(journeyDataV2))
+      }
+      "stored as a v1 model" in new Scenario(getResponse = someJourneyDataJson) {
+        repo.getV2("any id").futureValue must be (Some(repo.convertToV2Model(journeyData)))
+      }
+    }
 
   }
 
   "put" should {
 
     "cache given entry" in new Scenario(cacheResponse = Some(cached)) {
-      repo.put("id", someJourneyData.get).futureValue must be (true)
+      repo.put("id", journeyData).futureValue must be (true)
     }
 
+  }
+
+  "putV2" should {
+    "cache given entry" in new Scenario(cacheResponse = Some(cachedV2)) {
+      repo.putV2("id", journeyDataV2).futureValue must be (true)
+    }
   }
 
   "init" should {

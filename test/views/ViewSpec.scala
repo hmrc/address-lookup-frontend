@@ -5,8 +5,6 @@ import org.jsoup.select.Elements
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.ExecutionContext
-
 trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
   unitSpec: UnitSpec =>
 
@@ -22,7 +20,15 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     val getFormElements: Elements = doc.getElementsByClass("form-field-group")
 
-    val getErrorSummaryMessage: String = doc.select("#error-summary-display ul").text
+    val getErrorSummaryMessage: String = doc.select("#error-summary-display ul").text()
+
+    val getButtonContentAsText: String = doc.select("button[type=submit]").text()
+
+    val getHintAsText: String = doc.select(s"""span[class=form-hint]""").text()
+
+    val getFieldErrorMessageHeading: String = doc.select("#error-summary-heading").text()
+
+    def getSpanAsText: String = doc.select("span").text()
 
     def getSpanAsText(id: String): String = doc.select(s"""span[id=$id]""").text()
 
@@ -32,14 +38,11 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     def getStyleLinkHrefAsText(id: String): String = doc.select(s"""link[id=$id]""").attr("href")
 
-    def getTextFieldInput(name: String): Elements = doc.select(s"""input[name=$name]""")
+    def hasTextFieldInput(name: String): Boolean = doc.select(s"input[id=$name]").hasAttr("name")
 
-    def getTextFieldLabel(name: String): Elements = doc.select(s"label[for=$name]")
+    def getTextFieldLabel(name: String): String = doc.select(s"label[for=$name]").select("span").text()
 
-    def getButtonElements(implicit ec: ExecutionContext): Elements = doc.getElementsByTag("input").filter(_.attr("type") == "submit")
-
-    def getFieldErrorMessage(fieldName: String): String = doc.select(s"#error-message-$fieldName").text
-
+    def getFieldErrorMessageContent(fieldName: String): String = doc.select(s"""a[id=$fieldName-error-summary]""").text()
   }
 
 }

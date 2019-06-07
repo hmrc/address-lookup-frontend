@@ -8,7 +8,10 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.address.v2.Country
 
 object TestConstants {
+  val testJourneyId: String = UUID.randomUUID().toString
   val testContinueUrl = "continueUrl"
+  val testFilterValue = "bar"
+  val testPostCode = "AA1 1AA"
   val testHomeNavRef = Some("homeNavRef")
   val testNavTitle = Some("navTitle")
   val testAdditionalStylesheetUrl = Some("additionalStylesheetUrl")

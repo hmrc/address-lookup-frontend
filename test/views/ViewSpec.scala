@@ -51,6 +51,10 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     def getFieldErrorMessageContent(fieldName: String): String = doc.select(s"""a[id=$fieldName-error-summary]""").text()
 
+    def paras: Elements = doc.select("p")
+
+    def bulletPointList: Elements = doc.select("ul[class=list list-bullet]")
+
     def getDropList(id:String) = doc.select(s"select[id=$id]")
 
     def testElementExists(elementId: String) = doc.getElementById(elementId) should not be null

@@ -6,8 +6,6 @@ import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.ExecutionContext
-
 trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
   unitSpec: UnitSpec =>
 

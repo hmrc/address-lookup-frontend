@@ -686,4 +686,13 @@ object TestConstants {
       )
     )
 
+  val testNoResultsConfig = JourneyDataV2(
+    config = JourneyConfigV2(
+      2,
+      options = JourneyOptions(
+        continueUrl = "",
+        showBackButtons = Some(false)
+      )
+    )
+  )
 }

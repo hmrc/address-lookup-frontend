@@ -2,6 +2,7 @@ package utils
 
 import java.util.UUID
 
+import controllers.Proposals
 import model._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.address.v2.Country
@@ -476,6 +477,54 @@ object TestConstants {
 
   val testId = UUID.randomUUID().toString()
 
+  val testLookup =
+    model.Lookup(
+      filter = Some("testFilter"),
+      postcode = "TF3 4NT"
+    )
+
+  val testProposal =
+    Proposals(
+      proposals = Some(Seq(ProposedAddress(
+        town = Some("Telford"),
+        addressId = "testAddressId",
+        postcode = "TF3 4NT",
+        lines = List("1 High Street", "Line 2", "Line 3"),
+        county = Some("Shropshire")
+      )))
+    )
+
+  val testProposalMany =
+    Proposals(
+      proposals = Some(Seq(
+        ProposedAddress(
+          town = Some("Telford"),
+          addressId = "testAddressId",
+          postcode = "TF3 4NT",
+          lines = List("1 High Street", "Line 2", "Line 3"),
+          county = Some("Shropshire")
+        ),
+
+        ProposedAddress(
+          town = Some("Telford"),
+          addressId = "testAddressId",
+          postcode = "TF3 4NT",
+          lines = List("2 High Street", "Line 2", "Line 3"),
+          county = Some("Shropshire")
+        ),
+
+        ProposedAddress(
+          town = Some("Telford"),
+          addressId = "testAddressId",
+          postcode = "TF3 4NT",
+          lines = List("3 High Street", "Line 2", "Line 3"),
+          county = Some("Shropshire")
+        )
+      ))
+    )
+
+  val testProposalNone = Proposals(proposals = Some(Seq()))
+
   val testBasicLevelJourneyConfigV2 =
     JourneyDataV2(
       config = JourneyConfigV2(
@@ -493,6 +542,60 @@ object TestConstants {
           )),
           cy = None
         ))
+      )
+    )
+
+  val testSelectPageConfig =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          showBackButtons = Some(true),
+          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
+        ),
+        labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
+          title = Some("testTitle"),
+          heading = Some("testHeading"),
+          headingWithPostcode = Some("testHeadingWithPostcode "),
+          proposalListLabel = Some("testProposalListLabel"),
+          submitLabel = Some("testSubmitLabel"),
+          searchAgainLinkText = Some("testSearchAgainLinkText"),
+          editAddressLinkText = Some("testEditAddressLinkText")
+        ))))))
+      )
+    )
+
+  val testJourneyDataNoBackButtons =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          showBackButtons = Some(false)
+        )
+      )
+    )
+
+  val testSelectPageConfigMinimal =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl"
+        )
+      )
+    )
+
+  val testSelectPageConfigNoLabel =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          showBackButtons = Some(true),
+          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
+        )
       )
     )
 

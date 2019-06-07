@@ -2,6 +2,7 @@ package views
 
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -34,12 +35,28 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     def getTextFieldInput(name: String): Elements = doc.select(s"""input[name=$name]""")
 
-    def getTextFieldLabel(name: String): Elements = doc.select(s"label[for=$name]")
+    def getTextFieldLabel(name: String): String = doc.select(s"label[for=$name]").select("span").text()
 
     def getButtonElements(implicit ec: ExecutionContext): Elements = doc.getElementsByTag("input").filter(_.attr("type") == "submit")
 
     def getFieldErrorMessage(fieldName: String): String = doc.select(s"#error-message-$fieldName").text
 
+    def getDropList(id:String) = doc.select(s"select[id=$id]")
+
+    def testElementExists(elementId: String) = doc.getElementById(elementId) should not be null
   }
 
+  def option(id: String, value: String): HavePropertyMatcher[Elements, String] =
+    new HavePropertyMatcher[Elements, String] {
+      def apply(element: Elements) = {
+        val span = element.select(s"option[id=$id]")
+
+        HavePropertyMatchResult(
+          span.text() == value,
+          s"option $id",
+          value,
+          span.text()
+        )
+      }
+    }
 }

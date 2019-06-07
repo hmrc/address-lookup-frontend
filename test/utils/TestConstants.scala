@@ -474,6 +474,8 @@ object TestConstants {
       |}
     """.stripMargin)
 
+  val testId = UUID.randomUUID().toString
+
   val testAppLevelJourneyConfigV2 =
     JourneyDataV2(
       config = JourneyConfigV2(

@@ -38,8 +38,7 @@ class uKModeEditViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messages = app.injector.instanceOf[MessagesApi]
-  val testHtml = Html("")
-  val configWithouLabels = fullV2JourneyConfig.copy(
+  val configWithoutLabels = fullV2JourneyConfig.copy(
     labels = Some(JourneyLabels(
       en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
     )))
@@ -49,7 +48,7 @@ class uKModeEditViewSpec extends ViewSpec {
 
       val testPage = views.html.v2.uk_mode_edit(
         id = testId,
-        journeyData = fullV2JourneyData.copy(config = configWithouLabels),
+        journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
         editForm = ukEditForm,
         countries = Seq("FR" -> "France")
       )

@@ -40,7 +40,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         "no filter has been entered" when {
           "the backend service returns too many addresses" in {
             stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-            stubGetAddressFromBE(addressJson = addressRecordJsonList(numberOfRepeats = 51))
+            stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
               .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -68,7 +68,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
             stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
-            stubGetAddressFromBE(addressJson = addressRecordJsonList(51))
+            stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
             val res = buildClientLookupAddress(path = s"select?postcode=AB11+1AB&filter=$testFilterValue")
               .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -96,7 +96,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         "no filter has been entered" when {
           "the backend service returns too many addresses " in {
             stubKeystore(testJourneyId, testSelectConfigNoBackButtons, OK)
-            stubGetAddressFromBE(addressJson = addressRecordJsonList(numberOfRepeats = 51))
+            stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
               .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -124,7 +124,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubKeystore(testJourneyId, testSelectConfigNoBackButtons, OK)
             stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
-            stubGetAddressFromBE(addressJson = addressRecordJsonList(51))
+            stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
             val res = buildClientLookupAddress(path = s"select?postcode=AB11+1AB&filter=$testFilterValue")
               .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -151,9 +151,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
     "not be rendered" when {
       "the backend service returns enough addresses to be displayed on the select page" in {
+        val addressAmount = 25
+
         stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
-        stubGetAddressFromBE(addressJson = addressRecordJsonList(numberOfRepeats = 25))
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = addressAmount))
+        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -168,8 +170,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
       "the backend service returns 1 address and redirects to the confirm page" in {
         stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubGetAddressFromBE(addressJson = addressRecordJsonList(1))
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigWithUKAddress).as[JsObject], OK)
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(1))
+        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import itutil.config.{AddressRecordConstants, IntegrationTestConstants}
 import org.scalatestplus.play.OneServerPerSuite
@@ -73,6 +74,7 @@ trait WireMockHelper {
   def stubKeystoreSave(session: String, theData: JsValue, status: Int): StubMapping = {
     val keystoreUrl = s"/keystore/address-lookup-frontend/journey-data/data/$session"
     stubFor(put(urlMatching(keystoreUrl))
+      .withRequestBody(equalTo(Json.toJson(theData).toString))
       .willReturn(aResponse().
         withStatus(status).
         withBody(

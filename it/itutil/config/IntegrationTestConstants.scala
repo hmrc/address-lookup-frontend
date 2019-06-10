@@ -5,20 +5,41 @@ import java.util.UUID
 import model._
 import play.api.libs.json._
 import uk.gov.hmrc.address.v2.Country
+import IntegrationTestConstants._
 
 object IntegrationTestConstants {
   val testJourneyId = "Jid123"
   val testCsrfToken = () => UUID.randomUUID().toString
 
+
+  val testContinueUrl = "test-continue-url"
   val testPostCode = "AB11 1AB"
   val testFilterValue = "bar"
-  val testAuditRef = "auditRef"
-  val testAddressId = Some("addressId")
-  val testNonUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
-  val testFullNonUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2", "Line 3", "Telford")), Some(testPostCode), Some(Country("FR", "France")))
-  val testUKAddress = ConfirmableAddressDetails(Some(List("1 High Street", "Telford")), Some(testPostCode), Some(Country("GB", "United Kingdom")))
-  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)
+  val testAuditRef = testJourneyId
+  val testAddressIdRaw = "addressId"
+  val testAddressId = Some(testAddressIdRaw)
+  val testAddressLine1 = "1 High Street"
+  val testAddressLine2 = "Line 2"
+  val testAddressLine3 = "Line 3"
+  val testAddressTown = "Telford"
+  val testCountry = Country("GB", "United Kingdom")
+
+  val testNonUKAddress = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressTown)), Some(testPostCode), Some(Country("FR", "France")))
+  val testFullNonUKAddress = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France")))
+  val testUKAddress = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
+  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)
   val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)
+
+  def testProposedAddresses(amount: Int): Seq[ProposedAddress] = (1 to amount) map { _ =>
+    ProposedAddress(
+      addressId = testAddressIdRaw,
+      postcode = testPostCode,
+      lines = List(testAddressLine1, testAddressLine2),
+      town = Some(testAddressTown),
+      county = None,
+      country = testCountry
+    )
+  }
 
   val journeyDataV1FullJson: JsValue = Json.parse(
     """
@@ -293,31 +314,32 @@ object IntegrationTestConstants {
     """.stripMargin)
   lazy val journeyDataV2Full: JourneyDataV2 = journeyDataV2FullJson.as[JourneyDataV2]
 
-  val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = "Aurl"))
+  val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = testContinueUrl))
   val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
-  val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)))
+  val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
   val testConfigWithUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)))
   val testConfigWithoutAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = None)
   val testConfigDefaultAsJson = Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject]
   val testConfigWithoutAddressAsJson = Json.toJson(testConfigWithoutAddress).as[JsObject]
   val testConfigNotUkMode = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false))
   val testConfigNotUkModeCustomEditConfig = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false),
-          editPage = Some(EditPage(Some("Custom Title"),
-                     Some("Custom Heading"),
-                     Some("Custom Line1"),
-                     Some("Custom Line2"),
-                     Some("Custom Line3"),
-                     Some("Custom Town"),
-                     Some("Custom Postcode"),
-                     Some("Custom Country"),
-                     Some("Custom Continue")
-          )))
+    editPage = Some(EditPage(Some("Custom Title"),
+      Some("Custom Heading"),
+      Some("Custom Line1"),
+      Some("Custom Line2"),
+      Some("Custom Line3"),
+      Some("Custom Town"),
+      Some("Custom Postcode"),
+      Some("Custom Country"),
+      Some("Custom Continue")
+    )))
 
   val testConfigWithAddressNotUkMode = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkMode)
   val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkModeCustomEditConfig)
 
-  val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode).as[JsObject]
-  val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", selectPage = Some(SelectPage(proposalListLimit = Some(50)))))).as[JsObject]
+  val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode)
+  val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50))))))
+  val testConfigDefaultWithResultsLimit = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50)))))
   val testConfigWithAddressNotUkModeCustomEditConfigAsJson = Json.toJson(testConfigWithAddressNotUkModeCustomEditConfig).as[JsObject]
 
   val fullLookupPageConfig = LookupPage(
@@ -331,7 +353,7 @@ object IntegrationTestConstants {
     manualAddressLinkText = Some("lookup-manualAddressLinkText")
   )
 
-  val testLookupConfig = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig)))).as[JsObject]
+  val testLookupConfig = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, lookupPage = Some(fullLookupPageConfig)))).as[JsObject]
 
   val testLookupConfigNoBackButtons = Json.toJson(
     JourneyData(
@@ -350,7 +372,8 @@ object IntegrationTestConstants {
     searchAgainLinkText = Some("select-searchAgainLinkText"),
     editAddressLinkText = Some("select-editAddressLinkText")
   )
-  val testConfigSelectPageAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = "A url", selectPage = Some(fullSelectPageConfig)))).as[JsObject]
+  val testConfigSelectPageAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig))))
+  val testConfigSelectPage = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig)))
 
   val testSelectConfigNoBackButtons = Json.toJson(
     JourneyData(
@@ -414,13 +437,21 @@ object IntegrationTestConstants {
     )
   }
 
-  def journeyDataWithSelectedAddressJson(
-                                          journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true),
-                                          selectedAddress: ConfirmableAddressDetails = testNonUKAddress) = Json.toJson(
-    JourneyData(
-      journeyConfig,
-      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
-    )).as[JsObject]
+  def journeyDataWithSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true),
+                                         selectedAddress: ConfirmableAddressDetails = testNonUKAddress) =
+    Json.toJson(
+      JourneyData(
+        journeyConfig,
+        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
+      )
+    )
+
+  def journeyDataWithNoSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true)) =
+    Json.toJson(
+      JourneyData(
+        journeyConfig
+      )
+    )
 }
 
 
@@ -447,15 +478,16 @@ object AddressRecordConstants {
       (1 to numberOfRepeats) map {
         _ =>
           addressRecordJson(
-            id = s"id-${UUID.randomUUID()}",
-            lines = Seq("line1", "line2"),
-            town = "town1",
-            postcode = "AB1 1AB",
-            country = Country("GB", "Great Britain")
+            id = s"$testAddressIdRaw",
+            lines = Seq(testAddressLine1, testAddressLine2),
+            town = testAddressTown,
+            postcode = testPostCode,
+            country = Country("GB", "United Kingdom")
           )
       } toList
     )
   }
+
   def addressRecordJson(id: String, lines: Seq[String], town: String, postcode: String, country: Country): JsValue = Json.obj(
     "id" -> id,
     "upurn" -> "",
@@ -464,7 +496,7 @@ object AddressRecordConstants {
       "town" -> town,
       "postcode" -> postcode,
       "subdivision" -> Json.obj(
-        "code" -> "GC",
+        "code" -> "GB",
         "name" -> "United Kingdom"
       ),
       "country" -> Json.obj(
@@ -482,21 +514,6 @@ object AddressRecordConstants {
     "logicalState" -> Json.toJson("logicalState"),
     "streetClassification" -> "streetClassification"
   )
-
-  def addressRecordJsonList(numberOfRepeats: Int): JsValue = {
-    Json.toJson(
-      (1 to numberOfRepeats) map {
-        _ =>
-          addressRecordJson(
-            id = s"id-${UUID.randomUUID().toString}",
-            lines = Seq("line1", "line2"),
-            town = "town1",
-            postcode = "AB11 1AB",
-            country = Country("GB", "Great Britain")
-          )
-      } toList
-    )
-  }
 
 }
 

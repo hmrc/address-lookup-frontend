@@ -189,17 +189,23 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
     }
     s"return 303 if form is valid and redirect to ${controllers.routes.AddressLookupController.confirm("")}" in {
       stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject], OK)
-      stubKeystoreSave(testJourneyId, Json.obj(), OK)
-
+      stubKeystoreSave(
+        testJourneyId,
+        Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
+          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)),
+          selectedAddress = Some(testConfirmedAddress.copy(id = None))
+        )),
+        OK
+      )
       val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
-          "line1" -> Seq("One Line"),
-          "line2" -> Seq("Two Line"),
-          "town" -> Seq("Home Town"),
-          "postcode" -> Seq(""),
-          "countryCode" -> Seq("FR")
+          "line1" -> Seq(testAddressLine1),
+          "line2" -> Seq(testAddressLine2),
+          "town" -> Seq(testAddressTown),
+          "postcode" -> Seq(testPostCode),
+          "countryCode" -> Seq("GB")
         ))
       val res = await(fResponse)
 
@@ -227,20 +233,32 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(
         session = testJourneyId,
         theData = Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
-          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject],
+          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))),
         status = OK)
 
-      stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))).as[JsObject], OK)
-      stubKeystoreSave(testJourneyId, Json.obj(), OK)
+      stubKeystore(
+        testJourneyId,
+        Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
+          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)))),
+        OK
+      )
+      stubKeystoreSave(
+        testJourneyId,
+        Json.toJson(testJourneyDataWithMinimalJourneyConfig.copy(
+          config = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false)),
+          selectedAddress = Some(testConfirmedAddress.copy(id = None))
+        )),
+        OK
+      )
 
       val fResponse = buildClientLookupAddress("ukEdit").
         withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
         post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
-          "line1" -> Seq("One Line"),
-          "line2" -> Seq("Two Line"),
-          "town" -> Seq("Home Town"),
-          "postcode" -> Seq("AA199ZZ"),
+          "line1" -> Seq(testAddressLine1),
+          "line2" -> Seq(testAddressLine2),
+          "town" -> Seq(testAddressTown),
+          "postcode" -> Seq(testPostCode),
           "countryCode" -> Seq("GB")
         ))
       val res = await(fResponse)
@@ -261,9 +279,9 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
 
       res.status shouldBe OK
       res.json shouldBe Json.toJson(ConfirmableAddress(
-        auditRef = "auditRef",
-        id = Some("addressId"),
-        address = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2", "Line 3", "Telford")), Some("AB11 1AB"), Some(Country("FR", "France"))))
+        auditRef = testAuditRef,
+        id = Some(testAddressIdRaw),
+        address = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
       )
     }
   }

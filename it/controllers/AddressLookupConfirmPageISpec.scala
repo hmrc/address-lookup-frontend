@@ -2,7 +2,7 @@ package controllers
 
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import model.JourneyConfig
+import model.{JourneyConfig, JourneyConfigV2, JourneyOptions}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -16,7 +16,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
-      val json = journeyDataWithSelectedAddressJson(JourneyConfig(continueUrl = testContinueUrl), testFullNonUKAddress)
+      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2,JourneyOptions(continueUrl = testContinueUrl)), testFullNonUKAddress)
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -64,7 +64,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as TRUE for page" in {
-      val json = journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(true), testFullNonUKAddress)
+      val json = journeyDataV2WithSelectedAddressJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(true), testFullNonUKAddress)
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -104,7 +104,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as FALSE for page" in {
-      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(false), testFullNonUKAddress), OK)
+      stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), testFullNonUKAddress), OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -135,9 +135,9 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       res.status shouldBe OK
     }
     "pre-pop with an address and all elements are correct for almost full journey config model (missing field in confirm page) with all booleans as FALSE for page" in {
-      val jc = fullDefaultJourneyConfigModelWithAllBooleansSet(false)
+      val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
 
-      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(jc.copy(confirmPage = Some(jc.confirmPage.get.copy(heading = None))), testFullNonUKAddress), OK)
+      stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(jc.copy(labels = journeyV2Labels(None)), testFullNonUKAddress), OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -171,9 +171,9 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
 
   "The confirm page POST" should {
     "use the correct continue url when user clicks Confirm the address" in {
-      stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
+      stubKeystore(testJourneyId, testConfigwithAddressNotUkModeAsJsonV2, OK)
 
-      stubKeystoreSave(testJourneyId, Json.toJson(testConfigWithAddressNotUkMode.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))), OK)
+      stubKeystoreSave(testJourneyId, Json.toJson(testConfigWithAddressNotUkModeV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))), OK)
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))

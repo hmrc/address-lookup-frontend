@@ -314,6 +314,10 @@ object IntegrationTestConstants {
     """.stripMargin)
   lazy val journeyDataV2Full: JourneyDataV2 = journeyDataV2FullJson.as[JourneyDataV2]
 
+  val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
+  val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
+  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl))
+
   val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = testContinueUrl))
   val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
   val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
@@ -334,9 +338,11 @@ object IntegrationTestConstants {
       Some("Custom Continue")
     )))
 
+  val testConfigWithAddressNotUkModeV2 = testConfigWithFullNonUKAddressV2.copy(config = testConfigNotUkModeV2)
   val testConfigWithAddressNotUkMode = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkMode)
   val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkModeCustomEditConfig)
 
+  val testConfigwithAddressNotUkModeAsJsonV2 = Json.toJson(testConfigWithAddressNotUkModeV2)
   val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode)
   val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50))))))
   val testConfigDefaultWithResultsLimit = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50)))))
@@ -372,6 +378,12 @@ object IntegrationTestConstants {
     searchAgainLinkText = Some("select-searchAgainLinkText"),
     editAddressLinkText = Some("select-editAddressLinkText")
   )
+
+  val fullSelectPageConfigV2 = SelectPageConfig(
+    proposalListLimit = Some(50),
+    showSearchAgainLink = Some(true)
+  )
+
   val testConfigSelectPageAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig))))
   val testConfigSelectPage = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig)))
 
@@ -394,6 +406,13 @@ object IntegrationTestConstants {
     showChangeLink = Some(true),
     changeLinkText = Some("confirm-changeLinkText"),
     confirmChangeText = Some("confirm-confirmChangeText")
+  )
+
+  val fullConfirmPageConfigV2 = ConfirmPageConfig(
+    showSubHeadingAndInfo = Some(true),
+    showSearchAgainLink = Some(true),
+    showConfirmChangeText = Some(true),
+    showChangeLink = Some(true)
   )
 
   val fullEditPageConfig = EditPage(
@@ -578,10 +597,83 @@ object IntegrationTestConstants {
     )
   }
 
+  def journeyV2Labels(heading: Option[String] = Some("confirm-heading")): Option[JourneyLabels] = {
+    Some(JourneyLabels(
+      Some(LanguageLabels(
+        confirmPageLabels = Some(ConfirmPageLabels(
+          title = Some("confirm-title"),
+          heading = heading,
+          infoSubheading = Some("confirm-infoSubheading"),
+          infoMessage = Some("confirm-infoMessage"),
+          submitLabel = Some("confirm-submitLabel"),
+          searchAgainLinkText = Some("confirm-searchAgainLinkText"),
+          changeLinkText = Some("confirm-changeLinkText"),
+          confirmChangeText = Some("confirm-confirmChangeText")
+        ))
+      ))
+    ))
+  }
+
+  def fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
+
+    def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
+
+    JourneyConfigV2(
+      2,
+      options = JourneyOptions(
+        continueUrl = "continueUrl",
+        selectPageConfig = Some(fullSelectPageConfigV2.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
+        confirmPageConfig = Some(fullConfirmPageConfigV2.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
+        homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
+        additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
+        showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
+        alphaPhase = Some(allBooleanSetAndAppropriateOptions),
+        phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
+        showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
+        includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
+        deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
+        allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
+        timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
+          timeoutAmount = 120,
+          timeoutUrl = "TIMEOUT_URL"
+        ))),
+        ukMode = Some(allBooleanSetAndAppropriateOptions)
+      ),
+      Some(JourneyLabels(
+        Some(LanguageLabels(
+          confirmPageLabels = Some(ConfirmPageLabels(
+            title = Some("confirm-title"),
+            heading = Some("confirm-heading"),
+            infoSubheading = Some("confirm-infoSubheading"),
+            infoMessage = Some("confirm-infoMessage"),
+            submitLabel = Some("confirm-submitLabel"),
+            searchAgainLinkText = Some("confirm-searchAgainLinkText"),
+            changeLinkText = Some("confirm-changeLinkText"),
+            confirmChangeText = Some("confirm-confirmChangeText")
+          )),
+          appLevelLabels = Some(AppLevelLabels(
+            navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
+            phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML"))))
+        ))
+      ))
+    )
+  }
+
+
   def journeyDataWithSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true),
                                          selectedAddress: ConfirmableAddressDetails = testNonUKAddress) =
     Json.toJson(
       JourneyData(
+        journeyConfig,
+        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
+      )
+    )
+
+
+  def journeyDataV2WithSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true),
+                                           selectedAddress: ConfirmableAddressDetails = testNonUKAddress) =
+    Json.toJson(
+      JourneyDataV2(
         journeyConfig,
         selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
       )

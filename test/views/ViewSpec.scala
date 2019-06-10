@@ -21,6 +21,8 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     val getH2ElementAsText: String = doc.getElementsByTag("h2").text()
 
+    val getFirstH2ElementAsText: String = doc.getElementsByTag("h2").first().text()
+
     val getFormElements: Elements = doc.getElementsByClass("form-field-group")
 
     val getErrorSummaryMessage: String = doc.select("#error-summary-display ul").text()
@@ -38,6 +40,8 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
     def getALinkText(id: String): String = doc.select(s"""a[id=$id]""").text()
 
     def getLinkHrefAsText(id: String): String = doc.select(s"""a[id=$id]""").attr("href")
+
+    def getLinkTextFromHref(href: String): String = doc.select(s"""a[href=$href]""").text()
 
     def getStyleLinkHrefAsText(id: String): String = doc.select(s"""link[id=$id]""").attr("href")
 

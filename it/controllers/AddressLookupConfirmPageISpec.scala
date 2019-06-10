@@ -16,7 +16,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
-      val json = journeyDataWithSelectedAddressJson(JourneyConfig(continueUrl = "Aurl"),testFullNonUKAddress)
+      val json = journeyDataWithSelectedAddressJson(JourneyConfig(continueUrl = testContinueUrl), testFullNonUKAddress)
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -35,7 +35,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.link("changeLink") should have(
         text(CONFIRM_PAGE_EDIT_LINK_TEXT)
       )
-      doc.address should have (
+      doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
         addressLine("line3", "Line 3"),
@@ -46,8 +46,8 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
       doc.h2s should not have elementWithValue("Your selected address")
 
-      testElementDoesntExist(res,"searchAgainLink")
-      testElementDoesntExist(res,"confirmChangeText")
+      testElementDoesntExist(res, "searchAgainLink")
+      testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
       res.status shouldBe OK
@@ -64,7 +64,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as TRUE for page" in {
-      val json: JsObject = journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(true),testFullNonUKAddress)
+      val json = journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(true), testFullNonUKAddress)
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -79,7 +79,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.title shouldBe "confirm-title"
       doc.h1.text() shouldBe "confirm-heading"
       doc.submitButton.text() shouldBe "confirm-submitLabel"
-      doc.address should have (
+      doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
         addressLine("line3", "Line 3"),
@@ -104,7 +104,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as FALSE for page" in {
-      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(false),testFullNonUKAddress), OK)
+      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(fullDefaultJourneyConfigModelWithAllBooleansSet(false), testFullNonUKAddress), OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -118,7 +118,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.title shouldBe "confirm-title"
       doc.h1.text() shouldBe "confirm-heading"
       doc.submitButton.text() shouldBe "confirm-submitLabel"
-      doc.address should have (
+      doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
         addressLine("line3", "Line 3"),
@@ -128,8 +128,8 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       )
       doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
       doc.h2s should not have elementWithValue("Your selected address")
-      testElementDoesntExist(res,"searchAgainLink")
-      testElementDoesntExist(res,"confirmChangeText")
+      testElementDoesntExist(res, "searchAgainLink")
+      testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
       res.status shouldBe OK
@@ -137,7 +137,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     "pre-pop with an address and all elements are correct for almost full journey config model (missing field in confirm page) with all booleans as FALSE for page" in {
       val jc = fullDefaultJourneyConfigModelWithAllBooleansSet(false)
 
-      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(jc.copy(confirmPage = Some(jc.confirmPage.get.copy(heading = None))),testFullNonUKAddress), OK)
+      stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(jc.copy(confirmPage = Some(jc.confirmPage.get.copy(heading = None))), testFullNonUKAddress), OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -151,7 +151,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       doc.title shouldBe "confirm-title"
       doc.h1.text() shouldBe "Review and confirm"
       doc.submitButton.text() shouldBe "confirm-submitLabel"
-      doc.address should have (
+      doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
         addressLine("line3", "Line 3"),
@@ -161,8 +161,8 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       )
       doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
       doc.h2s should not have elementWithValue("Your selected address")
-      testElementDoesntExist(res,"searchAgainLink")
-      testElementDoesntExist(res,"confirmChangeText")
+      testElementDoesntExist(res, "searchAgainLink")
+      testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
       res.status shouldBe OK
@@ -173,14 +173,14 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
     "use the correct continue url when user clicks Confirm the address" in {
       stubKeystore(testJourneyId, testConfigWithAddressNotUkModeAsJson, OK)
 
-      stubKeystoreSave(testJourneyId,Json.obj(),OK)
+      stubKeystoreSave(testJourneyId, Json.toJson(testConfigWithAddressNotUkMode.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))), OK)
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
       val res = await(fResponse)
       res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe "Aurl?id=Jid123"
+      res.header(HeaderNames.LOCATION).get shouldBe s"$testContinueUrl?id=$testJourneyId"
     }
 
     "should redirect to the confirm page if incorrect data in keystore" in {

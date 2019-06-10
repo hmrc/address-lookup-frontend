@@ -98,7 +98,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         val message = "The postcode you entered appears to be incomplete or invalid. Please check and try again."
 
-        doc.errorSummary should have (
+        doc.errorSummary should have(
           errorSummaryMessage(LookupPage.postcodeId, message)
         )
 
@@ -123,7 +123,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         val message = "Your house name/number needs to be fewer than 256 characters"
 
-        doc.errorSummary should have (
+        doc.errorSummary should have(
           errorSummaryMessage(LookupPage.filterId, message)
         )
 
@@ -184,7 +184,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.select("a[class=back-link]") should not have(
+        doc.select("a[class=back-link]") should not have (
           text("Back")
           )
       }
@@ -192,8 +192,8 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config with all booleans set to true" should {
       "Render the page correctly with custom elements" in {
-        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
-        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
+        stubKeystore(testJourneyId, journeyDataWithNoSelectedAddressJson(), OK)
+        stubKeystoreSave(testJourneyId, journeyDataWithNoSelectedAddressJson(), OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -233,10 +233,19 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config where all the default values are overriden with the default values" should {
       "Render " in {
-        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(
-          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
-        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(
-          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
+        stubKeystore(
+          testJourneyId,
+          journeyDataWithNoSelectedAddressJson(
+            fullDefaultJourneyConfigModelWithAllBooleansSet(false)
+          ),
+          OK
+        )
+        stubKeystoreSave(
+          testJourneyId,
+          journeyDataWithNoSelectedAddressJson(
+            fullDefaultJourneyConfigModelWithAllBooleansSet(false)),
+          OK
+        )
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

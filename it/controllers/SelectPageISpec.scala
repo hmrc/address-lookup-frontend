@@ -7,6 +7,7 @@ import model.JourneyConfigDefaults._
 import itutil.config.PageElementConstants.SelectPage
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.libs.json.Json
 import play.api.test.FakeApplication
 
 class SelectPageISpec extends IntegrationSpecBase {
@@ -16,10 +17,11 @@ class SelectPageISpec extends IntegrationSpecBase {
   "The select page GET" should {
     "be shown with default text" when {
       "there is a result list between 2 and 50 results" in {
-        val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
+        val addressAmount = 50
+        val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
         stubGetAddressFromBE(addressJson = testResultsList)
+        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -33,7 +35,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         doc.h1.text() shouldBe SELECT_PAGE_HEADING
         doc.submitButton.text() shouldBe SELECT_PAGE_SUBMIT_LABEL
         doc.link("editAddress") should have(
-          href(routes.AddressLookupController.edit(id = "Jid123", lookUpPostCode = Some(testPostCode), uk = Some(true)).url),
+          href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode), uk = Some(true)).url),
           text(EDIT_LINK_TEXT)
         )
 
@@ -46,7 +48,7 @@ class SelectPageISpec extends IntegrationSpecBase {
             val fieldId = (s"addressId-$id")
             doc.radio(fieldId) should have(
               value(id),
-              label("line1, line2, town1, AB1 1AB")
+              label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
             )
           }
         }
@@ -54,10 +56,12 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be shown with configured text" when {
       "there is a result list between 2 and 50 results" in {
-        val testResultsList = addressResultsListBySize(numberOfRepeats = 30)
+        val addressAmount = 30
+
+        val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
         stubKeystore(session = testJourneyId, testConfigSelectPageAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigSelectPageAsJson, OK)
         stubGetAddressFromBE(addressJson = testResultsList)
+        stubKeystoreSave(testJourneyId, Json.toJson(testConfigSelectPage.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -71,7 +75,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         doc.h1.text() shouldBe fullSelectPageConfig.heading.get
         doc.submitButton.text() shouldBe fullSelectPageConfig.submitLabel.get
         doc.link("editAddress") should have(
-          href(routes.AddressLookupController.edit(id = "Jid123", lookUpPostCode = Some(testPostCode), uk = Some(true)).url),
+          href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode), uk = Some(true)).url),
           text(fullSelectPageConfig.editAddressLinkText.get)
         )
 
@@ -84,7 +88,7 @@ class SelectPageISpec extends IntegrationSpecBase {
             val fieldId = (s"addressId-$id")
             doc.radio(fieldId) should have(
               value(id),
-              label("line1, line2, town1, AB1 1AB")
+              label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
             )
           }
         }
@@ -93,8 +97,8 @@ class SelectPageISpec extends IntegrationSpecBase {
     "be not shown" when {
       "there are 0 results" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
+        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -107,8 +111,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
       "there is 1 result" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
+        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -122,8 +126,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
       "there are 50 results" in {
         stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
+        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -141,8 +145,8 @@ class SelectPageISpec extends IntegrationSpecBase {
     "Redirects to Confirm page if option is selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
       stubGetAddressFromBE(addressJson = testResultsList)
+      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val testIds = (testResultsList \\ "id").map {
         testId => testId.as[String]
@@ -160,8 +164,8 @@ class SelectPageISpec extends IntegrationSpecBase {
     "Returns errors when no option has been selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
       stubGetAddressFromBE(addressJson = testResultsList)
+      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -182,8 +186,8 @@ class SelectPageISpec extends IntegrationSpecBase {
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
       stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
       stubGetAddressFromBE(addressJson = testResultsList)
+      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
 
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

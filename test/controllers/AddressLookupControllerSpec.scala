@@ -12,8 +12,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
-import play.api.test.Helpers._
-//import play.api.mvc.Result
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -22,7 +20,7 @@ import uk.gov.hmrc.address.v2.Country
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier}
 
 class AddressLookupControllerSpec
   extends PlaySpec
@@ -88,7 +86,7 @@ class AddressLookupControllerSpec
 
     val controller = new AddressLookupController(journeyRepository, addressService, countryService)
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService) {
-      override private[controllers] def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+      override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
     val api = new ApiController(journeyRepository) {
@@ -205,29 +203,6 @@ class AddressLookupControllerSpec
       html.getElementById("filter").`val` mustBe ""
     }
 
-    "goes to the no results page if postcode not found" in new Scenario(
-      journeyData = Map("foo" -> basicJourney()),
-      proposals = Seq()
-      ) {
-      val result = controllerOveridinghandleLookup(Future.successful(countOfResults.NoResults)).select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
-      val html = contentAsString(result).asBodyFragment
-
-      status(result) must be (200)
-      html.getElementById("pageHeading").html mustBe "We can not find any addresses for ZZ11 1ZZ"
-    }
-
-    "goes to the confirmation page if exact postcode and number is matched" in new Scenario(
-          journeyData = Map("foo" -> basicJourney()),
-          proposals = Seq()
-          ) {
-          val result = controllerOveridinghandleLookup(Future.successful(countOfResults.OneResult(ProposedAddress("10", "ZZ1 1ZZ")))).select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ1 1ZZ", "filter" -> "10"))
-          val html = contentAsString(result).asBodyFragment
-
-          status(result) must be (303)
-          redirectLocation(result) mustBe Some("/lookup-address/foo/confirm")
-        }
-
-
     "allow page title to be configured" in new Scenario(
       journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(title = Some("Hello!"))))))
     ) {
@@ -328,7 +303,7 @@ class AddressLookupControllerSpec
   "select" should {
 
     "display the too many addresses page" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(selectPage = Some(SelectPage(proposalListLimit = Some(1)))))),
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl="continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
       proposals = Seq(ProposedAddress("1", "ZZ11 1ZZ"), ProposedAddress("2", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
@@ -337,7 +312,7 @@ class AddressLookupControllerSpec
     }
 
     "display the no results page if no addresses were found" in new Scenario(
-      journeyData = Map("foo" -> basicJourney()),
+      journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq()
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
@@ -348,7 +323,7 @@ class AddressLookupControllerSpec
     }
 
     "display a single address on confirmation page" in new Scenario(
-      journeyData = Map("foo" -> basicJourney()),
+      journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", lines = List("line1", "line2"), town = Some("town"), county = Some("county")))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
@@ -358,7 +333,7 @@ class AddressLookupControllerSpec
     }
 
     "display a list of proposals given postcode and filter parameters" in new Scenario(
-      journeyData = Map("foo" -> basicJourney()),
+      journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"), ProposedAddress("GB1234567891", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))

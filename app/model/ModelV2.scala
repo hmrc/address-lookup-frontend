@@ -51,7 +51,9 @@ case class JourneyOptions(
                            selectPageConfig: Option[SelectPageConfig] = None,
                            confirmPageConfig: Option[ConfirmPageConfig] = None,
                            timeoutConfig: Option[TimeoutConfig] = None
-                         )
+                         ) {
+  val isUkMode: Boolean = ukMode contains true
+}
 
 case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val continueUrl: String = journeyOptions.continueUrl

@@ -60,26 +60,26 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   // GET  /:id/select
   def select(id: String) = Action.async { implicit req =>
-    withFutureJourney(id) { journeyData =>
+    withFutureJourneyV2(id) { journeyData =>
       lookupForm.bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.lookup(id, journeyData, errors)))),
+        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors)))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {
             case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
             case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) ->
-              Ok(views.html.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
-            case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
-            case NoResults => None -> Ok(views.html.no_results(id, journeyData, lookupWithFormattedPostcode.postcode))
+              Ok(views.html.v2.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
+            case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
+            case NoResults => None -> Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode))
           }
         }
       )
     }
   }
 
-  private[controllers] def handleLookup(id: String, journeyData: JourneyData, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
-    val addressLimit = journeyData.config.selectPage.getOrElse(SelectPage()).proposalListLimit
-    addressService.find(lookup.postcode, lookup.filter, journeyData.config.isukMode).flatMap {
+  private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
+    val addressLimit = journeyData.config.options.selectPageConfig.getOrElse(SelectPageConfig()).proposalListLimit
+    addressService.find(lookup.postcode, lookup.filter, journeyData.config.options.isUkMode).flatMap {
       case noneFound if noneFound.isEmpty =>
         if (lookup.filter.isDefined) {
           handleLookup(id: String, journeyData, lookup.copy(filter = None), firstLookup = false) //TODO Pass a boolean through to show no results were found and this is a retry?

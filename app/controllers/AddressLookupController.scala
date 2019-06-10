@@ -226,6 +226,16 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
     }
   }
 
+  protected def withJourneyV2(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyDataV2 => (Option[JourneyDataV2], Result))(implicit request: Request[AnyContent]): Future[Result] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    journeyRepository.getV2(id).flatMap {
+      case Some(journeyData) =>
+        val outcome = action(journeyData)
+        outcome._1.fold(Future.successful(outcome._2))(modifiedJourneyData => journeyRepository.putV2(id, modifiedJourneyData).map(_ => outcome._2))
+      case None => Future.successful(noJourney)
+    }
+  }
+
 
   protected def withFutureJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => Future[(Option[JourneyData], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -238,6 +248,20 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
           }
         }
       }
+      case None => Future.successful(noJourney)
+    }
+  }
+
+  protected def withFutureJourneyV2(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyDataV2 => Future[(Option[JourneyDataV2], Result)])(implicit request: Request[AnyContent]): Future[Result] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    journeyRepository.getV2(id).flatMap {
+      case Some(journeyData) =>
+        action(journeyData).flatMap { outcome =>
+          outcome._1 match {
+            case Some(modifiedJourneyData) => journeyRepository.putV2(id, modifiedJourneyData).map(_ => outcome._2)
+            case None => Future.successful(outcome._2)
+          }
+        }
       case None => Future.successful(noJourney)
     }
   }

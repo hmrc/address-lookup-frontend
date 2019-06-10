@@ -58,7 +58,7 @@ trait WireMockHelper {
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings
 
-  def stubKeystore(session: String, theData: JsObject, status: Int = 200): StubMapping = {
+  def stubKeystore(session: String, theData: JsValue, status: Int = 200): StubMapping = {
     val keystoreUrl = s"/keystore/address-lookup-frontend/journey-data"
     stubFor(get(urlMatching(keystoreUrl))
       .willReturn(aResponse().
@@ -70,7 +70,7 @@ trait WireMockHelper {
     )
   }
 
-  def stubKeystoreSave(session: String, theData: JsObject, status: Int): StubMapping = {
+  def stubKeystoreSave(session: String, theData: JsValue, status: Int): StubMapping = {
     val keystoreUrl = s"/keystore/address-lookup-frontend/journey-data/data/$session"
     stubFor(put(urlMatching(keystoreUrl))
       .willReturn(aResponse().

@@ -38,6 +38,8 @@ class AddressLookupControllerSpec
 
   class Scenario(journeyConfig: Map[String, JourneyData] = Map.empty,
                  var journeyData: Map[String, JourneyData] = Map.empty,
+                 journeyConfigV2: Map[String, JourneyDataV2] = Map.empty,
+                 var journeyDataV2: Map[String, JourneyDataV2] = Map.empty,
                  proposals: Seq[ProposedAddress] = Seq.empty,
                  id: Option[String] = None) {
 
@@ -57,8 +59,17 @@ class AddressLookupControllerSpec
         Future.successful(journeyData.get(id))
       }
 
+      override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
+        Future.successful(journeyDataV2.get(id))
+      }
+
       override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
         journeyData = journeyData ++ Map((id -> data))
+        Future.successful(true)
+      }
+
+      override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+        journeyDataV2 = journeyDataV2 ++ Map(id -> data)
         Future.successful(true)
       }
     }

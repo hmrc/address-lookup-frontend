@@ -452,6 +452,35 @@ object IntegrationTestConstants {
         journeyConfig
       )
     )
+
+  val journeyDataV2ResultLimit: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
+  val journeyDataV2Minimal: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl)))
+  val journeyDataV2SelectLabels: JourneyDataV2 = JourneyDataV2(
+    JourneyConfigV2(
+      2,
+      JourneyOptions(
+        testContinueUrl,
+        selectPageConfig = Some(SelectPageConfig(
+          proposalListLimit = Some(50)
+        ))
+      ),
+      Some(JourneyLabels(
+        Some(LanguageLabels(
+          selectPageLabels = Some(SelectPageLabels(
+            title = Some("select-title"),
+            heading = Some("select-heading"),
+            headingWithPostcode = Some("select-headingWithPostcode"),
+            proposalListLabel = Some("select-proposalListLabel"),
+            submitLabel = Some("select-submitLabel"),
+            searchAgainLinkText = Some("select-searchAgainLinkText"),
+            editAddressLinkText = Some("select-editAddressLinkText")
+          ))
+        ))
+      ))
+    )
+  )
+  val journeyDataV2SelectLabelsNoBack: JourneyDataV2 = journeyDataV2SelectLabels.copy(config = journeyDataV2SelectLabels.config.copy(options = journeyDataV2SelectLabels.config.options.copy(showBackButtons = Some(false))))
+
 }
 
 

@@ -95,16 +95,16 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // TODO enable journey-configurable limit on proposal list size
   // POST /:id/select
   def handleSelect(id: String) = Action.async { implicit req =>
-    withJourney(id) { journeyData =>
+    withJourneyV2(id) { journeyData =>
       val bound = selectForm.bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.select(id, journeyData, errors, Proposals(journeyData.proposals), None, true))),
+        errors => (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), None, true))),
         selection => {
           journeyData.proposals match {
             case Some(props) => {
               props.find(_.addressId == selection.addressId) match {
                 case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-                case None => (None, BadRequest(views.html.select(id, journeyData, bound, Proposals(Some(props)), None, true)))
+                case None => (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), None, true)))
               }
             }
             case None => (None, Redirect(routes.AddressLookupController.lookup(id)))

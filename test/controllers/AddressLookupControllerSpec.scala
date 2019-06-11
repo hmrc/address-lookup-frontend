@@ -17,10 +17,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, JourneyRepository}
 import uk.gov.hmrc.address.v2.Country
+import uk.gov.hmrc.http.{HeaderCarrier}
+import utils.TestConstants.{testLookupLevelJourneyConfigV2, testAppLevelJourneyConfigV2}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier}
 
 class AddressLookupControllerSpec
   extends PlaySpec
@@ -160,7 +161,7 @@ class AddressLookupControllerSpec
   "lookup" should {
 
     "return a form which permits input of building name/number and postcode and should pre pop values" in new Scenario(
-      journeyData = Map("foo" -> basicJourney())
+      journeyDataV2 = Map("foo" -> basicJourneyV2())
     ) {
       val res = call(controller.lookup("foo",Some("ZZ1 1ZZ"),Some("The House")), req)
       val html = contentAsString(res).asBodyFragment
@@ -178,7 +179,7 @@ class AddressLookupControllerSpec
     }
 
     "return a form which permits input of building name/number and postcode when set to UK mode and should not pre pop" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(ukModeBool=Some(true)))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool=Some(true)))
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -195,7 +196,7 @@ class AddressLookupControllerSpec
       html.getElementById("filter").`val` mustBe ""
     }
     "return a form that pre pops just post code" in new Scenario(
-      journeyData = Map("foo" -> basicJourney())
+      journeyDataV2 = Map("foo" -> basicJourneyV2())
     ) {
       val res = call(controller.lookup("foo",postcode = Some("AB11 1AB")), req)
       val html = contentAsString(res).asBodyFragment
@@ -204,60 +205,69 @@ class AddressLookupControllerSpec
     }
 
     "allow page title to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(title = Some("Hello!"))))))
+      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("title").withValue("Hello!")
+      html should include element withName("title").withValue("enLookupPageTitle")
     }
 
     "allow page heading to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(heading = Some("World!"))))))
+      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("h1").withValue("World!")
+      html should include element withName("h1").withValue("enLookupPageHeading")
     }
 
     "allow filter label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(filterLabel = Some("Your digs no."))))))
+      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("label").withAttrValue("for", "filter").withValue("Your digs no.")
+      html should include element withName("label").withAttrValue("for", "filter").withValue("enFilterLabel")
     }
 
     "allow postcode label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(postcodeLabel = Some("Your PO, bro"))))))
+      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("label").withAttrValue("for", "postcode").withValue("Your PO, bro")
+      html should include element withName("label").withAttrValue("for", "postcode").withValue("enPostcodeLabel")
     }
 
     "allow submit label to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(JourneyConfig("continue", lookupPage = Some(LookupPage(submitLabel = Some("Make it so"))))))
+      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Make it so")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("enSubmitLabel")
     }
   }
 
   "configuring phase banner should" should {
 
-    val noBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(false)))
+    val noBannerJourneyV2 = basicJourneyV2()
     "show no phase banner when deactivated" in new Scenario(
-      journeyData = Map("foo" -> noBannerJourney)
+      journeyDataV2 = Map("foo" -> noBannerJourneyV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("service-info").withValue("")
     }
 
-    val betaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true)))
+    val betaBannerJourneyV2 =
+      JourneyDataV2(
+        config = JourneyConfigV2(
+          version = 2,
+          options = JourneyOptions(
+            continueUrl = "testContinueUrl",
+            showPhaseBanner = Some(true)
+          )
+        )
+      )
     "show a default beta phase banner when activated" in new Scenario(
-      journeyData = Map("foo" -> betaBannerJourney)
+      journeyDataV2 = Map("foo" -> betaBannerJourneyV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -266,20 +276,36 @@ class AddressLookupControllerSpec
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
-    val customBetaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), phaseBannerHtml = Some("html content")))
+    val customBetaBannerJourneyV2 =
+      JourneyDataV2(
+        config = JourneyConfigV2(
+          version = 2,
+          options = JourneyOptions(
+            continueUrl = "testContinueUrl",
+            showPhaseBanner = Some(true),
+            alphaPhase = Some(false)
+          ),
+          labels = Some(JourneyLabels(
+            en = Some(LanguageLabels(
+              appLevelLabels = Some(AppLevelLabels(
+                navTitle = Some("enNavTitle"),
+                phaseBannerHtml = Some("enPhaseBannerHtml"))))))
+          )
+        )
+      )
     "show a custom beta phase banner when supplied with Html" in new Scenario(
-      journeyData = Map("foo" -> customBetaBannerJourney)
+      journeyDataV2 = Map("foo" -> customBetaBannerJourneyV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("phase-tag").withValue("BETA")
       html should include element withAttrValue("id", "phase-banner-content")
-        .withValue("html content")
+        .withValue("enPhaseBannerHtml")
     }
 
-    val alphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), alphaPhase = Some(true)))
+    val alphaBannerJourneyV2 = testLookupLevelJourneyConfigV2
     "show a default alpha phase banner when specified" in new Scenario(
-      journeyData = Map("foo" -> alphaBannerJourney)
+      journeyDataV2 = Map("foo" -> alphaBannerJourneyV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
@@ -288,15 +314,15 @@ class AddressLookupControllerSpec
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
-    val customAlphaBannerJourney = JourneyData(JourneyConfig(continueUrl="cont", showPhaseBanner = Some(true), alphaPhase = Some(true), phaseBannerHtml = Some("more html content")))
+    val customAlphaBannerJourneyV2 = testAppLevelJourneyConfigV2
     "show a custom alpha phase banner when specified and supplied with Html" in new Scenario(
-      journeyData = Map("foo" -> customAlphaBannerJourney)
+      journeyDataV2 = Map("foo" -> customAlphaBannerJourneyV2)
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("phase-tag").withValue("ALPHA")
       html should include element withAttrValue("id", "phase-banner-content")
-        .withValue("more html content")
+        .withValue("enPhaseBannerHtml")
     }
   }
 

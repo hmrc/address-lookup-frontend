@@ -22,8 +22,8 @@ class LookupPageISpec extends IntegrationSpecBase {
   "The lookup page" when {
     "when provided with no page config" should {
       "Render the default content" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -61,8 +61,8 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'postcode not entered' error message" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = "select")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -85,8 +85,8 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'invalid postcode' error message" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"select?postcode=QQ")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -109,8 +109,8 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'filter invalid' error messages" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val filterValue = longFilterValue
         val fResponse = buildClientLookupAddress(path = s"select?filter=$filterValue")
@@ -136,8 +136,8 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with custom content" should {
       "Render the page with custom content" in {
-        stubKeystore(testJourneyId, testLookupConfig, OK)
-        stubKeystoreSave(testJourneyId, testLookupConfig, OK)
+        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -173,8 +173,8 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "not display the back button if disabled" in {
-        stubKeystore(testJourneyId, testLookupConfigNoBackButtons, OK)
-        stubKeystoreSave(testJourneyId, testLookupConfigNoBackButtons, OK)
+        stubKeystore(testJourneyId, testDefaultLookupPageJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testDefaultLookupPageJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -192,8 +192,8 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config with all booleans set to true" should {
       "Render the page correctly with custom elements" in {
-        stubKeystore(testJourneyId, journeyDataWithNoSelectedAddressJson(), OK)
-        stubKeystoreSave(testJourneyId, journeyDataWithNoSelectedAddressJson(), OK)
+        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -233,19 +233,9 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config where all the default values are overriden with the default values" should {
       "Render " in {
-        stubKeystore(
-          testJourneyId,
-          journeyDataWithNoSelectedAddressJson(
-            fullDefaultJourneyConfigModelWithAllBooleansSet(false)
-          ),
-          OK
-        )
-        stubKeystoreSave(
-          testJourneyId,
-          journeyDataWithNoSelectedAddressJson(
-            fullDefaultJourneyConfigModelWithAllBooleansSet(false)),
-          OK
-        )
+        stubKeystore(testJourneyId, testOtherCustomLookupPageJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testOtherCustomLookupPageJourneyConfigV2, OK)
+
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -408,6 +408,147 @@ object IntegrationTestConstants {
     submitLabel = Some("edit-submitLabel")
   )
 
+  val testMinimalLevelJourneyConfigV2 = Json.toJson(JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl"
+        ),
+        labels = Some(JourneyLabels(
+          en = Some(LanguageLabels(
+            appLevelLabels = None,
+            selectPageLabels = None,
+            lookupPageLabels = None,
+            editPageLabels = None,
+            confirmPageLabels = None
+          )),
+          cy = None
+        ))
+      )
+    )).as[JsValue]
+
+  val testDefaultLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl",
+        showBackButtons = Some(false),
+        homeNavHref = Some("NAV_TITLE")
+      ),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels(
+          appLevelLabels = Some(AppLevelLabels(
+            navTitle = Some("NAV_TITLE")
+          )),
+          selectPageLabels = None,
+          lookupPageLabels = None,
+          editPageLabels = None,
+          confirmPageLabels = None
+        )),
+        cy = None
+      ))
+    )
+  )).as[JsValue]
+
+  val testCustomLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl",
+        homeNavHref = Some("NAV_TITLE"),
+        additionalStylesheetUrl = Some("ADDITIONAL_STYLESHEET_URL"),
+        phaseFeedbackLink = Some("testFeedbackLink"),
+        deskProServiceName = Some("DESKPRO_SERVICE_NAME"),
+        showPhaseBanner = Some(true),
+        alphaPhase = Some(true),
+        showBackButtons = Some(true),
+        includeHMRCBranding = Some(true),
+        ukMode = Some(true),
+        allowedCountryCodes = Some(Set("UK", "FR")),
+        selectPageConfig = Some(SelectPageConfig(
+          proposalListLimit = Some(30),
+          showSearchAgainLink = Some(true)
+        )),
+        confirmPageConfig = Some(ConfirmPageConfig(
+          showSearchAgainLink = Some(true),
+          showSubHeadingAndInfo = Some(true),
+          showChangeLink = Some(true),
+          showConfirmChangeText = Some(true)
+        )),
+        timeoutConfig = Some(TimeoutConfig(
+          timeoutAmount = 120,
+          timeoutUrl = "TIMEOUT_URL"
+        ))
+      ),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels(
+          appLevelLabels = Some(AppLevelLabels(
+            navTitle = Some("NAV_TITLE"),
+            phaseBannerHtml = Some("PHASE_BANNER_HTML")
+          )),
+          selectPageLabels = None,
+          lookupPageLabels = Some(LookupPageLabels(
+            title = Some("lookup-title"),
+            heading = Some("lookup-heading"),
+            filterLabel = Some("lookup-filterLabel"),
+            postcodeLabel = Some("lookup-postcodeLabel"),
+            submitLabel = Some("lookup-submitLabel"),
+            resultLimitExceededMessage = Some("lookup-resultLimitExceededMessage"),
+            noResultsFoundMessage = Some("lookup-noResultsFoundMessage"),
+            manualAddressLinkText = Some("lookup-manualAddressLinkText")
+          )),
+          editPageLabels = None,
+          confirmPageLabels = None
+        )),
+        cy = None
+      ))
+    )
+  )).as[JsValue]
+
+  val testOtherCustomLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl",
+        phaseFeedbackLink = Some("testFeedbackLink"),
+        showPhaseBanner = Some(false),
+        alphaPhase = Some(false),
+        includeHMRCBranding = Some(true),
+        ukMode = Some(true),
+        allowedCountryCodes = Some(Set("UK", "FR")),
+        selectPageConfig = Some(SelectPageConfig(
+          proposalListLimit = Some(30),
+          showSearchAgainLink = Some(true)
+        )),
+        confirmPageConfig = Some(ConfirmPageConfig(
+          showSearchAgainLink = Some(true),
+          showSubHeadingAndInfo = Some(true),
+          showChangeLink = Some(true),
+          showConfirmChangeText = Some(true)
+        ))
+      ),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels(
+          appLevelLabels = None,
+          selectPageLabels = None,
+          lookupPageLabels = Some(LookupPageLabels(
+            title = Some("lookup-title"),
+            heading = Some("lookup-heading"),
+            filterLabel = Some("lookup-filterLabel"),
+            postcodeLabel = Some("lookup-postcodeLabel"),
+            submitLabel = Some("lookup-submitLabel"),
+            resultLimitExceededMessage = Some("lookup-resultLimitExceededMessage"),
+            noResultsFoundMessage = Some("lookup-noResultsFoundMessage"),
+            manualAddressLinkText = Some("lookup-manualAddressLinkText")
+          )),
+          editPageLabels = None,
+          confirmPageLabels = None
+        )),
+        cy = None
+      ))
+    )
+  )).as[JsValue]
+
   def fullDefaultJourneyConfigModelWithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
 
     def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]

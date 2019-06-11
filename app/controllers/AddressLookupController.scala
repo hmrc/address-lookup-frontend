@@ -52,9 +52,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
-    withJourney(id) { journeyData =>
+    withJourneyV2(id) { journeyData =>
       val formPrePopped = lookupForm.fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.lookup(id, journeyData, formPrePopped)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped)))
     }
   }
 

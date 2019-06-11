@@ -16,8 +16,8 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -29,8 +29,8 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -42,8 +42,8 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -55,8 +55,8 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -19,9 +19,9 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-        stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = testResultsList)
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -59,9 +59,9 @@ class SelectPageISpec extends IntegrationSpecBase {
         val addressAmount = 30
 
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-        stubKeystore(session = testJourneyId, testConfigSelectPageAsJson, OK)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2SelectLabels), OK)
         stubGetAddressFromBE(addressJson = testResultsList)
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigSelectPage.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -96,9 +96,9 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be not shown" when {
       "there are 0 results" in {
-        stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -110,9 +110,9 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there is 1 result" in {
-        stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -125,9 +125,9 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there are 50 results" in {
-        stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -144,9 +144,9 @@ class SelectPageISpec extends IntegrationSpecBase {
   "The select page POST" should {
     "Redirects to Confirm page if option is selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
-      stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
       val testIds = (testResultsList \\ "id").map {
         testId => testId.as[String]
@@ -163,9 +163,9 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "Returns errors when no option has been selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
-      stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -185,9 +185,9 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
-      stubKeystore(session = testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
-      stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+      stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
       val fRes = buildClientLookupAddress(path = "select")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

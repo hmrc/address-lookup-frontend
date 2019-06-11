@@ -347,7 +347,7 @@ class AddressLookupControllerSpec
   "handle select" should {
 
     "redirect to confirm page" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
       val res = controller.handleSelect("foo").apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
       status(res) must be (303)

@@ -39,7 +39,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are enabled in the journey config" when {
         "no filter has been entered" when {
           "the backend service returns too many addresses" in {
-            stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
@@ -65,8 +65,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-            stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
@@ -95,7 +95,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are not enabled in the journey config" when {
         "no filter has been entered" when {
           "the backend service returns too many addresses " in {
-            stubKeystore(testJourneyId, testSelectConfigNoBackButtons, OK)
+            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
@@ -121,8 +121,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, testSelectConfigNoBackButtons, OK)
-            stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
+            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
@@ -153,9 +153,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns enough addresses to be displayed on the select page" in {
         val addressAmount = 25
 
-        stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = addressAmount))
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -169,9 +169,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
-        stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
+        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(1))
-        stubKeystoreSave(testJourneyId, Json.toJson(testConfigDefaultWithResultsLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -185,8 +185,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns no addresses and renders the no results found page" in {
-        stubKeystore(testJourneyId, testConfigDefaultWithResultsLimitAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigWithoutAddressAsJson, OK)
+        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
         stubGetAddressFromBE(addressJson = Json.arr())
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")

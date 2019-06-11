@@ -126,15 +126,15 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/edit
   def edit(id: String, lookUpPostCode: Option[String], uk: Option[Boolean]) = Action.async {
     implicit req =>
-      withJourney(id) {
+      withJourneyV2(id) {
         journeyData =>
           val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
-          val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.allowedCountryCodes)
+          val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
-          if (journeyData.config.isukMode || uk.contains(true)) {
-            (None, Ok(views.html.ukModeEdit(id, journeyData, ukEditForm.fill(editAddress), allowedSeqCountries(Seq.empty))))
+          if (journeyData.config.options.isUkMode|| uk.contains(true)) {
+            (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm.fill(editAddress), allowedSeqCountries(Seq.empty))))
           } else {
-            (None, Ok(views.html.edit(id, journeyData, nonUkEditForm.fill(editAddress), allowedSeqCountries(countries))))
+            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm.fill(editAddress), allowedSeqCountries(countries))))
           }
       }
   }
@@ -145,11 +145,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   def handleUkEdit(id: String): Action[AnyContent] = Action.async {
     implicit req =>
-      withJourney(id) {
+      withJourneyV2(id) {
         journeyData =>
           val validatedForm = isValidPostcode(ukEditForm.bindFromRequest())
           validatedForm.fold(
-            errors => (None, BadRequest(views.html.ukModeEdit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
+            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes)))),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
           )
       }
@@ -158,11 +158,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // POST /:id/edit
   def handleNonUkEdit(id: String): Action[AnyContent] = Action.async {
     implicit req =>
-      withJourney(id) {
+      withJourneyV2(id) {
         journeyData =>
           val validatedForm = isValidPostcode(nonUkEditForm.bindFromRequest())
           validatedForm.fold(
-            errors => (None, BadRequest(views.html.edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.allowedCountryCodes)))),
+            errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes)))),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
           )
       }

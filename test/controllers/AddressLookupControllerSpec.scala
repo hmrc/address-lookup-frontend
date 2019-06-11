@@ -524,7 +524,7 @@ class AddressLookupControllerSpec
   "edit" should {
 
     "show all countries if no allowedCountryCodes configured whereby isukMode == false" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = None)))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = None))))
     ) {
       val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
       val html = contentAsString(res).asBodyFragment
@@ -537,7 +537,7 @@ class AddressLookupControllerSpec
     }
 
     "show dropdown of countries given by allowedCountryCodes if allowedCountryCodes is configured with several codes" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB", "FR")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB", "FR"))))))
     ) {
       val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
       val html = contentAsString(res).asBodyFragment
@@ -548,7 +548,7 @@ class AddressLookupControllerSpec
     }
 
     "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(config = basicJourney().config.copy(allowedCountryCodes = Some(Set("GB")))))
+        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
     ) {
       val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
       val html = contentAsString(res).asBodyFragment
@@ -568,12 +568,11 @@ class AddressLookupControllerSpec
 
     "editing an existing address with a country code that is not in the allowedCountryCodes config" when {
       "allowedCountryCodes contains multiple countries" in new Scenario(
-        journeyData = Map("foo" -> basicJourney().copy(
+        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
           selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
-          config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE", "GB"))))
-        )
-      ) {
-        val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
+          config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
+      )) {
+        val res = controller.edit("foo",Some("ZZ1 1ZZ"),None).apply(req)
         val html = contentAsString(res).asBodyFragment
 
         html should not include element(withName("option").withAttrValue("value", "FR"))
@@ -581,9 +580,9 @@ class AddressLookupControllerSpec
         html should include element withName("option").withAttrValue("value", "DE")
       }
       "allowedCountryCodes contains a single country" in new Scenario(
-        journeyData = Map("foo" -> basicJourney().copy(
+        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
           selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
-          config = basicJourney().config.copy(allowedCountryCodes = Some(Set("DE"))))
+          config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE")))))
         )
       ) {
         val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
@@ -604,9 +603,9 @@ class AddressLookupControllerSpec
     }
 
     "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
-    ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
+    ){
+      val res = controller.edit("foo",Some("ZZ1 1ZZ"),Some(false)).apply(req)
       status(res) must be(200)
       val html = contentAsString(res).asBodyFragment
       html should include element (withName("input").withAttrValue("name", "postcode"))
@@ -617,42 +616,42 @@ class AddressLookupControllerSpec
 
   "handleUkEdit" should {
     "return 303 with valid request" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
-    ) {
-      val res = controller.handleUkEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
+    ){
+      val res = controller.handleUkEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor():_*))
       status(res) must be(303)
     }
     "return 400 with empty request" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
-    ) {
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
+    ){
       val res = controller.handleUkEdit("foo").apply(req)
       status(res) must be(400)
     }
     "return 303 with country code == GB and no postcode provided" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
-    ) {
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
+    ){
       val res = controller.handleUkEdit("foo").apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
       status(res) must be(303)
     }
   }
   "handleNonUkEdit" should {
-    "return a 400 with empty request, uk mode == true" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
-    ) {
+    "return a 400 with empty request, uk mode == true" in new Scenario (
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
+    ){
       val res = controller.handleNonUkEdit("foo").apply(req)
       status(res) must be(400)
     }
-    "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(false)))
+    "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario (
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
       val res = controller.handleNonUkEdit("foo")
         .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
-    "return a 400 with empty request when ukMode == false" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(false)))
-    ) {
+    "return a 400 with empty request when ukMode == false" in new Scenario (
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
+    ){
       val res = controller.handleNonUkEdit("foo").apply(req)
       status(res) must be(400)
       val html = contentAsString(res).asBodyFragment

@@ -8,6 +8,7 @@ import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching}
 import utils.TestConstants._
+import utils.V2ModelConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -86,7 +87,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         repo.getV2("any id").futureValue must be (Some(journeyDataV2))
       }
       "stored as a v1 model" in new Scenario(getResponse = someJourneyDataJson) {
-        repo.getV2("any id").futureValue must be (Some(repo.convertToV2Model(journeyData)))
+        repo.getV2("any id").futureValue must be (Some(convertToV2Model(journeyData)))
       }
     }
 
@@ -264,7 +265,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
   "Converting a v1 model to a v2 model" when {
     "all options set" should {
       "Create a valid v2 model" in new Scenario() {
-        val actual = repo.convertToV2Model(fullV1JourneyData)
+        val actual = convertToV2Model(fullV1JourneyData)
         val expected = fullV2JourneyData
 
         actual mustEqual expected
@@ -273,7 +274,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     "without a selected address" should {
       "return a V2 model without a selected address" in new Scenario() {
-        val actual = repo.convertToV2Model(fullV1JourneyData.copy(selectedAddress = None))
+        val actual = convertToV2Model(fullV1JourneyData.copy(selectedAddress = None))
         val expected = fullV2JourneyData.copy(selectedAddress = None)
 
         actual mustEqual expected
@@ -282,7 +283,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     "without a confirmed address" should {
       "return a V2 model without a confirmed address" in new Scenario() {
-        val actual = repo.convertToV2Model(fullV1JourneyData.copy(confirmedAddress = None))
+        val actual = convertToV2Model(fullV1JourneyData.copy(confirmedAddress = None))
         val expected = fullV2JourneyData.copy(confirmedAddress = None)
 
         actual mustEqual expected
@@ -291,7 +292,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     "without a list of proposed addresses" should {
       "return a V2 model without a list of proposed addresses" in new Scenario() {
-        val actual = repo.convertToV2Model(fullV1JourneyData.copy(proposals = None))
+        val actual = convertToV2Model(fullV1JourneyData.copy(proposals = None))
         val expected = fullV2JourneyData.copy(proposals = None)
 
         actual mustEqual expected
@@ -306,7 +307,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
           en = Some(fullV2LanguageLabelsEn.copy(lookupPageLabels = None))
         )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected
@@ -323,7 +324,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             en = Some(fullV2LanguageLabelsEn.copy(selectPageLabels = None))
           )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected
@@ -339,7 +340,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
           )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected
@@ -356,7 +357,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             en = Some(fullV2LanguageLabelsEn.copy(confirmPageLabels = None))
           )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected
@@ -391,7 +392,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             en = Some(fullV2LanguageLabelsEn.copy(appLevelLabels = None))
           )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected
@@ -422,7 +423,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             ))
           )))
 
-        val actual = repo.convertToV2Model(v1JourneyData)
+        val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
 
         actual mustEqual expected

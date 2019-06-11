@@ -5,6 +5,7 @@ import itutil.config.IntegrationTestConstants._
 import play.api.libs.json.Json
 import play.api.test.FakeApplication
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.V2ModelConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -24,7 +25,7 @@ class JourneyRepositoryISpec extends IntegrationSpecBase {
       }
       "a v1 model is stored" in {
         stubKeystore(testJourneyId, journeyDataV1FullJson)
-        await(journeyRepository.getV2(testJourneyId)) shouldBe Some(journeyRepository.convertToV2Model(journeyDataV1Full))
+        await(journeyRepository.getV2(testJourneyId)) shouldBe Some(convertToV2Model(journeyDataV1Full))
       }
     }
     "return None" when {

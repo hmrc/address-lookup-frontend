@@ -171,10 +171,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/confirm
   def confirm(id: String) = Action.async {
     implicit req =>
-      withJourney(id) {
+      withJourneyV2(id) {
         journeyData =>
           journeyData.selectedAddress
-            .map(_ => (None, Ok(views.html.confirm(id, journeyData, journeyData.selectedAddress))))
+            .map(_ => (None, Ok(views.html.v2.confirm(id, journeyData, journeyData.selectedAddress))))
             .getOrElse((None, Redirect(routes.AddressLookupController.lookup(id))))
       }
   }
@@ -182,7 +182,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // POST /:id/confirm
   def handleConfirm(id: String) = Action.async {
     implicit req =>
-      withJourney(id) {
+      withJourneyV2(id) {
         journeyData =>
           if (journeyData.selectedAddress.isDefined) {
             val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
@@ -191,7 +191,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
               "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
               "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
             )))
-            (Some(jd), Redirect(Uri(journeyData.config.continueUrl).withQuery("id" -> id).toString()))
+            (Some(jd), Redirect(Uri(journeyData.config.options.continueUrl).withQuery("id" -> id).toString()))
           } else {
             (None, Redirect(routes.AddressLookupController.confirm(id)))
           }

@@ -404,7 +404,7 @@ class AddressLookupControllerSpec
   "confirm" should {
 
     "redirect to lookup if selected address doesnt exist" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
         selectedAddress = None
       ))
     ) {
@@ -412,8 +412,8 @@ class AddressLookupControllerSpec
       await(res).header.headers(HeaderNames.LOCATION) mustBe routes.AddressLookupController.lookup("foo").url
     }
     "allow confirmChangeText to be configured" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(
-        config = JourneyConfig("continue", confirmPage = Some(ConfirmPage(showConfirmChangeText = Some(true), confirmChangeText = Some("I confirm")))),
+      journeyDataV2 = Map("foo" -> JourneyDataV2(
+        config = JourneyConfigV2(2, JourneyOptions("continue",confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
         selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
       ))
     ) {
@@ -422,8 +422,8 @@ class AddressLookupControllerSpec
       html should include element withAttrValue("id", "confirmChangeText")
     }
     "render address with blank string in lines correctly" in new Scenario(
-      journeyData = Map("foo" -> JourneyData(
-        config = JourneyConfig("continue", confirmPage = Some(ConfirmPage(showConfirmChangeText = Some(true), confirmChangeText = Some("I confirm")))),
+      journeyDataV2 = Map("foo" -> JourneyDataV2(
+        config = JourneyConfigV2(2, JourneyOptions("continue",confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
         selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
       ))
     ) {

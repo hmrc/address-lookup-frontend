@@ -24,7 +24,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
       if(postcode.isEmpty) None else Some(postcode),
-      countryCode.fold(ForeignOfficeCountryService.find("GB"))(code => ForeignOfficeCountryService.find(code))
+      countryCode.fold(ForeignOfficeCountryService.find(code = "GB"))(code => ForeignOfficeCountryService.find(code = code))
     )
   )
 }
@@ -225,7 +225,7 @@ case class ProposedAddress(addressId: String,
                            lines: List[String] = List.empty,
                            town: Option[String] = None,
                            county: Option[String] = None,
-                           country: Country = ForeignOfficeCountryService.find("GB").getOrElse(Country("GB", "United Kingdom"))) {
+                           country: Country = ForeignOfficeCountryService.find(code ="GB").getOrElse(Country("GB", "United Kingdom"))) {
 
   def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
@@ -269,7 +269,7 @@ case class ConfirmableAddress(auditRef: String,
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
                                      postcode: Option[String] = None,
-                                     country: Option[Country] = ForeignOfficeCountryService.find("GB")) {
+                                     country: Option[Country] = ForeignOfficeCountryService.find(code = "GB")) {
 
   def toDescription: String = {
     (lines.getOrElse(List.empty) ++ postcode.toList ++ country.toList.map(_.name)).mkString(", ") + "."

@@ -83,10 +83,10 @@ class AddressLookupControllerSpec
     }
 
     val countryService = new CountryService {
-      override val GB = Country("GB", "United Kingdom")
-      override val findAll = Seq(GB, Country("DE", "Germany"), Country("FR", "France"))
 
-      override def find(code: String) = findAll.find { case Country(cc, _) => cc == code }
+      override def findAll(enFlag: Boolean = true) = Seq(Country("GB", "United Kingdom"), Country("DE", "Germany"), Country("FR", "France"))
+
+      override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
     val controller = new AddressLookupController(journeyRepository, addressService, countryService)

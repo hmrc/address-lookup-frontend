@@ -40,7 +40,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  val countries: Seq[(String, String)] = countryService.findAll.map { c =>
+  val countries: Seq[(String, String)] = countryService.findAll().map { c =>
     (c.code -> c.name)
   }
 

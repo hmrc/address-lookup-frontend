@@ -53,8 +53,15 @@ class StubController @Inject()(val apiController: ApiController,val  journeyRepo
           val pattern = """(?<=lookup-address\/)(.*)(?=/lookup)""".r
           val id = pattern.findFirstIn(res.header.headers(HeaderNames.LOCATION)).getOrElse(throw new Exception("id not in url in header"))
           for {
-            jd <- journeyRepository.get(id)
-            _ <- journeyRepository.put(id, jd.get.copy(jConfig.copy(continueUrl = controllers.testonly.routes.StubController.showResultOfJourney(id).url)))
+            jd <- journeyRepository.getV2(id)
+            _ <- journeyRepository.putV2(id,
+              jd.get.copy(
+                config = jd.get.config.copy(
+                  options = jd.get.config.options.copy(
+                    continueUrl = controllers.testonly.routes.StubController.showResultOfJourney(id).url)
+                  )
+                )
+              )
           } yield Redirect(res.header.headers(HeaderNames.LOCATION))
 
         }

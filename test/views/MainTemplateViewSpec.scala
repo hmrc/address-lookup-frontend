@@ -1,5 +1,6 @@
 package views
 
+import model.MessageConstants._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
@@ -16,7 +17,6 @@ class MainTemplateViewSpec extends ViewSpec {
     val additionalStylesheet = "testStylesheetUrl"
     val continueUrl = "testContinueUrl"
     val navHref = "testNavHref"
-    val navText = "Home"
     val phaseBannerHtml = "enPhaseBannerHtml"
   }
 
@@ -33,19 +33,34 @@ class MainTemplateViewSpec extends ViewSpec {
         doc.title shouldBe content.title
       }
 
-      "title and journeyData are passed in" in {
-        val testPage = views.html.v2.main_template(
-          title = content.title,
-          journeyData = Some(testAppLevelJourneyConfigV2)
-        )(testHtml)
-        val doc: Document = Jsoup.parse(testPage.body)
+      "title and journeyData are passed in" when {
+        "welsh is enabled" in {
+          val testPage = views.html.v2.main_template(
+            title = content.title,
+            journeyData = Some(testAppLevelJourneyConfigV2),
+            welshEnabled = true
+          )(testHtml)
+          val doc: Document = Jsoup.parse(testPage.body)
 
-        doc.title shouldBe content.title
-        doc.getStyleLinkHrefAsText("customStyleSheet")  shouldBe content.additionalStylesheet
-        doc.getLinkHrefAsText("homeNavHref") shouldBe content.navHref
-        doc.getALinkText("homeNavHref") shouldBe content.navText
-        doc.getSpanAsText("phase-banner-content") shouldBe content.phaseBannerHtml
+          doc.title shouldBe content.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe content.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe content.navHref
+          doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
+          doc.getSpanAsText("phase-banner-content") shouldBe content.phaseBannerHtml
+        }
+        "welsh is not enabled" in {
+          val testPage = views.html.v2.main_template(
+            title = content.title,
+            journeyData = Some(testAppLevelJourneyConfigV2)
+          )(testHtml)
+          val doc: Document = Jsoup.parse(testPage.body)
 
+          doc.title shouldBe content.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe content.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe content.navHref
+          doc.getALinkText("homeNavHref") shouldBe EnglishMessageConstants.home
+          doc.getSpanAsText("phase-banner-content") shouldBe content.phaseBannerHtml
+        }
       }
     }
   }

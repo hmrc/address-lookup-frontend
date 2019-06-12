@@ -4,9 +4,9 @@ import controllers.AlfController
 import forms.ALFForms
 import javax.inject.{Inject, Singleton}
 import model.JourneyData._
-import model.{Init, JourneyConfig, JourneyData}
+import model._
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
+import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.Action
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
@@ -33,7 +33,13 @@ class ApiController @Inject()(journeyRepository: JourneyRepository, idGeneration
     )
   }
 
-  // GET  /init/:journeyName
+  def initWithConfigV2 = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
+    val id = uuid
+    journeyRepository.putV2(id, JourneyDataV2(config = req.body))
+      .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+  }
+
+  // POST  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL
   def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
     val id = uuid
@@ -50,6 +56,24 @@ class ApiController @Inject()(journeyRepository: JourneyRepository, idGeneration
     }
   }
 
+  def initV2(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
+    val id = uuid
+    val journeyFromConfig = journeyRepository initV2(journeyName)
+
+    val resolvedJourney = req.body.continueUrl match {
+      case Some(continueUrlFromInit) => journeyFromConfig.copy(
+        config = journeyFromConfig.config.copy(
+          options = journeyFromConfig.config.options.copy(continueUrl = continueUrlFromInit)
+        )
+      )
+      case _ => journeyFromConfig
+    }
+
+    journeyRepository putV2 (id, resolvedJourney) map (
+      _ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup")
+    )
+  }
+
   // GET  /confirmed?id=:id
   def confirmed = Action.async { implicit req =>
     ALFForms.confirmedForm.bindFromRequest().fold(
@@ -60,6 +84,20 @@ class ApiController @Inject()(journeyRepository: JourneyRepository, idGeneration
             (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
           } else {
             (None, NotFound)
+          }
+        }
+      }
+    )
+  }
+
+  def confirmedV2 = Action.async { implicit req =>
+    ALFForms.confirmedForm.bindFromRequest().fold(
+      _ => Future.successful(BadRequest),
+      confirmed => {
+        withJourneyV2(confirmed.id, NotFound) { journeyData =>
+          journeyData.confirmedAddress match {
+            case Some(confirmedAddresss) => (None, Ok(Json.toJson(confirmedAddresss)))
+            case _ => (None, NotFound)
           }
         }
       }

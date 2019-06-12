@@ -1,3 +1,8 @@
 POST /init                       @controllers.api.ApiController.initWithConfig
 POST /init/:journeyName          @controllers.api.ApiController.init(journeyName: String)
 GET  /confirmed                  @controllers.api.ApiController.confirmed
+
+# V2 model API
+POST /v2/init                    @controllers.api.ApiController.initWithConfigV2
+POST /v2/init/:journeyName       @controllers.api.ApiController.initV2(journeyName)
+GET  /v2/confirmed               @controllers.api.ApiController.confirmedV2

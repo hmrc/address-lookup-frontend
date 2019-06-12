@@ -18,6 +18,8 @@ trait JourneyRepository {
 
   def init(journeyName: String): JourneyData
 
+  def initV2(journeyName: String): JourneyDataV2
+
   def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]]
 
   def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]]
@@ -39,6 +41,15 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
     }.toMap
   }.getOrElse(Map.empty)
 
+  private val journeyConfigAsV2: Map[String, JourneyDataV2] =
+    config("address-lookup-frontend")
+      .getObject("journeys")
+      .map (journeys => journeys.keySet().asScala
+        .map (key => (key -> convertToV2Model(journey(key, journeys))))
+        .toMap
+      )
+      .getOrElse(Map.empty)
+
   val cache: HttpCaching = AddressLookupFrontendSessionCache
 
   override def init(journeyName: String): JourneyData = {
@@ -48,6 +59,13 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
       case none: NoSuchElementException => throw new IllegalArgumentException(s"Invalid journey name: '$journeyName'", none)
     }
   }
+
+  override def initV2(journeyName: String): JourneyDataV2 =
+    journeyConfigAsV2(journeyName) match {
+      case foundJourney: JourneyDataV2 => foundJourney
+      case failure: IllegalArgumentException =>
+        throw new IllegalArgumentException(s"Invalid journey name: $journeyName", failure)
+    }
 
   override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
       cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
@@ -62,18 +80,14 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
     ))
   }
 
-
   override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     cache.cache(cache.defaultSource, cacheId, id, data).map { res =>
       true
     }
   }
 
-  override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    cache.cache(cache.defaultSource, cacheId, id, data).map { _ =>
-      true
-    }
-  }
+  override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    cache.cache(cache.defaultSource, cacheId, id, data) map (_ => true)
 
   private def maybeString(v: ConfigValue): Option[String] = {
     if (v == null) None

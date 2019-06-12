@@ -6,6 +6,7 @@ import model._
 import play.api.libs.json._
 import uk.gov.hmrc.address.v2.Country
 import IntegrationTestConstants._
+import views.html.helper.options
 
 object IntegrationTestConstants {
   val testJourneyId = "Jid123"
@@ -670,11 +671,18 @@ object IntegrationTestConstants {
     )
 
 
-  def journeyDataV2WithSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true),
-                                           selectedAddress: ConfirmableAddressDetails = testNonUKAddress) =
+
+  def journeyDataV2WithNoSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true))=
     Json.toJson(
       JourneyDataV2(
-        journeyConfig,
+        journeyConfig
+      ))
+
+  def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
+                                         selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress) =
+    Json.toJson(
+      JourneyDataV2(
+        journeyConfigV2,
         selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
       )
     )
@@ -688,6 +696,31 @@ object IntegrationTestConstants {
 
   val journeyDataV2ResultLimit: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
   val journeyDataV2Minimal: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl)))
+  //WIP
+  def journeyDataV2EditLabels(ukModeBool: Option[Boolean]): JourneyDataV2 = JourneyDataV2(JourneyConfigV2(
+    2,
+    JourneyOptions(
+      testContinueUrl, ukMode = ukModeBool
+    ),
+    Some(JourneyLabels(
+      Some(LanguageLabels(
+        editPageLabels = Some(EditPageLabels(
+          title = Some("edit-title"),
+          heading = Some("edit-heading"),
+          line1Label = Some("Custom Line1"),
+          line2Label = Some("Custom Line2"),
+          line3Label = Some("Custom Line3"),
+          townLabel = Some("Custom Town"),
+          postcodeLabel = Some("Custom Postcode"),
+          countryLabel = Some("Custom Country"),
+          submitLabel = Some("edit-submitLabel")
+        ))
+      ))
+    ))
+  )
+  )
+
+
   val journeyDataV2SelectLabels: JourneyDataV2 = JourneyDataV2(
     JourneyConfigV2(
       2,
@@ -712,6 +745,7 @@ object IntegrationTestConstants {
       ))
     )
   )
+
   val journeyDataV2SelectLabelsNoBack: JourneyDataV2 = journeyDataV2SelectLabels.copy(config = journeyDataV2SelectLabels.config.copy(options = journeyDataV2SelectLabels.config.options.copy(showBackButtons = Some(false))))
 
 }

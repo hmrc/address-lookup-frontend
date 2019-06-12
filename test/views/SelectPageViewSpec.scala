@@ -59,7 +59,7 @@ class SelectPageViewSpec extends ViewSpec {
       }
 
       "the title isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
-        doc.title shouldBe JourneyConfigDefaults.SELECT_PAGE_TITLE
+        doc.title shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_TITLE
       }
     }
 
@@ -68,7 +68,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe Content.heading
       }
       "the heading isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
-        doc.getH1ElementAsText shouldBe JourneyConfigDefaults.SELECT_PAGE_HEADING
+        doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING
       }
       "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = true) {
         doc.getH1ElementAsText shouldBe Content.heading
@@ -80,7 +80,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe Content.headingWithPostcode + testLookup.postcode
       }
       "the heading is not provided, a lookup is provided and it is not the first search" in new Setup(testSelectPageConfigNoLabel, testProposal, Some(testLookup), firstSearch = false) {
-        doc.getH1ElementAsText shouldBe JourneyConfigDefaults.SELECT_PAGE_HEADING_WITH_POSTCODE + testLookup.postcode
+        doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING_WITH_POSTCODE + testLookup.postcode
       }
     }
 
@@ -124,7 +124,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.select("button").text shouldBe Content.submitLabel
       }
       "the submit label is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
-        doc.select("button").text shouldBe JourneyConfigDefaults.SELECT_PAGE_SUBMIT_LABEL
+        doc.select("button").text shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_SUBMIT_LABEL
       }
     }
 
@@ -134,7 +134,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
       }
       "the edit address link text is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, Some(testLookup), firstSearch = true) {
-        doc.getALinkText(id = "editAddress") shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+        doc.getALinkText(id = "editAddress") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
       }
     }

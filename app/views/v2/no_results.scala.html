@@ -8,7 +8,7 @@
 
 @main_template(title = messages("result.title.text"), journeyData = Some(journeyData)) {
 
-@if(journeyData.resolveConfigV2.options.showBackButtons) {
+@if(journeyData.resolveConfigV2().options.showBackButtons) {
 <div>
     <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
 </div>

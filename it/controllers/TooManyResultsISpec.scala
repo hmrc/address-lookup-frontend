@@ -3,12 +3,11 @@ package controllers
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
-import model._
+import model.JourneyConfigDefaults.EnglishConstants._
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeApplication
-import uk.gov.hmrc.address.v2.Country
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
@@ -59,7 +58,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.submitButton.text shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
 
@@ -87,7 +86,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.submitButton.text shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
       }
@@ -115,7 +114,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.submitButton.text shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
 
@@ -139,11 +138,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             )
             doc.title shouldBe tooManyResultsMessages.title
             doc.h1.text shouldBe tooManyResultsMessages.heading2
-            doc.paras should have (elementWithValue(tooManyResultsMessages.line1))
+            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.submitButton.text shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
       }
@@ -165,7 +164,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe JourneyConfigDefaults.SELECT_PAGE_TITLE
+        doc.title shouldBe SELECT_PAGE_TITLE
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {

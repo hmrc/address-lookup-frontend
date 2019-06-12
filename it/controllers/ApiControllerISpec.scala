@@ -1,21 +1,21 @@
 package controllers
 
-import config.AppConfig
 import controllers.api.ApiController
 import itutil.IntegrationSpecBase
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.{Application, Environment, Mode}
-import services.IdGenerationService
 import itutil.config.IntegrationTestConstants._
+import model.JourneyData._
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import JourneyData._
+import play.api.{Application, Environment, Mode}
+import services.IdGenerationService
 import utils.V2ModelConverter._
 
 class ApiControllerISpec extends IntegrationSpecBase {
+
   object MockIdGenerationService extends IdGenerationService {
     override def uuid: String = testJourneyId
   }

@@ -21,8 +21,8 @@
 @messageConstants = @{if(welshEnabled) WelshMessageConstants else EnglishMessageConstants} s
 
 @links = {
-    @if(journeyData.flatMap(_.resolveConfigV2.options.additionalStylesheetUrl).isDefined) {
-        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.resolveConfigV2.options.additionalStylesheetUrl).get}">
+    @if(journeyData.flatMap(_.resolveConfigV2().options.additionalStylesheetUrl).isDefined) {
+        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.resolveConfigV2().options.additionalStylesheetUrl).get}">
     }
 }
 
@@ -39,14 +39,14 @@
 
 @headerNavLinks = {
     <li>
-        <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2.options.homeNavHref).getOrElse("/")}"
+        <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2().options.homeNavHref).getOrElse("/")}"
          data-journey-click="primary-navigation:Click:Home">@{messageConstants.home}</a>
     </li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-        navTitle = journeyData.flatMap(_.resolveConfigV2.labels.en.appLevelLabels.navTitle),
+        navTitle = journeyData.flatMap(_.resolveConfigV2().labels.appLevelLabels.navTitle),
         navTitleLink = None,
         showBetaLink = false,
         navLinks = Some(headerNavLinks)
@@ -63,7 +63,7 @@
 }
 
 @scripts = {
-    @journeyData.flatMap(_.resolveConfigV2.options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
+    @journeyData.flatMap(_.resolveConfigV2().options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
     @scriptElem
 }
 
@@ -83,11 +83,11 @@
 
 @phaseBanner = {
     @journeyData.map{ jData =>
-        @if(jData.resolveConfigV2.options.showPhaseBanner) {
-            <div class="@{jData.resolveConfigV2.options.phase}-banner" id="phase-banner">
+        @if(jData.resolveConfigV2().options.showPhaseBanner) {
+            <div class="@{jData.resolveConfigV2().options.phase}-banner" id="phase-banner">
                 <p>
-                    <strong class="phase-tag" id="phase-tag">@{jData.resolveConfigV2.options.phase.toUpperCase}</strong>
-                    <span id="phase-banner-content">@Html(jData.resolveConfigV2.labels.en.appLevelLabels.phaseBannerHtml)</span>
+                    <strong class="phase-tag" id="phase-tag">@{jData.resolveConfigV2().options.phase.toUpperCase}</strong>
+                    <span id="phase-banner-content">@Html(jData.resolveConfigV2().labels.appLevelLabels.phaseBannerHtml)</span>
                 </p>
             </div>
         }
@@ -99,7 +99,7 @@
         betaBanner = phaseBanner,
         includeGridWrapper = false,
         serviceInfoContent = Some(serviceInfoContent),
-        includeHMRCBranding = journeyData.map(_.resolveConfigV2.options.includeHMRCBranding).getOrElse(true)
+        includeHMRCBranding = journeyData.map(_.resolveConfigV2().options.includeHMRCBranding).getOrElse(true)
     )
 }
 
@@ -110,8 +110,8 @@
 }
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(
-    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.resolveConfigV2.options.deskProServiceName)),
-    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.resolveConfigV2.options.deskProServiceName)))}
+    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.resolveConfigV2().options.deskProServiceName)),
+    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.resolveConfigV2().options.deskProServiceName)))}
 
 @content = {
     @uiLayouts.main_content(

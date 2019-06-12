@@ -511,6 +511,17 @@ object TestConstants {
     )
   )
 
+  val journeyDataV2EnglishAndWelshMinimal = JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(continueUrl = "testContinueUrl"),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels()),
+        cy = Some(LanguageLabels())
+      ))
+    )
+  )
+
   val journeyDataV2MinimalJson: JsValue = Json.parse(
     """{
       |   "config":{
@@ -520,9 +531,10 @@ object TestConstants {
       |      }
       |   }
       |}
-    """.stripMargin)
+    """.stripMargin
+  )
 
-  val testId = UUID.randomUUID().toString()
+  val testId: String = UUID.randomUUID().toString
 
   val testLookup =
     model.Lookup(

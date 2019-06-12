@@ -2,12 +2,12 @@ package controllers
 
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import model.{JourneyConfig, JourneyConfigV2, JourneyOptions}
+import model.JourneyConfigDefaults.EnglishConstants._
+import model.{JourneyConfigV2, JourneyOptions}
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeApplication
-import model.JourneyConfigDefaults._
 
 class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
 
@@ -16,7 +16,7 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
-      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2,JourneyOptions(continueUrl = testContinueUrl)))
+      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")

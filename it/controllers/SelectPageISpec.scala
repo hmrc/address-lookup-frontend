@@ -3,8 +3,8 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
-import model.JourneyConfigDefaults._
 import itutil.config.PageElementConstants.SelectPage
+import model.JourneyConfigDefaults.EnglishConstants._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -179,7 +179,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       val message = "This field is required"
 
-      doc.errorSummary should have (
+      doc.errorSummary should have(
         errorSummaryMessage(SelectPage.addressId, message)
       )
     }
@@ -199,7 +199,6 @@ class SelectPageISpec extends IntegrationSpecBase {
       res.status shouldBe SEE_OTHER
     }
   }
-
 
 
 }

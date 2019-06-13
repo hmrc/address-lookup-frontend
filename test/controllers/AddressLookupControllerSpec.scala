@@ -15,7 +15,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{AddressService, CountryService, IdGenerationService, JourneyRepository}
+import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.{HeaderCarrier}
 import utils.TestConstants.{testLookupLevelJourneyConfigV2, testAppLevelJourneyConfigV2}
@@ -49,7 +49,7 @@ class AddressLookupControllerSpec
 
     val endpoint = "http://localhost:9000"
 
-    val journeyRepository = new JourneyRepository {
+    val journeyRepository = new KeystoreJourneyRepository {
 
       override def init(journeyName: String): JourneyData = {
         journeyConfig

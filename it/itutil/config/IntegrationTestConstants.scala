@@ -9,6 +9,7 @@ import IntegrationTestConstants._
 import views.html.helper.options
 
 object IntegrationTestConstants {
+  val testApiVersion = 2
   val testJourneyId = "Jid123"
   val testCsrfToken = () => UUID.randomUUID().toString
 
@@ -318,8 +319,8 @@ object IntegrationTestConstants {
   val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
   val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
   val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl))
-
   val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = testContinueUrl))
+
   val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
   val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
   val testConfigWithUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)))

@@ -8,16 +8,26 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import utils.TestConstants.testAppLevelJourneyConfigV2
+import utils.TestConstants.{testAppLevelJourneyConfigV2, testAppLevelJourneyConfigV2WithWelsh}
 
 class MainTemplateViewSpec extends ViewSpec {
 
-  object content {
+  object enContent {
     val title = "testTitle"
     val additionalStylesheet = "testStylesheetUrl"
     val continueUrl = "testContinueUrl"
     val navHref = "testNavHref"
+    val navTitle = "enNavTitle"
     val phaseBannerHtml = "enPhaseBannerHtml"
+  }
+
+  object cyContent {
+    val title = "testTitle"
+    val additionalStylesheet = "testStylesheetUrl"
+    val continueUrl = "testContinueUrl"
+    val navHref = "testNavHref"
+    val navTitle = "cyNavTitle"
+    val phaseBannerHtml = "cyPhaseBannerHtml"
   }
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
@@ -26,52 +36,86 @@ class MainTemplateViewSpec extends ViewSpec {
   "MainTemplate" should {
     "render" when {
       "only the title is passed in" in {
-        val testPage = views.html.v2.main_template(title = content.title)(testHtml)
+        val testPage = views.html.v2.main_template(title = enContent.title)(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
 
-        doc.title shouldBe content.title
+        doc.title shouldBe enContent.title
       }
 
-      "title and journeyData are passed in" when {
+      "title and journeyData without welsh are passed in" when {
         "welsh is enabled" in {
           val testPage = views.html.v2.main_template(
-            title = content.title,
+            title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2),
             welshEnabled = true
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe content.title
-          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe content.additionalStylesheet
-          doc.getLinkHrefAsText("homeNavHref") shouldBe content.navHref
+          doc.title shouldBe enContent.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
+          doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
-          doc.getSpanAsText("phase-banner-content") shouldBe content.phaseBannerHtml
+          doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
         }
         "welsh is not enabled" in {
           val testPage = views.html.v2.main_template(
-            title = content.title,
+            title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2)
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe content.title
-          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe content.additionalStylesheet
-          doc.getLinkHrefAsText("homeNavHref") shouldBe content.navHref
+          doc.title shouldBe enContent.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
+          doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe EnglishMessageConstants.home
-          doc.getSpanAsText("phase-banner-content") shouldBe content.phaseBannerHtml
+          doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
+        }
+      }
+
+      "title and journeyData with welsh are passed in" when {
+        "welsh is enabled" in {
+          val testPage = views.html.v2.main_template(
+            title = enContent.title,
+            journeyData = Some(testAppLevelJourneyConfigV2WithWelsh),
+            welshEnabled = true
+          )(testHtml)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe enContent.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe cyContent.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe cyContent.navHref
+          doc.select(".header__menu__proposition-name").text() shouldBe cyContent.navTitle
+          doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
+          doc.getSpanAsText("phase-banner-content") shouldBe cyContent.phaseBannerHtml
+        }
+        "welsh is not enabled" in {
+          val testPage = views.html.v2.main_template(
+            title = enContent.title,
+            journeyData = Some(testAppLevelJourneyConfigV2WithWelsh)
+          )(testHtml)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe enContent.title
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
+          doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
+          doc.getALinkText("homeNavHref") shouldBe EnglishMessageConstants.home
+          doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
         }
       }
 
       "timeout" should {
         "should display correct text in Welsh mode" in {
           val testPage = views.html.v2.main_template(
-            title = content.title,
+            title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2),
             welshEnabled = true
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe content.title
+          doc.title shouldBe enContent.title
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
          textOfScript shouldBe
@@ -88,12 +132,12 @@ class MainTemplateViewSpec extends ViewSpec {
 
         "should display correct text in english mode" in {
           val testPage = views.html.v2.main_template(
-            title = content.title,
+            title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2)
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe content.title
+          doc.title shouldBe enContent.title
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
           textOfScript shouldBe

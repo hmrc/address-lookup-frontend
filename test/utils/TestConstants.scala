@@ -818,6 +818,87 @@ object TestConstants {
       )
     )
 
+  val testLookupLevelCYJourneyConfigV2 =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          homeNavHref = Some("testNavHref"),
+          additionalStylesheetUrl = Some("testStylesheetUrl"),
+          phaseFeedbackLink = None,
+          deskProServiceName = Some("testDeskproName"),
+          showPhaseBanner = Some(true),
+          alphaPhase = Some(true),
+          showBackButtons = Some(true),
+          includeHMRCBranding = Some(true),
+          ukMode = Some(false),
+          allowedCountryCodes = None,
+          selectPageConfig = None,
+          confirmPageConfig = None,
+          timeoutConfig = Some(TimeoutConfig(
+            timeoutAmount = 120,
+            timeoutUrl = "testTimeoutUrl"
+          ))
+        ),
+        labels = Some(JourneyLabels(
+          en = None,
+          cy = Some(LanguageLabels(
+            appLevelLabels = None,
+            selectPageLabels = None,
+            lookupPageLabels = Some(LookupPageLabels(
+              title = Some("cyLookupPageTitle"),
+              heading = Some("cyLookupPageHeading"),
+              filterLabel = Some("cyFilterLabel"),
+              postcodeLabel = Some("cyPostcodeLabel"),
+              submitLabel = Some("cySubmitLabel"),
+              noResultsFoundMessage = Some("cyNoResultsFoundMessage"),
+              resultLimitExceededMessage = Some("cyResultLimitExceededMessage"),
+              manualAddressLinkText = Some("cyManualAddressLinkText")
+            )),
+            editPageLabels = None,
+            confirmPageLabels = None
+          ))
+        ))
+      )
+    )
+
+
+  val testDefaultCYJourneyConfigV2 =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          homeNavHref = Some("testNavHref"),
+          additionalStylesheetUrl = Some("testStylesheetUrl"),
+          phaseFeedbackLink = None,
+          deskProServiceName = Some("testDeskproName"),
+          showPhaseBanner = Some(true),
+          alphaPhase = Some(true),
+          showBackButtons = Some(true),
+          includeHMRCBranding = Some(true),
+          ukMode = Some(false),
+          allowedCountryCodes = None,
+          selectPageConfig = None,
+          confirmPageConfig = None,
+          timeoutConfig = Some(TimeoutConfig(
+            timeoutAmount = 120,
+            timeoutUrl = "testTimeoutUrl"
+          ))
+        ),
+        labels = Some(JourneyLabels(
+          en = None,
+          cy = Some(LanguageLabels(
+            appLevelLabels = None,
+            selectPageLabels = None,
+            lookupPageLabels = None,
+            editPageLabels = None,
+            confirmPageLabels = None
+          ))
+        ))
+      )
+    )
   val testNoResultsConfig = JourneyDataV2(
     config = JourneyConfigV2(
       2,

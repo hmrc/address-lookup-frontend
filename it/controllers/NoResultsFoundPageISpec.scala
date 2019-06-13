@@ -1,13 +1,12 @@
 package controllers
 
 import itutil.IntegrationSpecBase
-import play.api.test.FakeApplication
-import play.api.http.Status.{BAD_REQUEST, OK}
 import itutil.config.IntegrationTestConstants._
-import play.api.http.HeaderNames
-import play.api.libs.json.Json
 import itutil.config.PageElementConstants.LookupPage
-import controllers.routes
+import play.api.http.HeaderNames
+import play.api.http.Status.OK
+import play.api.libs.json.Json
+import play.api.test.FakeApplication
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
@@ -15,7 +14,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
   object messages {
     val title = "Can't find any addresses"
+
     def heading(pc: String) = s"We can not find any addresses for $pc"
+
     val manualEntry = "Enter the address manually"
     val submitButton = "Try a different postcode"
   }
@@ -136,9 +137,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe messages.title
         doc.h1.text() shouldBe messages.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should not have(
+        doc.select("a[class=back-link]") should not have (
           text("Back")
-        )
+          )
 
         doc.link("enterManual") should have(
           href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),

@@ -2,9 +2,8 @@ package views
 
 import model.{JourneyConfigDefaults, JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import play.api.i18n.Messages.Implicits._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -65,7 +64,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
           }
         }
 
@@ -88,7 +87,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
           }
         }
       }
@@ -113,7 +112,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
           }
         }
 
@@ -136,7 +135,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
           }
         }
       }

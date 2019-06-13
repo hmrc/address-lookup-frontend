@@ -6,9 +6,9 @@
 @import views.html.v2.{main_template => template}
 
 @(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean)(implicit request: Request[_], messages: Messages)
-@template(title = journeyData.resolveConfigV2.labels.en.selectPageLabels.title, journeyData = Some(journeyData)) {
+@template(title = journeyData.resolveConfigV2().labels.selectPageLabels.title, journeyData = Some(journeyData)) {
 
-    @if(journeyData.resolveConfigV2.options.showBackButtons) {
+    @if(journeyData.resolveConfigV2().options.showBackButtons) {
         <div>
             <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
         </div>
@@ -18,12 +18,12 @@
 
     @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2.labels.en.selectPageLabels.headingWithPostcode} @{lookup.get.postcode}</h1>
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.selectPageLabels.headingWithPostcode} @{lookup.get.postcode}</h1>
         } else {
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2.labels.en.selectPageLabels.heading}</h1>
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2.labels.en.selectPageLabels.heading}</h1>
+        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.selectPageLabels.heading}</h1>
     }
 
     @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
@@ -44,13 +44,13 @@
         <fieldset>
 
             <div class="form-group">
-                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2.labels.en.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
+                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2().labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
             </div>
             <div class="form-group">
-                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2.labels.en.selectPageLabels.submitLabel}</button>
+                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2().labels.selectPageLabels.submitLabel}</button>
             </div>
             <div class="form-field">
-                <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.fold("")(_.postcode)),Some(true))}" id="editAddress">@{journeyData.resolveConfigV2.labels.en.selectPageLabels.editAddressLinkText}</a></p>
+                <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.fold("")(_.postcode)),Some(true))}" id="editAddress">@{journeyData.resolveConfigV2().labels.selectPageLabels.editAddressLinkText}</a></p>
             </div>
         </fieldset>
     }

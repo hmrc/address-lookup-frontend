@@ -3,7 +3,7 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
-import model.JourneyConfigDefaults._
+import model.JourneyConfigDefaults.EnglishConstants._
 import play.api.http.Status._
 import play.api.http.HeaderNames
 import play.api.test.FakeApplication

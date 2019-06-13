@@ -1,7 +1,7 @@
 package model
 
 import fixtures.ALFEFixtures
-import model.JourneyConfigDefaults.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+import model.JourneyConfigDefaults.EnglishConstants.{LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT, defaultPhaseBannerHtml}
 import model.JourneyData._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsResultException, Json}
@@ -198,7 +198,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "have default phase banner html" in {
-      cfg.phaseBannerHtml must be (JourneyConfigDefaults.defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
+      cfg.phaseBannerHtml must be (defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
     }
 
     "show back buttons by default" in {

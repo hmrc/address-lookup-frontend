@@ -37,7 +37,7 @@ class SelectPageViewSpec extends ViewSpec {
   }
 
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean, welshEnabled: Boolean = false) {
-    val testPage: HtmlFormat.Appendable = views.html.v2.select("testId", journeyData, selectForm, proposals, lookup, firstSearch, welshEnabled)
+    val testPage: HtmlFormat.Appendable = views.html.v2.select("testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 

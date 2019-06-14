@@ -764,6 +764,22 @@ object IntegrationTestConstants {
     )
   )
 
+  val journeyDataV2DefaultWelshLabels: JourneyDataV2 = JourneyDataV2(
+    JourneyConfigV2(
+      2,
+      JourneyOptions(
+        testContinueUrl,
+        selectPageConfig = Some(SelectPageConfig(
+          proposalListLimit = Some(50)
+        ))
+      ),
+      Some(JourneyLabels(
+        None,
+        cy = Some(LanguageLabels())
+      ))
+    )
+  )
+
   val journeyDataV2SelectLabelsNoBack: JourneyDataV2 = journeyDataV2SelectLabels.copy(config = journeyDataV2SelectLabels.config.copy(options = journeyDataV2SelectLabels.config.options.copy(showBackButtons = Some(false))))
 
 }

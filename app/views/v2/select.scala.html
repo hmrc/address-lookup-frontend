@@ -6,13 +6,13 @@
 @import views.html.v2.{main_template => template}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean, welshEnabled: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-@messageConstants = @{if(welshEnabled) WelshMessageConstants else EnglishMessageConstants}
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
 
-@template(title = journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.title, journeyData = Some(journeyData)) {
+@template(title = journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
-    @if(journeyData.resolveConfigV2(welshEnabled).options.showBackButtons) {
+    @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
         <div>
             <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
         </div>
@@ -22,12 +22,12 @@
 
     @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.headingWithPostcode} @{lookup.get.postcode}</h1>
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.headingWithPostcode} @{lookup.get.postcode}</h1>
         } else {
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.heading}</h1>
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.heading}</h1>
+        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
     }
 
     @if(lookup.getOrElse(Lookup(None, "")).filter.isDefined) {
@@ -48,13 +48,13 @@
         <fieldset>
 
             <div class="form-group">
-                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
+                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
             </div>
             <div class="form-group">
-                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.submitLabel}</button>
+                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>
             </div>
             <div class="form-field">
-                <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.fold("")(_.postcode)),Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(welshEnabled).labels.selectPageLabels.editAddressLinkText}</a></p>
+                <p><a href="@{routes.AddressLookupController.edit(id,Some(lookup.fold("")(_.postcode)),Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
             </div>
         </fieldset>
     }

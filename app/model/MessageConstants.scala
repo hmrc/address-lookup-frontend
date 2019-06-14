@@ -20,6 +20,10 @@ object MessageConstants {
     def lookupPostcodeError: String
     def lookupFilterError: String
     def lookupFilterHint: String
+    
+    def errorText: String
+    def noResults: String
+    def differentSearch: String
   }
 
   object EnglishMessageConstants extends MessageConstants {
@@ -41,6 +45,10 @@ object MessageConstants {
     val lookupPostcodeError = "The postcode you entered appears to be incomplete or invalid. Please check and try again."
     val lookupFilterError = "Your house name/number needs to be fewer than 256 characters"
     val lookupFilterHint = "For example, The Mill, 116 or Flat 37a"
+
+    val errorText = "This page has errors"
+    val noResults = "We could not find a match with"
+    val differentSearch = "Try a different name or number"
   }
 
   object WelshMessageConstants extends MessageConstants {
@@ -62,6 +70,10 @@ object MessageConstants {
     val lookupPostcodeError = "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     val lookupFilterError = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
     val lookupFilterHint = "Er enghraifft, Tegfan, 116 neu Fflat 37a"
+
+    val errorText = "Mae gwallau ar y dudalen hon"
+    val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
+    val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
   }
 
 }

@@ -2,12 +2,12 @@ package views
 
 import controllers.routes
 import forms.ALFForms.lookupForm
-import model.JourneyConfigDefaults.EnglishConstants._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.Play
 import play.api.i18n.Messages.Implicits._
 import play.api.i18n.MessagesApi
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.TestConstants._
@@ -15,68 +15,147 @@ import utils.TestConstants._
 class LookupViewSpec extends ViewSpec {
 
   object content {
-    val testHintLabel = "For example, The Mill, 116 or Flat 37a"
     val title = "enLookupPageTitle"
     val heading = "enLookupPageHeading"
     val filterLabel = "enFilterLabel"
     val postcodeLabel = "enPostcodeLabel"
     val submitLabel = "enSubmitLabel"
     val manualAddressLinkText = "enManualAddressLinkText"
-    val errorHeading = "This page has errors"
-    val postcodeErrorMessage = "The postcode you entered appears to be incomplete or invalid. Please check and try again."
-    val filterErrorMessage = "Your house name/number needs to be fewer than 256 characters"
+
+    val cyTitle = "cyLookupPageTitle"
+    val cyHeading = "cyLookupPageHeading"
+    val cyFilterLabel = "cyFilterLabel"
+    val cyPostcodeLabel = "cyPostcodeLabel"
+    val cySubmitLabel = "cySubmitLabel"
+    val cyManualAddressLinkText = "cyManualAddressLinkText"
+
   }
 
-  implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messages = app.injector.instanceOf[MessagesApi]
   val testHtml = Html("")
   val testForm = lookupForm
 
   "Lookup view page" should {
     "renders" when {
-      "default content" in {
-        val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm)
-        val doc: Document = Jsoup.parse(testPage.body)
+      "Welsh is disabled" when {
+        import model.JourneyConfigDefaults.EnglishConstants._
+        import model.MessageConstants.EnglishMessageConstants._
 
-        doc.title shouldBe LOOKUP_PAGE_TITLE
-        doc.getH1ElementAsText shouldBe LOOKUP_PAGE_HEADING
-        doc.hasTextFieldInput("postcode") shouldBe true
-        doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
-        doc.hasTextFieldInput("filter") shouldBe true
-        doc.getHintAsText shouldBe content.testHintLabel
-        doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + content.testHintLabel
-        doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
-        doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
-        doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
+        implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+
+        "default content" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm, false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe LOOKUP_PAGE_TITLE
+          doc.getH1ElementAsText shouldBe LOOKUP_PAGE_HEADING
+          doc.hasTextFieldInput("postcode") shouldBe true
+          doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
+          doc.hasTextFieldInput("filter") shouldBe true
+          doc.getHintAsText shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+          doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
+          doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
+        }
+        "configured content" in {
+          val testPage = views.html.v2.lookup(testId, testLookupLevelJourneyConfigV2, lookupForm, false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe content.title
+          doc.getH1ElementAsText shouldBe content.heading
+          doc.hasTextFieldInput("postcode") shouldBe true
+          doc.getTextFieldLabel("postcode") shouldBe content.postcodeLabel
+          doc.hasTextFieldInput("filter") shouldBe true
+          doc.getHintAsText shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe content.filterLabel + " " + lookupFilterHint
+          doc.getALinkText("manualAddress") shouldBe content.manualAddressLinkText
+          doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
+          doc.getButtonContentAsText shouldBe content.submitLabel
+        }
+        "the postcode field error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("postcode", lookupPostcodeError), false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError
+        }
+        "the filter field error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("filter", lookupFilterError), false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("filter") shouldBe lookupFilterError
+        }
       }
-      "configured content" in {
-        val testPage = views.html.v2.lookup(testId, testLookupLevelJourneyConfigV2, lookupForm)
-        val doc: Document = Jsoup.parse(testPage.body)
+      "Welsh is enabled" when {
+        import model.JourneyConfigDefaults.WelshConstants._
+        import model.MessageConstants.WelshMessageConstants._
 
-        doc.title shouldBe content.title
-        doc.getH1ElementAsText shouldBe content.heading
-        doc.hasTextFieldInput("postcode") shouldBe true
-        doc.getTextFieldLabel("postcode") shouldBe content.postcodeLabel
-        doc.hasTextFieldInput("filter") shouldBe true
-        doc.getHintAsText shouldBe content.testHintLabel
-        doc.getTextFieldLabel("filter") shouldBe content.filterLabel + " " + content.testHintLabel
-        doc.getALinkText("manualAddress") shouldBe content.manualAddressLinkText
-        doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
-        doc.getButtonContentAsText shouldBe content.submitLabel
-      }
-      "the postcode field error" in {
-        val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("postcode", content.postcodeErrorMessage))
-        val doc: Document = Jsoup.parse(testPage.body)
+        implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
 
-        doc.getFieldErrorMessageHeading shouldBe content.errorHeading
-        doc.getFieldErrorMessageContent("postcode") shouldBe content.postcodeErrorMessage
-      }
-      "the filter field error" in {
-        val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("filter", content.filterErrorMessage))
-        val doc: Document = Jsoup.parse(testPage.body)
+        "default content exists in Welsh" in {
+          val testPage = views.html.v2.lookup(testId, testDefaultCYJourneyConfigV2, lookupForm, true)
+          val doc: Document = Jsoup.parse(testPage.body)
 
-        doc.getFieldErrorMessageHeading shouldBe content.errorHeading
-        doc.getFieldErrorMessageContent("filter") shouldBe content.filterErrorMessage
+          doc.title shouldBe LOOKUP_PAGE_TITLE
+          doc.getH1ElementAsText shouldBe LOOKUP_PAGE_HEADING
+          doc.hasTextFieldInput("postcode") shouldBe true
+          doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
+          doc.hasTextFieldInput("filter") shouldBe true
+          doc.getHintAsText shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+          doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
+          doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
+        }
+        "default content doesn't exist in Welsh" in {
+          import model.JourneyConfigDefaults.EnglishConstants._
+          import model.MessageConstants.EnglishMessageConstants._
+
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm, false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe LOOKUP_PAGE_TITLE
+          doc.getH1ElementAsText shouldBe LOOKUP_PAGE_HEADING
+          doc.hasTextFieldInput("postcode") shouldBe true
+          doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
+          doc.hasTextFieldInput("filter") shouldBe true
+          doc.getHintAsText shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+          doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
+          doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
+        }
+        "configured content" in {
+          val testPage = views.html.v2.lookup(testId, testLookupLevelCYJourneyConfigV2, lookupForm, true)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.title shouldBe content.cyTitle
+          doc.getH1ElementAsText shouldBe content.cyHeading
+          doc.hasTextFieldInput("postcode") shouldBe true
+          doc.getTextFieldLabel("postcode") shouldBe content.cyPostcodeLabel
+          doc.hasTextFieldInput("filter") shouldBe true
+          doc.getHintAsText shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe content.cyFilterLabel + " " + lookupFilterHint
+          doc.getALinkText("manualAddress") shouldBe content.cyManualAddressLinkText
+          doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
+          doc.getButtonContentAsText shouldBe content.cySubmitLabel
+        }
+        "the postcode field error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("postcode", lookupPostcodeError), true)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError
+        }
+        "the filter field error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm.withError("filter", lookupFilterError), true)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("filter") shouldBe lookupFilterError
+        }
       }
     }
   }

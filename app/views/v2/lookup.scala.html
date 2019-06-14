@@ -4,22 +4,34 @@
 @import views.html.helpers.{alfErrorSummary, alfInput}
 @import views.html.v2.govuk_wrapper
 @import views.html.v2.main_template
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(
+id: String,
+journeyData: JourneyDataV2,
+lookupForm: Form[Lookup],
+isWelsh: Boolean,
+message: Option[String] = None
+)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.resolveConfigV2().labels.lookupPageLabels.title, journeyData = Some(journeyData)) {
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
 
-  @if(journeyData.resolveConfigV2().options.showBackButtons) {
+@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title,
+               journeyData = Some(journeyData), welshEnabled = isWelsh) {
+
+
+
+  @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
     <div>
-      <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+      <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>
   }
 
   @alfErrorSummary(
-    messages("common.error.text"), lookupForm
+  messageConstants.lookupErrorHeading, lookupForm
   )
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.lookupPageLabels.heading}</h1>
+  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.heading}</h1>
   @if(message.isDefined) {
     <div class="highlight-message highlight-message--full-width">
       <p>@{message.get}</p>
@@ -31,24 +43,24 @@
       <div class="form-field">
         @alfInput(
         lookupForm("postcode"),
-        '_label -> journeyData.resolveConfigV2().labels.lookupPageLabels.postcodeLabel,
+        '_label -> journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.postcodeLabel,
         '_inputClass -> "form-control--block input--small"
         )
       </div>
       <div class="form-field spaced-below">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolveConfigV2().labels.lookupPageLabels.manualAddressLinkText}</a></p>
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.manualAddressLinkText}</a></p>
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         lookupForm("filter"),
-        '_label -> journeyData.resolveConfigV2().labels.lookupPageLabels.filterLabel,
-        '_inputHint -> messages("lookup.input.hint.text"),
+        '_label -> journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.filterLabel,
+        '_inputHint -> messageConstants.lookupFilterHint,
         '_inputClass -> "form-control--block"
         )
       </div>
 
       <div class="form-field spaced-below">
-        <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2().labels.lookupPageLabels.submitLabel}</button>
+        <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.submitLabel}</button>
       </div>
     </fieldset>
   }

@@ -10,16 +10,18 @@ import model._
 import model.JourneyData._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Play
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
-import uk.gov.hmrc.http.{HeaderCarrier}
-import utils.TestConstants.{testLookupLevelJourneyConfigV2, testAppLevelJourneyConfigV2}
-import utils.TestConstants.{testJourneyId, testContinueUrl}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.TestConstants.{testAppLevelJourneyConfigV2, testLookupLevelJourneyConfigV2, testLookupLevelCYJourneyConfigV2, testDefaultCYJourneyConfigV2}
+import utils.TestConstants.{testContinueUrl, testJourneyId}
 import utils.V2ModelConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,6 +48,7 @@ class AddressLookupControllerSpec
                  id: Option[String] = None) {
 
     val req = FakeRequest()
+    val reqWelsh = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
 
     val endpoint = "http://localhost:9000"
 
@@ -178,89 +181,178 @@ class AddressLookupControllerSpec
   }
 
   "lookup" should {
+    "isWelsh is false" should {
+      "return a form which permits input of building name/number and postcode and should pre pop values" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicJourneyV2())
+      ) {
+        val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("title").withValue("Find the address")
+        html should include element withName("h1").withValue("Find the address")
+        html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
+        html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
+        html should include element withName("input").withAttrValue("name", "filter")
+        html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
+        html should include element withName("input").withAttrValue("name", "postcode")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+        html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
+        html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
+        html.getElementById("filter").`val` mustBe "The House"
+      }
 
-    "return a form which permits input of building name/number and postcode and should pre pop values" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2())
-    ) {
-      val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("title").withValue("Find the address")
-      html should include element withName("h1").withValue("Find the address")
-      html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-      html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
-      html should include element withName("input").withAttrValue("name", "filter")
-      html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
-      html should include element withName("input").withAttrValue("name", "postcode")
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
-      html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
-      html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
-      html.getElementById("filter").`val` mustBe "The House"
-    }
+      "return a form which permits input of building name/number and postcode when set to UK mode and should not pre pop" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool = Some(true)))
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("title").withValue("Find the address")
+        html should include element withName("h1").withValue("Find the address")
+        html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
+        html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
+        html should include element withName("input").withAttrValue("name", "filter")
+        html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
+        html should include element withName("input").withAttrValue("name", "postcode")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+        html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
+        html.getElementById("postcode").`val` mustBe ""
+        html.getElementById("filter").`val` mustBe ""
+      }
+      "return a form that pre pops just post code" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicJourneyV2())
+      ) {
+        val res = call(controller.lookup("foo", postcode = Some("AB11 1AB")), req)
+        val html = contentAsString(res).asBodyFragment
+        html.getElementById("postcode").`val` mustBe "AB11 1AB"
+        html.getElementById("filter").`val` mustBe ""
+      }
 
-    "return a form which permits input of building name/number and postcode when set to UK mode and should not pre pop" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool=Some(true)))
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("title").withValue("Find the address")
-      html should include element withName("h1").withValue("Find the address")
-      html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-      html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
-      html should include element withName("input").withAttrValue("name", "filter")
-      html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
-      html should include element withName("input").withAttrValue("name", "postcode")
-      html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
-      html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
-      html.getElementById("postcode").`val` mustBe ""
-      html.getElementById("filter").`val` mustBe ""
-    }
-    "return a form that pre pops just post code" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2())
-    ) {
-      val res = call(controller.lookup("foo", postcode = Some("AB11 1AB")), req)
-      val html = contentAsString(res).asBodyFragment
-      html.getElementById("postcode").`val` mustBe "AB11 1AB"
-      html.getElementById("filter").`val` mustBe ""
-    }
+      "allow page title to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("title").withValue("enLookupPageTitle")
+      }
 
-    "allow page title to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("title").withValue("enLookupPageTitle")
-    }
+      "allow page heading to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("h1").withValue("enLookupPageHeading")
+      }
 
-    "allow page heading to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("h1").withValue("enLookupPageHeading")
-    }
+      "allow filter label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("label").withAttrValue("for", "filter").withValue("enFilterLabel")
+      }
 
-    "allow filter label to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("label").withAttrValue("for", "filter").withValue("enFilterLabel")
-    }
+      "allow postcode label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("label").withAttrValue("for", "postcode").withValue("enPostcodeLabel")
+      }
 
-    "allow postcode label to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("label").withAttrValue("for", "postcode").withValue("enPostcodeLabel")
+      "allow submit label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("button").withAttrValue("type", "submit").withValue("enSubmitLabel")
+      }
     }
+    "isWelsh is true" should {
+      "Welsh default content is available" should {
+        "return Welsh default content" in new Scenario(
+          journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2)
+        ) {
+          val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), reqWelsh)
+          val html = contentAsString(res).asBodyFragment
+          html should include element withName("title").withValue("Dod o hyd i’r cyfeiriad")
+          html should include element withName("h1").withValue("Dod o hyd i’r cyfeiriad")
+          html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
+          html should include element withName("label").withAttrValue("for", "filter").withValue("Enw neu rif yr eiddo")
+          html should include element withName("input").withAttrValue("name", "filter")
+          html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post yn y DU")
+          html should include element withName("input").withAttrValue("name", "postcode")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwiliwch am y cyfeiriad")
+          html should include element withAttrValue("id", "manualAddress").withValue("Nid oes gan y cyfeiriad god post yn y DU")
+          html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
+          html.getElementById("filter").`val` mustBe "The House"
+        }
+      }
+      "Welsh default content is not available" should {
+        "return English default content" in new Scenario(
+          journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool = Some(true)))
+        ) {
+          val res = call(controller.lookup("foo"), reqWelsh)
+          val html = contentAsString(res).asBodyFragment
+          html should include element withName("title").withValue("Find the address")
+          html should include element withName("h1").withValue("Find the address")
+          html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
+          html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number")
+          html should include element withName("input").withAttrValue("name", "filter")
+          html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
+          html should include element withName("input").withAttrValue("name", "postcode")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+          html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
+          html.getElementById("postcode").`val` mustBe ""
+          html.getElementById("filter").`val` mustBe ""
+        }
+      }
+      "return a form that pre pops just post code" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicJourneyV2())
+      ) {
+        val res = call(controller.lookup("foo", postcode = Some("AB11 1AB")), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html.getElementById("postcode").`val` mustBe "AB11 1AB"
+        html.getElementById("filter").`val` mustBe ""
+      }
 
-    "allow submit label to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-    ) {
-      val res = call(controller.lookup("foo"), req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withName("button").withAttrValue("type", "submit").withValue("enSubmitLabel")
+      "allow page title to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("title").withValue("cyLookupPageTitle")
+      }
+
+      "allow page heading to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("h1").withValue("cyLookupPageHeading")
+      }
+
+      "allow filter label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("label").withAttrValue("for", "filter").withValue("cyFilterLabel")
+      }
+
+      "allow postcode label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("label").withAttrValue("for", "postcode").withValue("cyPostcodeLabel")
+      }
+
+      "allow submit label to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
+      ) {
+        val res = call(controller.lookup("foo"), reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withName("button").withAttrValue("type", "submit").withValue("cySubmitLabel")
+      }
     }
   }
 
@@ -413,7 +505,7 @@ class AddressLookupControllerSpec
     }
     "allow confirmChangeText to be configured" in new Scenario(
       journeyDataV2 = Map("foo" -> JourneyDataV2(
-        config = JourneyConfigV2(2, JourneyOptions("continue",confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+        config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
         selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
       ))
     ) {
@@ -423,7 +515,7 @@ class AddressLookupControllerSpec
     }
     "render address with blank string in lines correctly" in new Scenario(
       journeyDataV2 = Map("foo" -> JourneyDataV2(
-        config = JourneyConfigV2(2, JourneyOptions("continue",confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+        config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
         selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
       ))
     ) {
@@ -548,7 +640,7 @@ class AddressLookupControllerSpec
     }
 
     "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
     ) {
       val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
       val html = contentAsString(res).asBodyFragment
@@ -571,8 +663,8 @@ class AddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
           selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
-      )) {
-        val res = controller.edit("foo",Some("ZZ1 1ZZ"),None).apply(req)
+        )) {
+        val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
         val html = contentAsString(res).asBodyFragment
 
         html should not include element(withName("option").withAttrValue("value", "FR"))
@@ -604,8 +696,8 @@ class AddressLookupControllerSpec
 
     "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ){
-      val res = controller.edit("foo",Some("ZZ1 1ZZ"),Some(false)).apply(req)
+    ) {
+      val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
       status(res) must be(200)
       val html = contentAsString(res).asBodyFragment
       html should include element (withName("input").withAttrValue("name", "postcode"))
@@ -617,41 +709,41 @@ class AddressLookupControllerSpec
   "handleUkEdit" should {
     "return 303 with valid request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ){
-      val res = controller.handleUkEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor():_*))
+    ) {
+      val res = controller.handleUkEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
     "return 400 with empty request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ){
+    ) {
       val res = controller.handleUkEdit("foo").apply(req)
       status(res) must be(400)
     }
     "return 303 with country code == GB and no postcode provided" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ){
+    ) {
       val res = controller.handleUkEdit("foo").apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
       status(res) must be(303)
     }
   }
   "handleNonUkEdit" should {
-    "return a 400 with empty request, uk mode == true" in new Scenario (
+    "return a 400 with empty request, uk mode == true" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ){
+    ) {
       val res = controller.handleNonUkEdit("foo").apply(req)
       status(res) must be(400)
     }
-    "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario (
+    "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
       val res = controller.handleNonUkEdit("foo")
         .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
-    "return a 400 with empty request when ukMode == false" in new Scenario (
+    "return a 400 with empty request when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
-    ){
+    ) {
       val res = controller.handleNonUkEdit("foo").apply(req)
       status(res) must be(400)
       val html = contentAsString(res).asBodyFragment
@@ -691,6 +783,25 @@ class AddressLookupControllerSpec
       status(result) mustBe 303
       headers(result) contains "testSession" mustBe false
       redirectLocation(result) mustBe Some("timeoutUrl")
+    }
+  }
+  "getWelshContent" should {
+    "return true" when {
+      "there is a welsh language cookie in the request and welsh is setup in the journey without labels" in new Scenario {
+        controller.getWelshContent(testDefaultCYJourneyConfigV2)(reqWelsh) mustBe true
+      }
+      "there is a welsh language cookie in the request and welsh is setup in the journey with labels" in new Scenario {
+        controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqWelsh) mustBe true
+      }
+    }
+    "return false" when {
+      "there is no welsh language cookie but welsh labels are provided" in new Scenario {
+        val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
+        controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqOther) mustBe false
+      }
+      "there is a welsh language cookie in the request and welsh is not setup in the journey" in new Scenario {
+        controller.getWelshContent(testLookupLevelJourneyConfigV2)(reqWelsh) mustBe false
+      }
     }
   }
 }

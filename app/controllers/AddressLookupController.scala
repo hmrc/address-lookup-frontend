@@ -8,6 +8,7 @@ import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
 import model._
+import play.api.Play
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
@@ -44,6 +45,15 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     (c.code -> c.name)
   }
 
+  def getWelshContent(journeyData: JourneyDataV2)(implicit request: RequestHeader): Boolean = {
+    val langFromCookie = request.cookies.get(Play.langCookieName).toString().contains("cy")
+    val hasWelshDefault = journeyData.resolveConfigV2(true) match {
+      case ResolvedJourneyConfigV2(JourneyConfigV2(_, _, Some(JourneyLabels(_, Some(LanguageLabels(_,_,_,_,_))))), _) => true
+      case _ => false
+    }
+    langFromCookie && hasWelshDefault
+  }
+
   // GET  /no-journey
   // display an error page when a required journey is not available
   def noJourney() = Action { implicit req =>
@@ -53,16 +63,18 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
+      val isWelsh = getWelshContent(journeyData)(req)
       val formPrePopped = lookupForm.fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh)))
     }
   }
 
   // GET  /:id/select
   def select(id: String) = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
+      val isWelsh = getWelshContent(journeyData)(req)
       lookupForm.bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors)))),
+        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh)))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {

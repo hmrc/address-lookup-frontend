@@ -85,6 +85,28 @@ object TestConstants {
     val confirmChangeText = Some("confirmChangeText")
   }
 
+  object testWelshConfirmPageLabels {
+    val title = "cyConfirmPageTitle"
+    val heading = "cyConfirmPageHeading"
+    val infoSubheading = "cyConfirmPageInfoSubheading"
+    val infoMessage = "cyConfirmPageInfoMessage"
+    val submitLabel = "cyConfirmPageSubmitLabel"
+    val searchAgainLinkText = "cyConfirmPageSearchAgainLinkText"
+    val changeLinkText = "cyConfirmPageChangeLinkText"
+    val confirmChangeText = "cyConfirmPageConfirmChangeText"
+  }
+
+  object testEnglishConfirmPageLabels {
+  val title = "enConfirmPageTitle"
+  val heading = "enConfirmPageHeading"
+  val infoSubheading = "enConfirmPageInfoSubheading"
+  val infoMessage = "enConfirmPageInfoMessage"
+  val submitLabel = "enConfirmPageSubmitLabel"
+  val searchAgainLinkText = "enConfirmPageSearchAgainLinkText"
+  val changeLinkText = "enConfirmPageChangeLinkText"
+  val confirmChangeText = "enConfirmPageConfirmChangeText"
+}
+
   // V1 model constants
   val fullV1LookupConfig = Some(LookupPage(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode, Lookup.submit,
     Lookup.limitExceeded, Lookup.noResultsFound, Lookup.enterManually))
@@ -164,50 +186,6 @@ object TestConstants {
 
   val fullV2JourneyData = JourneyDataV2(fullV2JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
-  def fullV2JourneyDataCustomConfig(testContinueUrl: String = testContinueUrl,
-                                    testHomeNavHref: Option[String] = testHomeNavRef,
-                                    testAdditionalStylesheetUrl: Option[String] = testAdditionalStylesheetUrl,
-                                    testPhaseFeedbackLink: Option[String] = testPhaseFeedbackLink,
-                                    testDeskProServiceName: Option[String] = testDeskproServiceName,
-                                    testShowPhaseBanner: Option[Boolean] = testShowPhaseBanner,
-                                    testAlphaPhase: Option[Boolean] = testAlphaPhase,
-                                    testShowBackButtons: Option[Boolean] = testShowBackButtons,
-                                    testIncludeHMRCBranding: Option[Boolean] = testIncludeHmrcBranding,
-                                    testUkMode: Option[Boolean] = testUkMode,
-                                    testAllowedCountryCodes: Option[Set[String]] = testAllowedCountryCodes,
-                                    testSelectPage: Option[SelectPageConfig] = fullV2SelectPageConfig,
-                                    testShowSearchAgainLink: Option[Boolean] = Confirm.showSearchAgainLink,
-                                    testShowSubHeading: Option[Boolean] = Confirm.showSubHeading,
-                                    testShowChangeLink: Option[Boolean] = Confirm.showChangeLink,
-                                    testshowConfirmChangeLink: Option[Boolean]= Confirm.showConfirmChangeLink,
-                                    testTimeoutConfig: Option[TimeoutConfig] = fullV2TimeoutConfig): JourneyDataV2 = {
-
-    val testConfirmPageConfig = ConfirmPageConfig(testShowSearchAgainLink,
-                                                  testShowSubHeading,
-                                                  testShowChangeLink,
-                                                  testshowConfirmChangeLink)
-
-    val journeyOptions = JourneyOptions(testContinueUrl,
-                                        testHomeNavHref,
-                                        testAdditionalStylesheetUrl,
-                                        testPhaseFeedbackLink,
-                                        testDeskProServiceName,
-                                        testShowPhaseBanner,
-                                        testAlphaPhase,
-                                        testShowBackButtons,
-                                        testIncludeHMRCBranding,
-                                        testUkMode,
-                                        testAllowedCountryCodes,
-                                        testSelectPage,
-                                        Some(testConfirmPageConfig),
-                                        testTimeoutConfig)
-
-
-    JourneyDataV2(JourneyConfigV2(2, journeyOptions, fullV2JourneyLabelsEn), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
-  }
-
-
-
   val emptyJson: JsValue = Json.parse("{}")
 
   val confirmPageLabelsMinimal = ConfirmPageLabels(None, None, None, None, None, None, None, None)
@@ -230,6 +208,13 @@ object TestConstants {
 
   val confirmPageConfigMinimal = ConfirmPageConfig(None, None, None, None)
 
+  val confirmPageConfigFull = Some(ConfirmPageConfig(
+    Confirm.showSearchAgainLink,
+    Confirm.showSubHeading,
+    Confirm.showChangeLink,
+    Confirm.showConfirmChangeLink
+  ))
+
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
   val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None)
@@ -242,6 +227,53 @@ object TestConstants {
   val journeyConfigV2MinimalJson: JsValue = Json.parse(s"""{"version":2, "options":$journeyOptionsMinimalJson}""")
   val journeyConfigV2MissingVersionJson: JsValue = Json.parse(s"""{"options":$journeyOptionsMinimalJson}""")
   val journeyConfigV2MissingConfigJson: JsValue = Json.parse(s"""{"version":2}""")
+
+  def fullV2JourneyDataCustomConfig(testContinueUrl: String = testContinueUrl,
+                                    testHomeNavHref: Option[String] = testHomeNavRef,
+                                    testAdditionalStylesheetUrl: Option[String] = testAdditionalStylesheetUrl,
+                                    testPhaseFeedbackLink: Option[String] = testPhaseFeedbackLink,
+                                    testDeskProServiceName: Option[String] = testDeskproServiceName,
+                                    testShowPhaseBanner: Option[Boolean] = testShowPhaseBanner,
+                                    testAlphaPhase: Option[Boolean] = testAlphaPhase,
+                                    testShowBackButtons: Option[Boolean] = testShowBackButtons,
+                                    testIncludeHMRCBranding: Option[Boolean] = testIncludeHmrcBranding,
+                                    testUkMode: Option[Boolean] = testUkMode,
+                                    testAllowedCountryCodes: Option[Set[String]] = testAllowedCountryCodes,
+                                    testSelectPage: Option[SelectPageConfig] = fullV2SelectPageConfig,
+                                    testTimeoutConfig: Option[TimeoutConfig] = fullV2TimeoutConfig,
+                                    testConfirmPageConfig: Option[ConfirmPageConfig] = confirmPageConfigFull,
+                                    testLabels: Option[JourneyLabels] = fullV2JourneyLabelsEn
+                                   ): JourneyDataV2 = {
+
+    val journeyOptions = JourneyOptions(
+      testContinueUrl,
+      testHomeNavHref,
+      testAdditionalStylesheetUrl,
+      testPhaseFeedbackLink,
+      testDeskProServiceName,
+      testShowPhaseBanner,
+      testAlphaPhase,
+      testShowBackButtons,
+      testIncludeHMRCBranding,
+      testUkMode,
+      testAllowedCountryCodes,
+      testSelectPage,
+      testConfirmPageConfig,
+      testTimeoutConfig
+    )
+
+    JourneyDataV2(
+      JourneyConfigV2(
+        2,
+        journeyOptions,
+        testLabels
+      ),
+      Some(testProposedAddressSeq),
+      Some(testAddress),
+      Some(testAddress)
+    )
+
+  }
 
   val journeyDataV2Full = JourneyDataV2(
     config = JourneyConfigV2(
@@ -769,14 +801,14 @@ object TestConstants {
             appLevelLabels = None,
             selectPageLabels = None,
             lookupPageLabels = Some(LookupPageLabels(
-               title = Some("enLookupPageTitle"),
-               heading = Some("enLookupPageHeading"),
-               filterLabel = Some("enFilterLabel"),
-               postcodeLabel = Some("enPostcodeLabel"),
-               submitLabel = Some("enSubmitLabel"),
-               noResultsFoundMessage = Some("enNoResultsFoundMessage"),
-               resultLimitExceededMessage = Some("enResultLimitExceededMessage"),
-               manualAddressLinkText = Some("enManualAddressLinkText")
+              title = Some("enLookupPageTitle"),
+              heading = Some("enLookupPageHeading"),
+              filterLabel = Some("enFilterLabel"),
+              postcodeLabel = Some("enPostcodeLabel"),
+              submitLabel = Some("enSubmitLabel"),
+              noResultsFoundMessage = Some("enNoResultsFoundMessage"),
+              resultLimitExceededMessage = Some("enResultLimitExceededMessage"),
+              manualAddressLinkText = Some("enManualAddressLinkText")
             )),
             editPageLabels = None,
             confirmPageLabels = None

@@ -50,6 +50,10 @@ trait LoginStub extends SessionCookieBaker {
     cookieValue(cookieData(additionalData, userId, sessionId))
   }
   def sessionCookieWithCSRF = getSessionCookie(Map("csrfToken" -> testCsrfToken()))
+  def sessionCookieWithCSRFAndLang(lang: Option[String]  = Some("cy")) = {
+    getSessionCookie(Map("csrfToken" -> testCsrfToken())) + lang.fold("")(l => s";PLAY_LANG=$l;")
+  }
+
 }
 
 trait SessionCookieBaker {

@@ -24,6 +24,17 @@ object MessageConstants {
     def errorText: String
     def noResults: String
     def differentSearch: String
+
+    def ukModePostcodeLabel: String
+
+    val editPageAddressLine1MaxErrorMessage: String
+    val editPageAddressLine2MaxErrorMessage: String
+    val editPageAddressLine3MaxErrorMessage: String
+    val editPageTownMaxErrorMessage: String
+    val editPageAddressLine1MinErrorMessage: String
+    val editPageTownMinErrorMessage: String
+    val editPagePostcodeErrorMessage: String
+
   }
 
   object EnglishMessageConstants extends MessageConstants {
@@ -37,6 +48,16 @@ object MessageConstants {
     val timeoutSignYouOut = "For your security, we'll sign you out in"
     val timeoutResumeSession = "Resume your session"
     val timeoutInactive = "You've been inactive for a while."
+    val ukModePostcodeLabel = "UK postcode (optional)"
+
+    val editPageAddressLine1MaxErrorMessage         = "Enter a first address line using 256 characters or less"
+    val editPageAddressLine2MaxErrorMessage         = "Enter a second address line using 256 characters or less"
+    val editPageAddressLine3MaxErrorMessage         = "Enter a third address line using 256 characters or less"
+    val editPageTownMaxErrorMessage                 = "Enter a town or city using 256 characters or less"
+    val editPageAddressLine1MinErrorMessage         = "Enter first line of address"
+    val editPageTownMinErrorMessage                 = "Enter a town or city"
+
+    val editPagePostcodeErrorMessage                = "Enter a valid UK postcode"
 
     val confirmSelectedAddressError1 = "You have not selected any address. Please"
     val confirmSelectedAddressError2 = "search for and select your address"
@@ -74,6 +95,16 @@ object MessageConstants {
     val errorText = "Mae gwallau ar y dudalen hon"
     val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
     val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
+    val ukModePostcodeLabel = "Cod post y DU (dewisol)"
+
+    val editPageAddressLine1MaxErrorMessage = "Nodwch linell gyntaf y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
+    val editPageAddressLine2MaxErrorMessage = "Nodwch ail linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
+    val editPageAddressLine3MaxErrorMessage = "Nodwch drydedd linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
+    val editPageAddressLine1MinErrorMessage = "Nodwch linell gyntaf y cyfeiriad"
+    val editPageTownMaxErrorMessage         = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
+    val editPageTownMinErrorMessage         = "Nodwch dref neu ddinas"
+    val editPagePostcodeErrorMessage        = "Nodwch god post yn y DU sy’n ddilys"
+
   }
 
 }

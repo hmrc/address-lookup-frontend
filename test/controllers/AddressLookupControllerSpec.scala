@@ -6,8 +6,8 @@ import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
-import model._
 import model.JourneyData._
+import model._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
@@ -20,13 +20,11 @@ import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestConstants.{testAppLevelJourneyConfigV2, testLookupLevelJourneyConfigV2, testLookupLevelCYJourneyConfigV2, testDefaultCYJourneyConfigV2}
-import utils.TestConstants.{testContinueUrl, testJourneyId}
+import utils.TestConstants._
 import utils.V2ModelConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HeaderCarrier
 
 class AddressLookupControllerSpec
   extends PlaySpec
@@ -614,6 +612,31 @@ class AddressLookupControllerSpec
   }
 
   "edit" should {
+    "show the uk edit page for english" in new Scenario(
+
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
+        options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
+        labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
+    ) {
+      val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
+      val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(reqOther)
+      val html = contentAsString(res).asBodyFragment
+      html.getElementById("back-link").html mustBe "Back"
+
+    }
+    "show the uk edit page for welsh" in new Scenario(
+
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
+        options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
+        labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
+    ) {
+      val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
+      val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(reqOther)
+      val html = contentAsString(res).asBodyFragment
+      html.getElementById("back-link").html mustBe "Yn ôl"
+
+    }
+
 
     "show all countries if no allowedCountryCodes configured whereby isukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = None))))
@@ -664,7 +687,9 @@ class AddressLookupControllerSpec
           selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
         )) {
+
         val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
+
         val html = contentAsString(res).asBodyFragment
 
         html should not include element(withName("option").withAttrValue("value", "FR"))
@@ -785,6 +810,7 @@ class AddressLookupControllerSpec
       redirectLocation(result) mustBe Some("timeoutUrl")
     }
   }
+
   "getWelshContent" should {
     "return true" when {
       "there is a welsh language cookie in the request and welsh is setup in the journey without labels" in new Scenario {

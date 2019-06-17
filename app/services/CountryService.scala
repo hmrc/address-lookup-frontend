@@ -9,10 +9,10 @@ import uk.gov.hmrc.address.v2.Country
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {
 
-  def findAll(enFlag: Boolean = true): Seq[Country]
+  def findAll(welshFlag: Boolean = false): Seq[Country]
 
   // to match uk.gov.hmrc.address.v2.Countries and serve as a comprehensive replacement
-  def find(enFlag: Boolean = true, code: String): Option[Country]
+  def find(welshFlag: Boolean = false, code: String): Option[Country]
 
 }
 
@@ -29,12 +29,12 @@ class ForeignOfficeCountryService extends CountryService {
     Country(country._2.country, country._2.name)
   }.toSeq.sortWith(_.name < _.name)
 
-  override def findAll(enFlag: Boolean = true): Seq[Country] =
-    if (enFlag) countriesEN
+  override def findAll(welshFlag: Boolean = false): Seq[Country] =
+    if (!welshFlag) countriesEN
     else countriesCY
 
-  override def find(enFlag: Boolean = true, code: String): Option[Country] = {
-    if (enFlag) {
+  override def find(welshFlag: Boolean = false, code: String): Option[Country] = {
+    if (!welshFlag) {
     val filtered = countriesEN.filter(_.code == code)
     filtered.headOption
     }

@@ -41,17 +41,12 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  val countries: Seq[(String, String)] = countryService.findAll().map { c =>
+  def countries: Seq[(String, String)] = countryService.findAll().map { c =>
     (c.code -> c.name)
   }
 
-  def getWelshContent(journeyData: JourneyDataV2)(implicit request: RequestHeader): Boolean = {
-    val langFromCookie = request.cookies.get(Play.langCookieName).toString().contains("cy")
-    val hasWelshDefault = journeyData.resolveConfigV2(true) match {
-      case ResolvedJourneyConfigV2(JourneyConfigV2(_, _, Some(JourneyLabels(_, Some(LanguageLabels(_,_,_,_,_))))), _) => true
-      case _ => false
-    }
-    langFromCookie && hasWelshDefault
+  def getWelshContent(journeyData: JourneyDataV2)(implicit request: Request[_]): Boolean = {
+    journeyData.config.labels.flatMap(_.cy).isDefined && request.cookies.exists(kv => kv.name == "PLAY_LANG" && kv.value == "cy")
   }
 
   // GET  /no-journey
@@ -65,7 +60,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)(req)
       val formPrePopped = lookupForm.fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = isWelsh)))
     }
   }
 
@@ -74,7 +69,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)(req)
       lookupForm.bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh)))),
+        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors,isWelsh = isWelsh)))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {
@@ -143,8 +138,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
           val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
+            val isWelsh = getWelshContent(journeyData)
           if (journeyData.config.options.isUkMode|| uk.contains(true)) {
-            (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm.fill(editAddress), allowedSeqCountries(Seq.empty))))
+            (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
+
           } else {
             (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm.fill(editAddress), allowedSeqCountries(countries))))
           }
@@ -159,11 +156,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     implicit req =>
       withJourneyV2(id) {
         journeyData =>
-          val validatedForm = isValidPostcode(ukEditForm.bindFromRequest())
-          validatedForm.fold(
-            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes)))),
+          val isWelsh = getWelshContent(journeyData)
+          val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
+            validatedForm.fold(
+            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes), isWelsh))),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-          )
+
+      )
       }
   }
 

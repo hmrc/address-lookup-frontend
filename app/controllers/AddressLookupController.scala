@@ -58,18 +58,16 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
-      val isWelsh = getWelshContent(journeyData)(req)
       val formPrePopped = lookupForm.fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = isWelsh)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = getWelshContent(journeyData))))
     }
   }
 
   // GET  /:id/select
   def select(id: String) = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
-      val isWelsh = getWelshContent(journeyData)(req)
       lookupForm.bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors,isWelsh = isWelsh)))),
+        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors,isWelsh = getWelshContent(journeyData))))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {
@@ -105,13 +103,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withJourneyV2(id) { journeyData =>
       val bound = selectForm.bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), None, true))),
+        errors => (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), None, firstSearch = true))),
         selection => {
           journeyData.proposals match {
             case Some(props) => {
               props.find(_.addressId == selection.addressId) match {
                 case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-                case None => (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), None, true)))
+                case None => (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), None, firstSearch = true)))
               }
             }
             case None => (None, Redirect(routes.AddressLookupController.lookup(id)))
@@ -137,8 +135,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         journeyData =>
           val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
           val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
-
-            val isWelsh = getWelshContent(journeyData)
+          val isWelsh = getWelshContent(journeyData)
           if (journeyData.config.options.isUkMode|| uk.contains(true)) {
             (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
 
@@ -185,7 +182,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       withJourneyV2(id) {
         journeyData =>
           journeyData.selectedAddress
-            .map(_ => (None, Ok(views.html.v2.confirm(id, journeyData, journeyData.selectedAddress))))
+            .map(_ => (None, Ok(views.html.v2.confirm(id, journeyData, journeyData.selectedAddress, isWelsh = getWelshContent(journeyData)))))
             .getOrElse((None, Redirect(routes.AddressLookupController.lookup(id))))
       }
   }

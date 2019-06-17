@@ -616,7 +616,7 @@ object IntegrationTestConstants {
     ))
   }
 
-  def fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
+  def fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true, isWelsh: Boolean = false) = {
 
     def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
 
@@ -642,7 +642,7 @@ object IntegrationTestConstants {
         ukMode = Some(allBooleanSetAndAppropriateOptions)
       ),
       Some(JourneyLabels(
-        Some(LanguageLabels(
+        en = Some(LanguageLabels(
           confirmPageLabels = Some(ConfirmPageLabels(
             title = Some("confirm-title"),
             heading = Some("confirm-heading"),
@@ -656,7 +656,24 @@ object IntegrationTestConstants {
           appLevelLabels = Some(AppLevelLabels(
             navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
             phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML"))))
+        )),
+        cy = if (isWelsh) {
+          Some(LanguageLabels(
+          confirmPageLabels = Some(ConfirmPageLabels(
+            title = Some("cy-confirm-title"),
+            heading = Some("cy-confirm-heading"),
+            infoSubheading = Some("cy-confirm-infoSubheading"),
+            infoMessage = Some("cy-confirm-infoMessage"),
+            submitLabel = Some("cy-confirm-submitLabel"),
+            searchAgainLinkText = Some("cy-confirm-searchAgainLinkText"),
+            changeLinkText = Some("cy-confirm-changeLinkText"),
+            confirmChangeText = Some("cy-confirm-confirmChangeText")
+          )),
+          appLevelLabels = Some(AppLevelLabels(
+            navTitle = returnNoneOrConfig(Some("cy-NAV_TITLE")),
+            phaseBannerHtml = returnNoneOrConfig(Some("cy-PHASE_BANNER_HTML"))))
         ))
+        } else None
       ))
     )
   }

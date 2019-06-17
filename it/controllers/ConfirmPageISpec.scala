@@ -3,13 +3,13 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model.JourneyConfigDefaults.EnglishConstants._
-import model.{JourneyConfigV2, JourneyOptions}
+import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeApplication
 
-class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
+class ConfirmPageISpec extends IntegrationSpecBase {
 
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
@@ -24,7 +24,6 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
-
 
       doc.select("a[class=back-link]") should have(
         text("Back")
@@ -161,6 +160,78 @@ class AddressLookupConfirmPageISpec extends IntegrationSpecBase {
       )
       doc.paras should not have elementWithValue("This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.")
       doc.h2s should not have elementWithValue("Your selected address")
+      testElementDoesntExist(res, "searchAgainLink")
+      testElementDoesntExist(res, "confirmChangeText")
+
+      testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
+      res.status shouldBe OK
+    }
+
+    "pre-pop with an address and all elements are correct for a minimal Welsh journey config model" in {
+
+      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = testContinueUrl),
+        labels = Some(JourneyLabels(
+          cy = Some(LanguageLabels())
+        ))
+      ))
+      stubKeystore(testJourneyId, json, OK)
+
+      val fResponse = buildClientLookupAddress(path = "confirm")
+        .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+        .get()
+      val res = await(fResponse)
+      val doc = getDocFromResponse(fResponse)
+
+      doc.select("a[class=back-link]") should have(
+        text(MessageConstants.WelshMessageConstants.back)
+      )
+      doc.title shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_TITLE
+      doc.h1.text() shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
+      doc.submitButton.text() shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+      doc.link("changeLink") should have(
+        text(JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT)
+      )
+      doc.address should have(
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+      testElementDoesntExist(res, "searchAgainLink")
+      testElementDoesntExist(res, "confirmChangeText")
+
+      testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
+      res.status shouldBe OK
+    }
+
+    "pre-pop with an address and all elements are correct for FULL Welsh journey config model with all booleans as FALSE for page" in {
+      stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = false, isWelsh = true)), OK)
+
+      val fResponse = buildClientLookupAddress(path = "confirm")
+        .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+        .get()
+      val res = await(fResponse)
+      val doc = getDocFromResponse(fResponse)
+
+      doc.select("a[class=back-link]") should have(
+        text(MessageConstants.WelshMessageConstants.back)
+      )
+      doc.title shouldBe "cy-confirm-title"
+      doc.h1.text() shouldBe "cy-confirm-heading"
+      doc.submitButton.text() shouldBe "cy-confirm-submitLabel"
+      doc.address should have(
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
       testElementDoesntExist(res, "searchAgainLink")
       testElementDoesntExist(res, "confirmChangeText")
 

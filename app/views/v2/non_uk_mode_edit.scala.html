@@ -3,56 +3,60 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInput, countryAutoComplete}
 @import views.html.v2.main_template
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.resolveConfigV2().labels.editPageLabels.title, journeyData = Some(journeyData)) {
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@resolvedConfig = @{journeyData.resolveConfigV2(isWelsh)}
+
+@main_template(title = resolvedConfig.labels.editPageLabels.title, journeyData = Some(journeyData)) {
 
 <div id="nonUkEdit"></div>
-  @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
+  @if(resolvedConfig.options.showBackButtons) {
     <div>
-      <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+      <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>
   }
 
   @alfErrorSummary(
-    messages("common.error.text"), editForm
+    messageConstants.errorText, editForm
   )
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.editPageLabels.heading}</h1>
+  <h1 class="form-title heading-large" id="pageHeading">@{resolvedConfig.labels.editPageLabels.heading}</h1>
   @helpers.form(routes.AddressLookupController.handleNonUkEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line1"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line1Label,
+          '_label -> resolvedConfig.labels.editPageLabels.line1Label,
           '_inputClass -> "form-control--block input--medium")
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line2"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line2Label,
+          '_label -> resolvedConfig.labels.editPageLabels.line2Label,
           '_inputClass -> "form-control--block input--medium"
         )
       </div>
         <div class="form-field spaced-below">
             @alfInput(
             editForm("line3"),
-            '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line3Label,
+            '_label -> resolvedConfig.labels.editPageLabels.line3Label,
             '_inputClass -> "form-control--block input--medium"
             )
         </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("town"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.townLabel,
+          '_label -> resolvedConfig.labels.editPageLabels.townLabel,
           '_inputClass -> "form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("postcode"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.postcodeLabel,
+          '_label -> resolvedConfig.labels.editPageLabels.postcodeLabel,
           '_inputClass -> "form-control--block input--small"
         )
       </div>
@@ -63,7 +67,7 @@
                 editForm("countryCode"),
                 countries,
                 false,
-                '_label -> journeyData.resolveConfigV2().labels.editPageLabels.countryLabel,
+                '_label -> resolvedConfig.labels.editPageLabels.countryLabel,
                 '_inputClass -> "form-control--block input--medium"
             )
                 @countryAutoComplete(countries, editForm("countryCode").value)
@@ -75,7 +79,7 @@
             @defining(countries.head._2) { countryName =>
                 <div class="form-field">
                     <label for="@countryName">
-                        <span>@journeyData.resolveConfigV2().labels.editPageLabels.countryLabel</span>
+                        <span>@resolvedConfig.labels.editPageLabels.countryLabel</span>
                         <input type="text" readonly="" disabled="" class="form-control--block input--medium" value="@countryName"/>
                     </label>
                 </div>
@@ -83,7 +87,7 @@
         }
 
       <div class="form-field">
-        <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2().labels.editPageLabels.submitLabel}</button>
+        <button class="button" type="submit" id="continue">@{resolvedConfig.labels.editPageLabels.submitLabel}</button>
       </div>
     </fieldset>
   }

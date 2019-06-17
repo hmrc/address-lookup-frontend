@@ -12,7 +12,7 @@ import play.twirl.api.Html
 import utils.TestConstants._
 
 
-class uKModeEditViewSpec extends ViewSpec {
+class UKModeEditViewSpec extends ViewSpec {
 
   object defaultContent {
     val title = "Enter the address"
@@ -49,8 +49,9 @@ class uKModeEditViewSpec extends ViewSpec {
       val testPage = views.html.v2.uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
-        editForm = ukEditForm,
-        countries = Seq("FR" -> "France")
+        editForm = ukEditForm(false),
+        countries = Seq("FR" -> "France"),
+        false
       )
       val doc: Document = Jsoup.parse(testPage.body)
 
@@ -79,8 +80,9 @@ class uKModeEditViewSpec extends ViewSpec {
     val testPage = views.html.v2.uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData,
-      editForm = ukEditForm,
-      countries = Seq("FR" -> "France")
+      editForm = ukEditForm(false),
+      countries = Seq("FR" -> "France"),
+      false
     )
     val doc: Document = Jsoup.parse(testPage.body)
 

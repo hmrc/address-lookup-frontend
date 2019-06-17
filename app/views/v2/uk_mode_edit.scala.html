@@ -3,60 +3,64 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInput}
 @import views.html.v2.main_template
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.resolveConfigV2().labels.editPageLabels.title, journeyData = Some(journeyData)) {
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@resolvedConf = @{journeyData.resolveConfigV2(isWelsh)}
+
+@main_template(title = resolvedConf.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 <div id="ukEdit"></div>
-  @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
+  @if(resolvedConf.options.showBackButtons) {
     <div>
-      <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+      <a id="back-link" class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>
   }
 
   @alfErrorSummary(
-    messages("common.error.text"), editForm
+   messageConstants.errorText, editForm
   )
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2().labels.editPageLabels.heading}</h1>
+  <h1 class="form-title heading-large" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
   @helpers.form(routes.AddressLookupController.handleUkEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line1"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line1Label,
+          '_label -> resolvedConf.labels.editPageLabels.line1Label,
           '_inputClass -> "form-control--block input--medium")
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line2"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line2Label,
+          '_label -> resolvedConf.labels.editPageLabels.line2Label,
           '_inputClass -> "form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         editForm("line3"),
-        '_label -> journeyData.resolveConfigV2().labels.editPageLabels.line3Label,
+        '_label -> resolvedConf.labels.editPageLabels.line3Label,
         '_inputClass -> "form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("town"),
-          '_label -> journeyData.resolveConfigV2().labels.editPageLabels.townLabel,
+          '_label -> resolvedConf.labels.editPageLabels.townLabel,
           '_inputClass -> "form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         editForm("postcode"),
-        '_label -> messages("ukmode.postcode.label"),
+        '_label -> messageConstants.ukModePostcodeLabel,
         '_inputClass -> "form-control--block input--small"
         )
       </div>
       <div class="form-field">
-        <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2().labels.editPageLabels.submitLabel}</button>
+        <button class="button" type="submit" id="continue">@{resolvedConf.labels.editPageLabels.submitLabel}</button>
       </div>
     </fieldset>
   }

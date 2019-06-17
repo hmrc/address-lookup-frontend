@@ -58,7 +58,7 @@ object TestConstants {
     val editAddressLinkText = Some("editAddressLinkText")
   }
 
-  object Edit {
+  object EditConst {
     val title = Some("editTitle")
     val heading = Some("editHeading")
     val line1 = Some("editLine1")
@@ -115,8 +115,8 @@ object TestConstants {
     Select.proposalListLabel, Select.submitLabel, Select.proposalListLimit, Select.showSearchagainLink,
     Select.searchAgainLinkText, Select.editAddressLinkText))
 
-  val fullV1EditConfig = Some(EditPage(Edit.title, Edit.heading, Edit.line1, Edit.line2, Edit.line3, Edit.town,
-    Edit.postcode, Edit.country, Edit.submit))
+  val fullV1EditConfig = Some(EditPage(EditConst.title, EditConst.heading, EditConst.line1, EditConst.line2, EditConst.line3, EditConst.town,
+    EditConst.postcode, EditConst.country, EditConst.submit))
 
   val fullV1ConfirmConfig = Some(ConfirmPage(Confirm.title, Confirm.heading, Confirm.showSubHeading, Confirm.infoSubheading,
     Confirm.infoMessage, Confirm.submitLabel, Confirm.showSearchAgainLink, Confirm.searchAgainLinkText, Confirm.showChangeLink,
@@ -156,8 +156,8 @@ object TestConstants {
   val fullV2LookupLabels = Some(LookupPageLabels(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode,
     Lookup.submit, Lookup.noResultsFound, Lookup.limitExceeded, Lookup.enterManually))
 
-  val fullV2EditLabels = Some(EditPageLabels(Edit.title, Edit.heading, Edit.line1, Edit.line2, Edit.line3, Edit.town,
-    Edit.postcode, Edit.country, Edit.submit))
+  val fullV2EditLabels = Some(EditPageLabels(EditConst.title, EditConst.heading, EditConst.line1, EditConst.line2, EditConst.line3, EditConst.town,
+    EditConst.postcode, EditConst.country, EditConst.submit))
 
   val fullV2ConfirmLabels = Some(ConfirmPageLabels(Confirm.title, Confirm.heading, Confirm.infoSubheading,
     Confirm.infoMessage, Confirm.submitLabel, Confirm.searchAgainLinkText, Confirm.changeLinkText, Confirm.confirmChangeText))

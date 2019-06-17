@@ -4,36 +4,40 @@
 
 @import v2.main_template
 
-@(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit request: Request[_], messages: Messages)
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@main_template(title = messages("too.many.results.title.text"), journeyData = Some(journeyData)) {
+@(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+
+@main_template(title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData)) {
 
 @if(journeyData.resolveConfigV2().options.showBackButtons) {
     <div>
-        <a class="back-link" href="javascript:history.back()">@messages("common.back.text")</a>
+        <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>
     }
 
     <h1 class="form-title heading-xlarge" id="pageHeading">
         @{if(firstLookup) {
-            messages("too.many.results.text")
+            messageConstants.tooManyResultsText
         } else {
-            messages("too.many.cannot.find.text")
+            messageConstants.cannotFindText
         }}
     </h1>
 
-    <p>@messages("too.many.you.entered.text")</p>
+    <p>@messageConstants.youEntered</p>
     <ul class="list list-bullet">
-        <li>@{lookup.postcode} @messages("common.for.postcode.text")</li>
-        <li>@{lookup.filter.fold(messages("too.many.nothing.text"))(filter => s"'${filter}' ${messages("too.many.name.number.text")}")}</li>
+        <li>@{lookup.postcode} @messageConstants.forPostcode</li>
+        <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'${filter}' ${messageConstants.nameNumberText}")}</li>
 
     </ul>
     </br>
 
     <div class="form-group">
-        <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messages("too.many.another.search.text")</button></a>
+        <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messageConstants.anotherSearchText</button></a>
     </div>
 
-    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messages("results.manual.entry.text")</a>
+    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
 
 }

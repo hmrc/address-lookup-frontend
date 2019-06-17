@@ -492,8 +492,7 @@ class AddressLookupControllerSpec
   }
 
   "confirm" should {
-
-    "redirect to lookup if selected address doesnt exist" in new Scenario(
+    "redirect to lookup if selected address doesn't exist" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
         selectedAddress = None
       ))
@@ -501,29 +500,101 @@ class AddressLookupControllerSpec
       val res = controller.confirm("foo").apply(req)
       await(res).header.headers(HeaderNames.LOCATION) mustBe routes.AddressLookupController.lookup("foo").url
     }
-    "allow confirmChangeText to be configured" in new Scenario(
-      journeyDataV2 = Map("foo" -> JourneyDataV2(
-        config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
-        selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
-      ))
-    ) {
-      val res = controller.confirm("foo").apply(req)
-      val html = contentAsString(res).asBodyFragment
-      html should include element withAttrValue("id", "confirmChangeText")
+    "display English content" when {
+      "allow confirmChangeText to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> JourneyDataV2(
+          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
+        ))
+      ) {
+        val res = controller.confirm("foo").apply(req)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withAttrValue("id", "confirmChangeText")
+      }
+      "render address with blank string in lines correctly" in new Scenario(
+        journeyDataV2 = Map("foo" -> JourneyDataV2(
+          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
+        ))
+      ) {
+        val res = controller.confirm("foo").apply(req)
+        val html = contentAsString(res).asBodyFragment
+        html.getElementById("line1").html mustBe "line1"
+        html.getElementById("line2").html mustBe ""
+        html.getElementById("line3").html mustBe "line3"
+        intercept[Exception](html.getElementById("line0").html)
+        html.getElementById("postCode").html mustBe "ZZ11 1ZZ"
+      }
     }
-    "render address with blank string in lines correctly" in new Scenario(
-      journeyDataV2 = Map("foo" -> JourneyDataV2(
-        config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
-        selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
-      ))
-    ) {
-      val res = controller.confirm("foo").apply(req)
-      val html = contentAsString(res).asBodyFragment
-      html.getElementById("line1").html mustBe "line1"
-      html.getElementById("line2").html mustBe ""
-      html.getElementById("line3").html mustBe "line3"
-      intercept[Exception](html.getElementById("line0").html)
-      html.getElementById("postCode").html mustBe "ZZ11 1ZZ"
+    "display Welsh content" when {
+      "allow confirmChangeText to be configured" in new Scenario(
+        journeyDataV2 = Map("foo" -> JourneyDataV2(
+          config = JourneyConfigV2(
+            version = 2,
+            options = JourneyOptions(
+              continueUrl = "continue",
+              confirmPageConfig = Some(ConfirmPageConfig(
+                showConfirmChangeText = Some(true)
+              ))
+            ),
+            labels = Some(JourneyLabels(
+               cy = Some(LanguageLabels(
+                 confirmPageLabels = Some(ConfirmPageLabels(
+                   confirmChangeText = Some("Welsh Content")
+                 ))
+               ))
+            ))
+          ),
+          selectedAddress = Some(ConfirmableAddress(
+            auditRef = "",
+            id = Some("GB1234567890"),
+            address = ConfirmableAddressDetails(
+              lines = Some(List("line1", "line2")),
+              postcode = Some("ZZ11 1ZZ")
+            )
+          ))
+        ))
+      ) {
+        val res = controller.confirm("foo").apply(reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html should include element withAttrValue("id", "confirmChangeText")
+      }
+      "render address with blank string in lines correctly" in new Scenario(
+        journeyDataV2 = Map("foo" -> JourneyDataV2(
+          config = JourneyConfigV2(
+            version = 2,
+            options = JourneyOptions(
+              continueUrl = "continue",
+              confirmPageConfig = Some(ConfirmPageConfig(
+                showConfirmChangeText = Some(true)
+              ))
+            ),
+            labels = Some(JourneyLabels(
+              cy = Some(LanguageLabels(
+                confirmPageLabels = Some(ConfirmPageLabels(
+                  confirmChangeText = Some("I confirm")
+                ))
+              ))
+            ))
+          ),
+          selectedAddress = Some(ConfirmableAddress(
+            auditRef = "",
+            id = Some("GB1234567890"),
+            address = ConfirmableAddressDetails(
+              lines = Some(List("cyLine1", "", "cyLine3")),
+              postcode = Some("ZZ11 1ZZ")
+            )
+          ))
+        ))
+      ) {
+        val res = controller.confirm("foo").apply(reqWelsh)
+        val html = contentAsString(res).asBodyFragment
+        html.getElementById("line1").html mustBe "cyLine1"
+        html.getElementById("line2").html mustBe ""
+        html.getElementById("line3").html mustBe "cyLine3"
+        intercept[Exception](html.getElementById("line0").html)
+        html.getElementById("postCode").html mustBe "ZZ11 1ZZ"
+      }
     }
   }
 

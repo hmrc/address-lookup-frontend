@@ -5,6 +5,7 @@ object MessageConstants {
   sealed trait MessageConstants {
     def home: String
     def back: String
+    def forPostcode: String
 
     def timeoutSeconds: String
     def timeoutMinutes: String
@@ -24,6 +25,14 @@ object MessageConstants {
     def errorText: String
     def noResults: String
     def differentSearch: String
+    def tooManyResultsText: String
+    def cannotFindText: String
+    def anotherSearchText: String
+    def nothingText: String
+    def nameNumberText: String
+    def youEntered: String
+    def tooManyResultsManualLink: String
+    def noResultsFoundTitle: String
 
     def ukModePostcodeLabel: String
 
@@ -40,6 +49,7 @@ object MessageConstants {
   object EnglishMessageConstants extends MessageConstants {
     val home = "Home"
     val back = "Back"
+    val forPostcode = "for postcode"
 
     val timeoutSeconds = "seconds"
     val timeoutMinutes = "minutes"
@@ -70,11 +80,20 @@ object MessageConstants {
     val errorText = "This page has errors"
     val noResults = "We could not find a match with"
     val differentSearch = "Try a different name or number"
+    val tooManyResultsText = "There are too many results"
+    val noResultsFoundTitle = "No results found"
+    val cannotFindText = "We couldn't find any results for that property name or number"
+    val anotherSearchText = "Try a new search"
+    val nothingText = "nothing for property name or number"
+    val nameNumberText = "for name or number"
+    val youEntered = "You entered:"
+    val tooManyResultsManualLink = "Enter the address manually"
   }
 
   object WelshMessageConstants extends MessageConstants {
     val home = "Cartref"
     val back = "Yn ôl"
+    val forPostcode = "am y cod post"
 
     val timeoutSeconds = "eiliad"
     val timeoutMinutes = "o funudau"
@@ -96,6 +115,14 @@ object MessageConstants {
     val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
     val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
     val ukModePostcodeLabel = "Cod post y DU (dewisol)"
+    val tooManyResultsText = "Mae yna ormod o ganlyniadau"
+    val noResultsFoundTitle = "Dim canlyniadau wedi’u darganfod"
+    val cannotFindText = "Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw"
+    val anotherSearchText = "Rhowch gynnig ar chwiliad newydd"
+    val nothingText = "ddim byd ar gyfer enw neu rif eiddo"
+    val nameNumberText = "ar gyfer enw neu rif"
+    val youEntered = "Nodoch:"
+    val tooManyResultsManualLink = "Nodwch y cyfeiriad â llaw"
 
     val editPageAddressLine1MaxErrorMessage = "Nodwch linell gyntaf y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
     val editPageAddressLine2MaxErrorMessage = "Nodwch ail linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"

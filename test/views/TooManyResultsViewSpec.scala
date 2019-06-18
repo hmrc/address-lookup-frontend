@@ -1,5 +1,6 @@
 package views
 
+import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 import model.{JourneyConfigDefaults, JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -32,6 +33,23 @@ class TooManyResultsViewSpec extends ViewSpec {
     val back = "Back"
   }
 
+  object welshTooManyResultsMessages {
+    val title = "Dim canlyniadau wedi’u darganfod"
+    val heading1 = "Mae yna ormod o ganlyniadau"
+    val heading2 = "Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw"
+
+    def bullet1(postcode: String) = s"$postcode am y cod post"
+
+    val bullet2NoFilter = "ddim byd ar gyfer enw neu rif eiddo"
+
+    def bullet2WithFilter(filter: String) = s"'$filter' ar gyfer enw neu rif"
+
+    val line1 = "Nodoch:"
+    val button = "Rhowch gynnig ar chwiliad newydd"
+
+    val back = "Yn ôl"
+  }
+
   def journeyData(showBackButtons: Boolean) = JourneyDataV2(
     JourneyConfigV2(
       2,
@@ -42,7 +60,7 @@ class TooManyResultsViewSpec extends ViewSpec {
     )
   )
 
-  "The 'Too Many Results' page" should {
+  "The English 'Too Many Results' page" should {
     "be rendered" when {
       "the back buttons are enabled in the journey config" when {
         "no filter has been entered" when {
@@ -54,7 +72,8 @@ class TooManyResultsViewSpec extends ViewSpec {
                 None,
                 testPostCode
               ),
-              firstLookup = true
+              firstLookup = true,
+              isWelsh = false
             ).body)
 
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
@@ -77,7 +96,8 @@ class TooManyResultsViewSpec extends ViewSpec {
                 Some(testFilterValue),
                 testPostCode
               ),
-              firstLookup = false
+              firstLookup = false,
+              isWelsh = false
             ).body)
 
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
@@ -102,7 +122,8 @@ class TooManyResultsViewSpec extends ViewSpec {
                 None,
                 testPostCode
               ),
-              firstLookup = true
+              firstLookup = true,
+              isWelsh = false
             ).body)
 
             doc.getBackLinkText shouldBe empty
@@ -125,7 +146,8 @@ class TooManyResultsViewSpec extends ViewSpec {
                 Some(testFilterValue),
                 testPostCode
               ),
-              firstLookup = false
+              firstLookup = false,
+              isWelsh = false
             ).body)
 
             doc.getBackLinkText shouldBe empty
@@ -141,4 +163,109 @@ class TooManyResultsViewSpec extends ViewSpec {
       }
     }
   }
+
+  "The Welsh 'Too Many Results' page" should {
+    "be rendered" when {
+      "the back buttons are enabled in the journey config" when {
+        "no filter has been entered" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = true),
+              lookup = model.Lookup(
+                None,
+                testPostCode
+              ),
+              firstLookup = true,
+              isWelsh = true
+            ).body)
+
+            doc.getBackLinkText shouldBe welshTooManyResultsMessages.back
+            doc.title shouldBe welshTooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading1
+            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
+            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          }
+        }
+
+        "a filter has been entered" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = true),
+              lookup = model.Lookup(
+                Some(testFilterValue),
+                testPostCode
+              ),
+              firstLookup = false,
+              isWelsh = true
+            ).body)
+
+            doc.getBackLinkText shouldBe welshTooManyResultsMessages.back
+            doc.title shouldBe welshTooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading2
+            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
+            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          }
+        }
+      }
+
+      "the back buttons are not enabled in the journey config" when {
+        "no filter has been entered" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = false),
+              lookup = model.Lookup(
+                None,
+                testPostCode
+              ),
+              firstLookup = true,
+              isWelsh = true
+            ).body)
+
+            doc.getBackLinkText shouldBe empty
+            doc.title shouldBe welshTooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading1
+            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
+            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          }
+        }
+
+        "a filter has been entered" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = false),
+              lookup = model.Lookup(
+                Some(testFilterValue),
+                testPostCode
+              ),
+              firstLookup = false,
+              isWelsh = true
+            ).body)
+
+            doc.getBackLinkText shouldBe empty
+            doc.title shouldBe welshTooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading2
+            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
+            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          }
+        }
+      }
+    }
+  }
+
 }

@@ -803,6 +803,17 @@ object AddressRecordConstants {
     )
   )
 
+  def addressResultsModelListBySize(numberOfRepeats: Int) : List[ProposedAddress] =
+    (1 to numberOfRepeats).map (n =>
+      ProposedAddress(
+        addressId = testAddressIdRaw,
+        postcode = testPostCode,
+        lines = List(testAddressLine1, testAddressLine2),
+        town = Some(testAddressTown),
+        country = testCountry
+      ))
+    .toList
+
   def addressResultsListBySize(numberOfRepeats: Int): JsValue = {
     Json.toJson(
       (1 to numberOfRepeats) map {
@@ -812,7 +823,7 @@ object AddressRecordConstants {
             lines = Seq(testAddressLine1, testAddressLine2),
             town = testAddressTown,
             postcode = testPostCode,
-            country = Country("GB", "United Kingdom")
+            country = testCountry
           )
       } toList
     )

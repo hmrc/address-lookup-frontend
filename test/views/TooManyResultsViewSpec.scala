@@ -29,7 +29,6 @@ class TooManyResultsViewSpec extends ViewSpec {
 
     val line1 = "You entered:"
     val button = "Try a new search"
-
     val back = "Back"
   }
 
@@ -46,7 +45,6 @@ class TooManyResultsViewSpec extends ViewSpec {
 
     val line1 = "Nodoch:"
     val button = "Rhowch gynnig ar chwiliad newydd"
-
     val back = "Yn ôl"
   }
 

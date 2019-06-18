@@ -10,7 +10,7 @@
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
 
-@main_template(title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData)) {
+@main_template(title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
 @if(journeyData.resolveConfigV2().options.showBackButtons) {
     <div>
@@ -39,5 +39,4 @@
     </div>
 
     <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
-
 }

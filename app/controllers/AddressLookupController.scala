@@ -58,8 +58,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
-      val formPrePopped = lookupForm.fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = getWelshContent(journeyData))))
+      val isWelsh = getWelshContent(journeyData)
+      val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
+      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = isWelsh)))
     }
   }
 
@@ -67,7 +68,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   def select(id: String) = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
-      lookupForm.bindFromRequest().fold(
+      lookupForm(isWelsh).bindFromRequest().fold(
         errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh = isWelsh)))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))

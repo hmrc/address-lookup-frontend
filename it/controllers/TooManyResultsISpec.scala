@@ -4,6 +4,8 @@ import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
 import model.JourneyConfigDefaults.EnglishConstants._
+import model.MessageConstants.WelshMessageConstants
+import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -26,6 +28,23 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
     val line1 = "You entered:"
     val button = "Try a new search"
+    val back = "back"
+  }
+
+  object welshTooManyResultsMessages {
+    val title = "Dim canlyniadau wedi’u darganfod"
+    val heading1 = "Mae yna ormod o ganlyniadau"
+    val heading2 = "Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw"
+
+    def bullet1(postcode: String) = s"$postcode am y cod post"
+
+    val bullet2NoFilter = "ddim byd ar gyfer enw neu rif eiddo"
+
+    def bullet2WithFilter(filter: String) = s"'$filter' ar gyfer enw neu rif"
+
+    val line1 = "Nodoch:"
+    val button = "Rhowch gynnig ar chwiliad newydd"
+    val back = "Yn ôl"
   }
 
   object otherPageMessages {
@@ -146,6 +165,71 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           }
         }
       }
+
+      "with default Welsh content and heading 1" when {
+        "first lookup and the journey data contains an empty CY object" in {
+          val v2Model = journeyDataV2ResultLimit.copy(
+            config = journeyDataV2ResultLimit.config.copy(
+              labels = Some(JourneyLabels(
+                cy = Some(LanguageLabels())
+              ))
+            )
+          )
+
+          stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
+          stubKeystoreSave(testJourneyId, Json.toJson(v2Model.copy(proposals = Some(addressResultsModelListBySize(51)))), OK)
+          stubGetAddressFromBEWithFilter(addressJson = addressResultsListBySize(51))
+
+          val res = buildClientLookupAddress(s"select?postcode=$testPostCode&filter=$testFilterValue")
+            .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
+            .get()
+
+          await(res).status shouldBe OK
+
+          val doc = getDocFromResponse(res)
+
+          doc.title shouldBe welshTooManyResultsMessages.title
+          doc.h1.text() shouldBe welshTooManyResultsMessages.heading1
+          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+          doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+          doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
+          doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
+          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+        }
+      }
+
+      "with default Welsh content and heading 2" when {
+        "not first lookup and the journey data contains an empty CY object" in {
+          val v2Model = journeyDataV2ResultLimit.copy(
+            config = journeyDataV2ResultLimit.config.copy(
+              labels = Some(JourneyLabels(
+                cy = Some(LanguageLabels())
+              ))
+            )
+          )
+
+          stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
+          stubKeystoreSave(testJourneyId, Json.toJson(v2Model), OK)
+          stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
+          stubGetAddressFromBEWithFilter(addressJson = Json.arr())
+
+          val res = buildClientLookupAddress(s"select?postcode=$testPostCode&filter=$testFilterValue")
+            .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
+            .get()
+
+          await(res).status shouldBe OK
+
+          val doc = getDocFromResponse(res)
+
+          doc.title shouldBe welshTooManyResultsMessages.title
+          doc.h1.text() shouldBe welshTooManyResultsMessages.heading2
+          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+          doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+          doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
+          doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
+          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+        }
+      }
     }
 
     "not be rendered" when {
@@ -199,6 +283,5 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         doc.title shouldBe otherPageMessages.noResultsPageTitle
       }
     }
-
   }
 }

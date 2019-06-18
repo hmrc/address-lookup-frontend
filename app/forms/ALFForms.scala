@@ -63,16 +63,16 @@ object ALFForms {
     )(Edit.apply)(Edit.unapply)
   )
 
-  def nonUkEditForm = Form(
+  def nonUkEditForm(isWelsh: Boolean = false) = Form(
     mapping(
       "line1" -> text
-        .verifying(constraintString256("max.address.line.1"))
-        .verifying(constraintMinLength("min.address.line.1")),
-      "line2" -> optional(text.verifying(constraintString256("max.address.line.2"))),
-      "line3" -> optional(text.verifying(constraintString256("max.address.line.3"))),
+        .verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine1MaxErrorMessage))
+        .verifying(constraintMinLength(messageConstants(isWelsh).editPageAddressLine1MinErrorMessage)),
+      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine2MaxErrorMessage))),
+      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine3MaxErrorMessage))),
       "town" -> text
-        .verifying(constraintString256("max.address.town"))
-        .verifying(constraintMinLength("min.address.town")),
+        .verifying(constraintString256(messageConstants(isWelsh).editPageTownMaxErrorMessage))
+        .verifying(constraintMinLength(messageConstants(isWelsh).editPageTownMinErrorMessage)),
       "postcode" -> default(text,""),
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)

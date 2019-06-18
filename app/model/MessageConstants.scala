@@ -14,6 +14,7 @@ object MessageConstants {
     def timeoutSignYouOut: String
     def timeoutResumeSession: String
     def timeoutInactive: String
+
     def confirmSelectedAddressError1: String
     def confirmSelectedAddressError2: String
 
@@ -21,10 +22,11 @@ object MessageConstants {
     def lookupPostcodeError: String
     def lookupFilterError: String
     def lookupFilterHint: String
-    
+
     def errorText: String
     def noResults: String
     def differentSearch: String
+
     def tooManyResultsText: String
     def cannotFindText: String
     def anotherSearchText: String
@@ -36,13 +38,18 @@ object MessageConstants {
 
     def ukModePostcodeLabel: String
 
-    val editPageAddressLine1MaxErrorMessage: String
-    val editPageAddressLine2MaxErrorMessage: String
-    val editPageAddressLine3MaxErrorMessage: String
-    val editPageTownMaxErrorMessage: String
-    val editPageAddressLine1MinErrorMessage: String
-    val editPageTownMinErrorMessage: String
-    val editPagePostcodeErrorMessage: String
+    def editPageAddressLine1MaxErrorMessage: String
+    def editPageAddressLine2MaxErrorMessage: String
+    def editPageAddressLine3MaxErrorMessage: String
+    def editPageTownMaxErrorMessage: String
+    def editPageAddressLine1MinErrorMessage: String
+    def editPageTownMinErrorMessage: String
+    def editPagePostcodeErrorMessage: String
+
+    def noResultsPageTitle: String
+    def noResultsPageHeading: String
+    def noResultsPageEnterManually: String
+    def noResultsPageDifferentPostcode: String
 
   }
 
@@ -60,14 +67,13 @@ object MessageConstants {
     val timeoutInactive = "You've been inactive for a while."
     val ukModePostcodeLabel = "UK postcode (optional)"
 
-    val editPageAddressLine1MaxErrorMessage         = "Enter a first address line using 256 characters or less"
-    val editPageAddressLine2MaxErrorMessage         = "Enter a second address line using 256 characters or less"
-    val editPageAddressLine3MaxErrorMessage         = "Enter a third address line using 256 characters or less"
-    val editPageTownMaxErrorMessage                 = "Enter a town or city using 256 characters or less"
-    val editPageAddressLine1MinErrorMessage         = "Enter first line of address"
-    val editPageTownMinErrorMessage                 = "Enter a town or city"
-
-    val editPagePostcodeErrorMessage                = "Enter a valid UK postcode"
+    val editPageAddressLine1MaxErrorMessage = "Enter a first address line using 256 characters or less"
+    val editPageAddressLine2MaxErrorMessage = "Enter a second address line using 256 characters or less"
+    val editPageAddressLine3MaxErrorMessage = "Enter a third address line using 256 characters or less"
+    val editPageTownMaxErrorMessage = "Enter a town or city using 256 characters or less"
+    val editPageAddressLine1MinErrorMessage = "Enter first line of address"
+    val editPageTownMinErrorMessage = "Enter a town or city"
+    val editPagePostcodeErrorMessage = "Enter a valid UK postcode"
 
     val confirmSelectedAddressError1 = "You have not selected any address. Please"
     val confirmSelectedAddressError2 = "search for and select your address"
@@ -80,6 +86,12 @@ object MessageConstants {
     val errorText = "This page has errors"
     val noResults = "We could not find a match with"
     val differentSearch = "Try a different name or number"
+
+    val noResultsPageTitle = "Can't find any addresses"
+    val noResultsPageHeading = "We can not find any addresses for"
+    val noResultsPageEnterManually = "Enter the address manually"
+    val noResultsPageDifferentPostcode = "Try a different postcode"
+
     val tooManyResultsText = "There are too many results"
     val noResultsFoundTitle = "No results found"
     val cannotFindText = "We couldn't find any results for that property name or number"
@@ -115,6 +127,7 @@ object MessageConstants {
     val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
     val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
     val ukModePostcodeLabel = "Cod post y DU (dewisol)"
+
     val tooManyResultsText = "Mae yna ormod o ganlyniadau"
     val noResultsFoundTitle = "Dim canlyniadau wedi’u darganfod"
     val cannotFindText = "Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw"
@@ -128,10 +141,14 @@ object MessageConstants {
     val editPageAddressLine2MaxErrorMessage = "Nodwch ail linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
     val editPageAddressLine3MaxErrorMessage = "Nodwch drydedd linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
     val editPageAddressLine1MinErrorMessage = "Nodwch linell gyntaf y cyfeiriad"
-    val editPageTownMaxErrorMessage         = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
-    val editPageTownMinErrorMessage         = "Nodwch dref neu ddinas"
-    val editPagePostcodeErrorMessage        = "Nodwch god post yn y DU sy’n ddilys"
+    val editPageTownMaxErrorMessage = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
+    val editPageTownMinErrorMessage = "Nodwch dref neu ddinas"
+    val editPagePostcodeErrorMessage = "Nodwch god post yn y DU sy’n ddilys"
 
+    val noResultsPageTitle = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
+    val noResultsPageHeading = "Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer "
+    val noResultsPageEnterManually = "Nodwch y cyfeiriad â llaw"
+    val noResultsPageDifferentPostcode = "Rhowch gynnig ar god post gwahanol"
   }
 
 }

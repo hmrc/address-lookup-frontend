@@ -66,16 +66,17 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // GET  /:id/select
   def select(id: String) = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
+      val isWelsh = getWelshContent(journeyData)
       lookupForm.bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors,isWelsh = getWelshContent(journeyData))))),
+        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh = isWelsh)))),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
           handleLookup(id, journeyData, lookup) map {
             case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
             case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) ->
               Ok(views.html.v2.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
-            case TooManyResults(addresses, firstLookup) => None -> Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
-            case NoResults => None -> Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode))
+            case TooManyResults(_, firstLookup) => None -> Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
+            case NoResults => None -> Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh = isWelsh))
           }
         }
       )

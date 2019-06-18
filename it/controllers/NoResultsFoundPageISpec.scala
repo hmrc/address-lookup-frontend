@@ -3,6 +3,7 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
+import model._
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
@@ -12,20 +13,29 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
-  object messages {
+  object EnglishContent {
     val title = "Can't find any addresses"
 
-    def heading(pc: String) = s"We can not find any addresses for $pc"
+    def heading(postcode: String) = s"We can not find any addresses for $postcode"
 
     val manualEntry = "Enter the address manually"
     val submitButton = "Try a different postcode"
   }
 
+  object WelshContent {
+    val title = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
+
+    def heading(postcode: String) = s"Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer $postcode"
+
+    val manualEntry = "Nodwch y cyfeiriad â llaw"
+    val submitButton = "Rhowch gynnig ar god post gwahanol"
+  }
+
   "No results page GET" should {
     "with the default config" should {
       "Render the 'No results' page" in {
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
-        stubKeystoreSave(testJourneyId, testConfigDefaultAsJson, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
@@ -38,8 +48,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe messages.title
-        doc.h1.text() shouldBe messages.heading(testPostCode)
+        doc.title shouldBe EnglishContent.title
+        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=back-link]") should have(
           text("Back")
@@ -47,17 +57,17 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         doc.link("enterManual") should have(
           href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
-          text(messages.manualEntry)
+          text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe messages.submitButton
+        doc.submitButton.text() shouldBe EnglishContent.submitButton
       }
     }
 
     "With full journey config model with all booleans set to true" should {
-      "Render the page with expected custom elements" in {
-        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
-        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(), OK)
+      "Render the page with expected custom English elements" in {
+        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()), OK)
+        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()), OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
@@ -70,8 +80,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe messages.title
-        doc.h1.text() shouldBe messages.heading(testPostCode)
+        doc.title shouldBe EnglishContent.title
+        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=back-link]") should have(
           text("Back")
@@ -79,19 +89,19 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         doc.link("enterManual") should have(
           href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
-          text(messages.manualEntry)
+          text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe messages.submitButton
+        doc.submitButton.text() shouldBe EnglishContent.submitButton
       }
     }
 
     "With full journey config model with top level config set to None all booleans set to true" should {
-      "Render the page with expected custom elements" in {
-        stubKeystore(testJourneyId, journeyDataWithSelectedAddressJson(
-          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
-        stubKeystoreSave(testJourneyId, journeyDataWithSelectedAddressJson(
-          fullDefaultJourneyConfigModelWithAllBooleansSet(false)), OK)
+      "Render the page with expected custom English elements" in {
+        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)), OK)
+        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)), OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
@@ -104,8 +114,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe messages.title
-        doc.h1.text() shouldBe messages.heading(testPostCode)
+        doc.title shouldBe EnglishContent.title
+        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=back-link]") should have(
           text("Back")
@@ -113,17 +123,67 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         doc.link("enterManual") should have(
           href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
-          text(messages.manualEntry)
+          text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe messages.submitButton
+        doc.submitButton.text() shouldBe EnglishContent.submitButton
+      }
+    }
+
+    "With full journey config model with top level config set to None all booleans set to true" should {
+      "Render the page with expected custom Welsh elements" in {
+        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)), OK)
+        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)), OK)
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
+
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+          .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+        val doc = getDocFromResponse(res)
+
+        res.status shouldBe OK
+
+        testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
+
+        doc.title shouldBe WelshContent.title
+        doc.h1.text() shouldBe WelshContent.heading(testPostCode)
+
+        doc.select("a[class=back-link]") should have(
+          text("Yn ôl")
+        )
+
+        doc.link("enterManual") should have(
+          href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
+          text(WelshContent.manualEntry)
+        )
+
+        doc.submitButton.text() shouldBe WelshContent.submitButton
       }
     }
 
     "With the back button disabled in config" should {
       "Render the 'No results' page without a back button" in {
-        stubKeystore(testJourneyId, testLookupConfigNoBackButtons, OK)
-        stubKeystoreSave(testJourneyId, testLookupConfigNoBackButtons, OK)
+        val testJson = Json.toJson(
+          journeyDataV2Minimal.copy(
+            JourneyConfigV2(
+              version = 2,
+              options = JourneyOptions(
+                continueUrl = testContinueUrl,
+                showBackButtons = Some(false)
+              ),
+              labels = Some(JourneyLabels(
+                en = Some(LanguageLabels()),
+                cy = Some(LanguageLabels())
+              ))
+            )
+          )
+        )
+
+        stubKeystore(testJourneyId, testJson, OK)
+        stubKeystoreSave(testJourneyId, testJson, OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
@@ -134,8 +194,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.title shouldBe messages.title
-        doc.h1.text() shouldBe messages.heading(testPostCode)
+        doc.title shouldBe EnglishContent.title
+        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=back-link]") should not have (
           text("Back")
@@ -143,10 +203,10 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         doc.link("enterManual") should have(
           href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
-          text(messages.manualEntry)
+          text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe messages.submitButton
+        doc.submitButton.text() shouldBe EnglishContent.submitButton
       }
     }
   }

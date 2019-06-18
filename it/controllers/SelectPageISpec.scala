@@ -5,6 +5,7 @@ import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
 import model.JourneyConfigDefaults.EnglishConstants._
+import model.JourneyConfigDefaults.WelshConstants
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -139,9 +140,50 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
     }
+    "be shown with welsh content" when {
+      "the journey was setup with welsh enabled and the welsh cookie is present" in {
+        val addressAmount = 50
+        val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
+        stubGetAddressFromBE(addressJson = testResultsList)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+          .withHeaders(
+            HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"),
+            "Csrf-Token" -> "nocheck")
+          .get()
+
+        val doc = getDocFromResponse(res)
+        await(res).status shouldBe OK
+
+        doc.title() shouldBe WelshConstants.SELECT_PAGE_TITLE
+        doc.h1.text() shouldBe WelshConstants.SELECT_PAGE_HEADING
+      }
+    }
   }
 
   "The select page POST" should {
+    "Display the select page in welsh" when {
+      "no option was selected, welsh is enabled in the journey and the welsh cookie is present" in {
+        val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
+        stubGetAddressFromBE(addressJson = testResultsList)
+        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
+
+        val res = buildClientLookupAddress(path = "select")
+          .withHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+          .post(Map(
+            "csrfToken" -> Seq("xxx-ignored-xxx")
+          ))
+
+        res.status shouldBe BAD_REQUEST
+
+        val doc = getDocFromResponse(res)
+
+        doc.title shouldBe WelshConstants.SELECT_PAGE_TITLE
+      }
+    }
     "Redirects to Confirm page if option is selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
       stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)

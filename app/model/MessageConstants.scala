@@ -51,6 +51,10 @@ object MessageConstants {
     def noResultsPageEnterManually: String
     def noResultsPageDifferentPostcode: String
 
+    val errorRequired: String
+    val errorMin: Int => String
+    val errorMax: Int => String
+
   }
 
   object EnglishMessageConstants extends MessageConstants {
@@ -74,6 +78,10 @@ object MessageConstants {
     val editPageAddressLine1MinErrorMessage = "Enter first line of address"
     val editPageTownMinErrorMessage = "Enter a town or city"
     val editPagePostcodeErrorMessage = "Enter a valid UK postcode"
+
+    val errorRequired = "This field is required"
+    val errorMin: Int => String = min => s"Minimum length is $min"
+    val errorMax: Int => String = max => s"Maximum length is $max"
 
     val confirmSelectedAddressError1 = "You have not selected any address. Please"
     val confirmSelectedAddressError2 = "search for and select your address"
@@ -149,6 +157,12 @@ object MessageConstants {
     val noResultsPageHeading = "Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer "
     val noResultsPageEnterManually = "Nodwch y cyfeiriad â llaw"
     val noResultsPageDifferentPostcode = "Rhowch gynnig ar god post gwahanol"
+
+    //TODO: NEED WELSH
+    val errorRequired = "This field is required"
+    val errorMin: Int => String = min => s"Minimum length is $min"
+    val errorMax: Int => String = max => s"Maximum length is $max"
+
   }
 
 }

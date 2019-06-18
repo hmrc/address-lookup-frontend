@@ -74,7 +74,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           handleLookup(id, journeyData, lookup) map {
             case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
             case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) ->
-              Ok(views.html.v2.select(id, journeyData, selectForm, Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup))
+              Ok(views.html.v2.select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), Some(lookupWithFormattedPostcode), firstLookup, isWelsh = isWelsh))
             case TooManyResults(_, firstLookup) => None -> Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup))
             case NoResults => None -> Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh = isWelsh))
           }
@@ -102,15 +102,16 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   // POST /:id/select
   def handleSelect(id: String) = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
-      val bound = selectForm.bindFromRequest()
+      val isWelsh = getWelshContent(journeyData)
+      val bound = selectForm(isWelsh).bindFromRequest()
       bound.fold(
-        errors => (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), None, firstSearch = true))),
+        errors => (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), None, firstSearch = true, isWelsh = isWelsh))),
         selection => {
           journeyData.proposals match {
             case Some(props) => {
               props.find(_.addressId == selection.addressId) match {
                 case Some(addr) => (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-                case None => (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), None, firstSearch = true)))
+                case None => (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), None, firstSearch = true, isWelsh = isWelsh)))
               }
             }
             case None => (None, Redirect(routes.AddressLookupController.lookup(id)))

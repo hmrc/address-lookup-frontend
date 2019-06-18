@@ -3,11 +3,12 @@ package forms
 
 import controllers.Confirmed
 import model.MessageConstants._
-import model.{Edit, Lookup, Select}
+import model.{Edit, Lookup, MessageConstants, Select}
 import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{default, ignored, mapping, optional, text}
+import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.address.uk.Postcode
+import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 
 object ALFForms {
@@ -21,12 +22,32 @@ object ALFForms {
     )(Lookup.apply)(Lookup.unapply)
   )
 
-  val selectForm = Form(
+  val minimumLength: Int = 1
+  val maximumLength: Int = 255
+
+  def minimumConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
+    if(value.length >= minimumLength) Valid else Invalid(messageConstants(isWelsh).errorMin(minimumLength))
+  )
+
+  def maximumConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
+    if(value.length <= maximumLength) Valid else Invalid(messageConstants(isWelsh).errorMax(maximumLength))
+  )
+
+  def nonEmptyConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
+    if(value.nonEmpty) Valid else Invalid(messageConstants(isWelsh).errorRequired)
+  )
+
+  def selectForm(isWelsh: Boolean = false) = Form(
     mapping(
-      "addressId" -> text(1, 255)
+      "addressId" -> default(text, "").verifying(StopOnFirstFail(
+        nonEmptyConstraint(isWelsh),
+        minimumConstraint(isWelsh),
+        maximumConstraint(isWelsh)
+      ))
     )(Select.apply)(Select.unapply)
   )
-    val constraintString256 = (msg: String)  => new Constraint[String](Some("length.max"),Seq.empty)(s => if(s.length < 256) {
+
+  val constraintString256 = (msg: String)  => new Constraint[String](Some("length.max"),Seq.empty)(s => if(s.length < 256) {
     Valid
   } else {
     Invalid(msg)

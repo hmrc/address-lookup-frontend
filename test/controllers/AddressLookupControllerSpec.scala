@@ -6,21 +6,24 @@ import com.gu.scalatest.JsoupShouldMatchers
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
+import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
+import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 import model._
+import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
-import play.api.mvc.Cookie
+import play.api.mvc.{Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestConstants._
+import utils.TestConstants.{Lookup => _, _}
 import utils.V2ModelConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -467,26 +470,111 @@ class AddressLookupControllerSpec
       header(HeaderNames.LOCATION, res) must be(Some(routes.AddressLookupController.confirm("foo").url))
     }
 
-    "display a list of proposals given postcode and filter parameters" in new Scenario(
+    "display a list of  english proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"), ProposedAddress("GB1234567891", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
+      html should include element withClass("form-title").withValue("Choose the address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
     }
+
+    "display a list of welsh proposals given postcode and filter parameters" in new Scenario(
+      journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2),
+      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ"), ProposedAddress("GB1234567891", "ZZ11 1ZZ"))
+    ) {
+      val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val html = contentAsString(res).asBodyFragment
+      html should include element withClass("form-title").withValue("Dewiswch y cyfeiriad")
+      html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
+      html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
+      html should include element withName("button").withAttrValue("type", "submit").withValue("Yn eich blaen")
+    }
+
   }
 
   "handle select" should {
 
-    "redirect to confirm page" in new Scenario(
+    "redirect to confirm page when a proposal is selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
-      val res = controller.handleSelect("foo").apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
+      val res: Future[Result] = controller.handleSelect("foo").apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
       status(res) must be(303)
       header(HeaderNames.LOCATION, res) must be(Some(routes.AddressLookupController.confirm("foo").url))
+    }
+
+    "redirect to the lookup page when there are no proposals in the journey" in new Scenario(
+      journeyDataV2 = Map("foo" -> basicJourneyV2(None))
+    ) {
+      val res: Future[Result] = controller.handleSelect("foo")(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
+      status(res) mustBe 303
+      redirectLocation(res) mustBe Some(routes.AddressLookupController.lookup("foo").url)
+    }
+
+    "display the select page in english" when {
+      "the form had an error" when {
+        "nothing was selected" in new Scenario(
+          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
+        ) {
+          val res: Future[Result] = controller.handleSelect("foo")(req.withFormUrlEncodedBody("addressId" -> ""))
+          status(res) mustBe 400
+          val html: Element = contentAsString(res).asBodyFragment
+          html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+          html should include element withAttrValue("id", "addressId-error-summary").withValue(EnglishMessageConstants.errorRequired)
+        }
+        "something was selected which was more than the maximum length allowed" in new Scenario(
+          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
+        ) {
+          val res: Future[Result] = controller.handleSelect("foo")(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
+          status(res) mustBe 400
+          val html: Element = contentAsString(res).asBodyFragment
+          html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+          html should include element withAttrValue("id", "addressId-error-summary").withValue(EnglishMessageConstants.errorMax(255))
+        }
+      }
+      "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+      ) {
+        val res: Future[Result] = controller.handleSelect("foo")(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
+        status(res) mustBe 400
+        val html: Element = contentAsString(res).asBodyFragment
+        html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+      }
+    }
+
+    "display the select page in welsh" when {
+      val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
+      "the form had an error and welsh is enabled" when {
+        "nothing was selected" in new Scenario(
+          journeyDataV2 = Map("foo" -> basicWelshJourney)
+        ) {
+          val res: Future[Result] = controller.handleSelect("foo")(reqWelsh.withFormUrlEncodedBody("addressId" -> ""))
+          status(res) mustBe 400
+          val html: Element = contentAsString(res).asBodyFragment
+          html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+          html should include element withAttrValue("id", "addressId-error-summary").withValue(WelshMessageConstants.errorRequired)
+        }
+        "something was selected which was more than the maximum length allowed" in new Scenario(
+          journeyDataV2 = Map("foo" -> basicWelshJourney)
+        ) {
+          val res: Future[Result] = controller.handleSelect("foo")(reqWelsh.withFormUrlEncodedBody("addressId" -> "A" * 256))
+          status(res) mustBe 400
+          val html: Element = contentAsString(res).asBodyFragment
+          html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+          html should include element withAttrValue("id", "addressId-error-summary").withValue(WelshMessageConstants.errorMax(255))
+        }
+      }
+      "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
+        journeyDataV2 = Map("foo" -> basicWelshJourney.copy(proposals = Some(Seq(ProposedAddress("GV1234567890", "AA1 BB2")))))
+      ) {
+        val res: Future[Result] = controller.handleSelect("foo")(reqWelsh.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
+        status(res) mustBe 400
+        val html: Element = contentAsString(res).asBodyFragment
+        html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+      }
     }
 
   }

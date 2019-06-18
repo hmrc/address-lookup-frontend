@@ -7,7 +7,7 @@ import play.api.data.validation.{Invalid, Valid}
 
 class ALFFormsSpec extends WordSpec with MustMatchers{
 
-  val editFormNonuk = ALFForms.nonUkEditForm
+  val editFormNonuk = ALFForms.nonUkEditForm()
   val editFormUk = ALFForms.ukEditForm()
 
   val chars257 = List.fill(257)("A").reduce(_ + _)

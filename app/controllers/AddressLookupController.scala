@@ -41,7 +41,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  def countries: Seq[(String, String)] = countryService.findAll().map { c =>
+  def countries(welshFlag: Boolean = false): Seq[(String, String)] = countryService.findAll(welshFlag).map { c =>
     (c.code -> c.name)
   }
 
@@ -140,7 +140,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
             (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
 
           } else {
-            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm.fill(editAddress), allowedSeqCountries(countries))))
+            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)),isWelsh = isWelsh)))
           }
       }
   }
@@ -156,7 +156,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           val isWelsh = getWelshContent(journeyData)
           val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
             validatedForm.fold(
-            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes), isWelsh))),
+            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh))),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
 
       )
@@ -168,9 +168,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     implicit req =>
       withJourneyV2(id) {
         journeyData =>
-          val validatedForm = isValidPostcode(nonUkEditForm.bindFromRequest())
+          val isWelsh = getWelshContent(journeyData)
+          val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest())
           validatedForm.fold(
-            errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries, journeyData.config.options.allowedCountryCodes)))),
+            errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
           )
       }

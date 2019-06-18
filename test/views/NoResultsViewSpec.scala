@@ -15,7 +15,7 @@ class NoResultsViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages = app.injector.instanceOf[MessagesApi]
 
-  object Content {
+  object EnglishContent {
     val title = "Can't find any addresses"
     def heading(postcode: String) = s"We can not find any addresses for $postcode"
     val back = "Back"
@@ -23,31 +23,53 @@ class NoResultsViewSpec extends ViewSpec {
     val enterManualLink = "Enter the address manually"
   }
 
+  object WelshContent {
+    val title = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
+    def heading(postcode: String) = s"Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer $postcode"
+    val back = "Yn ôl"
+    val tryAgainButton = "Rhowch gynnig ar god post gwahanol"
+    val enterManualLink = "Nodwch y cyfeiriad â llaw"
+  }
+
   "The 'No results' view" when {
-    "rendered with the default config" should {
+    "rendered with the default English config" should {
       "Render the view and display the Back button" in {
         val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2Minimal, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
 
-        doc.title shouldBe Content.title
-        doc.getBackLinkText shouldBe Content.back
-        doc.getH1ElementAsText shouldBe Content.heading(testPostCode)
-        doc.getButtonContentAsText shouldBe Content.tryAgainButton
-        doc.getALinkText("enterManual") shouldBe Content.enterManualLink
+        doc.title shouldBe EnglishContent.title
+        doc.getBackLinkText shouldBe EnglishContent.back
+        doc.getH1ElementAsText shouldBe EnglishContent.heading(testPostCode)
+        doc.getButtonContentAsText shouldBe EnglishContent.tryAgainButton
+        doc.getALinkText("enterManual") shouldBe EnglishContent.enterManualLink
         doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url
       }
     }
 
-    "rendered with custom config" should {
+    "rendered with custom English config" should {
       "Render the view without the Back button" in {
         val noResultsView = no_results(id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
 
-        doc.title shouldBe Content.title
+        doc.title shouldBe EnglishContent.title
         doc.getBackLinkText shouldBe empty
-        doc.getH1ElementAsText shouldBe Content.heading(testPostCode)
-        doc.getButtonContentAsText shouldBe Content.tryAgainButton
-        doc.getALinkText("enterManual") shouldBe Content.enterManualLink
+        doc.getH1ElementAsText shouldBe EnglishContent.heading(testPostCode)
+        doc.getButtonContentAsText shouldBe EnglishContent.tryAgainButton
+        doc.getALinkText("enterManual") shouldBe EnglishContent.enterManualLink
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url
+      }
+    }
+
+    "rendered with the default Welsh config" should {
+      "Render the view and display the Back button" in {
+        val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimal, postcode = testPostCode, isWelsh = true)
+        val doc = Jsoup.parse(noResultsView.body)
+
+        doc.title shouldBe WelshContent.title
+        doc.getBackLinkText shouldBe WelshContent.back
+        doc.getH1ElementAsText shouldBe WelshContent.heading(testPostCode)
+        doc.getButtonContentAsText shouldBe WelshContent.tryAgainButton
+        doc.getALinkText("enterManual") shouldBe WelshContent.enterManualLink
         doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url
       }
     }

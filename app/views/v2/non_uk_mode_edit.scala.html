@@ -10,7 +10,7 @@
 @messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
 @resolvedConfig = @{journeyData.resolveConfigV2(isWelsh)}
 
-@main_template(title = resolvedConfig.labels.editPageLabels.title, journeyData = Some(journeyData)) {
+@main_template(title = resolvedConfig.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
 <div id="nonUkEdit"></div>
   @if(resolvedConfig.options.showBackButtons) {

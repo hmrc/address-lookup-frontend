@@ -10,7 +10,7 @@
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
 
-@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData)) {
+@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
   @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
     <div>

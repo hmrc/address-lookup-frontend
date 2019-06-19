@@ -15,10 +15,10 @@ object ALFForms {
 
   def messageConstants(isWelsh:Boolean): MessageConstants = if(isWelsh) WelshMessageConstants else EnglishMessageConstants
 
-  val lookupForm = Form(
+  def lookupForm(isWelsh: Boolean = false) = Form(
     mapping(
-      "filter" -> optional(text.verifying("house.fewer.text", txt => txt.length < 256)),
-      "postcode" -> text.verifying("postcode.incomplete.text", p => Postcode.cleanupPostcode(p).isDefined)
+      "filter" -> optional(text.verifying(messageConstants(isWelsh).lookupFilterError, txt => txt.length < 256)),
+      "postcode" -> text.verifying(messageConstants(isWelsh).lookupPostcodeError, p => Postcode.cleanupPostcode(p).isDefined)
     )(Lookup.apply)(Lookup.unapply)
   )
 

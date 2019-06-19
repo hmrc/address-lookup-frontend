@@ -16,7 +16,8 @@ object FrontendBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "frontend-bootstrap" % "12.8.0",
     "uk.gov.hmrc" %% "address-reputation-store" % "2.37.0",
     "uk.gov.hmrc" %% "http-caching-client" % "7.0.0",
-    "io.spray" %% "spray-http" % "1.3.4"
+    "io.spray" %% "spray-http" % "1.3.4",
+    "uk.gov.hmrc" %% "play-language" % "3.4.0"
   )
 
   def test(scope: String = "test") = Seq(

@@ -16,7 +16,8 @@
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
   scriptElem: Option[Html] = None,
-  welshEnabled: Boolean = false)(implicit request: Request[_], messages: Messages)
+  welshEnabled: Boolean = false
+)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(welshEnabled) WelshMessageConstants else EnglishMessageConstants}
 
@@ -99,7 +100,8 @@
         betaBanner = phaseBanner,
         includeGridWrapper = false,
         serviceInfoContent = Some(serviceInfoContent),
-        includeHMRCBranding = journeyData.map(_.resolveConfigV2(welshEnabled).options.includeHMRCBranding).getOrElse(true)
+        includeHMRCBranding = journeyData.map(_.resolveConfigV2(welshEnabled).options.includeHMRCBranding).getOrElse(true),
+        setLang = {if(welshEnabled) "cy" else "en"}
     )
 }
 

@@ -106,6 +106,16 @@
 }
 
 @mainContentHeader = {
+    @if(journeyData exists (_.welshEnabled)) {
+        @views.html.language_selection(
+            Map(
+                "english" -> Lang("en"),
+                "cymraeg" -> Lang("cy")
+            ),
+            lang => controllers.routes.LanguageController.switchToLanguage(lang),
+            customClass = None
+        )
+    }
     @if(contentHeader.isDefined) {
         @uiLayouts.main_content_header(contentHeader = contentHeader.get)
     }

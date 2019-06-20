@@ -1,12 +1,15 @@
 package config
 
 import play.api.Play.{configuration, current}
+import play.api.i18n.Lang
 
 trait AppConfig {
   val analyticsToken: String
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+
+  def languageMap: Map[String, Lang]
 
   def buildReportAProblemPartialUrl(service: Option[String]): String
   def buildReportAProblemNonJSUrl(service: Option[String]): String
@@ -20,6 +23,11 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
   val homeUrl = "http://www.hmrc.gov.uk"
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
   val apiVersion2 = 2
+
+  val languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")

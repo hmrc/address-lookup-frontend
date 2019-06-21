@@ -57,7 +57,10 @@ trait WireMockHelper {
 
   def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
 
+
   def buildClientLanguage(language: String, referer: String):WSRequest = ws.url(s"http://localhost:$port/lookup-address/language/$language").withHeaders("Referer" -> referer).withFollowRedirects(false)
+
+  def buildClientTestOnlyRoutes(path:String) = ws.url(s"http://localhost:$port/lookup-address/test-only/$path").withFollowRedirects(false)
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings
 

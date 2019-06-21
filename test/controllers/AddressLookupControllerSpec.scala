@@ -30,10 +30,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupControllerSpec
-  extends PlaySpec
-    with OneAppPerSuite
-    with JsoupShouldMatchers
-    with ScalaFutures with ALFEFixtures {
+    extends PlaySpec
+      with OneAppPerSuite
+      with JsoupShouldMatchers
+      with ScalaFutures with ALFEFixtures {
 
   implicit lazy val materializer = app.materializer
 

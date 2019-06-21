@@ -368,6 +368,17 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     }
   }
 
+  "welshEnabled" should {
+    "return true" when {
+      "there is welsh config provided" in {
+        journeyDataV2Full.welshEnabled mustBe true
+      }
+      "there is no config provided" in {
+        journeyDataV2Minimal.welshEnabled mustBe false
+      }
+    }
+  }
+
   "ResolvedJourneyOptions" should {
     //TODO: isUKMode, provided and false
     "set the isUkMode to true" in {

@@ -48,4 +48,22 @@ class ApiControllerISpec extends IntegrationSpecBase {
       res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/lookup")
     }
   }
+
+  "/api/v2/confirmed" when {
+    "provided with a valid journey ID" should {
+      "return OK with a confirmed address" in {
+        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress))
+
+        stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
+
+        val res = await(buildClientAPI(s"confirmed?id=$testJourneyId")
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get())
+
+        res.status shouldBe OK
+        Json.parse(res.body) shouldBe Json.toJson(testConfirmedAddress)
+      }
+    }
+  }
+
 }

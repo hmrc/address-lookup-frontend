@@ -140,11 +140,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
           val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
           val isWelsh = getWelshContent(journeyData)
-          if (journeyData.config.options.isUkMode|| uk.contains(true)) {
+          if (journeyData.config.options.isUkMode || uk.contains(true)) {
             (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
 
           } else {
-            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)),isWelsh = isWelsh)))
+            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh)))
           }
       }
   }
@@ -153,31 +153,26 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), Some("GB")))
   }
 
-  def handleUkEdit(id: String): Action[AnyContent] = Action.async {
+  // POST /:id/edit?uk=:isUkAddress
+  def handleEdit(id: String, isUkAddress: Boolean): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) {
         journeyData =>
           val isWelsh = getWelshContent(journeyData)
-          val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
+
+          if (isUkAddress) {
+            val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
             validatedForm.fold(
-            errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh))),
-            edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-
-      )
-      }
-  }
-
-  // POST /:id/edit
-  def handleNonUkEdit(id: String): Action[AnyContent] = Action.async {
-    implicit req =>
-      withJourneyV2(id) {
-        journeyData =>
-          val isWelsh = getWelshContent(journeyData)
-          val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest())
-          validatedForm.fold(
-            errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))),
-            edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-          )
+              errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh))),
+              edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+            )
+          } else {
+            val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest())
+            validatedForm.fold(
+              errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))),
+              edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+            )
+          }
       }
   }
 

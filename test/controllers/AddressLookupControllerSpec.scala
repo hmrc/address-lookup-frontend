@@ -894,19 +894,19 @@ class AddressLookupControllerSpec
     "return 303 with valid request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
-      val res = controller.handleUkEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
+      val res = controller.handleEdit("foo", isUkAddress = true).apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
     "return 400 with empty request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
-      val res = controller.handleUkEdit("foo").apply(req)
+      val res = controller.handleEdit("foo", isUkAddress = true).apply(req)
       status(res) must be(400)
     }
     "return 303 with country code == GB and no postcode provided" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
-      val res = controller.handleUkEdit("foo").apply(
+      val res = controller.handleEdit("foo", isUkAddress = true).apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
       status(res) must be(303)
     }
@@ -915,20 +915,20 @@ class AddressLookupControllerSpec
     "return a 400 with empty request, uk mode == true" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
-      val res = controller.handleNonUkEdit("foo").apply(req)
+      val res = controller.handleEdit("foo", isUkAddress = false).apply(req)
       status(res) must be(400)
     }
     "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
-      val res = controller.handleNonUkEdit("foo")
+      val res = controller.handleEdit("foo", isUkAddress = false)
         .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
     "return a 400 with empty request when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
-      val res = controller.handleNonUkEdit("foo").apply(req)
+      val res = controller.handleEdit("foo", isUkAddress = false).apply(req)
       status(res) must be(400)
       val html = contentAsString(res).asBodyFragment
       html should include element (withName("input").withAttrValue("name", "postcode"))
@@ -937,7 +937,7 @@ class AddressLookupControllerSpec
     "return 303 with country code == GB and no postcode provided" in new Scenario(
       journeyData = Map("foo" -> basicJourney())
     ) {
-      val res = controller.handleUkEdit("foo").apply(
+      val res = controller.handleEdit("foo", isUkAddress = true).apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
       status(res) must be(303)
     }
@@ -945,7 +945,7 @@ class AddressLookupControllerSpec
     "return a 303 with request containing valid data but blank postcode and countryCode when ukMode == true" in new Scenario(
       journeyData = Map("foo" -> basicJourney(Some(true)))
     ) {
-      val res = controller.handleNonUkEdit("foo")
+      val res = controller.handleEdit("foo", isUkAddress = false)
         .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", None, None, "fooBar", "", None)): _*))
       status(res) must be(303)
     }

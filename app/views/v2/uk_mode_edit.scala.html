@@ -23,7 +23,7 @@
   )
 
   <h1 class="form-title heading-large" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
-  @helpers.form(routes.AddressLookupController.handleUkEdit(id)) {
+  @helpers.form(routes.AddressLookupController.handleEdit(id, true)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(

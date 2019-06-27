@@ -8,9 +8,6 @@ Initially, the use-case covers only UK addresses. BFPO addresses might be added 
 
 ## Functional Overview
 
-### Address Lookup Frontend has been updated, for version 1 of the API, see [the old README](DEPRECATED.md).
-The API has been updated to split out the configuration from the custom labels, and to allow Welsh content labels to be provided. The old API is still supported under the original endpoints.
-
 ### Summary
 
 During the utilization of `address-lookup-frontend`, four parties are involved:
@@ -22,10 +19,12 @@ During the utilization of `address-lookup-frontend`, four parties are involved:
 
 The integration process from the perspective of the **calling service** consists of the following steps:
 
-* _Initialize_ a **journey** by issuing a request to `POST /api/v2/init` where the message body is a **journey configuration** JSON message (see below). You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
+* _Initialize_ a **journey** by issuing a request to `POST /api/init` where the message body is a **journey configuration** JSON message (see below). You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
 * _Redirect_ the **"user"** to the **"on ramp"** URL.
 * The **"user"** completes the journey, following which they will be redirected to the **"off ramp"** URL (which is configured as part of the journey) with an appended `id=:addressId` URL parameter.
 * Using the value of the `id` parameter, you can retrieve the user's confirmed address as JSON by issuing a request to `GET /api/confirmed?id=:addressId`. 
+
+![Address Lookup Frontend journey](https://raw.githubusercontent.com/hmrc/address-lookup-frontend/master/docs/design.png)
 
 ### Initializing a Journey
 
@@ -37,11 +36,15 @@ An endpoint is provided for initialization:
 
 URL:
 
-* `/api/v2/init`
+* `/api/init`
 
 Methods:
 
 * `POST`
+
+Headers:
+
+* `User-Agent` (required): string
 
 Message Body:
 
@@ -59,148 +62,80 @@ Response:
 
 ### Configuring a Journey
 
-The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. Journey configuration is supplied as a JSON object in the body of the request to `POST /api/v2/init` (see above).
+The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init` (see above).
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
 #### Configuration JSON Format
 
-Journey configuration is supplied as a JSON object in the body of the request to `POST /api/v2/init`.
+Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init`.
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
-A "cy" object is required within the labels section to enable the Welsh journey, even if no custom content is provided. This is to allow calling services to specify whether Welsh should be available. Welsh content is displayed for users when the "cy" object has been included and the PLAY_LANG cookie is set to "cy". A link to enable users to change their language will be displayed when the Welsh journey is enabled.
-
 ```json
 {
-  "version": 2,
-  "options": {
-    "continueUrl": "...",
-    "homeNavHref": "..",
-    "phaseFeedbackLink": "/help/alpha",
-    "deskProServiceName": "",
-    "showPhaseBanner": false,
-    "alphaPhase": false,
-    "showBackButtons": false,
-    "includeHMRCBranding": true,
-    "allowedCountryCodes": [
-      "GB",
-      "FR"
-    ],
-    "ukMode": false,
-    "selectPageConfig": {
-      "proposalListLimit": 30,
-      "showSearchLinkAgain": true
-    },
-    "confirmPageConfig": {
-      "showChangeLink": false,
-      "showSubHeadingAndInfo": false,
-      "showSearchAgainLink": false,
-      "showConfirmChangeText": true
-    },
-    "timeoutConfig": {
-      "timeoutAmount": 900,
-      "timeoutUrl": "http://service/timeout-uri"
-    },
-    "labels": {
-      "en": {
-        "appLevelLabels": {
-          "navTitle": "",
-          "phaseBannerHtml": ""
-        },
-        "selectPageLabels": {
-          "title": "Choose the address",
-          "heading": "Choose the address",
-          "headingWithPostcode": "foo",
-          "proposalListLabel": "Please select one of the following addresses",
-          "submitLabel": "Continue",
-          "searchAgainLinkText": "Search again",
-          "editAddressLinkText": "Enter address manually"
-        },
-        "lookupPageLabels": {
-          "title": "Find the address",
-          "heading": "Find the address",
-          "filterLabel": "Property name or number",
-          "postcodeLabel": "UK Postcode",
-          "submitLabel": "Find address",
-          "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode.",
-          "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results.",
-          "manualAddressLinkText": "The address doesn't have a UK postcode"
-        },
-        "confirmPageLabels": {
-          "title": "Confirm the address",
-          "heading": "Review and confirm",
-          "infoSubheading": "Your selected address",
-          "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
-          "submitLabel": "Confirm and continue",
-          "searchAgainLinkText": "Search again",
-          "changeLinkText": "Edit address",
-          "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct."
-        },
-        "editPageLabels": {
-          "title": "Enter the address",
-          "heading": "Enter the address",
-          "line1Label": "Address line 1",
-          "line2Label": "Address line 2",
-          "line3Label": "Address line 3",
-          "townLabel": "Town/City",
-          "postcodeLabel": "Postal code (optional)",
-          "countryLabel": "Country",
-          "submitLabel": "Continue"
-        }
-      },
-      "cy": {
-        "appLevelLabels": {
-          "navTitle": "",
-          "phaseBannerHtml": ""
-        },
-        "selectPageLabels": {
-          "title": "Choose the address welsh",
-          "heading": "Choose the address welsh",
-          "headingWithPostcode": "foo",
-          "proposalListLabel": "Please select one of the following addresses welsh",
-          "submitLabel": "Continue welsh",
-          "searchAgainLinkText": "Search again welsh",
-          "editAddressLinkText": "Enter address manually welsh"
-        },
-        "lookupPageLabels": {
-          "title": "Find the address welsh",
-          "heading": "Find the address welsh",
-          "filterLabel": "Property name or number welsh",
-          "postcodeLabel": "UK Postcode welsh",
-          "submitLabel": "Find address welsh",
-          "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode. welsh",
-          "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results. welsh",
-          "manualAddressLinkText": "The address doesn't have a UK postcode welsh"
-        },
-        "confirmPageLabels": {
-          "title": "Confirm the address welsh",
-          "heading": "Review and confirm welsh",
-          "infoSubheading": "Your selected address welsh",
-          "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button. welsh",
-          "submitLabel": "Confirm and continue welsh",
-          "searchAgainLinkText": "Search again welsh",
-          "changeLinkText": "Edit address welsh",
-          "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct. welsh"
-        },
-        "editPageLabels": {
-          "title": "Enter the address welsh",
-          "heading": "Enter the address welsh",
-          "line1Label": "Address line 1 welsh",
-          "line2Label": "Address line 2 welsh",
-          "line3Label": "Address line 3 welsh",
-          "townLabel": "Town/City welsh",
-          "postcodeLabel": "Postal code (optional) welsh",
-          "countryLabel": "Country welsh",
-          "submitLabel": "Continue welsh"
-        }
-      }
-    }
-  }
+  "continueUrl" : "/lookup-address/confirmed",
+  "homeNavHref" : "http://www.hmrc.gov.uk/",
+  "navTitle" : "Address Lookup",
+  "showPhaseBanner" : false,
+  "alphaPhase" : false,
+  "phaseFeedbackLink" : "/help/alpha",
+  "phaseBannerHtml" : "This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it.",
+  "showBackButtons": false,
+  "includeHMRCBranding" : true,
+  "deskProServiceName" : "",
+  "lookupPage" : {
+    "title" : "Find the address",
+    "heading" : "Find the address",
+    "filterLabel" : "Property name or number",
+    "postcodeLabel" : "UK Postcode",
+    "submitLabel" : "Find address",
+    "noResultsFoundMessage" : "Sorry, we couldn't find anything for that postcode.",
+    "resultLimitExceededMessage" : "There were too many results. Please add additional details to limit the number of results.",
+    "manualAddressLinkText" : "The address doesn't have a UK postcode"
+  },
+  "selectPage" : {
+    "title" : "Choose the address",
+    "heading" : "Choose the address",
+    "proposalListLabel" : "Please select one of the following addresses",
+    "submitLabel" : "Continue",
+    "proposalListLimit" : 50,
+    "showSearchAgainLink" : false,
+    "searchAgainLinkText" : "Search again",
+    "editAddressLinkText" : "Enter address manually"
+  },
+  "confirmPage" : {
+    "title" : "Confirm the address",
+    "heading" : "Review and confirm",
+    "infoSubheading" : "Your selected address",
+    "infoMessage" : "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
+    "submitLabel" : "Confirm and continue",
+    "showSearchAgainLink" : false,
+    "searchAgainLinkText" : "Search again",
+    "changeLinkText" : "Edit address",
+    "showConfirmChangeText" : true,
+    "confirmChangeText" : "By confirming this change, you agree that the information you have given is complete and correct."
+  },
+  "editPage" : {
+    "title" : "Enter the address",
+    "heading" : "Enter the address",
+    "line1Label" : "Address line 1",
+    "line2Label" : "Address line 2",
+    "line3Label" : "Address line 3",
+    "townLabel" : "Town/City",
+    "postcodeLabel" : "Postal code (optional)",
+    "countryLabel" : "Country",
+    "submitLabel" : "Continue"
+  },
+  "timeout" : {
+    "timeoutAmount" : 900,
+    "timeoutUrl" : "http://service/timeout-uri"
+  },
+  "ukMode": false
 }
 ```
 #### Test Endpoint for journey setup
-* `/lookup-address/test-only/v2/test-setup` (GET)
+* `/lookup-address/test-only/test-setup` (GET)
 
 #### Top-level configuration JSON object
 
@@ -208,54 +143,19 @@ A "cy" object is required within the labels section to enable the Welsh journey,
 |----------|-----------|-----------------|----|-------------|
 |`continueUrl`|the "off ramp" URL for a user journey|**Required**|String|N/A|
 |`homeNavHref`|value of the link href attribute for the GDS "home" link|Optional|String|`"http://www.hmrc.gov.uk/"`|
-|`phaseFeedbackLink`|link to provide a user feedback link for phase banner|Optional|String|`"/help/alpha"`|
-|`deskProServiceName`|name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
+|`navTitle`|the main masthead heading text|Optional|String|`"Address Lookup"`|
 |`showPhaseBanner`|whether or not to show a phase banner (if `showPhaseBanner == true && alphaPhase == false`, shows "beta")|Optional|Boolean|`false`|
 |`alphaPhase`|if `showPhaseBanner = true && alphaPhase == true`, will show "alpha" phase banner|Optional|Boolean|`false`|
+|`phaseFeedbackLink`|link to provide a user feedback link for phase banner|Optional|String|`"/help/alpha"`|
+|`phaseBannerHtml`|text (allows HTML tags) for phase banner|Optional|String|`"This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."`"
 |`showBackButtons`|whether or not to show back buttons on user journey wizard forms|Optional|Boolean|`false`|
 |`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
+|`deskProServiceName`|name of your service in deskpro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
 |`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
 |`ukMode`|enable uk only Lookup and Edit mode|Optional|Boolean|`None`|
+#### Lookup page configuration JSON object
 
-#### Select page configuration JSON object
-
-Configuration of the "select" page, in which user chooses an address from a list of search results. The select page configuration is a nested JSON object inside the journey configuration under the `selectPage` property.
-
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
-|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
-
-#### Confirm page configuration JSON object
-
-Configuration of the "confirm" page, in which the user is requested to confirm a "finalized" form for their address. The confirm page configuration is a nested JSON object inside the journey configuration under the `confirmPage` property.
-
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
-|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
-|`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
-|`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
-
-#### Timeout Configuration JSON object (Optional)
-
-Configuration of the timeout popup in which user is shown a popup allowing them to extend their session before it times out. The timeout configuration is a nested JSON object inside the journey configuration under the `timeout` property.
-
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
-|`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
-
-#### Top-level label JSON object
-
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`navTitle`|the main masthead heading text|Optional|String|`"Address Lookup"`|
-|`phaseBannerHtml`|text (allows HTML tags) for phase banner|Optional|String|`"This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."`"
-
-#### Lookup page label JSON object
-
-Labels for the "lookup" page.
+Configuration of the "lookup" page, in which user searches for address using filter + postcode. The lookup page configuration is a nested JSON object inside the journey configuration under the `lookupPage` property.
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
@@ -268,24 +168,24 @@ Labels for the "lookup" page.
 |`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
 |`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"The address does not have a UK postcode"`|
 
-#### Select page label JSON object
+#### Select page configuration JSON object
 
-Labels for the "select" page.
+Configuration of the "select" page, in which user chooses an address from a list of search results. The select page configuration is a nested JSON object inside the journey configuration under the `selectPage` property.
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
 |`title`|the `html->head->title` text|Optional|String|`"Choose the address"`|
 |`heading`|the heading to display above the list of results|Optional|String|`"Choose the address"`|
-|`headingWithPostCode`|the heading to display above the list of results when a postcode is provided|Optional|String|`"Showing all results for [postcode]"`|
 |`proposalListLabel`|the radio group label for the list of results|Optional|String|`"Please select one of the following addresses"`|
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
 |`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
+|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
 |`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Enter the address manually"`|
 
-#### Confirm page label JSON object
+#### Confirm page configuration JSON object
 
-Labels for the "confirm" page.
+Configuration of the "confirm" page, in which the user is requested to confirm a "finalized" form for their address. The confirm page configuration is a nested JSON object inside the journey configuration under the `confirmPage` property.
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
@@ -294,14 +194,16 @@ Labels for the "confirm" page.
 |`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
 |`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
 |`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm and continue"`|
+|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
+|`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
 |`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit this address"`|
 |`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
 |`confirmChangeText`|Text displayed above the submit button when 'showConfirmChangeText' is true|Optional|String|`"By confirming this change, you agree that the information you have given is complete and correct."`|
 
-#### Edit page label JSON object
+#### Edit page configuration JSON object
 
-Labels for the "edit" page.
+Configuration of the "edit" page, in which the user is permitted to manually enter or modify a selected address. The confirm page configuration is a nested JSON object inside the journey configuration under the `editPage` property.
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
@@ -314,6 +216,15 @@ Labels for the "edit" page.
 |`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postal code (optional)"`|
 |`countryLabel`|the input label for the "country" drop-down; an optional field (defaults to UK)|Optional|String|`"Country"`|
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
+
+#### Timeout Configuration JSON object (Optional)
+
+Configuration of the timeout popup in which user is shown a popup allowing them to extend their session before it times out. The timeout configuration is a nested JSON object inside the journey configuration under the `timeout` property.
+
+|Field name|Description|Optional/Required|Type|Default value|
+|----------|-----------|-----------------|----|-------------|
+|`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
+|`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
 
 Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
 
@@ -339,6 +250,10 @@ Methods:
 
 * `GET`
 
+Headers:
+
+* `User-Agent` (required): string
+
 Message Body:
 
 * None
@@ -353,32 +268,13 @@ Response:
 
 * An `application/json` message which describes a **confirmed address** (see below)
 
-#### Confirmed Address example JSON Format
+#### Confirmed Address JSON Format
 
-```json
-{
-    "auditRef" : "bed4bd24-72da-42a7-9338-f43431b7ed72",
-    "id" : "GB990091234524",
-    "address" : {
-        "lines" : [ "10 Other Place", "Some District", "Anytown" ],
-        "postcode" : "ZZ1 1ZZ",
-        "country" : {
-            "code" : "GB",
-            "name" : "United Kingdom"
-        }
-    }
-}
-```
+TODO
 
 ### Running the Application
 
-sm --start ADDRESS_LOOKUP_SERVICES -f
-sm --stop ADDRESS_LOOKUP_FRONTEND
-
-run with
-sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" (when in the address-lookup-frontend folder)
-
-go to localhost:9028/lookup-address/test-only/v2/test-setup if not running from another service
+TODO
 
 ## License
 

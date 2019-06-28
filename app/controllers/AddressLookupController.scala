@@ -167,7 +167,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
               edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
             )
           } else {
-            val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest())
+            val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest(), isWelsh)
             validatedForm.fold(
               errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))),
               edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))

@@ -171,7 +171,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = testResultsList)
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
 
-        val res = buildClientLookupAddress(path = "select")
+        val res = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
           .withHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .post(Map(
             "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -194,7 +194,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         testId => testId.as[String]
       }
 
-      val fRes = buildClientLookupAddress(path = "select")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -209,7 +209,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       stubGetAddressFromBE(addressJson = testResultsList)
       stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
-      val fRes = buildClientLookupAddress(path = "select")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -231,7 +231,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       stubGetAddressFromBE(addressJson = testResultsList)
       stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
-      val fRes = buildClientLookupAddress(path = "select")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),

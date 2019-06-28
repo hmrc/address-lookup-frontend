@@ -2,7 +2,7 @@ package controllers
 
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import itutil.config.PageElementConstants._
+import itutil.config.PageElementConstants.{EditPage, _}
 import model.{EditPage => _, LookupPage => _, _}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
@@ -635,6 +635,39 @@ class EditPageISpec extends IntegrationSpecBase {
       res.status shouldBe BAD_REQUEST
       testElementExists(res, EditPage.nonUkEditId)
     }
+
+    "return 400 if postcode is invalid and return nonUkEdit page with welsh text" in {
+      stubKeystore(
+        session = testJourneyId,
+        theData = Json.toJson(journeyDataV2Minimal.copy(
+          config = journeyDataV2Minimal.config.copy(
+            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
+            labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
+
+
+      val fResponse = buildClientLookupAddress(path = "edit?uk=false").
+        withHeaders(
+          HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
+          "Csrf-Token" -> "nocheck").
+        post(Map("csrfToken" -> Seq("xxx-ignored-xxx"), "postcode" -> Seq("eebb")))
+      val res = await(fResponse)
+      val document = Jsoup.parse(res.body)
+
+      document.input("postcode") should have (value("eebb"))
+      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post yn y DU sy’n ddilys"
+
+      labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+        "line1" -> "Nodwch linell gyntaf y cyfeiriad Llinell cyfeiriad 1",
+        "line2" -> "Llinell cyfeiriad 2",
+        "line3" -> "Llinell cyfeiriad 3",
+        "town" -> "Nodwch dref neu ddinas Tref/dinas",
+        "postcode" -> "Nodwch god post yn y DU sy’n ddilys Cod post (dewisol)"
+      ))
+
+      res.status shouldBe BAD_REQUEST
+      testElementExists(res, EditPage.nonUkEditId)
+    }
+
     s"return 303 if form is valid and redirect to ${controllers.routes.AddressLookupController.confirm("")}" in {
       stubKeystore(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))).as[JsObject], OK)
       stubKeystoreSave(

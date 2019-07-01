@@ -158,10 +158,9 @@ object MessageConstants {
     val noResultsPageEnterManually = "Nodwch y cyfeiriad â llaw"
     val noResultsPageDifferentPostcode = "Rhowch gynnig ar god post gwahanol"
 
-    //TODO: NEED WELSH
-    val errorRequired = "This field is required"
-    val errorMin: Int => String = min => s"Minimum length is $min"
-    val errorMax: Int => String = max => s"Maximum length is $max"
+    val errorRequired = "Mae angen llenwi’r maes hwn"
+    val errorMin: Int => String = min => s"$min yw’r isafswm hyd"
+    val errorMax: Int => String = max => s"$max yw’r uchafswm hyd"
 
   }
 

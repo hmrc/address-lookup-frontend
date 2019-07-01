@@ -33,10 +33,9 @@ class SelectPageViewSpec extends ViewSpec {
     val headingWithPostcode = "cyTestHeadingWithPostcode"
     val submitLabel = "cyTestSubmitLabel"
     val editAddressLinkText = "cyTestEditAddressLinkText"
-
   }
 
-  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Option[Lookup], firstSearch: Boolean, welshEnabled: Boolean = false) {
+  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false) {
     val testPage: HtmlFormat.Appendable = views.html.v2.select("testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)
   }
@@ -46,145 +45,145 @@ class SelectPageViewSpec extends ViewSpec {
 
   "Select Page" should {
     "render the back button in english" when {
-      "the config is provided as true for back links" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = true) {
+      "the config is provided as true for back links" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getBackLinkText shouldBe Content.backLink
       }
-      "the config is not provided" in new Setup(testSelectPageConfigMinimal, testProposal, None, firstSearch = true) {
+      "the config is not provided" in new Setup(testSelectPageConfigMinimal, testProposal, testLookup, firstSearch = true) {
         doc.getBackLinkText shouldBe Content.backLink
       }
     }
     "not render the back button" when {
-      "the config is provided as false for back links" in new Setup(testJourneyDataNoBackButtons, testProposal, None, firstSearch = true) {
+      "the config is provided as false for back links" in new Setup(testJourneyDataNoBackButtons, testProposal, testLookup, firstSearch = true) {
         doc.getBackLinkText shouldBe Content.empty
       }
     }
 
     "render the title" when {
-      "the title is provided" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = true) {
+      "the title is provided" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.title shouldBe Content.title
       }
 
-      "the title isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
+      "the title isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.title shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_TITLE
       }
     }
 
     "render the heading without a postcode" when {
-      "the heading is provided" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = true) {
+      "the heading is provided" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getH1ElementAsText shouldBe Content.heading
       }
-      "the heading isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
+      "the heading isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING
       }
-      "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = true) {
-        doc.getH1ElementAsText shouldBe Content.heading
-      }
+//      "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+//        doc.getH1ElementAsText shouldBe Content.heading
+//      }
     }
 
     "render the heading with a postcode" that {
       "is in english" when {
-        "the heading is provided, a lookup is provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = false) {
+        "the heading is provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
           doc.getH1ElementAsText shouldBe Content.headingWithPostcode + testLookup.postcode
         }
-        "the heading is not provided, a lookup is provided and it is not the first search" in new Setup(testSelectPageConfigNoLabel, testProposal, Some(testLookup), firstSearch = false) {
+        "the heading is not provided and it is not the first search" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = false) {
           doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING_WITH_POSTCODE + testLookup.postcode
         }
       }
       "is in welsh" when {
-        "the heading is provided, a lookup is provided and it is not the first search" in new Setup(testWelshSelectPageConfig, testProposal, Some(testLookup), firstSearch = false, welshEnabled = true) {
+        "the heading is provided and it is not the first search" in new Setup(testWelshSelectPageConfig, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
           doc.getH1ElementAsText shouldBe s"${WelshContent.headingWithPostcode} ${testLookup.postcode}"
         }
-        "the heading is not provided, a lookup is provided and it is not the first search" in new Setup(testSelectPageConfigWelshEmpty, testProposal, Some(testLookup), firstSearch = false, welshEnabled = true) {
+        "the heading is not provided and it is not the first search" in new Setup(testSelectPageConfigWelshEmpty, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
           doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_HEADING_WITH_POSTCODE + testLookup.postcode
         }
       }
     }
 
     "render the no results message" when {
-      "the lookup is provided in english and it is not the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = false) {
+      "in english and it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
         doc.select("#no-results").text shouldBe s"${MessageConstants.EnglishMessageConstants.noResults} 'testFilter'."
       }
-      "the lookup is provided in welsh and it is not the first search" in new Setup(testWelshSelectPageConfig, testProposal, Some(testLookup), firstSearch = false, welshEnabled = true) {
+      "in welsh and it is not the first search" in new Setup(testWelshSelectPageConfig, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
         doc.select("#no-results").text shouldBe s"${MessageConstants.WelshMessageConstants.noResults} 'testFilter'."
       }
     }
 
     "not render the no results message" when {
-      "the lookup is provided and it is the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = true) {
+      "it is the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.select("#no-results").text shouldBe Content.empty
       }
 
-      "the lookup is not provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = false) {
-        doc.select("#no-results").text shouldBe Content.empty
+      "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
+        doc.select("#no-results").text shouldBe s"${MessageConstants.EnglishMessageConstants.noResults} 'testFilter'."
       }
     }
 
     "render the try a different name or number link" when {
-      "the lookup is provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = false) {
+      "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
         doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.EnglishMessageConstants.differentSearch
         doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
       }
     }
 
     "render the try a different name or number link in welsh" when {
-      "the lookup is provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = false, welshEnabled = true) {
+      "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
         doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.WelshMessageConstants.differentSearch
       }
     }
 
     "not render the try a different name or number link" when {
-      "the lookup is provided and it is the first search" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = true) {
+      "it is the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getALinkText(id = "differentAddress") shouldBe Content.empty
         doc.getLinkHrefAsText(id = "differentAddress") shouldBe Content.empty
       }
 
-      "the lookup is not provided and it is not the first search" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = false) {
-        doc.getALinkText(id = "differentAddress") shouldBe Content.empty
-        doc.getLinkHrefAsText(id = "differentAddress") shouldBe Content.empty
+      "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
+        doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.EnglishMessageConstants.differentSearch
+        doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
       }
     }
 
     "render the submit label" when {
-      "the submit label is provided" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = true) {
+      "the submit label is provided" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.select("button").text shouldBe Content.submitLabel
       }
-      "the submit label is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, None, firstSearch = true) {
+      "the submit label is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.select("button").text shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_SUBMIT_LABEL
       }
     }
 
     "render the edit address link" when {
-      "the edit address link text is provided" in new Setup(testSelectPageConfig, testProposal, Some(testLookup), firstSearch = true) {
+      "the edit address link text is provided" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getALinkText(id = "editAddress") shouldBe Content.editAddressLinkText
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
       }
-      "the edit address link text is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, Some(testLookup), firstSearch = true) {
+      "the edit address link text is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.getALinkText(id = "editAddress") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
       }
     }
 
     "render proposals" when {
-      "there is 1 proposal" in new Setup(testSelectPageConfig, testProposal, None, firstSearch = true) {
+      "there is 1 proposal" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.select("input[id^=addressId-]").size shouldBe testProposal.proposals.get.size
         doc.select("label[for^=addressId-]").size shouldBe testProposal.proposals.get.size
         doc.select("label[for^=addressId-]").text shouldBe testProposal.proposals.get.head.toDescription
       }
     }
-    "there are many proposals" in new Setup(testSelectPageConfig, testProposalMany, None, firstSearch = true) {
+    "there are many proposals" in new Setup(testSelectPageConfig, testProposalMany, testLookup, firstSearch = true) {
       doc.select("input[id^=addressId-]").size() shouldBe testProposalMany.proposals.get.size
       doc.select("label[for^=addressId-]").size shouldBe testProposalMany.proposals.get.size
       doc.select("label[for^=addressId-]").text shouldBe testProposalMany.proposals.get.map(_.toDescription).mkString(" ")
 
     }
     "not render any proposals" when {
-      "there are none" in new Setup(testSelectPageConfig, testProposalNone, None, firstSearch = true) {
+      "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {
         doc.select("input[id^=addressId-]").size() shouldBe testProposalNone.proposals.get.size
       }
     }
 
     "render the page in welsh" when {
-      "there is custom welsh provided and the welsh flag is true" in new Setup(testWelshSelectPageConfig, testProposalNone, None, firstSearch = true, welshEnabled = true) {
+      "there is custom welsh provided and the welsh flag is true" in new Setup(testWelshSelectPageConfig, testProposalNone, testLookup, firstSearch = true, welshEnabled = true) {
         doc.getBackLinkText shouldBe WelshContent.backLink
         doc.title shouldBe WelshContent.title
         doc.getH1ElementAsText shouldBe WelshContent.heading
@@ -192,7 +191,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.select("button").text shouldBe WelshContent.submitLabel
 
       }
-      "welsh is configured but not provided and the welsh flag is true" in new Setup(testSelectPageConfigWelshEmpty, testProposalNone, None, firstSearch = true, welshEnabled = true) {
+      "welsh is configured but not provided and the welsh flag is true" in new Setup(testSelectPageConfigWelshEmpty, testProposalNone, testLookup, firstSearch = true, welshEnabled = true) {
         doc.getBackLinkText shouldBe WelshContent.backLink
         doc.title shouldBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_TITLE
         doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_HEADING
@@ -201,7 +200,7 @@ class SelectPageViewSpec extends ViewSpec {
       }
     }
     "render the page in english" when {
-      "there is welsh provided but the welsh flag is false" in new Setup(testWelshSelectPageConfig, testProposalNone, None, firstSearch = true, welshEnabled = false) {
+      "there is welsh provided but the welsh flag is false" in new Setup(testWelshSelectPageConfig, testProposalNone, testLookup, firstSearch = true, welshEnabled = false) {
         doc.getBackLinkText shouldBe Content.backLink
         doc.title shouldBe Content.title
         doc.getH1ElementAsText shouldBe Content.heading

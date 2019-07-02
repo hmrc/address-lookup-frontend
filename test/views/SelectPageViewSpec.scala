@@ -75,9 +75,9 @@ class SelectPageViewSpec extends ViewSpec {
       "the heading isn't provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING
       }
-//      "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-//        doc.getH1ElementAsText shouldBe Content.heading
-//      }
+      "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+        doc.getH1ElementAsText shouldBe Content.heading
+      }
     }
 
     "render the heading with a postcode" that {

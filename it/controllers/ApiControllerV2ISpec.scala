@@ -6,16 +6,12 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Environment, Mode}
 import services.IdGenerationService
-import itutil.config.IntegrationTestConstants._
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import JourneyData._
-import utils.V2ModelConverter._
 import itutil.config.IntegrationTestConstants._
 import config.FrontendServicesConfig
-import services.KeystoreJourneyRepository
 
 class ApiControllerV2ISpec extends IntegrationSpecBase with FrontendServicesConfig {
 

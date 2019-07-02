@@ -3,9 +3,9 @@ package services
 import javax.inject.Singleton
 import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
-import config.{AddressLookupFrontendSessionCache, FrontendAppConfig, FrontendServicesConfig}
+import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
 import model._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.cache.client.HttpCaching
 
 import scala.collection.JavaConverters._

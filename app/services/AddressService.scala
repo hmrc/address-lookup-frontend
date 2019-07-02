@@ -4,9 +4,8 @@ package services
 import javax.inject.{Inject, Singleton}
 import com.google.inject.ImplementedBy
 import config.{FrontendServicesConfig, WSHttp}
-import model.{JourneyConfigV2, ProposedAddress}
+import model. ProposedAddress
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.{Request, Result}
 import services.AddressReputationFormats._
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2._

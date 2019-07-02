@@ -5,7 +5,7 @@ import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
 import model.MessageConstants._
 import model.{Edit, Lookup, Select}
-import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.{default, ignored, mapping, optional, text}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid}

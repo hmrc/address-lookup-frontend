@@ -1,7 +1,7 @@
 
 package controllers
 
-import config.{AppConfig, FrontendAppConfig}
+import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent}

@@ -29,6 +29,10 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
     "cymraeg" -> Lang("cy")
   )
 
+  object ALFHeaderNames {
+    val useWelsh = "Use-Welsh"
+  }
+
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"

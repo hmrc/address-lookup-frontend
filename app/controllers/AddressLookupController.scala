@@ -8,7 +8,6 @@ import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
 import model._
-import play.api.Play
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
@@ -147,7 +146,6 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           val isWelsh = getWelshContent(journeyData)
           if (journeyData.config.options.isUkMode || uk.contains(true)) {
             (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
-
           } else {
             (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh)))
           }

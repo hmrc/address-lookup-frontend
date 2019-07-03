@@ -6,7 +6,7 @@ import javax.inject.{Inject, Singleton}
 import model.JourneyData._
 import model._
 import play.api.i18n.MessagesApi
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}

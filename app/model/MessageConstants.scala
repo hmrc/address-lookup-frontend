@@ -51,6 +51,9 @@ object MessageConstants {
     def noResultsPageEnterManually: String
     def noResultsPageDifferentPostcode: String
 
+    def intServerErrorTitle: String
+    def intServerErrorTryAgain: String
+
     val errorRequired: String
     val errorMin: Int => String
     val errorMax: Int => String
@@ -108,6 +111,9 @@ object MessageConstants {
     val nameNumberText = "for name or number"
     val youEntered = "You entered:"
     val tooManyResultsManualLink = "Enter the address manually"
+
+    val intServerErrorTitle = "Sorry, there is a problem with the service"
+    val intServerErrorTryAgain = "Try again later."
   }
 
   object WelshMessageConstants extends MessageConstants {
@@ -158,10 +164,12 @@ object MessageConstants {
     val noResultsPageEnterManually = "Nodwch y cyfeiriad â llaw"
     val noResultsPageDifferentPostcode = "Rhowch gynnig ar god post gwahanol"
 
+    val intServerErrorTitle = "Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth"
+    val intServerErrorTryAgain = "Rhowch gynnig arall arni yn nes ymlaen."
+
     val errorRequired = "Mae angen llenwi’r maes hwn"
     val errorMin: Int => String = min => s"$min yw’r isafswm hyd"
     val errorMax: Int => String = max => s"$max yw’r uchafswm hyd"
-
   }
 
 }

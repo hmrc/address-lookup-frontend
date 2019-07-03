@@ -6,7 +6,6 @@ import model._
 import play.api.libs.json._
 import uk.gov.hmrc.address.v2.Country
 import IntegrationTestConstants._
-import views.html.helper.options
 
 object IntegrationTestConstants {
   val testApiVersion = 2

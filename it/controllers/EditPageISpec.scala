@@ -1,5 +1,6 @@
 package controllers
 
+import config.FrontendAppConfig.ALFHeaderNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.{EditPage, _}
@@ -805,6 +806,73 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       res.status shouldBe SEE_OTHER
+    }
+  }
+
+  "technical difficulties" when {
+    "the welsh content header isn't set and welsh object isn't provided in config" should {
+      "render in English" in {
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
+
+        val fResponse = buildClientLookupAddress("edit?uk=true")
+          .withHeaders(
+            HeaderNames.COOKIE -> sessionCookieWithCSRF,
+            "Csrf-Token" -> "nocheck"
+          )
+          .get()
+
+        val res = await(fResponse)
+        res.status shouldBe INTERNAL_SERVER_ERROR
+
+        val doc = getDocFromResponse(res)
+        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
+        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+      }
+    }
+    "the welsh content header is set and welsh object isn't provided in config" should {
+      "render in English" in {
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
+
+        val fResponse = buildClientLookupAddress("edit?uk=true")
+          .withHeaders(
+            HeaderNames.COOKIE -> sessionCookieWithCSRF,
+            "Csrf-Token" -> "nocheck",
+            ALFHeaderNames.useWelsh -> "false"
+          )
+          .get()
+
+        val res = await(fResponse)
+        res.status shouldBe INTERNAL_SERVER_ERROR
+
+        val doc = getDocFromResponse(res)
+        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
+        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+      }
+    }
+    "the welsh content header is set and welsh object provided in config" should {
+      "render in Welsh" in {
+        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
+        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
+        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
+
+        val fResponse = buildClientLookupAddress("edit?uk=true")
+          .withHeaders(
+            HeaderNames.COOKIE -> sessionCookieWithCSRF,
+            "Csrf-Token" -> "nocheck",
+            ALFHeaderNames.useWelsh -> "true"
+          )
+          .get()
+
+        val res = await(fResponse)
+        res.status shouldBe INTERNAL_SERVER_ERROR
+
+        val doc = getDocFromResponse(res)
+        doc.title shouldBe MessageConstants.WelshMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(MessageConstants.WelshMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(MessageConstants.WelshMessageConstants.intServerErrorTryAgain))
+      }
     }
   }
 

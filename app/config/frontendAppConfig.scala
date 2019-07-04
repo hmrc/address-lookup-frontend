@@ -29,7 +29,7 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
     "cymraeg" -> Lang("cy")
   )
 
-  object ALFHeaderNames {
+  object ALFCookieNames {
     val useWelsh = "Use-Welsh"
   }
 

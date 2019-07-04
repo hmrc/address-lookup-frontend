@@ -24,6 +24,7 @@ object IntegrationTestConstants {
   val testAddressLine3 = "Line 3"
   val testAddressTown = "Telford"
   val testCountry = Country("GB", "United Kingdom")
+  val useWelshCookieName = "Use-Welsh"
 
   val testNonUKAddress = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressTown)), Some(testPostCode), Some(Country("FR", "France")))
   val testFullNonUKAddress = ConfirmableAddressDetails(Some(List(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France")))

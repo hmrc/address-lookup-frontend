@@ -3,6 +3,7 @@ package controllers
 
 import java.io.File
 
+import config.FrontendAppConfig.ALFCookieNames
 import config.{FrontendAuditConnector, FrontendServicesConfig}
 import controllers.countOfResults._
 import forms.ALFForms._
@@ -48,6 +49,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     journeyData.config.labels.flatMap(_.cy).isDefined && request.cookies.exists(kv => kv.name == "PLAY_LANG" && kv.value == "cy")
   }
 
+  def requestWithWelshHeader(useWelsh: Boolean)(req: => Result) = {
+    req.withCookies(Cookie(ALFCookieNames.useWelsh, useWelsh.toString))
+  }
+
   // GET  /no-journey
   // display an error page when a required journey is not available
   def noJourney() = Action { implicit req =>
@@ -55,37 +60,63 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   // GET  /:id/lookup
-  def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None) = Action.async { implicit req =>
+  def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None): Action[AnyContent] = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
       val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
-      (Some(journeyData.copy(selectedAddress = None)), Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh = isWelsh)))
+
+      (Some(journeyData.copy(selectedAddress = None)), requestWithWelshHeader(isWelsh) {
+        Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh))
+      })
     }
   }
 
   // GET  /:id/select
-  def select(id: String) = Action.async { implicit req =>
+  def select(id: String): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
+
       lookupForm(isWelsh).bindFromRequest().fold(
-        errors => Future.successful((None, BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh = isWelsh)))),
+        errors => Future.successful(
+          (None -> requestWithWelshHeader(isWelsh) {
+            BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh = isWelsh))
+          })
+        ),
         lookup => {
           val lookupWithFormattedPostcode = lookup.copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
+
           handleLookup(id, journeyData, lookup) map {
-            case OneResult(address) => Some(journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))) -> Redirect(routes.AddressLookupController.confirm(id))
-            case ResultsList(addresses, firstLookup) => Some(journeyData.copy(proposals = Some(addresses))) ->
-              Ok(views.html.v2.select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh = isWelsh))
+            case OneResult(address) =>
+              val journeyDataWithSelectedAddress = journeyData.copy(selectedAddress = Some(address.toConfirmableAddress(id)))
+
+              Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
+                Redirect(routes.AddressLookupController.confirm(id))
+              }
+            case ResultsList(addresses, firstLookup) =>
+              val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
+
+              Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
+                Ok(views.html.v2.select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh))
+              }
             case TooManyResults(addresses, firstLookup) =>
-              None -> Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh = isWelsh))
-            case NoResults => None -> Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh = isWelsh))
+              None -> requestWithWelshHeader(isWelsh) {
+                Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh))
+              }
+            case NoResults =>
+              None -> requestWithWelshHeader(isWelsh) {
+                Ok(views.html.v2.no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh))
+              }
           }
         }
       )
     }
   }
 
-  private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean = true)(implicit hc: HeaderCarrier): Future[ResultsCount] = {
+  private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean = true)
+                                       (implicit hc: HeaderCarrier): Future[ResultsCount] = {
+
     val addressLimit = journeyData.config.options.selectPageConfig.getOrElse(SelectPageConfig()).proposalListLimit
+
     addressService.find(lookup.postcode, lookup.filter, journeyData.config.options.isUkMode).flatMap {
       case noneFound if noneFound.isEmpty =>
         if (lookup.filter.isDefined) {
@@ -93,31 +124,41 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         } else {
           Future.successful(NoResults)
         }
-      case oneFound if oneFound.size == 1 => Future.successful(OneResult(oneFound.head))
-      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) => Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup))
-      case displayProposals => Future.successful(ResultsList(displayProposals, firstLookup))
+      case oneFound if oneFound.size == 1 =>
+        Future.successful(OneResult(oneFound.head))
+      case tooManyFound if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) =>
+        Future.successful(TooManyResults(tooManyFound.take(addressLimit.get), firstLookup))
+      case displayProposals =>
+        Future.successful(ResultsList(displayProposals, firstLookup))
     }
   }
 
-
-
   // TODO enable journey-configurable limit on proposal list size
   // POST /:id/select
-  def handleSelect(id: String, filter: Option[String], postcode: String) = Action.async { implicit req =>
-    withJourneyV2(id) { journeyData =>
+  def handleSelect(id: String, filter: Option[String], postcode: String): Action[AnyContent] = Action.async {
+    implicit req => withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
       val bound = selectForm(isWelsh).bindFromRequest()
+
       bound.fold(
-        errors =>
-          (None, BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh))),
+        errors => {
+          (None -> requestWithWelshHeader(isWelsh) {
+            BadRequest(views.html.v2.select(id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh))
+          })
+        },
         selection => {
           journeyData.proposals match {
             case Some(props) => {
               props.find(_.addressId == selection.addressId) match {
                 case Some(addr) =>
-                  (Some(journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
+                  val journeyDataWithConfirmableAddress = journeyData.copy(selectedAddress = Some(addr.toConfirmableAddress(id)))
+                  (Some(journeyDataWithConfirmableAddress), requestWithWelshHeader(isWelsh) {
+                    Redirect(routes.AddressLookupController.confirm(id))
+                  })
                 case None =>
-                  (None, BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh)))
+                  (None, requestWithWelshHeader(isWelsh) {
+                    BadRequest(views.html.v2.select(id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh))
+                  })
               }
             }
             case None => (None, Redirect(routes.AddressLookupController.lookup(id)))
@@ -137,19 +178,25 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   // GET  /:id/edit
-  def edit(id: String, lookUpPostCode: Option[String], uk: Option[Boolean]) = Action.async {
-    implicit req =>
-      withJourneyV2(id) {
-        journeyData =>
-          val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
-          val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
-          val isWelsh = getWelshContent(journeyData)
-          if (journeyData.config.options.isUkMode || uk.contains(true)) {
-            (None, Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh)))
-          } else {
-            (None, Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh)))
-          }
+  def edit(id: String, lookUpPostCode: Option[String], uk: Option[Boolean]): Action[AnyContent] = Action.async {
+    implicit req => withJourneyV2(id) {
+      journeyData => {
+        val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
+        val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+        val isWelsh = getWelshContent(journeyData)
+
+        if (journeyData.config.options.isUkMode || uk.contains(true)) {
+          (None, requestWithWelshHeader(isWelsh) {
+            Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh))
+          })
+        }
+        else {
+          (None, requestWithWelshHeader(isWelsh) {
+            Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh).fill(editAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh))
+          })
+        }
       }
+    }
   }
 
   private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
@@ -158,55 +205,82 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   // POST /:id/edit?uk=:isUkAddress
   def handleEdit(id: String, isUkAddress: Boolean): Action[AnyContent] = Action.async {
-    implicit req =>
-      withJourneyV2(id) {
-        journeyData =>
-          val isWelsh = getWelshContent(journeyData)
+    implicit req => withJourneyV2(id) {
+      journeyData => {
+        val isWelsh = getWelshContent(journeyData)
 
-          if (isUkAddress) {
-            val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
-            validatedForm.fold(
-              errors => (None, BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh))),
-              edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-            )
-          } else {
-            val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest(), isWelsh)
-            validatedForm.fold(
-              errors => (None, BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))),
-              edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), Redirect(routes.AddressLookupController.confirm(id)))
-            )
-          }
+        if (isUkAddress) {
+          val validatedForm = isValidPostcode(ukEditForm(isWelsh).bindFromRequest(), isWelsh)
+
+          validatedForm.fold(
+            errors => (None, requestWithWelshHeader(isWelsh) {
+              BadRequest(views.html.v2.uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh))
+            }),
+            edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), requestWithWelshHeader(isWelsh) {
+              Redirect(routes.AddressLookupController.confirm(id))
+            })
+          )
+        } else {
+          val validatedForm = isValidPostcode(nonUkEditForm(isWelsh).bindFromRequest(), isWelsh)
+
+          validatedForm.fold(
+            errors => (None, requestWithWelshHeader(isWelsh) {
+              BadRequest(views.html.v2.non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh))
+            }),
+            edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), requestWithWelshHeader(isWelsh) {
+              Redirect(routes.AddressLookupController.confirm(id))
+            })
+          )
+        }
       }
+    }
   }
 
   // GET  /:id/confirm
-  def confirm(id: String) = Action.async {
-    implicit req =>
-      withJourneyV2(id) {
-        journeyData =>
-          journeyData.selectedAddress
-            .map(_ => (None, Ok(views.html.v2.confirm(id, journeyData, journeyData.selectedAddress, isWelsh = getWelshContent(journeyData)))))
-            .getOrElse((None, Redirect(routes.AddressLookupController.lookup(id))))
+  def confirm(id: String): Action[AnyContent] = Action.async {
+    implicit req => withJourneyV2(id) {
+      journeyData => {
+        val isWelsh = getWelshContent(journeyData)
+
+        journeyData.selectedAddress.map(_ =>
+          (None, requestWithWelshHeader(isWelsh) {
+            Ok(views.html.v2.confirm(id, journeyData, journeyData.selectedAddress, isWelsh = getWelshContent(journeyData)))
+          })
+        )
+        .getOrElse(
+          (None, requestWithWelshHeader(isWelsh) {
+            Redirect(routes.AddressLookupController.lookup(id))
+          })
+        )
       }
+    }
   }
 
   // POST /:id/confirm
-  def handleConfirm(id: String) = Action.async {
-    implicit req =>
-      withJourneyV2(id) {
-        journeyData =>
-          if (journeyData.selectedAddress.isDefined) {
-            val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
-            FrontendAuditConnector.sendEvent(new DataEvent("address-lookup-frontend", EventTypes.Succeeded, tags = hc.toAuditTags("ConfirmAddress", req.uri), detail = Map(
-              "auditRef" -> id,
-              "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
-              "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
-            )))
-            (Some(jd), Redirect(Uri(journeyData.config.options.continueUrl).withQuery("id" -> id).toString()))
-          } else {
-            (None, Redirect(routes.AddressLookupController.confirm(id)))
-          }
+  def handleConfirm(id: String): Action[AnyContent] = Action.async {
+    implicit req => withJourneyV2(id) {
+      journeyData => {
+        val isWelsh = getWelshContent(journeyData)
+
+        if (journeyData.selectedAddress.isDefined) {
+          val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+
+          FrontendAuditConnector.sendEvent(new DataEvent("address-lookup-frontend", EventTypes.Succeeded, tags = hc.toAuditTags("ConfirmAddress", req.uri), detail = Map(
+            "auditRef" -> id,
+            "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
+            "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
+          )))
+
+          (Some(jd), requestWithWelshHeader(isWelsh) {
+            Redirect(Uri(journeyData.config.options.continueUrl).withQuery("id" -> id).toString())
+          })
+        } else {
+          (None, requestWithWelshHeader(isWelsh) {
+            Redirect(routes.AddressLookupController.confirm(id))
+          })
+        }
       }
+    }
   }
 
   // GET /renewSession

@@ -97,15 +97,19 @@ object TestConstants {
   }
 
   object testEnglishConfirmPageLabels {
-  val title = "enConfirmPageTitle"
-  val heading = "enConfirmPageHeading"
-  val infoSubheading = "enConfirmPageInfoSubheading"
-  val infoMessage = "enConfirmPageInfoMessage"
-  val submitLabel = "enConfirmPageSubmitLabel"
-  val searchAgainLinkText = "enConfirmPageSearchAgainLinkText"
-  val changeLinkText = "enConfirmPageChangeLinkText"
-  val confirmChangeText = "enConfirmPageConfirmChangeText"
-}
+    val title = "enConfirmPageTitle"
+    val heading = "enConfirmPageHeading"
+    val infoSubheading = "enConfirmPageInfoSubheading"
+    val infoMessage = "enConfirmPageInfoMessage"
+    val submitLabel = "enConfirmPageSubmitLabel"
+    val searchAgainLinkText = "enConfirmPageSearchAgainLinkText"
+    val changeLinkText = "enConfirmPageChangeLinkText"
+    val confirmChangeText = "enConfirmPageConfirmChangeText"
+  }
+
+  object ALFHeaders {
+    val useWelsh = "Use-Welsh"
+  }
 
   // V1 model constants
   val fullV1LookupConfig = Some(LookupPage(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode, Lookup.submit,

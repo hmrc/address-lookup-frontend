@@ -1,6 +1,6 @@
 package controllers
 
-import config.FrontendAppConfig.ALFHeaderNames
+import config.FrontendAppConfig.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.{EditPage, _}
@@ -827,19 +827,19 @@ class EditPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
         doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
-    "the welsh content header is set and welsh object isn't provided in config" should {
+    "the welsh content header is set to false and welsh object isn't provided in config" should {
       "render in English" in {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress("edit?uk=true")
           .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck",
-            ALFHeaderNames.useWelsh -> "false"
+            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
+            "Csrf-Token" -> "nocheck"
           )
           .get()
 
@@ -848,10 +848,33 @@ class EditPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
         doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
-    "the welsh content header is set and welsh object provided in config" should {
+    "the welsh content header is set to false and welsh object is provided in config" should {
+      "render in English" in {
+        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
+        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
+        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
+
+        val fResponse = buildClientLookupAddress("edit?uk=true")
+          .withHeaders(
+            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
+            "Csrf-Token" -> "nocheck"
+          )
+          .get()
+
+        val res = await(fResponse)
+        res.status shouldBe INTERNAL_SERVER_ERROR
+
+        val doc = getDocFromResponse(res)
+        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+      }
+    }
+    "the welsh content header is set to true and welsh object provided in config" should {
       "render in Welsh" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
@@ -859,9 +882,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         val fResponse = buildClientLookupAddress("edit?uk=true")
           .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck",
-            ALFHeaderNames.useWelsh -> "true"
+            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = true),
+            "Csrf-Token" -> "nocheck"
           )
           .get()
 

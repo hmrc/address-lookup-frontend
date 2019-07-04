@@ -19,8 +19,7 @@ package itutil
 import java.net.{URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.util.UUID
-
-import itutil.config.IntegrationTestConstants.testCsrfToken
+import itutil.config.IntegrationTestConstants._
 import play.api.libs.Crypto
 import play.api.libs.ws.WSCookie
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
@@ -51,6 +50,8 @@ trait LoginStub extends SessionCookieBaker {
     getSessionCookie(Map("csrfToken" -> testCsrfToken())) + lang.fold("")(l => s";PLAY_LANG=$l;")
   }
 
+  def sessionCookieWithWelshCookie(useWelsh: Boolean): String =
+    sessionCookieWithCSRF + s";$useWelshCookieName=${useWelsh.toString}"
 }
 
 trait SessionCookieBaker {

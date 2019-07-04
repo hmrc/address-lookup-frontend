@@ -2,8 +2,8 @@
 package config
 
 import com.typesafe.config.Config
-import config.FrontendAppConfig.ALFHeaderNames
-import model.MessageConstants.{MessageConstants, EnglishMessageConstants => englishContent, WelshMessageConstants => welshContent}
+import config.FrontendAppConfig.ALFCookieNames
+import model.MessageConstants.{EnglishMessageConstants => englishContent, WelshMessageConstants => welshContent}
 import net.ceedubs.ficus.Ficus._
 import play.api.mvc.Request
 import play.api.{Application, Configuration, Play}
@@ -29,10 +29,10 @@ object FrontendGlobal extends DefaultFrontendGlobal {
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html = {
-    val optWelshContentHeader = rh.headers.get(ALFHeaderNames.useWelsh)
+    val optWelshContentCookie = rh.cookies.get(ALFCookieNames.useWelsh)
 
-    val langSpecificMessages = optWelshContentHeader collect {
-      case welshCookie if welshCookie.toBoolean == true => welshContent
+    val langSpecificMessages = optWelshContentCookie collect {
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent
     } getOrElse(englishContent)
 
     views.html.error_template(

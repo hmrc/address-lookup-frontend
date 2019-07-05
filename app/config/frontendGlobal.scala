@@ -42,7 +42,19 @@ object FrontendGlobal extends DefaultFrontendGlobal {
     )
   }
 
-  override def notFoundTemplate(implicit request: Request[_]): Html = super.notFoundTemplate
+  override def notFoundTemplate(implicit request: Request[_]): Html = {
+    val optWelshContentCookie = request.cookies.get(ALFCookieNames.useWelsh)
+
+    val langSpecificMessages = optWelshContentCookie collect {
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent
+    } getOrElse(englishContent)
+
+    views.html.error_template(
+      pageTitle = langSpecificMessages.notFoundErrorTitle,
+      heading = langSpecificMessages.notFoundErrorHeading,
+      message = langSpecificMessages.notFoundErrorBody
+    )
+  }
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 }

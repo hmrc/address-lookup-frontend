@@ -54,6 +54,10 @@ object MessageConstants {
     def intServerErrorTitle: String
     def intServerErrorTryAgain: String
 
+    def notFoundErrorTitle: String
+    def notFoundErrorHeading: String
+    def notFoundErrorBody: String
+
     val errorRequired: String
     val errorMin: Int => String
     val errorMax: Int => String
@@ -114,6 +118,10 @@ object MessageConstants {
 
     val intServerErrorTitle = "Sorry, there is a problem with the service"
     val intServerErrorTryAgain = "Try again later."
+
+    val notFoundErrorTitle = "Page not found"
+    val notFoundErrorHeading = "This page cannot be found"
+    val notFoundErrorBody = "Please check that you have entered the correct web address."
   }
 
   object WelshMessageConstants extends MessageConstants {
@@ -166,6 +174,10 @@ object MessageConstants {
 
     val intServerErrorTitle = "Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth"
     val intServerErrorTryAgain = "Rhowch gynnig arall arni yn nes ymlaen."
+
+    val notFoundErrorTitle = "Heb ddod o hyd i’r dudalen"
+    val notFoundErrorHeading = "Ni ellir dod o hyd i’r dudalen hon"
+    val notFoundErrorBody = "Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir."
 
     val errorRequired = "Mae angen llenwi’r maes hwn"
     val errorMin: Int => String = min => s"$min yw’r isafswm hyd"

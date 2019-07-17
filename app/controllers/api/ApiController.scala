@@ -56,24 +56,6 @@ class ApiController @Inject()(journeyRepository: JourneyRepository, idGeneration
     }
   }
 
-  def initV2(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
-    val id = uuid
-    val journeyFromConfig = journeyRepository initV2(journeyName)
-
-    val resolvedJourney = req.body.continueUrl match {
-      case Some(continueUrlFromInit) => journeyFromConfig.copy(
-        config = journeyFromConfig.config.copy(
-          options = journeyFromConfig.config.options.copy(continueUrl = continueUrlFromInit)
-        )
-      )
-      case _ => journeyFromConfig
-    }
-
-    journeyRepository putV2 (id, resolvedJourney) map (
-      _ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup")
-    )
-  }
-
   // GET  /confirmed?id=:id
   def confirmed = Action.async { implicit req =>
     ALFForms.confirmedForm.bindFromRequest().fold(

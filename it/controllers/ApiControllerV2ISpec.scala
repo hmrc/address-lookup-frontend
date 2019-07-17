@@ -113,51 +113,6 @@ class ApiControllerV2ISpec extends IntegrationSpecBase with FrontendServicesConf
     }
   }
 
-  "/api/v2/init/:id" when {
-    "provided with a valid journey name" should {
-      "return ACCEPTED with a url in the Location header" in {
-        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyFromConfig), OK)
-
-        val res = await(buildClientAPI(s"v2/init/j0")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .post(Json.obj()))
-
-        res.status shouldBe ACCEPTED
-        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/lookup")
-      }
-    }
-
-    "provided with a continue URL" should {
-      "return ACCEPTED with the provided URL saved in Keystore" in {
-        val testContinueUrl = "testContinueUrl"
-        val v2Model = testJourneyFromConfig.copy(
-          config = testJourneyFromConfig.config.copy(
-            options = testJourneyFromConfig.config.options.copy(continueUrl = testContinueUrl)
-          )
-        )
-
-        stubKeystoreSave(testJourneyId, Json.toJson(v2Model), OK)
-
-        val res = await(buildClientAPI(s"v2/init/j0")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .post(Json.obj("continueUrl" -> testContinueUrl)))
-
-        res.status shouldBe ACCEPTED
-        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/lookup")
-      }
-    }
-
-    "provided with an invalid journey name" should {
-      "return an Internal Server Error" in {
-        val res = await(buildClientAPI(s"v2/init/foo")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .post(Json.obj()))
-
-        res.status shouldBe INTERNAL_SERVER_ERROR
-      }
-    }
-  }
-
   "/api/v2/confirmed" when {
     "provided with a valid journey ID" should {
       "return OK with a confirmed address" in {

@@ -1,0 +1,42 @@
+@import uk.gov.hmrc.play.views.html.helpers
+
+@import model._
+
+@import v2.main_template
+
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+
+@(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+
+@main_template(title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+
+@if(journeyData.resolveConfigV2().options.showBackButtons) {
+    <div>
+        <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
+    </div>
+    }
+
+    <h1 class="form-title heading-xlarge" id="pageHeading">
+        @{if(firstLookup) {
+            messageConstants.tooManyResultsText
+        } else {
+            messageConstants.cannotFindText
+        }}
+    </h1>
+
+    <p>@messageConstants.youEntered</p>
+    <ul class="list list-bullet">
+        <li>@{lookup.postcode} @messageConstants.forPostcode</li>
+        <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'${filter}' ${messageConstants.nameNumberText}")}</li>
+
+    </ul>
+    </br>
+
+    <div class="form-group">
+        <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messageConstants.anotherSearchText</button></a>
+    </div>
+
+    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
+}

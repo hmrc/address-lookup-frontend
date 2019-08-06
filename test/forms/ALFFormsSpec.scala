@@ -7,8 +7,10 @@ import play.api.data.validation.{Invalid, Valid}
 
 class ALFFormsSpec extends WordSpec with MustMatchers{
 
-  val editFormNonuk = ALFForms.nonUkEditForm
-  val editFormUk = ALFForms.ukEditForm
+  val editFormNonuk = ALFForms.nonUkEditForm()
+  val editFormNonukWelsh = ALFForms.nonUkEditForm(true)
+  val editFormUk = ALFForms.ukEditForm()
+  val editFormUkWelsh = ALFForms.ukEditForm(true)
 
   val chars257 = List.fill(257)("A").reduce(_ + _)
   val chars256 = List.fill(256)("A").reduce(_ + _)
@@ -88,10 +90,19 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
 
       editFormNonuk.bind(data).hasErrors mustBe false
     }
+    "return no errors with valid data except and no country" in {
+      val data = Map(
+        "line1" -> "foo1",
+        "line2" -> "foo2",
+        "town" -> "twn",
+        "postcode" -> "fudgebarwizz123")
+
+      editFormNonuk.bind(data).hasErrors mustBe false
+    }
   }
 
   "uk and non uk edit form" should {
-    Map(editFormUk -> "uk", editFormNonuk -> "nonUk").foreach{ mapOfForms =>
+    Map(editFormUk -> "uk", editFormNonuk -> "nonUk", editFormUkWelsh -> "uk Welsh", editFormNonukWelsh -> "nonUk Welsh").foreach{ mapOfForms =>
       val formOfTest = mapOfForms._2
       val form = mapOfForms._1
 
@@ -169,6 +180,17 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
           "line1" -> "foo",
           "line2" -> chars256,
           "line3" -> "foo3",
+          "town" -> "twn",
+          "postcode" -> "ZZ11ZZ",
+          "countryCode" -> "GB")
+
+        form.bind(data).hasErrors mustBe true
+      }
+      s"$formOfTest return error if line 3 > 255 chars" in {
+        val data = Map(
+          "line1" -> "foo",
+          "line2" -> "foo2",
+          "line3" -> chars256,
           "town" -> "twn",
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")

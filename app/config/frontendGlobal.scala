@@ -2,19 +2,20 @@
 package config
 
 import com.typesafe.config.Config
+import config.FrontendAppConfig.ALFCookieNames
+import model.MessageConstants.{EnglishMessageConstants => englishContent, WelshMessageConstants => welshContent}
 import net.ceedubs.ficus.Ficus._
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Request
 import play.api.{Application, Configuration, Play}
 import play.twirl.api.Html
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig}
 import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
-import uk.gov.hmrc.play.frontend.filters.{ FrontendAuditFilter, FrontendLoggingFilter, MicroserviceFilterSupport }
+import uk.gov.hmrc.play.frontend.filters.{FrontendAuditFilter, FrontendLoggingFilter, MicroserviceFilterSupport}
 
-object FrontendGlobal
-  extends DefaultFrontendGlobal {
+object FrontendGlobal extends DefaultFrontendGlobal {
 
   override val auditConnector = FrontendAuditConnector
   override val loggingFilter = LoggingFilter
@@ -27,8 +28,33 @@ object FrontendGlobal
     applicationCrypto.verifyConfiguration()
   }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    views.html.error_template(pageTitle, heading, message)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html = {
+    val optWelshContentCookie = rh.cookies.get(ALFCookieNames.useWelsh)
+
+    val langSpecificMessages = optWelshContentCookie collect {
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent
+    } getOrElse(englishContent)
+
+    views.html.error_template(
+      pageTitle = langSpecificMessages.intServerErrorTitle,
+      heading = langSpecificMessages.intServerErrorTitle,
+      message = langSpecificMessages.intServerErrorTryAgain
+    )
+  }
+
+  override def notFoundTemplate(implicit request: Request[_]): Html = {
+    val optWelshContentCookie = request.cookies.get(ALFCookieNames.useWelsh)
+
+    val langSpecificMessages = optWelshContentCookie collect {
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent
+    } getOrElse(englishContent)
+
+    views.html.error_template(
+      pageTitle = langSpecificMessages.notFoundErrorTitle,
+      heading = langSpecificMessages.notFoundErrorHeading,
+      message = langSpecificMessages.notFoundErrorBody
+    )
+  }
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 }

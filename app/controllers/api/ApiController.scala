@@ -1,40 +1,45 @@
 package controllers.api
 
-import java.util.UUID
-
 import controllers.AlfController
 import forms.ALFForms
 import javax.inject.{Inject, Singleton}
 import model.JourneyData._
-import model.{Init, JourneyConfig, JourneyData}
+import model._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.mvc.Http.HeaderNames
-import services.JourneyRepository
+import services.{IdGenerationService, JourneyRepository}
+import utils.V2ModelConverter._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ApiController @Inject()(journeyRepository: JourneyRepository)
+class ApiController @Inject()(journeyRepository: JourneyRepository, idGenerationService: IdGenerationService)
                              (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
 
-  protected def uuid: String = UUID.randomUUID().toString
+  protected def uuid: String = idGenerationService.uuid
 
   private implicit val initFormat = Json.format[Init]
 
   // POST /init
   def initWithConfig = Action.async(parse.json[JourneyConfig]) { implicit req =>
     val id = uuid
-    journeyRepository.put(id, JourneyData(req.body)).map(success =>
+    journeyRepository.putV2(id, JourneyData(req.body).toV2Model).map(success =>
       Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup")
     )
   }
 
-  // GET  /init/:journeyName
+  def initWithConfigV2 = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
+    val id = uuid
+    journeyRepository.putV2(id, JourneyDataV2(config = req.body))
+      .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+  }
+
+  // POST  /init/:journeyName
   // initialize a new journey and return the "on ramp" URL
   def init(journeyName: String) = Action.async(parse.json[Init]) { implicit req =>
     val id = uuid
@@ -61,6 +66,20 @@ class ApiController @Inject()(journeyRepository: JourneyRepository)
             (None, Ok(Json.toJson(journeyData.confirmedAddress.get)))
           } else {
             (None, NotFound)
+          }
+        }
+      }
+    )
+  }
+
+  def confirmedV2 = Action.async { implicit req =>
+    ALFForms.confirmedForm.bindFromRequest().fold(
+      _ => Future.successful(BadRequest),
+      confirmed => {
+        withJourneyV2(confirmed.id, NotFound) { journeyData =>
+          journeyData.confirmedAddress match {
+            case Some(confirmedAddresss) => (None, Ok(Json.toJson(confirmedAddresss)))
+            case _ => (None, NotFound)
           }
         }
       }

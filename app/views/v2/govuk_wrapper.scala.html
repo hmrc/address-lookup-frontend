@@ -1,0 +1,140 @@
+@import config.AppConfig
+@import model.JourneyDataV2
+@import layouts.{govuk_template => hmrcGovUkTemplate}
+@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+
+@(appConfig: AppConfig,
+  title: String,
+  journeyData: Option[JourneyDataV2] = None,
+  mainClass: Option[String] = None,
+  mainDataAttributes: Option[Html] = None,
+  bodyClasses: Option[String] = None,
+  sidebar: Html = HtmlFormat.empty,
+  contentHeader: Option[Html] = None,
+  mainContent: Html = HtmlFormat.empty,
+  serviceInfoContent: Html = HtmlFormat.empty,
+  scriptElem: Option[Html] = None,
+  welshEnabled: Boolean = false
+)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(welshEnabled) WelshMessageConstants else EnglishMessageConstants}
+
+@links = {
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.additionalStylesheetUrl).isDefined) {
+        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.additionalStylesheetUrl).get}">
+    }
+}
+
+@head = {
+    @uiLayouts.head(
+        linkElem = Some(links),
+        headScripts = None
+    )
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="@routes.Assets.at("style.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("timeout-dialog.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("accessible-autocomplete.min.css")">
+}
+
+@headerNavLinks = {
+    <li>
+        <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.homeNavHref).getOrElse("/")}"
+         data-journey-click="primary-navigation:Click:Home">@{messageConstants.home}</a>
+    </li>
+}
+
+@insideHeader = {
+    @uiLayouts.header_nav(
+        navTitle = journeyData.flatMap(_.resolveConfigV2(welshEnabled).labels.appLevelLabels.navTitle),
+        navTitleLink = None,
+        showBetaLink = false,
+        navLinks = Some(headerNavLinks)
+    )
+}
+
+@afterHeader = {}
+
+<script src='@controllers.routes.Assets.at("accessible-autocomplete.min.js")' type="text/javascript"></script>
+
+@timeoutScript(timeoutInSeconds: Int, timeoutUrl: String) = {
+    <script src='@controllers.routes.Assets.at("timeout-dialog.js")' type="text/javascript"></script>
+    <script id="timeoutScript" type="text/javascript" charset="utf-8">$.timeoutDialog({timeout: @timeoutInSeconds, countdown: 30, time: "@Html(messageConstants.timeoutSeconds)", title: "@Html(messageConstants.timeoutSignedOut)", message: "@Html(messageConstants.timeoutSignYouOut)", minute_text: "@Html(messageConstants.timeoutMinute)", minutes_text: "@Html(messageConstants.timeoutMinutes)", keep_alive_button_text: "@Html(messageConstants.timeoutResumeSession)", heading_text: "@Html(messageConstants.timeoutInactive)", keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'});var dialogOpen;</script>
+}
+
+@scripts = {
+    @journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
+    @scriptElem
+}
+
+@bodyEnd = {
+    @uiLayouts.footer(
+        analyticsToken = Some(appConfig.analyticsToken),
+        analyticsHost = appConfig.analyticsHost,
+        ssoUrl = None,
+        scriptElem = Some(scripts),
+        gaCalls = None
+    )
+}
+
+@footerTop = {}
+
+@footerLinks = {}
+
+@phaseBanner = {
+    @journeyData.map{ jData =>
+        @if(jData.resolveConfigV2(welshEnabled).options.showPhaseBanner) {
+            <div class="@{jData.resolveConfigV2(welshEnabled).options.phase}-banner" id="phase-banner">
+                <p>
+                    <strong class="phase-tag" id="phase-tag">@{jData.resolveConfigV2(welshEnabled).options.phase.toUpperCase}</strong>
+                    <span id="phase-banner-content">@Html(jData.resolveConfigV2(welshEnabled).labels.appLevelLabels.phaseBannerHtml)</span>
+                </p>
+            </div>
+        }
+    }
+}
+
+@serviceInfo = {
+    @uiLayouts.serviceInfo(
+        betaBanner = phaseBanner,
+        includeGridWrapper = false,
+        serviceInfoContent = Some(serviceInfoContent),
+        includeHMRCBranding = journeyData.map(_.resolveConfigV2(welshEnabled).options.includeHMRCBranding).getOrElse(true),
+        setLang = {if(welshEnabled) "cy" else "en"}
+    )
+}
+
+@mainContentHeader = {
+    @if(journeyData exists (_.welshEnabled)) {
+        @views.html.language_selection(
+            Map(
+                "english" -> Lang("en"),
+                "cymraeg" -> Lang("cy")
+            ),
+            lang => controllers.routes.LanguageController.switchToLanguage(lang),
+            customClass = None
+        )
+    }
+    @if(contentHeader.isDefined) {
+        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+    }
+}
+
+@getHelpForm = @{uiHelpers.reportAProblemLink(
+    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.deskProServiceName)),
+    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.deskProServiceName)))}
+
+@content = {
+    @uiLayouts.main_content(
+        article = mainContent,
+        mainClass = mainClass,
+        mainDataAttributes = mainDataAttributes,
+        mainContentHeader = mainContentHeader,
+        serviceInfo = serviceInfo,
+        getHelpForm = getHelpForm,
+        sidebar = sidebar
+    )
+}
+
+@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

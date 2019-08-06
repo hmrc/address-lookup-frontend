@@ -3,10 +3,9 @@
 GET  /no-journey                 @controllers.AddressLookupController.noJourney()
 GET  /:id/lookup                 @controllers.AddressLookupController.lookup(id: String, postcode: Option[String] ?= None, filter : Option[String] ?= None)
 GET  /:id/select                 @controllers.AddressLookupController.select(id: String)
-POST /:id/select                 @controllers.AddressLookupController.handleSelect(id: String)
+POST /:id/select                 @controllers.AddressLookupController.handleSelect(id: String, filter: Option[String], postcode: String)
 GET  /:id/edit                   @controllers.AddressLookupController.edit(id: String, lookUpPostCode: Option[String] ?= None, uk: Option[Boolean] ?= None)
-POST /:id/edit                   @controllers.AddressLookupController.handleNonUkEdit(id: String)
-POST /:id/ukEdit                 @controllers.AddressLookupController.handleUkEdit(id: String)
+POST /:id/edit                   @controllers.AddressLookupController.handleEdit(id: String, uk: Boolean)
 GET  /:id/confirm                @controllers.AddressLookupController.confirm(id: String)
 POST /:id/confirm                @controllers.AddressLookupController.handleConfirm(id: String)
 GET  /renewSession               @controllers.AddressLookupController.renewSession()
@@ -14,4 +13,6 @@ GET  /destroySession             @controllers.AddressLookupController.destroySes
 
 # Other
 
-GET    /assets/*file                           controllers.Assets.at(path="/public", file)
+GET  /language/:lang        @controllers.LanguageController.switchToLanguage(lang: String)
+
+GET  /assets/*file                controllers.Assets.at(path="/public", file)

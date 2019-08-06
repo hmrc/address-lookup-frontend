@@ -1,7 +1,7 @@
 package model
 
 import fixtures.ALFEFixtures
-import model.JourneyConfigDefaults.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+import model.JourneyConfigDefaults.EnglishConstants.{LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT, defaultPhaseBannerHtml}
 import model.JourneyData._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsResultException, Json}
@@ -12,7 +12,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
   "an edit" should {
     "transform to a confirmable address and back again where isukMode == false" in {
-      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
+      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find(code = "GB").get.code))
       val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
@@ -20,7 +20,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
         ConfirmableAddressDetails(
           Some(List("line1", "line2", "line3", "town")),
           Some("ZZ1 1ZZ"),
-          ForeignOfficeCountryService.find("GB")
+          ForeignOfficeCountryService.find(code = "GB")
         )
       )
       conf must be (expected)
@@ -30,7 +30,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "transform to a confirmable address and back again given less than three lines where isukMode == false" in {
-      val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find("GB").get.code))
+      val edit = Edit("line1", None, None, "town", "ZZ1 1ZZ", Some(ForeignOfficeCountryService.find(code = "GB").get.code))
       val conf = edit.toConfirmableAddress("audit ref")
       val expected = ConfirmableAddress(
         "audit ref",
@@ -38,7 +38,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
         ConfirmableAddressDetails(
           Some(List("line1", "town")),
           Some("ZZ1 1ZZ"),
-          ForeignOfficeCountryService.find("GB")
+          ForeignOfficeCountryService.find(code = "GB")
         )
       )
       conf must be (expected)
@@ -56,7 +56,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
         ConfirmableAddressDetails(
           Some(List("line1", "town")),
           postcode = Some("ZZ1 1ZZ"),
-          ForeignOfficeCountryService.find("GB")
+          ForeignOfficeCountryService.find(code = "GB")
         )
       )
       conf must be (expected)
@@ -73,7 +73,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
         ConfirmableAddressDetails(
           Some(List("line1", "town")),
           postcode = None,
-          ForeignOfficeCountryService.find("FR")
+          ForeignOfficeCountryService.find(code = "FR")
         )
       )
       conf must be (expected)
@@ -87,7 +87,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
     "transform to a confirmable address where county is ignored AND LINE 4 if town exists" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), Some("town"), Some("county"), ForeignOfficeCountryService.find("GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), Some("town"), Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
@@ -103,7 +103,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
     "transform to a confirmable address where town is ignored AND LINE 4 if county exists" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, Some("county"), ForeignOfficeCountryService.find("GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
@@ -119,7 +119,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
     "transform to a confirmable address With all 4 address lines as county and town are None" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, None, ForeignOfficeCountryService.find("GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, None, ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
@@ -135,7 +135,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "be able to describe itself" in {
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"), Some("county"), ForeignOfficeCountryService.find("GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"), Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
       val desc = prop.toDescription
       desc must be ("line1, line2, line3, town, county, postcode")
     }
@@ -143,7 +143,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
   "a confirmable address" should {
     "default country to GB" in {
-      ConfirmableAddress("auditRef").address.country must be (ForeignOfficeCountryService.find("GB"))
+      ConfirmableAddress("auditRef").address.country must be (ForeignOfficeCountryService.find(code = "GB"))
     }
   }
 
@@ -198,7 +198,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "have default phase banner html" in {
-      cfg.phaseBannerHtml must be (JourneyConfigDefaults.defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
+      cfg.phaseBannerHtml must be (defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
     }
 
     "show back buttons by default" in {

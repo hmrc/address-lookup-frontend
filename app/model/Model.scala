@@ -1,13 +1,14 @@
 
 package model
 
-import model.JourneyConfigDefaults._
+import model.JourneyConfigDefaults.EnglishConstants._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import services.ForeignOfficeCountryService
 import uk.gov.hmrc.address.v2.Country
 import utils.PostcodeHelper
+
 
 case class Lookup(filter: Option[String], postcode: String)
 
@@ -23,52 +24,10 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
       if(postcode.isEmpty) None else Some(postcode),
-      countryCode.fold(ForeignOfficeCountryService.find("GB"))(code => ForeignOfficeCountryService.find(code))
+      countryCode.fold(ForeignOfficeCountryService.find(code = "GB"))(code => ForeignOfficeCountryService.find(code = code))
     )
   )
 }
-
-object JourneyConfigDefaults {
-
-  val CONFIRM_PAGE_TITLE = "Confirm the address"
-  val CONFIRM_PAGE_HEADING = "Review and confirm"
-  val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
-  val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
-  val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm and continue"
-  val CONFIRM_PAGE_EDIT_LINK_TEXT = "Edit this address"
-
-  val EDIT_PAGE_TITLE = "Enter the address"
-  val EDIT_PAGE_HEADING = "Enter the address"
-  val EDIT_PAGE_LINE1_LABEL = "Address line 1"
-  val EDIT_PAGE_LINE2_LABEL = "Address line 2"
-  val EDIT_PAGE_LINE3_LABEL = "Address line 3"
-  val EDIT_PAGE_TOWN_LABEL = "Town/city"
-  val EDIT_PAGE_POSTCODE_LABEL = "Postal code (optional)"
-  val EDIT_PAGE_COUNTRY_LABEL = "Country"
-  val EDIT_PAGE_SUBMIT_LABEL = "Continue"
-
-  val LOOKUP_PAGE_TITLE = "Find the address"
-  val LOOKUP_PAGE_HEADING = "Find the address"
-  val LOOKUP_PAGE_FILTER_LABEL = "Property name or number"
-  val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
-  val LOOKUP_PAGE_SUBMIT_LABEL = "Search for the address"
-  val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address does not have a UK postcode"
-
-  val SELECT_PAGE_TITLE = "Choose the address"
-  val SELECT_PAGE_HEADING = "Choose the address"
-  val SELECT_PAGE_HEADING_WITH_POSTCODE = "Showing all results for "
-  val SELECT_PAGE_PROPOSAL_LIST_LABEL = "Please select one of the following addresses"
-  val SELECT_PAGE_SUBMIT_LABEL = "Continue"
-
-  val EDIT_LINK_TEXT = "Enter the address manually"
-  val SEARCH_AGAIN_LINK_TEXT = "Search again"
-
-  val CONFIRM_CHANGE_TEXT = "By confirming this change, you agree that the information you have given is complete and correct."
-
-  def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
-
-}
-
 // decorator providing default config values; genuinely optional options are not decorated, only those that are required
 // but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
 case class ResolvedJourneyConfig(cfg: JourneyConfig) {
@@ -104,7 +63,6 @@ case class ResolvedConfirmPage(p: ConfirmPage) {
   val changeLinkText: String = p.changeLinkText.getOrElse(CONFIRM_PAGE_EDIT_LINK_TEXT)
   val showConfirmChangeText: Boolean = p.showConfirmChangeText.getOrElse(false)
   val confirmChangeText: String = p.confirmChangeText.getOrElse(CONFIRM_CHANGE_TEXT)
-
 }
 
 case class ConfirmPage(title: Option[String] = None,
@@ -217,6 +175,7 @@ case class JourneyConfig(continueUrl: String,
                          ukMode: Option[Boolean] = None) {
 
   def isukMode: Boolean  = ukMode.contains(true)
+
 }
 
 case class ProposedAddress(addressId: String,
@@ -224,7 +183,7 @@ case class ProposedAddress(addressId: String,
                            lines: List[String] = List.empty,
                            town: Option[String] = None,
                            county: Option[String] = None,
-                           country: Country = ForeignOfficeCountryService.find("GB").getOrElse(Country("GB", "United Kingdom"))) {
+                           country: Country = ForeignOfficeCountryService.find(code ="GB").getOrElse(Country("GB", "United Kingdom"))) {
 
   def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
@@ -263,11 +222,12 @@ case class ConfirmableAddress(auditRef: String,
   def toEdit: Edit = address.toEdit
 
   def toDescription: String = address.toDescription
+
 }
 
 case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
                                      postcode: Option[String] = None,
-                                     country: Option[Country] = ForeignOfficeCountryService.find("GB")) {
+                                     country: Option[Country] = ForeignOfficeCountryService.find(code = "GB")) {
 
   def toDescription: String = {
     (lines.getOrElse(List.empty) ++ postcode.toList ++ country.toList.map(_.name)).mkString(", ") + "."
@@ -296,30 +256,38 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 
 }
 
+object CountryFormat {
+  implicit val countryFormat: Format[Country] = Json.format[Country]
+}
+
+object ConfirmableAddressDetails {
+  import CountryFormat._
+  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
+}
+
+
+object ConfirmableAddress {
+  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
+}
+
+object ProposedAddress {
+  import CountryFormat._
+  implicit val proposedAddressFormat = Json.format[ProposedAddress]
+}
+
 // JSON serialization companions
 object JourneyData {
 
-  implicit val countryFormat = Json.format[Country]
   implicit val confirmPageFormat = Json.format[ConfirmPage]
   implicit val selectPageFormat = Json.format[SelectPage]
   implicit val lookupPageFormat = Json.format[LookupPage]
   implicit val editPageFormat = Json.format[EditPage]
-  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
-  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
-  implicit val proposedAddressFormat = Json.format[ProposedAddress]
+
   implicit val timeoutFormat: Format[Timeout] = (
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
       (JsPath \ "timeoutUrl").format[String]
     ) (Timeout.apply, unlift(Timeout.unapply))
   implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]
-
-}
-
-object ConfirmableAddress {
-
-  implicit val countryFormat = Json.format[Country]
-  implicit val confirmableAddressDetailsFormat = Json.format[ConfirmableAddressDetails]
-  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
 
 }

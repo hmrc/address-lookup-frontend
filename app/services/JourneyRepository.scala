@@ -5,11 +5,13 @@ import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
 import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
 import model._
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.cache.client.HttpCaching
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.V2ModelConverter._
 
 @ImplementedBy(classOf[KeystoreJourneyRepository])
 trait JourneyRepository {
@@ -18,7 +20,11 @@ trait JourneyRepository {
 
   def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]]
 
+  def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]]
+
   def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+
+  def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 
 }
 
@@ -47,11 +53,23 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
       cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
   }
 
+  override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
+    cache.fetchAndGetEntry[JsValue](cache.defaultSource, cacheId, id).map(_.map(json =>
+      (json \ "config" \ "version").asOpt[Int] match {
+        case Some(_) => json.as[JourneyDataV2]
+        case None => convertToV2Model(json.as[JourneyData])
+      }
+    ))
+  }
+
   override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     cache.cache(cache.defaultSource, cacheId, id, data).map { res =>
       true
     }
   }
+
+  override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    cache.cache(cache.defaultSource, cacheId, id, data) map (_ => true)
 
   private def maybeString(v: ConfigValue): Option[String] = {
     if (v == null) None

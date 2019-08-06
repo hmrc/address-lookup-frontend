@@ -1,0 +1,55 @@
+@import model._
+@import utils.IsCountryUK
+@import templates.address_confirmation_display
+@import uk.gov.hmrc.play.views.html.helpers
+@import views.html.v2.govuk_wrapper
+@import views.html.v2.main_template
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+
+@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+
+@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+
+  @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
+    <div>
+      <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
+    </div>
+  }
+  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.heading}</h1>
+  @if(selectedAddress.isDefined) {
+    @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
+      <fieldset class="form-field-group">
+        <div class="form-field">
+          @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showSubHeadingAndInfo) {
+            <h2>@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.infoSubheading}</h2>
+            <p id="infoMessage">@Html(journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.infoMessage)</p>
+          }
+          @address_confirmation_display(selectedAddress.get.address)
+        </div>
+        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showSearchAgainLink) {
+          <div class="form-field">
+            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.searchAgainLinkText}</a></p>
+          </div>
+        }
+        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showChangeLink) {
+        <div class="form-field">
+          <p><a href="@{routes.AddressLookupController.edit(id,None,Some(IsCountryUK.countryCheck(selectedAddress)))}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.changeLinkText}</a></p>
+        </div>
+        }
+        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showConfirmChangeText){
+        <div class="form-field">
+          <p id="confirmChangeText">@journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.confirmChangeText</p>
+        </div>
+        }
+        <div class="form-field">
+          <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.submitLabel}</button>
+        </div>
+      </fieldset>
+    }
+  } else {
+    <p>@{messageConstants.confirmSelectedAddressError1} <a href="@{routes.AddressLookupController.lookup(id)}" id="lookupLink">@{messageConstants.confirmSelectedAddressError2}</a>.</p>
+  }
+}
+<!--TODO: Remove unreachable redirect to the lookup page-->

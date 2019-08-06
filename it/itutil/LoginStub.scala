@@ -19,12 +19,8 @@ package itutil
 import java.net.{URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.util.UUID
-
-import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames
+import itutil.config.IntegrationTestConstants._
 import play.api.libs.Crypto
-import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WSCookie
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http.SessionKeys
@@ -45,14 +41,22 @@ trait LoginStub extends SessionCookieBaker {
     ) ++ additionalData
   }
 
-  def getSessionCookie(additionalData: Map[String, String] = Map(), userId: String = defaultUser, sessionId: String = SessionId): String = {
+  def getSessionCookie(additionalData: Map[String, String] = Map(), userId: String = defaultUser, sessionId: String = SessionId): String =
     cookieValue(cookieData(additionalData, userId, sessionId))
+
+  def sessionCookieWithCSRF: String = getSessionCookie(Map("csrfToken" -> testCsrfToken()))
+
+  def sessionCookieWithCSRFAndLang(lang: Option[String] = Some("cy")): String = {
+    getSessionCookie(Map("csrfToken" -> testCsrfToken())) + lang.fold("")(l => s";PLAY_LANG=$l;")
   }
+
+  def sessionCookieWithWelshCookie(useWelsh: Boolean): String =
+    sessionCookieWithCSRF + s";$useWelshCookieName=${useWelsh.toString}"
 }
 
 trait SessionCookieBaker {
   val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
-  def cookieValue(sessionData: Map[String,String]) = {
+  def cookieValue(sessionData: Map[String,String]): String = {
     def encode(data: Map[String, String]): PlainText = {
       val encoded = data.map {
         case (k, v) => URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
@@ -72,13 +76,11 @@ trait SessionCookieBaker {
   }
 
   def getCookieData(cookieData: String): Map[String, String] = {
-
     val decrypted = CompositeSymmetricCrypto.aesGCM(cookieKey, Seq()).decrypt(Crypted(cookieData)).value
-    val result = decrypted.split("&")
+
+    decrypted.split("&")
       .map(_.split("="))
       .map { case Array(k, v) => (k, URLDecoder.decode(v, StandardCharsets.UTF_8.name()))}
       .toMap
-
-    result
   }
 }

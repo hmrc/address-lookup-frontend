@@ -1,0 +1,67 @@
+
+@import model._
+@import uk.gov.hmrc.play.views.html.helpers
+@import views.html.helpers.{alfErrorSummary, alfInput}
+@import views.html.v2.main_template
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@resolvedConf = @{journeyData.resolveConfigV2(isWelsh)}
+
+@main_template(title = resolvedConf.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+<div id="ukEdit"></div>
+  @if(resolvedConf.options.showBackButtons) {
+    <div>
+      <a id="back-link" class="back-link" href="javascript:history.back()">@messageConstants.back</a>
+    </div>
+  }
+
+  @alfErrorSummary(
+   messageConstants.errorText, editForm
+  )
+
+  <h1 class="form-title heading-large" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
+  @helpers.form(routes.AddressLookupController.handleEdit(id, true)) {
+    <fieldset class="form-field-group">
+      <div class="form-field spaced-below">
+        @alfInput(
+          editForm("line1"),
+          '_label -> resolvedConf.labels.editPageLabels.line1Label,
+          '_inputClass -> "form-control--block input--medium")
+      </div>
+      <div class="form-field spaced-below">
+        @alfInput(
+          editForm("line2"),
+          '_label -> resolvedConf.labels.editPageLabels.line2Label,
+          '_inputClass -> "form-control--block input--medium"
+        )
+      </div>
+      <div class="form-field spaced-below">
+        @alfInput(
+        editForm("line3"),
+        '_label -> resolvedConf.labels.editPageLabels.line3Label,
+        '_inputClass -> "form-control--block input--medium"
+        )
+      </div>
+      <div class="form-field spaced-below">
+        @alfInput(
+          editForm("town"),
+          '_label -> resolvedConf.labels.editPageLabels.townLabel,
+          '_inputClass -> "form-control--block input--medium"
+        )
+      </div>
+      <div class="form-field spaced-below">
+        @alfInput(
+        editForm("postcode"),
+        '_label -> messageConstants.ukModePostcodeLabel,
+        '_inputClass -> "form-control--block input--small"
+        )
+      </div>
+      <div class="form-field">
+        <button class="button" type="submit" id="continue">@{resolvedConf.labels.editPageLabels.submitLabel}</button>
+      </div>
+    </fieldset>
+  }
+}

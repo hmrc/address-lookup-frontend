@@ -1,0 +1,61 @@
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import views.html.helpers.{alfErrorSummary, alfInputRadioGroup}
+
+@import model._
+@import views.html.v2.{main_template => template}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+
+@(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+
+@template(title = journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+
+    @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
+        <div>
+            <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
+        </div>
+    }
+
+    @alfErrorSummary(messageConstants.errorText, selectForm)
+
+    @if(lookup.filter.isDefined) {
+        @if(!firstSearch){
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+        } else {
+            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+        }
+    } else {
+        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+    }
+
+    @if(lookup.filter.isDefined) {
+        @if(!firstSearch) {
+            <div class="form-field">
+                <p id="no-results">@{messageConstants.noResults} '@{lookup.filter.get}'.</p>
+            </div>
+            <div>
+                <p><a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messageConstants.differentSearch}</a></p>
+            </div>
+        }
+    }
+
+    </br>
+
+    @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+
+        <fieldset>
+
+            <div class="form-group">
+                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
+            </div>
+            <div class="form-group">
+                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>
+            </div>
+            <div class="form-field">
+                <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode), Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
+            </div>
+        </fieldset>
+    }
+}

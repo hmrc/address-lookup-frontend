@@ -101,7 +101,8 @@ A "cy" object is required within the labels section to enable the Welsh journey,
     "timeoutConfig": {
       "timeoutAmount": 900,
       "timeoutUrl": "http://service/timeout-uri"
-    },
+    }
+},
     "labels": {
       "en": {
         "appLevelLabels": {
@@ -197,7 +198,6 @@ A "cy" object is required within the labels section to enable the Welsh journey,
       }
     }
   }
-}
 ```
 #### Test Endpoint for journey setup
 * `/lookup-address/test-only/v2/test-setup` (GET)

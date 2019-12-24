@@ -42,18 +42,14 @@
     }
 
     @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
-
-        <fieldset>
-
-            <div class="form-group">
-                @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
-            </div>
-            <div class="form-field">
-                <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode), Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
-            </div>
-            <div class="form-group">
-                <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>
-            </div>
-        </fieldset>
+        <div class="form-group">
+            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_label -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
+        </div>
+        <div class="form-field">
+            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode), Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
+        </div>
+        <div class="form-group">
+            <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>
+        </div>
     }
 }

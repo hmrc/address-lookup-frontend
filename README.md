@@ -263,7 +263,7 @@ Labels for the "lookup" page.
 |`heading`|the heading to display above the lookup form|Optional|String|`"Find the address"`|
 |`filterLabel`|the input label for the "filter" field|Optional|String|`"Property name or number"`|
 |`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"UK postcode"`|
-|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Search for the address"`|
+|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|
 |`noResultsFoundMessage`|message to display in infobox above lookup form when no results were found|Optional|String|`"Sorry, we couldn't find anything for that postcode."`|
 |`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
 |`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"The address does not have a UK postcode"`|

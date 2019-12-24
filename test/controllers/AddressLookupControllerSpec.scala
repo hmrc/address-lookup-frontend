@@ -196,7 +196,7 @@ class AddressLookupControllerSpec
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
         html should include element withName("input").withAttrValue("name", "postcode")
-        html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
         html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
         html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
         html.getElementById("filter").`val` mustBe "The House"
@@ -214,7 +214,7 @@ class AddressLookupControllerSpec
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
         html should include element withName("input").withAttrValue("name", "postcode")
-        html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
         html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
         html.getElementById("postcode").`val` mustBe ""
         html.getElementById("filter").`val` mustBe ""
@@ -301,7 +301,7 @@ class AddressLookupControllerSpec
           html should include element withName("input").withAttrValue("name", "filter")
           html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
           html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Search for the address")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
           html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
           html.getElementById("postcode").`val` mustBe ""
           html.getElementById("filter").`val` mustBe ""

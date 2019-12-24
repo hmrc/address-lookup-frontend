@@ -84,7 +84,7 @@ object JourneyConfigDefaults {
 
     val LOOKUP_PAGE_TITLE = "Find the address"
     val LOOKUP_PAGE_HEADING = "Find the address"
-    val LOOKUP_PAGE_FILTER_LABEL = "Property name or number"
+    val LOOKUP_PAGE_FILTER_LABEL = "Property name or number (optional)"
     val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
     val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address does not have a UK postcode"

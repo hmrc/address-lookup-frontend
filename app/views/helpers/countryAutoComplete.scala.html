@@ -1,7 +1,7 @@
 @(countries: Seq[(String, String)], prePop: Option[String])(implicit messages: Messages)
 @import play.api.libs.json.{JsArray, Json}
 
-<div id="full-wrapper" class="autocomplete-wrapper visuallyhidden">
+<div id="full-wrapper" class="autocomplete-wrapper hidden">
     <select name="" id="autocomplete-progressiveEnhancement">
         @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s => Html(s"""<option id="cc-${s._1}" value="${s._1}">${s._2}</option>""")})
     </select>
@@ -10,14 +10,18 @@
 
         document.getElementById("autocomplete-progressiveEnhancement").setAttribute("name","countryCode");
         document.getElementById("countryCode").setAttribute("name", "");
-        document.getElementById("countryCode").setAttribute("class", "visuallyhidden");
+        document.getElementById("countryCode").setAttribute("class", "hidden");
         document.getElementById("full-wrapper").setAttribute("class", "autocomplete-wrapper form-control--block input--medium");
+
         try {
-        document.getElementById("cc-" + "@prePop.getOrElse("")").setAttribute("selected", "selected")
+            document.getElementById("cc-" + "@prePop.getOrElse("")").setAttribute("selected", "selected")
         } catch(e) {}
 
-        element = document.querySelector('#autocomplete-progressiveEnhancement')
+        element = document.getElementById('autocomplete-progressiveEnhancement')
         accessibleAutocomplete.enhanceSelectElement({
-        selectElement: element, required: false,
-      })
+            selectElement: element, 
+            required: false,
+        })
+
+        document.getElementById('countryCode').labels[0].setAttribute('for', 'autocomplete-progressiveEnhancement')
     </script>

@@ -30,34 +30,39 @@
         @alfInput(
           editForm("line1"),
           '_label -> resolvedConfig.labels.editPageLabels.line1Label,
-          '_inputClass -> "form-control--block input--medium")
+          '_inputClass -> "form-control--block input--medium",
+          '_autoComplete -> "address-line1")
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line2"),
           '_label -> resolvedConfig.labels.editPageLabels.line2Label,
-          '_inputClass -> "form-control--block input--medium"
+          '_inputClass -> "form-control--block input--medium",
+          '_autoComplete -> "address-line2"
         )
       </div>
         <div class="form-field spaced-below">
             @alfInput(
             editForm("line3"),
             '_label -> resolvedConfig.labels.editPageLabels.line3Label,
-            '_inputClass -> "form-control--block input--medium"
+            '_inputClass -> "form-control--block input--medium",
+            '_autoComplete -> "address-line3"
             )
         </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("town"),
           '_label -> resolvedConfig.labels.editPageLabels.townLabel,
-          '_inputClass -> "form-control--block input--medium"
+          '_inputClass -> "form-control--block input--medium",
+          '_autoComplete -> "address-level2"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("postcode"),
           '_label -> resolvedConfig.labels.editPageLabels.postcodeLabel,
-          '_inputClass -> "form-control--block input--small"
+          '_inputClass -> "form-control--block input--small",
+          '_autoComplete -> "postal-code"
         )
       </div>
 

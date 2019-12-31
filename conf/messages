@@ -3,7 +3,7 @@ ukmode.uk.label = United Kingdom
 ukmode.postcode.label = UK postcode (optional)
 
 # Common
-common.error.text           = This page has errors
+common.error.text           = There is a problem
 common.try.again.text       = Try again
 common.back.text            = Back
 common.property.name.text   = Property name or number

@@ -93,12 +93,12 @@ object MessageConstants {
     val confirmSelectedAddressError1 = "You have not selected any address. Please"
     val confirmSelectedAddressError2 = "search for and select your address"
 
-    val lookupErrorHeading = "This page has errors"
+    val lookupErrorHeading = "There is a problem"
     val lookupPostcodeError = "The postcode you entered appears to be incomplete or invalid. Please check and try again."
     val lookupFilterError = "Your house name/number needs to be fewer than 256 characters"
     val lookupFilterHint = "For example, The Mill, 116 or Flat 37a"
 
-    val errorText = "This page has errors"
+    val errorText = "There is a problem"
     val noResults = "We could not find a match with"
     val differentSearch = "Try a different name or number"
 

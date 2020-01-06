@@ -19,6 +19,8 @@ object MessageConstants {
     def confirmSelectedAddressError2: String
 
     def lookupErrorHeading: String
+    def lookupPostcodeEmptyError: String
+    def lookupPostcodeInvalidError: String
     def lookupPostcodeError: String
     def lookupFilterError: String
     def lookupFilterHint: String
@@ -94,7 +96,9 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "search for and select your address"
 
     val lookupErrorHeading = "There is a problem"
-    val lookupPostcodeError = "The postcode you entered appears to be incomplete or invalid. Please check and try again."
+    val lookupPostcodeEmptyError = "Enter postcode."
+    val lookupPostcodeInvalidError = "Postcode must only contains letters A - Z, and 0 - 9."
+    val lookupPostcodeError = "Enter a real Postcode e.g. AA1 1AA."
     val lookupFilterError = "Your house name/number needs to be fewer than 256 characters"
     val lookupFilterHint = "For example, The Mill, 116 or Flat 37a"
 
@@ -141,6 +145,8 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "Chwiliwch am eich cyfeiriad a’i ddewis"
 
     val lookupErrorHeading = "Mae gwallau ar y dudalen hon"
+    val lookupPostcodeEmptyError = "Enter postcode welsh."
+    val lookupPostcodeInvalidError = "Postcode must only contains letters A - Z, and 0 - 9. Welsh"
     val lookupPostcodeError = "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     val lookupFilterError = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
     val lookupFilterHint = "Er enghraifft, Tegfan, 116 neu Fflat 37a"

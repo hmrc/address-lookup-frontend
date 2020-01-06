@@ -73,6 +73,20 @@ class LookupViewSpec extends ViewSpec {
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe content.submitLabel
         }
+        "the postcode field empty error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeEmptyError), false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError
+        }
+        "the postcode field invalid error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeInvalidError), false)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError
+        }
         "the postcode field error" in {
           val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeError), false)
           val doc: Document = Jsoup.parse(testPage.body)
@@ -141,6 +155,20 @@ class LookupViewSpec extends ViewSpec {
           doc.getALinkText("manualAddress") shouldBe content.cyManualAddressLinkText
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe content.cySubmitLabel
+        }
+        "the postcode field empty error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeEmptyError), true)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError
+        }
+        "the postcode field invalid error" in {
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeInvalidError), true)
+          val doc: Document = Jsoup.parse(testPage.body)
+
+          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError
         }
         "the postcode field error" in {
           val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeError), true)

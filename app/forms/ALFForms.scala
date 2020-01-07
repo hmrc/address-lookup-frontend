@@ -36,21 +36,21 @@ object ALFForms extends EmptyStringValidator {
 
   def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
 
-  def postcodeConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("constraints.postcode"), Seq.empty)({postcode =>
+  def postcodeConstraint(isWelsh: Boolean, isUkMode: Boolean): Constraint[String] = new Constraint[String](Some("constraints.postcode"), Seq.empty)({postcode =>
     val errors = postcode match {
-      case empty if empty.isEmpty => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeEmptyError))
-      case chars if hasInvalidChars(chars) => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeInvalidError))
-      case postcode if isInvalidPostcode(postcode) => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeError))
+      case empty if empty.isEmpty => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeEmptyError(isUkMode)))
+      case chars if hasInvalidChars(chars) => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeInvalidError(isUkMode)))
+      case postcode if isInvalidPostcode(postcode) => Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeError(isUkMode)))
       case _ => Nil
     }
 
     if(errors.isEmpty) Valid else Invalid(errors)
   })
 
-  def lookupForm(isWelsh: Boolean = false) = Form(
+  def lookupForm(isWelsh: Boolean = false, isUkMode: Boolean = false) = Form(
     mapping(
       "filter" -> optional(text.verifying(messageConstants(isWelsh).lookupFilterError, txt => txt.length < 256)),
-      "postcode" -> text.verifying(postcodeConstraint(isWelsh))
+      "postcode" -> text.verifying(postcodeConstraint(isWelsh, isUkMode))
     )(Lookup.apply)(Lookup.unapply)
   )
 

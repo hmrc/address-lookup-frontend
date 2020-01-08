@@ -110,8 +110,8 @@ A "cy" object is required within the labels section to enable the Welsh journey,
           "phaseBannerHtml": ""
         },
         "selectPageLabels": {
-          "title": "Choose the address",
-          "heading": "Choose the address",
+          "title": "Choose address",
+          "heading": "Choose address",
           "headingWithPostcode": "foo",
           "proposalListLabel": "Please select one of the following addresses",
           "submitLabel": "Continue",
@@ -156,8 +156,8 @@ A "cy" object is required within the labels section to enable the Welsh journey,
           "phaseBannerHtml": ""
         },
         "selectPageLabels": {
-          "title": "Choose the address welsh",
-          "heading": "Choose the address welsh",
+          "title": "Choose address welsh",
+          "heading": "Choose address welsh",
           "headingWithPostcode": "foo",
           "proposalListLabel": "Please select one of the following addresses welsh",
           "submitLabel": "Continue welsh",
@@ -274,8 +274,8 @@ Labels for the "select" page.
 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
-|`title`|the `html->head->title` text|Optional|String|`"Choose the address"`|
-|`heading`|the heading to display above the list of results|Optional|String|`"Choose the address"`|
+|`title`|the `html->head->title` text|Optional|String|`"Choose address"`|
+|`heading`|the heading to display above the list of results|Optional|String|`"Choose address"`|
 |`headingWithPostCode`|the heading to display above the list of results when a postcode is provided|Optional|String|`"Showing all results for [postcode]"`|
 |`proposalListLabel`|the radio group label for the list of results|Optional|String|`"Please select one of the following addresses"`|
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|

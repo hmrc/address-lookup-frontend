@@ -86,7 +86,7 @@ object MessageConstants {
     val editPageTownMinErrorMessage = "Enter a town or city"
     val editPagePostcodeErrorMessage = "Enter a valid UK postcode"
 
-    val errorRequired = "This field is required"
+    val errorRequired = "Select the property for the address."
     val errorMin: Int => String = min => s"Minimum length is $min"
     val errorMax: Int => String = max => s"Maximum length is $max"
 

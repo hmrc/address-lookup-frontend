@@ -46,8 +46,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Address line 1",
-          "line2" -> "Address line 2",
-          "line3" -> "Address line 3",
+          "line2" -> "Address line 2 (optional)",
+          "line3" -> "Address line 3 (optional)",
           "town" -> "Town/city",
           "postcode" -> "UK postcode (optional)"
         ))
@@ -78,8 +78,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Address line 1",
-          "line2" -> "Address line 2",
-          "line3" -> "Address line 3",
+          "line2" -> "Address line 2 (optional)",
+          "line3" -> "Address line 3 (optional)",
           "town" -> "Town/city",
           "postcode" -> "Postal code (optional)",
           "countryCode" -> "Country"
@@ -590,8 +590,8 @@ class EditPageISpec extends IntegrationSpecBase {
       res.status shouldBe BAD_REQUEST
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Enter first line of address Address line 1",
-        "line2" -> "Address line 2",
-        "line3" -> "Address line 3",
+        "line2" -> "Address line 2 (optional)",
+        "line3" -> "Address line 3 (optional)",
         "town" -> "Enter a town or city Town/city",
         "postcode" -> "Postal code (optional)",
         "countryCode" -> "Country"))
@@ -723,8 +723,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Enter first line of address Address line 1",
-        "line2" -> "Address line 2",
-        "line3" -> "Address line 3",
+        "line2" -> "Address line 2 (optional)",
+        "line3" -> "Address line 3 (optional)",
         "town" -> "Enter a town or city Town/city",
         "postcode" -> "UK postcode (optional)"
       ))

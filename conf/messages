@@ -56,7 +56,7 @@ max.address.line.3          = Enter a third address line using 256 characters or
 max.address.town            = Enter a town or city using 256 characters or less
 
 min.address.line.1          = Enter first line of address
-min.address.town            = Enter a town or city
+min.address.town            = Enter town or city of the address
 
 # Timeout
 timeout.seconds.text        = seconds

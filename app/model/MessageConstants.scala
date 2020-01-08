@@ -83,7 +83,7 @@ object MessageConstants {
     val editPageAddressLine3MaxErrorMessage = "Enter a third address line using 256 characters or less"
     val editPageTownMaxErrorMessage = "Enter a town or city using 256 characters or less"
     val editPageAddressLine1MinErrorMessage = "Enter first line of address"
-    val editPageTownMinErrorMessage = "Enter a town or city"
+    val editPageTownMinErrorMessage = "Enter town or city of the address"
     val editPagePostcodeErrorMessage = "Enter a valid UK postcode"
 
     val errorRequired = "Select the property for the address."

@@ -592,7 +592,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line1" -> "Enter first line of address Address line 1",
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
-        "town" -> "Enter a town or city Town/city",
+        "town" -> "Enter town or city of the address Town/city",
         "postcode" -> "Postal code (optional)",
         "countryCode" -> "Country"))
       testElementExists(res, EditPage.nonUkEditId)
@@ -725,7 +725,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line1" -> "Enter first line of address Address line 1",
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
-        "town" -> "Enter a town or city Town/city",
+        "town" -> "Enter town or city of the address Town/city",
         "postcode" -> "UK postcode (optional)"
       ))
 

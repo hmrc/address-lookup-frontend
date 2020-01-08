@@ -133,7 +133,7 @@ A "cy" object is required within the labels section to enable the Welsh journey,
           "heading": "Review and confirm",
           "infoSubheading": "Your selected address",
           "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
-          "submitLabel": "Confirm and continue",
+          "submitLabel": "Confirm Address",
           "searchAgainLinkText": "Search again",
           "changeLinkText": "Edit address",
           "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct."
@@ -179,7 +179,7 @@ A "cy" object is required within the labels section to enable the Welsh journey,
           "heading": "Review and confirm welsh",
           "infoSubheading": "Your selected address welsh",
           "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button. welsh",
-          "submitLabel": "Confirm and continue welsh",
+          "submitLabel": "Confirm Address welsh",
           "searchAgainLinkText": "Search again welsh",
           "changeLinkText": "Edit address welsh",
           "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct. welsh"
@@ -293,7 +293,7 @@ Labels for the "confirm" page.
 |`heading`|the main heading to display on the page|Optional|String|`"Review and confirm"`|
 |`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
 |`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
-|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm and continue"`|
+|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm Address"`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
 |`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit this address"`|
 |`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|

@@ -69,7 +69,7 @@ object JourneyConfigDefaults {
     val CONFIRM_PAGE_HEADING = "Review and confirm"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
-    val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm and continue"
+    val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm Address"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Edit this address"
 
     val EDIT_PAGE_TITLE = "Enter the address"

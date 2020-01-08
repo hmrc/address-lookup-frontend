@@ -31,7 +31,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       )
       doc.title shouldBe CONFIRM_PAGE_TITLE
       doc.h1.text() shouldBe CONFIRM_PAGE_HEADING
-      doc.submitButton.text() shouldBe "Confirm and continue"
+      doc.submitButton.text() shouldBe "Confirm Address"
       doc.link("changeLink") should have(
         text(CONFIRM_PAGE_EDIT_LINK_TEXT)
       )

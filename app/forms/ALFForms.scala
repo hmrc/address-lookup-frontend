@@ -8,7 +8,7 @@ import model.{Edit, Lookup, Select}
 import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.{default, ignored, mapping, optional, text}
 import play.api.data.format.Formatter
-import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -32,10 +32,22 @@ object ALFForms extends EmptyStringValidator {
 
   def messageConstants(isWelsh:Boolean): MessageConstants = if(isWelsh) WelshMessageConstants else EnglishMessageConstants
 
-  def lookupForm(isWelsh: Boolean = false) = Form(
+  def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
+
+  def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
+
+  def postcodeConstraint(isWelsh: Boolean, isUkMode: Boolean): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
+    case empty if empty.isEmpty => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeEmptyError(isUkMode))))
+    case chars if hasInvalidChars(chars) => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeInvalidError(isUkMode))))
+    case postcode if isInvalidPostcode(postcode) => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeError(isUkMode))))
+    case _ => Valid
+  })
+
+
+  def lookupForm(isWelsh: Boolean = false, isUkMode: Boolean = false) = Form(
     mapping(
       "filter" -> optional(text.verifying(messageConstants(isWelsh).lookupFilterError, txt => txt.length < 256)),
-      "postcode" -> text.verifying(messageConstants(isWelsh).lookupPostcodeError, p => Postcode.cleanupPostcode(p).isDefined)
+      "postcode" -> text.verifying(postcodeConstraint(isWelsh, isUkMode))
     )(Lookup.apply)(Lookup.unapply)
   )
 

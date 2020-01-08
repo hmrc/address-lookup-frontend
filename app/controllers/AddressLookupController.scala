@@ -76,7 +76,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
 
-      lookupForm(isWelsh).bindFromRequest().fold(
+      lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
         errors => Future.successful(
           (None -> requestWithWelshHeader(isWelsh) {
             BadRequest(views.html.v2.lookup(id, journeyData, errors, isWelsh = isWelsh))

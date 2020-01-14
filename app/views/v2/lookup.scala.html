@@ -31,14 +31,17 @@ message: Option[String] = None
   messageConstants.lookupErrorHeading, lookupForm
   )
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.heading}</h1>
-  @if(message.isDefined) {
-    <div class="highlight-message highlight-message--full-width">
-      <p>@{message.get}</p>
-    </div>
-  }
   @helpers.form(routes.AddressLookupController.select(id)) {
     <fieldset class="form-field-group">
+      <legend>
+        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.heading}</h1>
+      </legend>
+
+      @if(message.isDefined) {
+      <div class="highlight-message highlight-message--full-width">
+        <p>@{message.get}</p>
+      </div>
+      }
 
       <div class="form-field">
         @alfInput(

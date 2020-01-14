@@ -221,7 +221,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       val doc = getDocFromResponse(fRes)
 
-      val message = "This field is required"
+      val message = "Select the property for the address."
 
       doc.errorSummary should have(
         errorSummaryMessage(SelectPage.addressId, message)

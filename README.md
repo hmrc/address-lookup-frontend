@@ -295,7 +295,7 @@ Labels for the "confirm" page.
 |`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
 |`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm Address"`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Edit this address"`|
+|`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Change address"`|
 |`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
 |`confirmChangeText`|Text displayed above the submit button when 'showConfirmChangeText' is true|Optional|String|`"By confirming this change, you agree that the information you have given is complete and correct."`|
 

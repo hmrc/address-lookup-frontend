@@ -589,10 +589,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
       res.status shouldBe BAD_REQUEST
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Enter first line of address Address line 1",
+        "line1" -> "Address line 1 Enter first line of address",
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
-        "town" -> "Enter town or city of the address Town/city",
+        "town" -> "Town/city Enter town or city of the address",
         "postcode" -> "Postal code (optional)",
         "countryCode" -> "Country"))
       testElementExists(res, EditPage.nonUkEditId)
@@ -626,10 +626,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have (value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Nodwch linell gyntaf y cyfeiriad Llinell cyfeiriad 1",
+        "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
         "line2" -> "Llinell cyfeiriad 2",
         "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Nodwch dref neu ddinas Tref/dinas",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas",
         "postcode" -> "Cod post (dewisol)"
       ))
 
@@ -658,10 +658,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post yn y DU sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Nodwch linell gyntaf y cyfeiriad Llinell cyfeiriad 1",
+        "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
         "line2" -> "Llinell cyfeiriad 2",
         "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Nodwch dref neu ddinas Tref/dinas",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas",
         "postcode" -> "Nodwch god post yn y DU sy’n ddilys Cod post (dewisol)"
       ))
 
@@ -722,10 +722,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have (value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Enter first line of address Address line 1",
+        "line1" -> "Address line 1 Enter first line of address",
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
-        "town" -> "Enter town or city of the address Town/city",
+        "town" -> "Town/city Enter town or city of the address",
         "postcode" -> "UK postcode (optional)"
       ))
 
@@ -760,10 +760,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have (value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Nodwch linell gyntaf y cyfeiriad Llinell cyfeiriad 1",
+        "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
         "line2" -> "Llinell cyfeiriad 2",
         "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Nodwch dref neu ddinas Tref/dinas",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas",
         "postcode" -> "Cod post y DU (dewisol)"
       ))
 

@@ -662,7 +662,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Llinell cyfeiriad 2",
         "line3" -> "Llinell cyfeiriad 3",
         "town" -> "Tref/dinas Nodwch dref neu ddinas",
-        "postcode" -> "Nodwch god post yn y DU sy’n ddilys Cod post (dewisol)"
+        "postcode" -> "Cod post (dewisol) Nodwch god post yn y DU sy’n ddilys"
       ))
 
       res.status shouldBe BAD_REQUEST

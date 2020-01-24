@@ -2,13 +2,12 @@
 @import utils.IsCountryUK
 @import templates.address_confirmation_display
 @import uk.gov.hmrc.play.views.html.helpers
-@import views.html.v2.govuk_wrapper
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUkMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@messageConstants = @{if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)}
 
 @main_template(title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 

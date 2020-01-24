@@ -32,8 +32,8 @@ object FrontendGlobal extends DefaultFrontendGlobal {
     val optWelshContentCookie = rh.cookies.get(ALFCookieNames.useWelsh)
 
     val langSpecificMessages = optWelshContentCookie collect {
-      case welshCookie if welshCookie.value.toBoolean == true => welshContent
-    } getOrElse(englishContent)
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent(true)
+    } getOrElse(englishContent(true))
 
     views.html.error_template(
       pageTitle = langSpecificMessages.intServerErrorTitle,
@@ -46,8 +46,8 @@ object FrontendGlobal extends DefaultFrontendGlobal {
     val optWelshContentCookie = request.cookies.get(ALFCookieNames.useWelsh)
 
     val langSpecificMessages = optWelshContentCookie collect {
-      case welshCookie if welshCookie.value.toBoolean == true => welshContent
-    } getOrElse(englishContent)
+      case welshCookie if welshCookie.value.toBoolean == true => welshContent(true)
+    } getOrElse(englishContent(true))
 
     views.html.error_template(
       pageTitle = langSpecificMessages.notFoundErrorTitle,

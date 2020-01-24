@@ -5,17 +5,19 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
 import model.JourneyConfigDefaults.EnglishConstants._
-import model.MessageConstants
 import play.api.http.Status._
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.test.FakeApplication
 
 import scala.util.Random
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 
 class LookupPageISpec extends IntegrationSpecBase {
 
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
+  val EnglishMessageConstants = EnglishMessages(true)
+  val WelshMessageConstants = WelshMessages(true)
 
   def longFilterValue = (1 to 257) map (_ => Random.alphanumeric.head) mkString
 
@@ -293,9 +295,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -314,9 +316,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object is provided in config" should {
@@ -336,9 +338,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to true and welsh object provided in config" should {
@@ -358,9 +360,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(WelshMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
       }
     }
   }

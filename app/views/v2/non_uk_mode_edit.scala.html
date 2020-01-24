@@ -5,12 +5,12 @@
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean)(implicit request: Request[_], messages: Messages)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 @resolvedConfig = @{journeyData.resolveConfigV2(isWelsh)}
 
-@main_template(title = resolvedConfig.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@main_template(title = resolvedConfig.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
 
 <div id="nonUkEdit"></div>
   @if(resolvedConfig.options.showBackButtons) {

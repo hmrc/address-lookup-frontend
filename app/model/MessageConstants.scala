@@ -3,6 +3,8 @@ package model
 object MessageConstants {
 
   sealed trait MessageConstants {
+    val isUkMode : Boolean
+
     def home: String
     def back: String
     def forPostcode: String
@@ -19,9 +21,9 @@ object MessageConstants {
     def confirmSelectedAddressError2: String
 
     def lookupErrorHeading: String
-    def lookupPostcodeEmptyError: Boolean => String
-    def lookupPostcodeInvalidError: Boolean => String
-    def lookupPostcodeError: Boolean => String
+    def lookupPostcodeEmptyError: String
+    def lookupPostcodeInvalidError: String
+    def lookupPostcodeError: String
     def lookupFilterError: String
     def lookupFilterHint: String
 
@@ -66,7 +68,7 @@ object MessageConstants {
 
   }
 
-  object EnglishMessageConstants extends MessageConstants {
+  case class EnglishMessageConstants(override val isUkMode: Boolean)  extends MessageConstants {
     val home = "Home"
     val back = "Back"
     val forPostcode = "for postcode"
@@ -96,13 +98,13 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "search for and select your address"
 
     val lookupErrorHeading = "There is a problem"
-    val lookupPostcodeEmptyError: Boolean => String = isUkMode => if(isUkMode) "Enter UK postcode." else "Enter postcode."
-    val lookupPostcodeInvalidError: Boolean => String = isUkMode => if(isUkMode) {
+    val lookupPostcodeEmptyError: String = if(isUkMode) "Enter UK postcode." else "Enter postcode."
+    val lookupPostcodeInvalidError: String = if(isUkMode) {
       "UK Postcode must only contains letters A - Z, and 0 - 9."
     } else {
       "Postcode must only contains letters A - Z, and 0 - 9."
     }
-    val lookupPostcodeError: Boolean => String = isUkMode => if(isUkMode) {
+    val lookupPostcodeError: String = if(isUkMode) {
       "Enter a real UK Postcode e.g. AA1 1AA."
     } else {
       "Enter a real Postcode e.g. AA1 1AA."
@@ -136,7 +138,7 @@ object MessageConstants {
     val notFoundErrorBody = "Please check that you have entered the correct web address."
   }
 
-  object WelshMessageConstants extends MessageConstants {
+  case class WelshMessageConstants(override val isUkMode: Boolean) extends MessageConstants {
     val home = "Cartref"
     val back = "Yn ôl"
     val forPostcode = "am y cod post"
@@ -153,13 +155,13 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "Chwiliwch am eich cyfeiriad a’i ddewis"
 
     val lookupErrorHeading = "Mae gwallau ar y dudalen hon"
-    val lookupPostcodeEmptyError: Boolean => String = isUkMode => if(isUkMode) "Enter UK postcode. Welsh" else "Enter postcode. Welsh"
-    val lookupPostcodeInvalidError: Boolean => String = isUkMode => if(isUkMode) {
+    val lookupPostcodeEmptyError: String = if(isUkMode) "Enter UK postcode. Welsh" else "Enter postcode. Welsh"
+    val lookupPostcodeInvalidError: String = if(isUkMode) {
       "UK Postcode must only contains letters A - Z, and 0 - 9. Welsh"
     } else {
       "Postcode must only contains letters A - Z, and 0 - 9. Welsh"
     }
-    val lookupPostcodeError: Boolean => String = isUkMode => if(isUkMode) {
+    val lookupPostcodeError: String = if(isUkMode) {
       "Enter a real UK Postcode e.g. AA1 1AA. Welsh"
     } else {
       "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."

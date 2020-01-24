@@ -2,7 +2,6 @@
 @import model._
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInput}
-@import views.html.v2.govuk_wrapper
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
@@ -11,13 +10,14 @@ id: String,
 journeyData: JourneyDataV2,
 lookupForm: Form[Lookup],
 isWelsh: Boolean,
+isUKMode: Boolean = true,
 message: Option[String] = None
 )(implicit request: Request[_], messages: Messages)
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants else EnglishMessageConstants}
+@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
 @main_template(title = journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title,
-               journeyData = Some(journeyData), welshEnabled = isWelsh) {
+               journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
 
 
 

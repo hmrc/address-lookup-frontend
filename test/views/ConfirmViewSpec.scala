@@ -33,7 +33,7 @@ class ConfirmViewSpec extends ViewSpec {
         testTimeoutConfig = None,
         testLabels = None
       )
-      val messages = MessageConstants.EnglishMessageConstants
+      val messages = MessageConstants.EnglishMessageConstants(true)
 
 
       "isWelsh is false" when {
@@ -332,7 +332,7 @@ class ConfirmViewSpec extends ViewSpec {
           cy = Some(LanguageLabels())
         ))
       )
-      val messages = MessageConstants.WelshMessageConstants
+      val messages = MessageConstants.WelshMessageConstants(true)
 
       "isWelsh is true" when {
         "show back button is true" in {
@@ -621,7 +621,7 @@ class ConfirmViewSpec extends ViewSpec {
     }
     "render configured content" when {
       "English content is provided" when {
-        val messages = MessageConstants.EnglishMessageConstants
+        val messages = MessageConstants.EnglishMessageConstants(true)
 
         "a confirmed address has been defined" in {
           val testPage = views.html.v2.confirm("", journeyDataV2Full, Some(testAddress), isWelsh = false)
@@ -654,7 +654,7 @@ class ConfirmViewSpec extends ViewSpec {
       }
     }
     "Welsh content is provided" when {
-      val messages = MessageConstants.WelshMessageConstants
+      val messages = MessageConstants.WelshMessageConstants(true)
 
       "a confirmed address has been defined" in {
         val testPage = views.html.v2.confirm("", journeyDataV2Full, Some(testAddress), isWelsh = true)

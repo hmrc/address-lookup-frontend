@@ -16,10 +16,11 @@
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
   scriptElem: Option[Html] = None,
-  welshEnabled: Boolean = false
+  welshEnabled: Boolean = false,
+  isUKMode: Boolean = true
 )(implicit request: Request[_], messages: Messages)
 
-@messageConstants = @{if(welshEnabled) WelshMessageConstants else EnglishMessageConstants}
+@messageConstants = @{if(welshEnabled) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
 @links = {
     @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.additionalStylesheetUrl).isDefined) {

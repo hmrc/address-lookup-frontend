@@ -9,10 +9,14 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeApplication
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+
 
 class ConfirmPageISpec extends IntegrationSpecBase {
 
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
+  val EnglishMessageConstants = EnglishMessages(true)
+  val WelshMessageConstants = WelshMessages(true)
 
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
@@ -187,7 +191,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=back-link]") should have(
-        text(MessageConstants.WelshMessageConstants.back)
+        text(WelshMessageConstants.back)
       )
       doc.title shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_TITLE
       doc.h1.text() shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
@@ -220,7 +224,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=back-link]") should have(
-        text(MessageConstants.WelshMessageConstants.back)
+        text(WelshMessageConstants.back)
       )
       doc.title shouldBe "cy-confirm-title"
       doc.h1.text() shouldBe "cy-confirm-heading"
@@ -287,9 +291,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.cookie(ALFCookieNames.useWelsh) shouldBe None
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -309,9 +313,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.cookie(ALFCookieNames.useWelsh) shouldBe None
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object is provided in config" should {
@@ -331,9 +335,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to true and welsh object provided in config" should {
@@ -353,10 +357,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe MessageConstants.WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(MessageConstants.WelshMessageConstants.intServerErrorTitle))
-        doc.h1 should have (text(MessageConstants.WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(MessageConstants.WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
+        doc.h1 should have (text(WelshMessageConstants.intServerErrorTitle))
+        doc.h1 should have (text(WelshMessageConstants.intServerErrorTitle))
+        doc.paras should have (elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
       }
     }
   }

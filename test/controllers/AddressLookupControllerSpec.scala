@@ -8,7 +8,7 @@ import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
@@ -498,6 +498,7 @@ class AddressLookupControllerSpec
   }
 
   "handle select" should {
+    val EnglishMessageConstants = EnglishMessages(true)
 
     "redirect to confirm page when a proposal is selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
@@ -565,6 +566,7 @@ class AddressLookupControllerSpec
     }
 
     "display the select page in welsh" when {
+      val WelshMessageConstants = WelshMessages(true)
       val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
       "the form had an error and welsh is enabled" when {
         "nothing was selected" in new Scenario(

@@ -1,6 +1,6 @@
 package views
 
-import model.MessageConstants._
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -41,6 +41,8 @@ class MainTemplateViewSpec extends ViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val enMessages: Messages = Messages(Lang("en"), messagesApi)
   val testHtml = Html("")
+  val EnglishMessageConstants = EnglishMessages(true)
+  val WelshMessageConstants = WelshMessages(true)
 
   "MainTemplate" should {
     "render" when {

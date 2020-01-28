@@ -30,23 +30,23 @@ object Helpers {
 }
 object ALFForms extends EmptyStringValidator {
 
-  def messageConstants(isWelsh:Boolean): MessageConstants = if(isWelsh) WelshMessageConstants else EnglishMessageConstants
+  def messageConstants(isWelsh:Boolean, isUkMode: Boolean = true): MessageConstants = if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)
 
   def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
 
   def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
 
   def postcodeConstraint(isWelsh: Boolean, isUkMode: Boolean): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
-    case empty if empty.isEmpty => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeEmptyError(isUkMode))))
-    case chars if hasInvalidChars(chars) => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeInvalidError(isUkMode))))
-    case postcode if isInvalidPostcode(postcode) => Invalid(Seq(ValidationError(messageConstants(isWelsh).lookupPostcodeError(isUkMode))))
+    case empty if empty.isEmpty => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeEmptyError)))
+    case chars if hasInvalidChars(chars) => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeInvalidError)))
+    case postcode if isInvalidPostcode(postcode) => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeError)))
     case _ => Valid
   })
 
 
   def lookupForm(isWelsh: Boolean = false, isUkMode: Boolean = false) = Form(
     mapping(
-      "filter" -> optional(text.verifying(messageConstants(isWelsh).lookupFilterError, txt => txt.length < 256)),
+      "filter" -> optional(text.verifying(messageConstants(isWelsh, isUkMode).lookupFilterError, txt => txt.length < 256)),
       "postcode" -> text.verifying(postcodeConstraint(isWelsh, isUkMode))
     )(Lookup.apply)(Lookup.unapply)
   )
@@ -89,38 +89,38 @@ object ALFForms extends EmptyStringValidator {
   } )
 
 
-  def isValidPostcode(form: Form[Edit], isWelsh: Boolean = false): Form[Edit] = {
+  def isValidPostcode(form: Form[Edit], isWelsh: Boolean = false, isUKMode: Boolean = true): Form[Edit] = {
     val isGB: Boolean = form("countryCode").value.fold(true)(_ == "GB")
     val postcode = form("postcode").value.getOrElse("")
 
     (isGB, postcode) match {
-      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messageConstants(isWelsh).editPagePostcodeErrorMessage)
+      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messageConstants(isWelsh, isUKMode).editPagePostcodeErrorMessage)
       case _ => form
     }
   }
 
 
-  def ukEditForm(isWelsh: Boolean = false): Form[Edit] = Form(
+  def ukEditForm(isWelsh: Boolean = false, isUKMode: Boolean = true): Form[Edit] = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messageConstants(isWelsh).editPageAddressLine1MinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine1MaxErrorMessage)),
-      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine2MaxErrorMessage))),
-      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine3MaxErrorMessage))),
-      "town" -> customErrorTextValidation(messageConstants(isWelsh).editPageTownMinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh).editPageTownMaxErrorMessage)),
+      "line1" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageAddressLine1MinErrorMessage)
+        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine1MaxErrorMessage)),
+      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine2MaxErrorMessage))),
+      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine3MaxErrorMessage))),
+      "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
+        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
       "postcode" -> default(text,""),
       "countryCode" -> ignored[Option[String]](Option("GB"))
     )(Edit.apply)(Edit.unapply)
   )
 
-  def nonUkEditForm(isWelsh: Boolean = false) = Form(
+  def nonUkEditForm(isWelsh: Boolean = false, isUKMode: Boolean = false) = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messageConstants(isWelsh).editPageAddressLine1MinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine1MaxErrorMessage)),
-      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine2MaxErrorMessage))),
-      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh).editPageAddressLine3MaxErrorMessage))),
-      "town" -> customErrorTextValidation(messageConstants(isWelsh).editPageTownMinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh).editPageTownMaxErrorMessage)),
+      "line1" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageAddressLine1MinErrorMessage)
+        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine1MaxErrorMessage)),
+      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine2MaxErrorMessage))),
+      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine3MaxErrorMessage))),
+      "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
+        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
       "postcode" -> default(text,""),
       "countryCode" -> optional(text(2))
     )(Edit.apply)(Edit.unapply)

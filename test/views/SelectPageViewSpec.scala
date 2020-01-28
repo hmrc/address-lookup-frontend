@@ -2,7 +2,8 @@ package views
 
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
-import model.{JourneyConfigDefaults, JourneyDataV2, Lookup, MessageConstants}
+import model.{JourneyConfigDefaults, JourneyDataV2, Lookup}
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
@@ -42,6 +43,9 @@ class SelectPageViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(testRequest)
+
+  val EnglishMessageConstants = EnglishMessages(true)
+  val WelshMessageConstants = WelshMessages(true)
 
   "Select Page" should {
     "render the back button in english" when {
@@ -101,10 +105,10 @@ class SelectPageViewSpec extends ViewSpec {
 
     "render the no results message" when {
       "in english and it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-        doc.select("#no-results").text shouldBe s"${MessageConstants.EnglishMessageConstants.noResults} 'testFilter'."
+        doc.select("#no-results").text shouldBe s"${EnglishMessageConstants.noResults} 'testFilter'."
       }
       "in welsh and it is not the first search" in new Setup(testWelshSelectPageConfig, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
-        doc.select("#no-results").text shouldBe s"${MessageConstants.WelshMessageConstants.noResults} 'testFilter'."
+        doc.select("#no-results").text shouldBe s"${WelshMessageConstants.noResults} 'testFilter'."
       }
     }
 
@@ -114,20 +118,20 @@ class SelectPageViewSpec extends ViewSpec {
       }
 
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-        doc.select("#no-results").text shouldBe s"${MessageConstants.EnglishMessageConstants.noResults} 'testFilter'."
+        doc.select("#no-results").text shouldBe s"${EnglishMessageConstants.noResults} 'testFilter'."
       }
     }
 
     "render the try a different name or number link" when {
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-        doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.EnglishMessageConstants.differentSearch
+        doc.getALinkText(id = "differentAddress") shouldBe EnglishMessageConstants.differentSearch
         doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
       }
     }
 
     "render the try a different name or number link in welsh" when {
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false, welshEnabled = true) {
-        doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.WelshMessageConstants.differentSearch
+        doc.getALinkText(id = "differentAddress") shouldBe WelshMessageConstants.differentSearch
       }
     }
 
@@ -138,7 +142,7 @@ class SelectPageViewSpec extends ViewSpec {
       }
 
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-        doc.getALinkText(id = "differentAddress") shouldBe MessageConstants.EnglishMessageConstants.differentSearch
+        doc.getALinkText(id = "differentAddress") shouldBe EnglishMessageConstants.differentSearch
         doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
       }
     }

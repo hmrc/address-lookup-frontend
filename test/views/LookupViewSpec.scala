@@ -2,6 +2,7 @@ package views
 
 import controllers.routes
 import forms.ALFForms.lookupForm
+import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Play
@@ -34,12 +35,18 @@ class LookupViewSpec extends ViewSpec {
   val messages = app.injector.instanceOf[MessagesApi]
   val testHtml = Html("")
   val testForm = lookupForm()
+  val EnglishMessagesUKMode = EnglishMessageConstants(true)
+  val EnglishMessagesNonUKMode = EnglishMessageConstants(false)
+  val WelshMessagesUKMode = WelshMessageConstants(true)
+  val WelshMessagesNonUKMode = WelshMessageConstants(false)
 
   "Lookup view page" should {
     "renders" when {
       "Welsh is disabled" when {
         import model.JourneyConfigDefaults.EnglishConstants._
         import model.MessageConstants.EnglishMessageConstants._
+
+        import EnglishMessagesUKMode._
 
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
@@ -74,55 +81,49 @@ class LookupViewSpec extends ViewSpec {
           doc.getButtonContentAsText shouldBe content.submitLabel
         }
         "the non-UK postcode field empty error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeEmptyError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesNonUKMode.lookupPostcodeEmptyError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError(isUkMode)
+          doc.getFieldErrorMessageHeading shouldBe EnglishMessagesNonUKMode.lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe EnglishMessagesNonUKMode.lookupPostcodeEmptyError
         }
         "the UK postcode field empty error" in {
-          val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeEmptyError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesUKMode.lookupPostcodeEmptyError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError
         }
         "the non-UK postcode field invalid error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeInvalidError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesNonUKMode.lookupPostcodeInvalidError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError(isUkMode)
+          doc.getFieldErrorMessageHeading shouldBe EnglishMessagesNonUKMode.lookupErrorHeading
+          doc.getFieldErrorMessageContent("postcode") shouldBe EnglishMessagesNonUKMode.lookupPostcodeInvalidError
         }
         "the UK postcode field invalid error" in {
-          val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeInvalidError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesUKMode.lookupPostcodeInvalidError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError
         }
         "the non-UK postcode field error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesNonUKMode.lookupPostcodeError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe EnglishMessagesNonUKMode.lookupPostcodeError
         }
         "the UK postcode field error" in {
-          val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", lookupPostcodeError(isUkMode)), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("postcode", EnglishMessagesUKMode.lookupPostcodeError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe EnglishMessagesUKMode.lookupPostcodeError
         }
         "the filter field error" in {
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("filter", lookupFilterError), false)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false).withError("filter", EnglishMessagesUKMode.lookupFilterError), false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
@@ -131,7 +132,8 @@ class LookupViewSpec extends ViewSpec {
       }
       "Welsh is enabled" when {
         import model.JourneyConfigDefaults.WelshConstants._
-        import model.MessageConstants.WelshMessageConstants._
+
+        import WelshMessagesUKMode._
 
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
 
@@ -162,8 +164,8 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getHintAsText shouldBe EnglishMessagesUKMode.lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + EnglishMessagesUKMode.lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
@@ -184,55 +186,50 @@ class LookupViewSpec extends ViewSpec {
           doc.getButtonContentAsText shouldBe content.cySubmitLabel
         }
         "the non-UK postcode field empty error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeEmptyError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesNonUKMode.lookupPostcodeEmptyError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesNonUKMode.lookupPostcodeEmptyError
         }
         "the UK postcode field empty error" in {
-          val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeEmptyError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesUKMode.lookupPostcodeEmptyError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeEmptyError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesUKMode.lookupPostcodeEmptyError
         }
         "the non-UK postcode field invalid error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeInvalidError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesNonUKMode.lookupPostcodeInvalidError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesNonUKMode.lookupPostcodeInvalidError
         }
         "the UK postcode field invalid error" in {
           val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeInvalidError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesUKMode.lookupPostcodeInvalidError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeInvalidError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesUKMode.lookupPostcodeInvalidError
         }
         "the non-UK postcode field error" in {
-          val isUkMode = false
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesNonUKMode.lookupPostcodeError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesNonUKMode.lookupPostcodeError
         }
         "the UK postcode field error" in {
-          val isUkMode = true
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", lookupPostcodeError(isUkMode)), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("postcode", WelshMessagesUKMode.lookupPostcodeError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading
-          doc.getFieldErrorMessageContent("postcode") shouldBe lookupPostcodeError(isUkMode)
+          doc.getFieldErrorMessageContent("postcode") shouldBe WelshMessagesUKMode.lookupPostcodeError
         }
         "the filter field error" in {
-          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("filter", lookupFilterError), true)
+          val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(true).withError("filter", WelshMessagesUKMode.lookupFilterError), true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getFieldErrorMessageHeading shouldBe lookupErrorHeading

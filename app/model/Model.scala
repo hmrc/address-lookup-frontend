@@ -32,7 +32,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
 // but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
 case class ResolvedJourneyConfig(cfg: JourneyConfig) {
   val continueUrl: String = cfg.continueUrl
-  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()), cfg.isukMode)
+  val lookupPage: ResolvedLookupPage = ResolvedLookupPage(cfg.lookupPage.getOrElse(LookupPage()), cfg.ukMode.get)
   val selectPage: ResolvedSelectPage = ResolvedSelectPage(cfg.selectPage.getOrElse(SelectPage()))
   val confirmPage: ResolvedConfirmPage = ResolvedConfirmPage(cfg.confirmPage.getOrElse(ConfirmPage()))
   val editPage: ResolvedEditPage = ResolvedEditPage(cfg.editPage.getOrElse(EditPage()))
@@ -79,9 +79,9 @@ case class ConfirmPage(title: Option[String] = None,
                        confirmChangeText: Option[String] = None
                       )
 
-case class ResolvedLookupPage(p: LookupPage, isukMode: Boolean) {
-  val title: String = p.title.getOrElse(LOOKUP_PAGE_TITLE)
-  val heading: String = p.heading.getOrElse(LOOKUP_PAGE_HEADING)
+case class ResolvedLookupPage(p: LookupPage, isUkMode: Boolean) {
+  val title: String = p.title.getOrElse(LOOKUP_PAGE_TITLE).replaceAll("\\$UK", if (isUkMode) "UK" else "")
+  val heading: String = p.heading.getOrElse(LOOKUP_PAGE_HEADING).replaceAll("\\$UK", if (isUkMode) "UK" else "")
   val filterLabel: String = p.filterLabel.getOrElse(LOOKUP_PAGE_FILTER_LABEL)
   val postcodeLabel: String = p.postcodeLabel.getOrElse(LOOKUP_PAGE_POSTCODE_LABEL)
   val submitLabel: String = p.submitLabel.getOrElse(LOOKUP_PAGE_SUBMIT_LABEL)

@@ -9,11 +9,11 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
 
   val labels: ResolvedLanguageLabels = journeyConfig.labels match {
     case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh =>
-      ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants)
+      ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants, options.isUkMode)
     case Some(JourneyLabels(Some(englishLanguageLabels), _)) =>
-      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants, options.isUkMode)
     case _ =>
-      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants, options.isUkMode)
   }
 }
 
@@ -49,10 +49,10 @@ case class ResolvedConfirmPageConfig(confirmPageConfig: ConfirmPageConfig) {
   val showConfirmChangeText: Boolean = confirmPageConfig.showConfirmChangeText.getOrElse(false)
 }
 
-case class ResolvedLanguageLabels(languageLabels: LanguageLabels, phaseFeedbackLink: String, journeyConfigDefaults: JourneyConfigDefaults) {
+case class ResolvedLanguageLabels(languageLabels: LanguageLabels, phaseFeedbackLink: String, journeyConfigDefaults: JourneyConfigDefaults, isUkMode: Boolean) {
   val appLevelLabels: ResolvedAppLevelLabels = ResolvedAppLevelLabels(languageLabels.appLevelLabels.getOrElse(AppLevelLabels()), phaseFeedbackLink)
   val selectPageLabels: ResolvedSelectPageLabels = ResolvedSelectPageLabels(languageLabels.selectPageLabels.getOrElse(SelectPageLabels()))
-  val lookupPageLabels: ResolvedLookupPageLabels = ResolvedLookupPageLabels(languageLabels.lookupPageLabels.getOrElse(LookupPageLabels()))
+  val lookupPageLabels: ResolvedLookupPageLabels = ResolvedLookupPageLabels(languageLabels.lookupPageLabels.getOrElse(LookupPageLabels()), isUkMode)
   val editPageLabels: ResolvedEditPageLabels = ResolvedEditPageLabels(languageLabels.editPageLabels.getOrElse(EditPageLabels()))
   val confirmPageLabels: ResolvedConfirmPageLabels = ResolvedConfirmPageLabels(languageLabels.confirmPageLabels.getOrElse(ConfirmPageLabels()))
 
@@ -71,9 +71,9 @@ case class ResolvedLanguageLabels(languageLabels: LanguageLabels, phaseFeedbackL
     val editAddressLinkText: String = selectPageLabels.editAddressLinkText.getOrElse(journeyConfigDefaults.EDIT_LINK_TEXT)
   }
 
-  case class ResolvedLookupPageLabels(lookupPageLabels: LookupPageLabels) {
-    val title: String = lookupPageLabels.title.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_TITLE)
-    val heading: String = lookupPageLabels.heading.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_HEADING)
+  case class ResolvedLookupPageLabels(lookupPageLabels: LookupPageLabels, isUkMode: Boolean) {
+    val title: String = lookupPageLabels.title.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_TITLE).replaceAll("\\$UK", if (isUkMode) "UK" else "")
+    val heading: String = lookupPageLabels.heading.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_HEADING).replaceAll("\\$UK", if (isUkMode) "UK" else "")
     val filterLabel: String = lookupPageLabels.filterLabel.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_FILTER_LABEL)
     val postcodeLabel: String = lookupPageLabels.postcodeLabel.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_POSTCODE_LABEL)
     val submitLabel: String = lookupPageLabels.submitLabel.getOrElse(journeyConfigDefaults.LOOKUP_PAGE_SUBMIT_LABEL)

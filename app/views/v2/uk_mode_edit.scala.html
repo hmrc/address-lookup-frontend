@@ -10,7 +10,15 @@
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 @resolvedConf = @{journeyData.resolveConfigV2(isWelsh)}
 
-@main_template(title = resolvedConf.labels.editPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@titleWithError = @{
+  if(editForm.errors) {
+    "Error: " + resolvedConf.labels.editPageLabels.title
+  } else {
+    resolvedConf.labels.editPageLabels.title
+  }
+}
+
+@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
 <div id="ukEdit"></div>
   @if(resolvedConf.options.showBackButtons) {
     <div>

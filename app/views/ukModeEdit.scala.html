@@ -5,7 +5,15 @@
 
 @(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = journeyData.resolvedConfig.editPage.title, journeyData = Some(journeyData)) {
+@titleWithError = @{
+  if(editForm.errors) {
+    "Error: " + journeyData.resolvedConfig.editPage.title
+  } else {
+    journeyData.resolvedConfig.editPage.title
+  }
+}
+
+@main_template(title = titleWithError, journeyData = Some(journeyData)) {
 <div id="ukEdit"></div>
   @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>

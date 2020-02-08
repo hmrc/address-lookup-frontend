@@ -16,10 +16,15 @@ message: Option[String] = None
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
-@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title,
-               journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@titleWithError = @{
+  if(lookupForm.errors) {
+    "Error: " + journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title
+  } else {
+    journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title
+  }
+}
 
-
+@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
 
   @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
     <div>

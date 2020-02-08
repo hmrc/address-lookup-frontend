@@ -10,7 +10,15 @@
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
-@template(title = journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@titleWithError = @{
+    if(selectForm.errors) {
+        "Error: " + journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
+    } else {
+        journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
+    }
+}
+
+@template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
     @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
         <div>

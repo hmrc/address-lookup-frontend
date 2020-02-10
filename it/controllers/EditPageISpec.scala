@@ -617,7 +617,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Error: Nodwch y cyfeiriad"
       document.h1.text shouldBe "Nodwch y cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryCode")).isDefined shouldBe true
@@ -713,7 +713,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
       testElementExists(res, EditPage.ukEditId)
 
-      document.title shouldBe "Enter the address"
+      document.title shouldBe "Error: Enter the address"
       document.h1.text shouldBe "Enter the address"
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")
@@ -751,7 +751,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Error: Nodwch y cyfeiriad"
       document.h1.text shouldBe "Nodwch y cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       testElementDoesntExist(res,"countryCode")

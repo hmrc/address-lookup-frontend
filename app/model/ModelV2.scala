@@ -12,7 +12,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
 
   def resolveConfigV2(isWelsh: Boolean = false) = ResolvedJourneyConfigV2(config, isWelsh)
 
-  val welshEnabled: Boolean = config.labels exists (_.cy.isDefined)
+  val welshEnabled: Boolean = true
 
 }
 

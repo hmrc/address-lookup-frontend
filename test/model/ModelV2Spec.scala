@@ -374,7 +374,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
         journeyDataV2Full.welshEnabled mustBe true
       }
       "there is no config provided" in {
-        journeyDataV2Minimal.welshEnabled mustBe false
+        journeyDataV2Minimal.welshEnabled mustBe true
       }
     }
   }

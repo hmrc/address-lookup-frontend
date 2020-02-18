@@ -77,7 +77,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
             doc.title shouldBe tooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe tooManyResultsMessages.heading1
-            doc.paras.get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
@@ -101,7 +101,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
             doc.title shouldBe tooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe tooManyResultsMessages.heading2
-            doc.paras.get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
@@ -127,7 +127,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe empty
             doc.title shouldBe tooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe tooManyResultsMessages.heading1
-            doc.paras.get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
@@ -151,7 +151,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe empty
             doc.title shouldBe tooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe tooManyResultsMessages.heading2
-            doc.paras.get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
@@ -181,7 +181,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe welshTooManyResultsMessages.back
             doc.title shouldBe welshTooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading1
-            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
@@ -205,7 +205,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe welshTooManyResultsMessages.back
             doc.title shouldBe welshTooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading2
-            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
@@ -231,7 +231,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe empty
             doc.title shouldBe welshTooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading1
-            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
@@ -255,7 +255,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.getBackLinkText shouldBe empty
             doc.title shouldBe welshTooManyResultsMessages.title
             doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading2
-            doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button

@@ -10,9 +10,11 @@
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 @resolvedConfig = @{journeyData.resolveConfigV2(isWelsh)}
 
+@errorPrefix = @{if(isWelsh) "" else "Error: "}
+
 @titleWithError = @{
     if(editForm.errors) {
-        "Error: " + resolvedConfig.labels.editPageLabels.title
+        errorPrefix + resolvedConfig.labels.editPageLabels.title
     } else {
         resolvedConfig.labels.editPageLabels.title
     }

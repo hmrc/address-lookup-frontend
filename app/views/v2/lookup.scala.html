@@ -16,9 +16,11 @@ message: Option[String] = None
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
+@errorPrefix = @{if(isWelsh) "" else "Error: "}
+
 @titleWithError = @{
   if(lookupForm.errors) {
-    "Error: " + journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title
+    errorPrefix + journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title
   } else {
     journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.title
   }

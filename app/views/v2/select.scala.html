@@ -10,9 +10,11 @@
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
+@errorPrefix = @{if(isWelsh) "" else "Error: "}
+
 @titleWithError = @{
     if(selectForm.errors) {
-        "Error: " + journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
+        errorPrefix + journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
     } else {
         journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
     }

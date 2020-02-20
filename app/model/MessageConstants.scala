@@ -155,14 +155,23 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "Chwiliwch am eich cyfeiriad a’i ddewis"
 
     val lookupErrorHeading = "Mae gwallau ar y dudalen hon"
-    val lookupPostcodeEmptyError: String = if(isUkMode) "Enter UK postcode. Welsh" else "Enter postcode. Welsh"
-    val lookupPostcodeInvalidError: String = if(isUkMode) {
-      "UK Postcode must only contains letters A - Z, and 0 - 9. Welsh"
+    val lookupPostcodeEmptyError: String = if(isUkMode) {
+      // "Enter UK postcode. Welsh"
+      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     } else {
-      "Postcode must only contains letters A - Z, and 0 - 9. Welsh"
+      // "Enter postcode. Welsh"
+      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+    }
+    val lookupPostcodeInvalidError: String = if(isUkMode) {
+      // "UK Postcode must only contains letters A - Z, and 0 - 9. Welsh"
+      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+    } else {
+      // "Postcode must only contains letters A - Z, and 0 - 9. Welsh"
+      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     }
     val lookupPostcodeError: String = if(isUkMode) {
-      "Enter a real UK Postcode e.g. AA1 1AA. Welsh"
+      // "Enter a real UK Postcode e.g. AA1 1AA. Welsh"
+      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     } else {
       "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
     }

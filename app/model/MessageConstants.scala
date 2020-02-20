@@ -154,31 +154,22 @@ object MessageConstants {
     val confirmSelectedAddressError1 = "Nid ydych wedi dewis unrhyw gyfeiriad."
     val confirmSelectedAddressError2 = "Chwiliwch am eich cyfeiriad a’i ddewis"
 
-    val lookupErrorHeading = "Mae gwallau ar y dudalen hon"
-    val lookupPostcodeEmptyError: String = if(isUkMode) {
-      // "Enter UK postcode. Welsh"
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
-    } else {
-      // "Enter postcode. Welsh"
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
-    }
+    val lookupErrorHeading = "Mae problem wedi codi"
+    val lookupPostcodeEmptyError: String = if(isUkMode) "Nodwch god post yn y DU." else "Nodwch god post."
     val lookupPostcodeInvalidError: String = if(isUkMode) {
-      // "UK Postcode must only contains letters A - Z, and 0 - 9. Welsh"
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+      "Mae’n rhaid i’r cod post yn y DU gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig."
     } else {
-      // "Postcode must only contains letters A - Z, and 0 - 9. Welsh"
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+      "Mae’n rhaid i’r cod post gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig."
     }
     val lookupPostcodeError: String = if(isUkMode) {
-      // "Enter a real UK Postcode e.g. AA1 1AA. Welsh"
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+      "Nodwch god post go iawn yn y DU, e.e. AA1 1AA."
     } else {
-      "Mae’r cod post a nodoch i’w weld yn anghyflawn neu’n annilys. Gwiriwch ef a rhowch gynnig arall arni."
+      "Nodwch god post go iawn, e.e. AA1 1AA."
     }
     val lookupFilterError = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
     val lookupFilterHint = "Er enghraifft, Tegfan, 116 neu Fflat 37a"
 
-    val errorText = "Mae gwallau ar y dudalen hon"
+    val errorText = "Mae problem wedi codi"
     val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
     val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
     val ukModePostcodeLabel = "Cod post y DU (dewisol)"
@@ -197,7 +188,7 @@ object MessageConstants {
     val editPageAddressLine3MaxErrorMessage = "Nodwch drydedd linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai"
     val editPageAddressLine1MinErrorMessage = "Nodwch linell gyntaf y cyfeiriad"
     val editPageTownMaxErrorMessage = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
-    val editPageTownMinErrorMessage = "Nodwch dref neu ddinas"
+    val editPageTownMinErrorMessage = "Nodwch dref neu ddinas y cyfeiriad"
     val editPagePostcodeErrorMessage = "Nodwch god post yn y DU sy’n ddilys"
 
     val noResultsPageTitle = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
@@ -212,7 +203,7 @@ object MessageConstants {
     val notFoundErrorHeading = "Ni ellir dod o hyd i’r dudalen hon"
     val notFoundErrorBody = "Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir."
 
-    val errorRequired = "Mae angen llenwi’r maes hwn"
+    val errorRequired = "Dewiswch yr eiddo ar gyfer y cyfeiriad."
     val errorMin: Int => String = min => s"$min yw’r isafswm hyd"
     val errorMax: Int => String = max => s"$max yw’r uchafswm hyd"
   }

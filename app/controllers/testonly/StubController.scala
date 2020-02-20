@@ -53,11 +53,13 @@ class StubController @Inject()(apiController: ApiController,journeyRepository: J
 
   def resolvedFormWithJourneyConfig =  {
     val jConfigDefaults = JourneyConfig(continueUrl = "will be ignored")
+    val UK = if(jConfigDefaults.ukMode.get) "UK" else ""
+
     TestSetupForm.form.fill(
       Json.prettyPrint(
         Json.toJson(
           ResolvedJourneyConfig(
-            jConfigDefaults).cfg)
+            jConfigDefaults, JourneyConfigDefaults.EnglishConstants(UK)).cfg)
       ).toString)
   }
 

@@ -64,12 +64,12 @@ object JourneyConfigDefaults {
     def defaultPhaseBannerHtml(link: String): String
   }
 
-  object EnglishConstants extends JourneyConfigDefaults {
+  case class EnglishConstants(UK: String) extends JourneyConfigDefaults {
     val CONFIRM_PAGE_TITLE = "Confirm the address"
     val CONFIRM_PAGE_HEADING = "Review and confirm"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
-    val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm Address"
+    val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm address"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Change address"
 
     val EDIT_PAGE_TITLE = "Enter the address"
@@ -83,7 +83,7 @@ object JourneyConfigDefaults {
     val EDIT_PAGE_SUBMIT_LABEL = "Continue"
 
     val LOOKUP_PAGE_TITLE = "Find the address"
-    val LOOKUP_PAGE_HEADING = "Find the address"
+    val LOOKUP_PAGE_HEADING = s"Find ${UK} address"
     val LOOKUP_PAGE_FILTER_LABEL = "Property name or number (optional)"
     val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"

@@ -7,13 +7,15 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
   val version: Int = journeyConfig.version
   val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options)
 
+  val UK = if (options.isUkMode) "UK" else ""
+
   val labels: ResolvedLanguageLabels = journeyConfig.labels match {
     case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh =>
       ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants)
     case Some(JourneyLabels(Some(englishLanguageLabels), _)) =>
-      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants(UK))
     case _ =>
-      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants(UK))
   }
 }
 

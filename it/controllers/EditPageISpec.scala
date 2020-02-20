@@ -124,8 +124,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2",
-          "line3" -> "Llinell cyfeiriad 3",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad"
@@ -246,8 +246,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2",
-          "line3" -> "Llinell cyfeiriad 3",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post y DU (dewisol)"
         ))
@@ -286,8 +286,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2",
-          "line3" -> "Llinell cyfeiriad 3",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)"
         ))
@@ -617,7 +617,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Gwall: Nodwch y cyfeiriad"
       document.h1.text shouldBe "Nodwch y cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryCode")).isDefined shouldBe true
@@ -630,9 +630,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas Nodwch dref neu ddinas",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
         "postcode" -> "Cod post (dewisol)"
       ))
 
@@ -662,9 +662,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas Nodwch dref neu ddinas",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
         "postcode" -> "Cod post (dewisol) Nodwch god post yn y DU sy’n ddilys"
       ))
 
@@ -751,7 +751,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Gwall: Nodwch y cyfeiriad"
       document.h1.text shouldBe "Nodwch y cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       testElementDoesntExist(res,"countryCode")
@@ -764,9 +764,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas Nodwch dref neu ddinas",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
         "postcode" -> "Cod post y DU (dewisol)"
       ))
 

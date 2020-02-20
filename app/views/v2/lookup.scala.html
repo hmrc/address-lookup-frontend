@@ -16,7 +16,7 @@ message: Option[String] = None
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
-@errorPrefix = @{if(isWelsh) "" else "Error: "}
+@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
 @titleWithError = @{
   if(lookupForm.errors) {

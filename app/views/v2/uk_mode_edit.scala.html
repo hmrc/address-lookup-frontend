@@ -10,7 +10,7 @@
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 @resolvedConf = @{journeyData.resolveConfigV2(isWelsh)}
 
-@errorPrefix = @{if(isWelsh) "" else "Error: "}
+@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
 @titleWithError = @{
   if(editForm.errors) {

@@ -184,7 +184,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe WelshConstants.SELECT_PAGE_TITLE
+        doc.title shouldBe "Gwall: " + WelshConstants.SELECT_PAGE_TITLE
       }
     }
     "Redirects to Confirm page if option is selected" in {

@@ -5,8 +5,7 @@ import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
-import model.JourneyConfigDefaults.EnglishConstants._
-import model.JourneyConfigDefaults.WelshConstants
+import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -17,6 +16,10 @@ class SelectPageISpec extends IntegrationSpecBase {
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
+  val EnglishConstantsUkMode = EnglishConstants(true)
+  val WelshConstantsUkMode = WelshConstants(true)
+
+  import EnglishConstantsUkMode._
 
   "The select page GET" should {
     "be shown with default text" when {
@@ -160,8 +163,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
         await(res).status shouldBe OK
 
-        doc.title() shouldBe WelshConstants.SELECT_PAGE_TITLE
-        doc.h1.text() shouldBe WelshConstants.SELECT_PAGE_HEADING
+        doc.title() shouldBe WelshConstantsUkMode.SELECT_PAGE_TITLE
+        doc.h1.text() shouldBe WelshConstantsUkMode.SELECT_PAGE_HEADING
       }
     }
   }
@@ -184,7 +187,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe "Gwall: " + WelshConstants.SELECT_PAGE_TITLE
+        doc.title shouldBe "Gwall: " + WelshConstantsUkMode.SELECT_PAGE_TITLE
       }
     }
     "Redirects to Confirm page if option is selected" in {

@@ -1,7 +1,6 @@
 package model
 
 import fixtures.ALFEFixtures
-import model.JourneyConfigDefaults.EnglishConstants.{LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT, defaultPhaseBannerHtml}
 import model.JourneyData._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsResultException, Json}
@@ -159,7 +158,8 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
     val c = JourneyConfig("http://google.com")
 
-    val cfg = ResolvedJourneyConfig(c)
+    val journeyConfigDefaults = JourneyConfigDefaults.EnglishConstants(true)
+    val cfg = ResolvedJourneyConfig(c, journeyConfigDefaults)
 
     "have a default home nav href" in {
       cfg.homeNavHref must be ("http://www.hmrc.gov.uk")
@@ -198,7 +198,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "have default phase banner html" in {
-      cfg.phaseBannerHtml must be (defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
+      cfg.phaseBannerHtml must be (journeyConfigDefaults.defaultPhaseBannerHtml(cfg.phaseFeedbackLink))
     }
 
     "show back buttons by default" in {
@@ -292,13 +292,15 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
   }
   "ResolvedJourneyConfig" should {
+    val journeyConfigDefaults = JourneyConfigDefaults.EnglishConstants(true)
+
     "default text when ukMode == true for ResolvedLookupPage.manualAddressLinkText" in {
-      val res = ResolvedJourneyConfig(basicJourney(Some(true)).config)
-      res.lookupPage.manualAddressLinkText mustBe(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+      val res = ResolvedJourneyConfig(basicJourney(Some(true)).config, journeyConfigDefaults)
+      res.lookupPage.manualAddressLinkText mustBe(journeyConfigDefaults.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
     }
     "default text when ukMode == false for ResolvedLookupPage.manualAddressLinkText" in {
-      val res = ResolvedJourneyConfig(basicJourney().config)
-      res.lookupPage.manualAddressLinkText mustBe(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+      val res = ResolvedJourneyConfig(basicJourney().config, journeyConfigDefaults)
+      res.lookupPage.manualAddressLinkText mustBe(journeyConfigDefaults.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
     }
   }
 }

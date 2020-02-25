@@ -4,7 +4,7 @@ import config.FrontendAppConfig.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
-import model.JourneyConfigDefaults.EnglishConstants._
+import model.JourneyConfigDefaults.EnglishConstants
 import play.api.http.Status._
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
@@ -18,6 +18,9 @@ class LookupPageISpec extends IntegrationSpecBase {
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
+  val EnglishConstantsNonUkMode = EnglishConstants(false)
+
+  import EnglishConstantsNonUkMode._
 
   def longFilterValue = (1 to 257) map (_ => Random.alphanumeric.head) mkString
 

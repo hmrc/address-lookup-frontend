@@ -9,11 +9,11 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
 
   val labels: ResolvedLanguageLabels = journeyConfig.labels match {
     case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh =>
-      ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants)
+      ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants(options.isUkMode))
     case Some(JourneyLabels(Some(englishLanguageLabels), _)) =>
-      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
     case _ =>
-      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants)
+      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
   }
 }
 

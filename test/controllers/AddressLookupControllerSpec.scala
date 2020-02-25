@@ -189,8 +189,8 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find the address")
-        html should include element withName("h1").withValue("Find the address")
+        html should include element withName("title").withValue("Find address")
+        html should include element withName("h1").withValue("Find address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
@@ -207,8 +207,8 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo"), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find the address")
-        html should include element withName("h1").withValue("Find the address")
+        html should include element withName("title").withValue("Find UK address")
+        html should include element withName("h1").withValue("Find UK address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
@@ -275,8 +275,8 @@ class AddressLookupControllerSpec
         ) {
           val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), reqWelsh)
           val html = contentAsString(res).asBodyFragment
-          html should include element withName("title").withValue("Dod o hyd i’r cyfeiriad")
-          html should include element withName("h1").withValue("Dod o hyd i’r cyfeiriad")
+          html should include element withName("title").withValue("Dod o hyd i gyfeiriad")
+          html should include element withName("h1").withValue("Dod o hyd i gyfeiriad")
           html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
           html should include element withName("label").withAttrValue("for", "filter").withValue("Enw neu rif yr eiddo")
           html should include element withName("input").withAttrValue("name", "filter")
@@ -294,8 +294,8 @@ class AddressLookupControllerSpec
         ) {
           val res = call(controller.lookup("foo"), reqWelsh)
           val html = contentAsString(res).asBodyFragment
-          html should include element withName("title").withValue("Find the address")
-          html should include element withName("h1").withValue("Find the address")
+          html should include element withName("title").withValue("Find UK address")
+          html should include element withName("h1").withValue("Find UK address")
           html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
           html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
           html should include element withName("input").withAttrValue("name", "filter")
@@ -498,6 +498,7 @@ class AddressLookupControllerSpec
   }
 
   "handle select" should {
+    val EnglishConstantsUkMode = EnglishConstants(true)
     val EnglishMessageConstants = EnglishMessages(true)
 
     "redirect to confirm page when a proposal is selected" in new Scenario(
@@ -533,7 +534,7 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
           html should include element withAttrValue("id", "addressId-error-summary").withValue(EnglishMessageConstants.errorRequired)
         }
         "nothing was selected and the language is changed" in new Scenario(
@@ -542,7 +543,7 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
           html should include element withAttrValue("id", "addressId-error-summary").withValue(EnglishMessageConstants.errorRequired)
         }
         "something was selected which was more than the maximum length allowed" in new Scenario(
@@ -551,7 +552,7 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
           html should include element withAttrValue("id", "addressId-error-summary").withValue(EnglishMessageConstants.errorMax(255))
         }
       }
@@ -561,12 +562,14 @@ class AddressLookupControllerSpec
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(EnglishConstants.SELECT_PAGE_HEADING)
+        html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
       }
     }
 
     "display the select page in welsh" when {
+      val WelshConstantsUkMode = WelshConstants(true)
       val WelshMessageConstants = WelshMessages(true)
+
       val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
       "the form had an error and welsh is enabled" when {
         "nothing was selected" in new Scenario(
@@ -575,7 +578,7 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
           html should include element withAttrValue("id", "addressId-error-summary").withValue(WelshMessageConstants.errorRequired)
         }
         "something was selected which was more than the maximum length allowed" in new Scenario(
@@ -584,7 +587,7 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "A" * 256))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
           html should include element withAttrValue("id", "addressId-error-summary").withValue(WelshMessageConstants.errorMax(255))
         }
       }
@@ -594,7 +597,7 @@ class AddressLookupControllerSpec
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(WelshConstants.SELECT_PAGE_HEADING)
+        html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
       }
     }
 

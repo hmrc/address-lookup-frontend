@@ -2,6 +2,7 @@ package views
 
 import controllers.routes
 import forms.ALFForms.lookupForm
+import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -39,13 +40,15 @@ class LookupViewSpec extends ViewSpec {
   val EnglishMessagesNonUKMode = EnglishMessageConstants(false)
   val WelshMessagesUKMode = WelshMessageConstants(true)
   val WelshMessagesNonUKMode = WelshMessageConstants(false)
+  val EnglishConstantsUKMode = EnglishConstants(true)
+  val EnglishConstantsNonUKMode = EnglishConstants(false)
+  val WelshConstantsUKMode = WelshConstants(true)
+  val WelshConstantsNonUKMode = WelshConstants(false)
 
   "Lookup view page" should {
     "renders" when {
       "Welsh is disabled" when {
-        import model.JourneyConfigDefaults.EnglishConstants._
-        import model.MessageConstants.EnglishMessageConstants._
-
+        import EnglishConstantsNonUKMode._
         import EnglishMessagesUKMode._
 
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
@@ -131,8 +134,7 @@ class LookupViewSpec extends ViewSpec {
         }
       }
       "Welsh is enabled" when {
-        import model.JourneyConfigDefaults.WelshConstants._
-
+        import WelshConstantsNonUKMode._
         import WelshMessagesUKMode._
 
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
@@ -153,8 +155,7 @@ class LookupViewSpec extends ViewSpec {
           doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
         }
         "default content doesn't exist in Welsh" in {
-          import model.JourneyConfigDefaults.EnglishConstants._
-          import model.MessageConstants.EnglishMessageConstants._
+          import EnglishConstantsNonUKMode._
 
           val testPage = views.html.v2.lookup(testId, testBasicLevelJourneyConfigV2, lookupForm(false), false)
           val doc: Document = Jsoup.parse(testPage.body)

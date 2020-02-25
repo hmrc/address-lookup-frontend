@@ -231,6 +231,8 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
     "return a full model with all possible English default values" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Minimal.config
       val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = false)
+      val EnglishConstantsUkMode = JourneyConfigDefaults.EnglishConstants(true)
+      val EnglishConstantsNonUkMode = JourneyConfigDefaults.EnglishConstants(false)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 
@@ -258,49 +260,51 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe JourneyConfigDefaults.EnglishConstants.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
 
-      resolvedJourneyConfig.labels.selectPageLabels.title mustBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_TITLE
-      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING
-      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_HEADING_WITH_POSTCODE
-      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_PROPOSAL_LIST_LABEL
-      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe JourneyConfigDefaults.EnglishConstants.SELECT_PAGE_SUBMIT_LABEL
-      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.title mustBe EnglishConstantsUkMode.SELECT_PAGE_TITLE
+      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe EnglishConstantsUkMode.SELECT_PAGE_HEADING
+      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe EnglishConstantsUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
+      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe EnglishConstantsUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
+      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe EnglishConstantsUkMode.SELECT_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe EnglishConstantsUkMode.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe EnglishConstantsUkMode.EDIT_LINK_TEXT
 
-      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_TITLE
-      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_HEADING
-      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_FILTER_LABEL
-      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_POSTCODE_LABEL
-      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_TITLE
+      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_HEADING
+      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe EnglishConstantsUkMode.LOOKUP_PAGE_FILTER_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe EnglishConstantsUkMode.LOOKUP_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe EnglishConstantsUkMode.LOOKUP_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
       resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
-      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe JourneyConfigDefaults.EnglishConstants.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe EnglishConstantsUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
 
-      resolvedJourneyConfig.labels.editPageLabels.title mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_TITLE
-      resolvedJourneyConfig.labels.editPageLabels.heading mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_HEADING
-      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_LINE1_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_LINE2_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_LINE3_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_TOWN_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_POSTCODE_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_COUNTRY_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe JourneyConfigDefaults.EnglishConstants.EDIT_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.title mustBe EnglishConstantsUkMode.EDIT_PAGE_TITLE
+      resolvedJourneyConfig.labels.editPageLabels.heading mustBe EnglishConstantsUkMode.EDIT_PAGE_HEADING
+      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe EnglishConstantsUkMode.EDIT_PAGE_LINE1_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe EnglishConstantsUkMode.EDIT_PAGE_LINE2_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe EnglishConstantsUkMode.EDIT_PAGE_LINE3_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe EnglishConstantsUkMode.EDIT_PAGE_TOWN_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe EnglishConstantsUkMode.EDIT_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe EnglishConstantsUkMode.EDIT_PAGE_COUNTRY_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe EnglishConstantsUkMode.EDIT_PAGE_SUBMIT_LABEL
 
-      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_TITLE
-      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
-      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_MESSAGE_HTML
-      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
-      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe EnglishConstantsUkMode.CONFIRM_PAGE_TITLE
+      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe EnglishConstantsUkMode.CONFIRM_PAGE_HEADING
+      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe EnglishConstantsUkMode.CONFIRM_PAGE_INFO_SUBHEADING
+      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe EnglishConstantsUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
+      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe EnglishConstantsUkMode.CONFIRM_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe EnglishConstantsUkMode.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe EnglishConstantsUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe EnglishConstantsUkMode.CONFIRM_CHANGE_TEXT
 
     }
 
     "return a full model with all possible default values including English and Welsh content" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2EnglishAndWelshMinimal.config
       val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true)
+      val WelshConstantsUkMode = JourneyConfigDefaults.WelshConstants(true)
+      val WelshConstantsNonUkMode = JourneyConfigDefaults.WelshConstants(false)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 
@@ -328,43 +332,43 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe JourneyConfigDefaults.WelshConstants.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
 
-      resolvedJourneyConfig.labels.selectPageLabels.title mustBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_TITLE
-      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_HEADING
-      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_HEADING_WITH_POSTCODE
-      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_PROPOSAL_LIST_LABEL
-      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe JourneyConfigDefaults.WelshConstants.SELECT_PAGE_SUBMIT_LABEL
-      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.title mustBe WelshConstantsUkMode.SELECT_PAGE_TITLE
+      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe WelshConstantsUkMode.SELECT_PAGE_HEADING
+      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe WelshConstantsUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
+      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe WelshConstantsUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
+      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe WelshConstantsUkMode.SELECT_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe WelshConstantsUkMode.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe WelshConstantsUkMode.EDIT_LINK_TEXT
 
-      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_TITLE
-      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_HEADING
-      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_FILTER_LABEL
-      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_POSTCODE_LABEL
-      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_TITLE
+      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_HEADING
+      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe WelshConstantsUkMode.LOOKUP_PAGE_FILTER_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe WelshConstantsUkMode.LOOKUP_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe WelshConstantsUkMode.LOOKUP_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
       resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
-      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe JourneyConfigDefaults.WelshConstants.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe WelshConstantsUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
 
-      resolvedJourneyConfig.labels.editPageLabels.title mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_TITLE
-      resolvedJourneyConfig.labels.editPageLabels.heading mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_HEADING
-      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_LINE1_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_LINE2_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_LINE3_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_TOWN_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_POSTCODE_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_COUNTRY_LABEL
-      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe JourneyConfigDefaults.WelshConstants.EDIT_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.title mustBe WelshConstantsUkMode.EDIT_PAGE_TITLE
+      resolvedJourneyConfig.labels.editPageLabels.heading mustBe WelshConstantsUkMode.EDIT_PAGE_HEADING
+      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe WelshConstantsUkMode.EDIT_PAGE_LINE1_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe WelshConstantsUkMode.EDIT_PAGE_LINE2_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe WelshConstantsUkMode.EDIT_PAGE_LINE3_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe WelshConstantsUkMode.EDIT_PAGE_TOWN_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe WelshConstantsUkMode.EDIT_PAGE_POSTCODE_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe WelshConstantsUkMode.EDIT_PAGE_COUNTRY_LABEL
+      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe WelshConstantsUkMode.EDIT_PAGE_SUBMIT_LABEL
 
-      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_TITLE
-      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
-      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_MESSAGE_HTML
-      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
-      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe WelshConstantsUkMode.CONFIRM_PAGE_TITLE
+      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe WelshConstantsUkMode.CONFIRM_PAGE_HEADING
+      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe WelshConstantsUkMode.CONFIRM_PAGE_INFO_SUBHEADING
+      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe WelshConstantsUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
+      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe WelshConstantsUkMode.CONFIRM_PAGE_SUBMIT_LABEL
+      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe WelshConstantsUkMode.SEARCH_AGAIN_LINK_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe WelshConstantsUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsUkMode.CONFIRM_CHANGE_TEXT
     }
   }
 

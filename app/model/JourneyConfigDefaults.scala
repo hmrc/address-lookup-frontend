@@ -64,7 +64,7 @@ object JourneyConfigDefaults {
     def defaultPhaseBannerHtml(link: String): String
   }
 
-  case class EnglishConstants(UK: String) extends JourneyConfigDefaults {
+  case class EnglishConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
     val CONFIRM_PAGE_TITLE = "Confirm the address"
     val CONFIRM_PAGE_HEADING = "Review and confirm"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
@@ -82,8 +82,8 @@ object JourneyConfigDefaults {
     val EDIT_PAGE_COUNTRY_LABEL = "Country"
     val EDIT_PAGE_SUBMIT_LABEL = "Continue"
 
-    val LOOKUP_PAGE_TITLE = "Find the address"
-    val LOOKUP_PAGE_HEADING = s"Find ${UK} address"
+    val LOOKUP_PAGE_TITLE = if (isUkMode) "Find UK address" else "Find address"
+    val LOOKUP_PAGE_HEADING = if (isUkMode) "Find UK address" else "Find address"
     val LOOKUP_PAGE_FILTER_LABEL = "Property name or number (optional)"
     val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
@@ -103,7 +103,7 @@ object JourneyConfigDefaults {
     def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
   }
 
-  object WelshConstants extends JourneyConfigDefaults {
+  case class WelshConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
     val CONFIRM_PAGE_TITLE = "Cadarnhewch y cyfeiriad"
     val CONFIRM_PAGE_HEADING = "Adolygu a chadarnhau"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Y cyfeiriad rydych wedi’i ddewis"
@@ -121,8 +121,8 @@ object JourneyConfigDefaults {
     val EDIT_PAGE_COUNTRY_LABEL = "Gwlad"
     val EDIT_PAGE_SUBMIT_LABEL = "Yn eich blaen"
 
-    val LOOKUP_PAGE_TITLE = "Dod o hyd i’r cyfeiriad"
-    val LOOKUP_PAGE_HEADING = "Dod o hyd i’r cyfeiriad"
+    val LOOKUP_PAGE_TITLE = if (isUkMode) "Dod o hyd i gyfeiriad yn y DU" else "Dod o hyd i gyfeiriad"
+    val LOOKUP_PAGE_HEADING = if (isUkMode) "Dod o hyd i gyfeiriad yn y DU" else "Dod o hyd i gyfeiriad"
     val LOOKUP_PAGE_FILTER_LABEL = "Enw neu rif yr eiddo (dewisol)"
     val LOOKUP_PAGE_POSTCODE_LABEL = "Cod post yn y DU"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Chwiliwch am y cyfeiriad"

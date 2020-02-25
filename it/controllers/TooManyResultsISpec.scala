@@ -3,7 +3,7 @@ package controllers
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
-import model.JourneyConfigDefaults.EnglishConstants._
+import model.JourneyConfigDefaults.EnglishConstants
 import model.MessageConstants.WelshMessageConstants
 import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
@@ -49,8 +49,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
   object otherPageMessages {
     val noResultsPageTitle = "Can't find any addresses"
-
   }
+
+  val EnglishConstantsUkMode = EnglishConstants(true)
+
+  import EnglishConstantsUkMode._
 
   "The 'Too Many Results' page" should {
     "be rendered" when {
@@ -194,7 +197,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
         }
       }
 
@@ -227,7 +230,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
         }
       }
     }

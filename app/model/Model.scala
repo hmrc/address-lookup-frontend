@@ -149,9 +149,7 @@ case class JourneyData(config: JourneyConfig,
                        selectedAddress: Option[ConfirmableAddress] = None,
                        confirmedAddress: Option[ConfirmableAddress] = None) {
 
-  val UK = if (config.ukMode.contains(true)) "UK" else ""
-
-  def resolvedConfig = ResolvedJourneyConfig(config, EnglishConstants(UK))
+  def resolvedConfig = ResolvedJourneyConfig(config, EnglishConstants(config.ukMode.contains(true)))
 
 }
 

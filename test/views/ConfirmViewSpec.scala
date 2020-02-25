@@ -1,6 +1,6 @@
 package views
 
-import model._
+import model.{JourneyConfigDefaults, _}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages.Implicits._
@@ -16,7 +16,8 @@ class ConfirmViewSpec extends ViewSpec {
 
   "ConfirmView" should {
     "render English default content" when {
-      val infoText: String = JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
+      val journeyConfigDefaults = JourneyConfigDefaults.EnglishConstants(false)
+      val infoText: String = journeyConfigDefaults.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
       val testJourneyConfig = fullV2JourneyDataCustomConfig(
         testContinueUrl = testContinueUrl,
         testHomeNavHref = None,
@@ -42,13 +43,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show back button is false" in {
@@ -72,13 +73,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe ""
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "a confirmed address has been defined" in {
@@ -86,13 +87,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "a confirmed address has not been defined" in {
@@ -101,7 +102,7 @@ class ConfirmViewSpec extends ViewSpec {
           val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
           doc.getFirstH2ElementAsText shouldBe ""
           Option(doc.getElementById("infoMessage")) shouldBe None
           Option(doc.getElementById("searchAgainLink")) shouldBe None
@@ -115,13 +116,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show subheading and info is false" in {
@@ -151,13 +152,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
           doc.getFirstH2ElementAsText shouldBe ""
           Option(doc.getElementById("infoMessage")) shouldBe None
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show search again link is true " in {
@@ -165,13 +166,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show search again link is false " in {
@@ -201,13 +202,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
           Option(doc.getElementById("searchAgainLink")) shouldBe None
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show change link is true " in {
@@ -215,13 +216,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show change link is false " in {
@@ -251,13 +252,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show confirm change options is true" in {
@@ -265,13 +266,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show confirm change options is false" in {
@@ -301,19 +302,20 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.EnglishConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
           Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.EnglishConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
       }
     }
 
     "render Welsh default content" when {
-      val infoText: String = JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
+      val journeyConfigDefaults = JourneyConfigDefaults.WelshConstants(false)
+      val infoText: String = journeyConfigDefaults.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
       val testJourneyConfig = fullV2JourneyDataCustomConfig(
         testContinueUrl = testContinueUrl,
         testHomeNavHref = None,
@@ -340,13 +342,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show back button is false" in {
@@ -372,13 +374,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe ""
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "a confirmed address has been defined" in {
@@ -386,13 +388,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "a confirmed address has not been defined" in {
@@ -401,7 +403,7 @@ class ConfirmViewSpec extends ViewSpec {
           val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
           doc.getFirstH2ElementAsText shouldBe ""
           Option(doc.getElementById("infoMessage")) shouldBe None
           Option(doc.getElementById("searchAgainLink")) shouldBe None
@@ -415,13 +417,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show subheading and info is false" in {
@@ -453,13 +455,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
           doc.getFirstH2ElementAsText shouldBe ""
           Option(doc.getElementById("infoMessage")) shouldBe None
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show search again link is true " in {
@@ -467,13 +469,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show search again link is false " in {
@@ -505,13 +507,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
           Option(doc.getElementById("searchAgainLink")) shouldBe None
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show change link is true " in {
@@ -519,13 +521,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show change link is false " in {
@@ -557,13 +559,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show confirm change options is true" in {
@@ -571,13 +573,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
         "show confirm change options is false" in {
@@ -609,13 +611,13 @@ class ConfirmViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_INFO_SUBHEADING
+          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
+          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
           doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe JourneyConfigDefaults.WelshConstants.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT
+          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
+          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
           Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getButtonContentAsText shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
       }
     }

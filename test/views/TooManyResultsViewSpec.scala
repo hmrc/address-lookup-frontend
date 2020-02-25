@@ -58,6 +58,9 @@ class TooManyResultsViewSpec extends ViewSpec {
     )
   )
 
+  val EnglishConstantsUkMode = JourneyConfigDefaults.EnglishConstants(true)
+  val WelshConstantsUkMode = JourneyConfigDefaults.WelshConstants(true)
+
   "The English 'Too Many Results' page" should {
     "be rendered" when {
       "the back buttons are enabled in the journey config" when {
@@ -81,7 +84,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
 
@@ -105,7 +108,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
       }
@@ -131,7 +134,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
 
@@ -155,7 +158,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.EnglishConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
       }
@@ -185,7 +188,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
 
@@ -209,7 +212,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
       }
@@ -235,7 +238,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
 
@@ -259,7 +262,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe JourneyConfigDefaults.WelshConstants.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
       }

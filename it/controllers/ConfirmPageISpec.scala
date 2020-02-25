@@ -3,7 +3,7 @@ package controllers
 import config.FrontendAppConfig.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import model.JourneyConfigDefaults.EnglishConstants._
+import model.JourneyConfigDefaults.EnglishConstants
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -17,6 +17,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
+  val EnglishConstantsUkMode = EnglishConstants(true)
+
+  import EnglishConstantsUkMode._
 
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
@@ -35,7 +38,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       )
       doc.title shouldBe CONFIRM_PAGE_TITLE
       doc.h1.text() shouldBe CONFIRM_PAGE_HEADING
-      doc.submitButton.text() shouldBe "Confirm Address"
+      doc.submitButton.text() shouldBe "Confirm address"
       doc.link("changeLink") should have(
         text(CONFIRM_PAGE_EDIT_LINK_TEXT)
       )
@@ -173,6 +176,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for a minimal Welsh journey config model" in {
+      val WelshConstantsUkMode = JourneyConfigDefaults.WelshConstants(true)
 
       val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(
         version = 2,
@@ -193,11 +197,11 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       doc.select("a[class=back-link]") should have(
         text(WelshMessageConstants.back)
       )
-      doc.title shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_TITLE
-      doc.h1.text() shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_HEADING
-      doc.submitButton.text() shouldBe JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_SUBMIT_LABEL
+      doc.title shouldBe WelshConstantsUkMode.CONFIRM_PAGE_TITLE
+      doc.h1.text() shouldBe WelshConstantsUkMode.CONFIRM_PAGE_HEADING
+      doc.submitButton.text() shouldBe WelshConstantsUkMode.CONFIRM_PAGE_SUBMIT_LABEL
       doc.link("changeLink") should have(
-        text(JourneyConfigDefaults.WelshConstants.CONFIRM_PAGE_EDIT_LINK_TEXT)
+        text(WelshConstantsUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT)
       )
       doc.address should have(
         addressLine("line1", "1 High Street"),

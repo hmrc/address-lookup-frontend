@@ -190,6 +190,8 @@ object TestConstants {
 
   val fullV2JourneyData = JourneyDataV2(fullV2JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
+  val fullV2JourneyDataFromV1 = JourneyDataV2(fullV2JourneyConfig.copy(requestedVersion = Some(1)), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
+
   val emptyJson: JsValue = Json.parse("{}")
 
   val confirmPageLabelsMinimal = ConfirmPageLabels(None, None, None, None, None, None, None, None)

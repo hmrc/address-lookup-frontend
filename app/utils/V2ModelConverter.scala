@@ -13,7 +13,8 @@ object V2ModelConverter {
       version = FrontendAppConfig.apiVersion2,
       options = resolveJourneyOptions(v1.config),
       labels = resolveLabels(v1.config.navTitle, v1.config.phaseBannerHtml, v1.config.lookupPage, v1.config.selectPage,
-        v1.config.editPage, v1.config.confirmPage)
+        v1.config.editPage, v1.config.confirmPage),
+      requestedVersion = Some(1)
     )
 
     JourneyDataV2(journeyConfig, v1.proposals, v1.selectedAddress, v1.confirmedAddress)

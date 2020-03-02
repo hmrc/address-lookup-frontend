@@ -12,13 +12,13 @@ case class JourneyDataV2(config: JourneyConfigV2,
 
   def resolveConfigV2(isWelsh: Boolean = false) = ResolvedJourneyConfigV2(config, isWelsh)
 
-  val welshEnabled: Boolean = true
-
+  val welshEnabled: Boolean = !config.requestedVersion.contains(1)
 }
 
 case class JourneyConfigV2(version: Int,
                            options: JourneyOptions,
-                           labels: Option[JourneyLabels] = None
+                           labels: Option[JourneyLabels] = None,
+                           requestedVersion: Option[Int] = None
                           )
 
 case class JourneyOptions(continueUrl: String,

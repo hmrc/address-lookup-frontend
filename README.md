@@ -69,7 +69,7 @@ Journey configuration is supplied as a JSON object in the body of the request to
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
-A "cy" object is required within the labels section to enable the Welsh journey, even if no custom content is provided. This is to allow calling services to specify whether Welsh should be available. Welsh content is displayed for users when the "cy" object has been included and the PLAY_LANG cookie is set to "cy". A link to enable users to change their language will be displayed when the Welsh journey is enabled.
+A "cy" object is required if you wish to provide custom labels for the Welsh journey. If no custom content is provided, the default labels are used. Welsh content is displayed for users when the PLAY_LANG cookie is set to "cy". A link to enable users to change their language will be displayed on all pages.
 
 ```json
 {

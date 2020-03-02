@@ -266,7 +266,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "all options set" should {
       "Create a valid v2 model" in new Scenario() {
         val actual = convertToV2Model(fullV1JourneyData)
-        val expected = fullV2JourneyData
+        val expected = fullV2JourneyDataFromV1
 
         actual mustEqual expected
       }
@@ -275,7 +275,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "without a selected address" should {
       "return a V2 model without a selected address" in new Scenario() {
         val actual = convertToV2Model(fullV1JourneyData.copy(selectedAddress = None))
-        val expected = fullV2JourneyData.copy(selectedAddress = None)
+        val expected = fullV2JourneyDataFromV1.copy(selectedAddress = None)
 
         actual mustEqual expected
       }
@@ -284,7 +284,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "without a confirmed address" should {
       "return a V2 model without a confirmed address" in new Scenario() {
         val actual = convertToV2Model(fullV1JourneyData.copy(confirmedAddress = None))
-        val expected = fullV2JourneyData.copy(confirmedAddress = None)
+        val expected = fullV2JourneyDataFromV1.copy(confirmedAddress = None)
 
         actual mustEqual expected
       }
@@ -293,7 +293,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
     "without a list of proposed addresses" should {
       "return a V2 model without a list of proposed addresses" in new Scenario() {
         val actual = convertToV2Model(fullV1JourneyData.copy(proposals = None))
-        val expected = fullV2JourneyData.copy(proposals = None)
+        val expected = fullV2JourneyDataFromV1.copy(proposals = None)
 
         actual mustEqual expected
       }
@@ -305,7 +305,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(labels = Some(JourneyLabels(
           en = Some(fullV2LanguageLabelsEn.copy(lookupPageLabels = None))
-        )))
+        )), requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -322,7 +322,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
           options = fullV2JourneyOptions.copy(selectPageConfig = None),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(selectPageLabels = None))
-          )))
+          )), requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -338,7 +338,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v2Config = fullV2JourneyConfig.copy(
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
-          )))
+          )), requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -355,7 +355,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
           options = fullV2JourneyOptions.copy(confirmPageConfig = None),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(confirmPageLabels = None))
-          )))
+          )), requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -390,7 +390,8 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
           ),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(appLevelLabels = None))
-          )))
+          )),
+          requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -421,7 +422,8 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
               editPageLabels = None,
               confirmPageLabels = None
             ))
-          )))
+          )),
+          requestedVersion = Some(1))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)

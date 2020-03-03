@@ -13,7 +13,11 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
     case Some(JourneyLabels(Some(englishLanguageLabels), _)) =>
       ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
     case _ =>
-      ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
+      if (isWelsh) {
+        ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, WelshConstants(options.isUkMode))
+      } else {
+        ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
+      }
   }
 }
 

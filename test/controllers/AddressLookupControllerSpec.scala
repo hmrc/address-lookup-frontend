@@ -288,21 +288,21 @@ class AddressLookupControllerSpec
           html.getElementById("filter").`val` mustBe "The House"
         }
       }
-      "Welsh default content is not available" should {
-        "return English default content" in new Scenario(
+      "Welsh default content is not provided" should {
+        "return default Welsh content" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool = Some(true)))
         ) {
           val res = call(controller.lookup("foo"), reqWelsh)
           val html = contentAsString(res).asBodyFragment
-          html should include element withName("title").withValue("Find UK address")
-          html should include element withName("h1").withValue("Find UK address")
+          html should include element withName("title").withValue("Dod o hyd i gyfeiriad yn y DU")
+          html should include element withName("h1").withValue("Dod o hyd i gyfeiriad yn y DU")
           html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-          html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
+          html should include element withName("label").withAttrValue("for", "filter").withValue("Enw neu rif yr eiddo (dewisol)")
           html should include element withName("input").withAttrValue("name", "filter")
-          html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
+          html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post yn y DU")
           html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
-          html should include element withAttrValue("id", "manualAddress").withValue("The address does not have a UK Postcode")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwiliwch am y cyfeiriad")
+          html should include element withAttrValue("id", "manualAddress").withValue("Nid oes gan y cyfeiriad god post yn y DU")
           html.getElementById("postcode").`val` mustBe ""
           html.getElementById("filter").`val` mustBe ""
         }
@@ -1002,14 +1002,14 @@ class AddressLookupControllerSpec
       "there is a welsh language cookie in the request and welsh is setup in the journey with labels" in new Scenario {
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqWelsh) mustBe true
       }
+      "there is a welsh language cookie in the request and welsh is not setup in the journey" in new Scenario {
+        controller.getWelshContent(testLookupLevelJourneyConfigV2)(reqWelsh) mustBe true
+      }
     }
     "return false" when {
       "there is no welsh language cookie but welsh labels are provided" in new Scenario {
         val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqOther) mustBe false
-      }
-      "there is a welsh language cookie in the request and welsh is not setup in the journey" in new Scenario {
-        controller.getWelshContent(testLookupLevelJourneyConfigV2)(reqWelsh) mustBe false
       }
     }
   }

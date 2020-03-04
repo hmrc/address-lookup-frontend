@@ -46,7 +46,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   def getWelshContent(journeyData: JourneyDataV2)(implicit request: Request[_]): Boolean = {
-    journeyData.config.labels.flatMap(_.cy).isDefined && request.cookies.exists(kv => kv.name == "PLAY_LANG" && kv.value == "cy")
+    request.cookies.exists(kv => kv.name == "PLAY_LANG" && kv.value == "cy")
   }
 
   def requestWithWelshHeader(useWelsh: Boolean)(req: => Result) = {

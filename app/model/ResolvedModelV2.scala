@@ -6,18 +6,12 @@ import model.JourneyConfigDefaults.{EnglishConstants, JourneyConfigDefaults, Wel
 case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Boolean) {
   val version: Int = journeyConfig.version
   val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options)
+  val journeyConfigDefaults : JourneyConfigDefaults = if (isWelsh)  WelshConstants(options.isUkMode) else  EnglishConstants(options.isUkMode)
 
   val labels: ResolvedLanguageLabels = journeyConfig.labels match {
-    case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh =>
-      ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, WelshConstants(options.isUkMode))
-    case Some(JourneyLabels(Some(englishLanguageLabels), _)) =>
-      ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
-    case _ =>
-      if (isWelsh) {
-        ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, WelshConstants(options.isUkMode))
-      } else {
-        ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, EnglishConstants(options.isUkMode))
-      }
+    case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh => ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, journeyConfigDefaults)
+    case Some(JourneyLabels(Some(englishLanguageLabels), _)) if !isWelsh => ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, journeyConfigDefaults)
+    case _ => ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, journeyConfigDefaults)
   }
 }
 

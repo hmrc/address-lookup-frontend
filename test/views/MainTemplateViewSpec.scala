@@ -57,7 +57,7 @@ class MainTemplateViewSpec extends ViewSpec {
         "welsh is enabled" in {
           val testPage = views.html.v2.main_template(
             title = enContent.title,
-            journeyData = Some(testAppLevelJourneyConfigV2),
+            journeyData = Some(testAppLevelJourneyConfigV2WithWelsh),
             welshEnabled = true
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
@@ -65,9 +65,9 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.title shouldBe enContent.title
           doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
           doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
-          doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
+          doc.select(".header__menu__proposition-name").text() shouldBe cyContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
-          doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
+          doc.getSpanAsText("phase-banner-content") shouldBe cyContent.phaseBannerHtml
         }
         "welsh is not enabled" in {
           val testPage = views.html.v2.main_template(

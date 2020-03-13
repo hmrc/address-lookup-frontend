@@ -53,7 +53,7 @@
 
     @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         <div class="form-group">
-            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label")
+            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification"})
         </div>
         <div class="form-field">
             <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode), Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>

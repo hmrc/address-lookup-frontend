@@ -7,6 +7,7 @@
 @labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
 
 <fieldset class="@fieldsetClass" id="@field.id"
+          @if(elements.args.get('_ariaDescribedBy).isDefined) {aria-describedby="@elements.args.get('_ariaDescribedBy)"}
           @if(elements.args.get('_fieldsetAttributes).isDefined) {@elements.args.get('_fieldsetAttributes)}>
     @if(elements.args.get('_legend).isDefined) {
         <legend class="visuallyhidden" @if(elements.args.get('_legendClass).isDefined) {class="@elements.args.get('_legendClass)"}>

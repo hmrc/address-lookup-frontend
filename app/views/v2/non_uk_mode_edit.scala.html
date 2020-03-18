@@ -77,15 +77,8 @@
       </div>
 
         @if(countries.size > 1) {
-            <div class="form-field">
-            @helpers.dropdown(
-                editForm("countryCode"),
-                countries,
-                false,
-                '_label -> resolvedConfig.labels.editPageLabels.countryLabel,
-                '_inputClass -> "form-control--block input--medium"
-            )
-                @countryAutoComplete(countries, editForm("countryCode").value)
+            <div class="form-field spaced-below">
+                @countryAutoComplete(countries, editForm("countryCode").value, resolvedConfig.labels.editPageLabels.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

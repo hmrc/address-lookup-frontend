@@ -70,14 +70,7 @@
 
         @if(countries.size > 1) {
             <div class="form-field">
-            @helpers.dropdown(
-                editForm("countryCode"),
-                countries,
-                false,
-                '_label -> journeyData.resolvedConfig.editPage.countryLabel,
-                '_inputClass -> "form-control--block input--medium"
-            )
-                @countryAutoComplete(countries, editForm("countryCode").value)
+                @countryAutoComplete(countries, editForm("countryCode").value, journeyData.resolvedConfig.editPage.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

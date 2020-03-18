@@ -61,6 +61,25 @@
     background: #eee;
 }
 
+.form-control--select,
+.autocomplete__input {
+    border: 2px solid #6f777b !important;
+    margin: 0;
+}
+
+.autocomplete__wrapper {
+    width: 20em;
+}
+
+.autocomplete__wrapper input {
+    width: 100%;
+}
+
+@media (max-width: 640px) {
+    .autocomplete__wrapper {
+        width: auto;
+    }
+}
 
 /*
   Removes bottom margin from last .block-label element so that the left error border lines up with the bottom of the content,

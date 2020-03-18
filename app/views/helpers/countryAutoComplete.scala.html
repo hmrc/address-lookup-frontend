@@ -1,27 +1,16 @@
-@(countries: Seq[(String, String)], prePop: Option[String])(implicit messages: Messages)
+@(countries: Seq[(String, String)], prePop: Option[String], label: String)(implicit messages: Messages)
 @import play.api.libs.json.{JsArray, Json}
 
-<div id="full-wrapper" class="autocomplete-wrapper hidden">
-    <select name="" id="autocomplete-progressiveEnhancement">
-        @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s => Html(s"""<option id="cc-${s._1}" value="${s._1}">${s._2}</option>""")})
-    </select>
-</div>
+<label class="form-label" for="countryCode">@label</label>
+<select class="form-control form-control--select input--medium" id="countryCode" name="countryCode">
+    @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s =>
+        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == "GB") "selected" }>${s._2}</option>""")
+    })
+</select>
+
 <script type="text/javascript">
-
-        document.getElementById("autocomplete-progressiveEnhancement").setAttribute("name","countryCode");
-        document.getElementById("countryCode").setAttribute("name", "");
-        document.getElementById("countryCode").setAttribute("class", "hidden");
-        document.getElementById("full-wrapper").setAttribute("class", "autocomplete-wrapper form-control--block input--medium");
-
-        try {
-            document.getElementById("cc-" + "@prePop.getOrElse("")").setAttribute("selected", "selected")
-        } catch(e) {}
-
-        element = document.getElementById('autocomplete-progressiveEnhancement')
-        accessibleAutocomplete.enhanceSelectElement({
-            selectElement: element, 
-            required: false,
-        })
-
-        document.getElementById('countryCode').labels[0].setAttribute('for', 'autocomplete-progressiveEnhancement')
-    </script>
+    console.log("United Kingdom")
+    accessibleAutocomplete.enhanceSelectElement({
+      selectElement: document.getElementById("countryCode")
+    })
+</script>

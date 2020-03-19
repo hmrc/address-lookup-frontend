@@ -26,7 +26,15 @@ message: Option[String] = None
   }
 }
 
-@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@scriptElem = {
+  <script type="text/javascript" charset="utf-8">
+    window.onpageshow = function(event) {
+      $('button[disabled]').prop('disabled', false);
+    };
+</script>
+}
+
+@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode, scriptElem = Some(scriptElem)) {
 
   @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
     <div>

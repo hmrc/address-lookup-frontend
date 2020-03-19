@@ -194,8 +194,8 @@ trait PageContentHelper {
     doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
     doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=DESKPRO_SERVICE_NAME"
     doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=DESKPRO_SERVICE_NAME""")
-    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe true
-    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
+    doc.getElementById("timeoutScript").html().contains("timeout: 120") shouldBe true
+    doc.getElementById("timeoutScript").html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
     doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
   }
 

@@ -100,7 +100,7 @@ object JourneyConfigDefaults {
 
     val CONFIRM_CHANGE_TEXT = "By confirming this change, you agree that the information you have given is complete and correct."
 
-    def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link}'>feedback</a> will help us to improve it."
+    def defaultPhaseBannerHtml(link: String) = s"This is a new service – your <a href='$link'>feedback</a> will help us to improve it."
   }
 
   case class WelshConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
@@ -139,7 +139,7 @@ object JourneyConfigDefaults {
 
     val CONFIRM_CHANGE_TEXT = "Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir."
 
-    def defaultPhaseBannerHtml(link: String) = s"Mae hwn yn wasanaeth newydd – bydd eich <a href='$link}'>adborth</a> yn ein helpu i’w wella."
+    def defaultPhaseBannerHtml(link: String) = s"Mae hwn yn wasanaeth newydd – bydd eich <a href='$link'>adborth</a> yn ein helpu i’w wella."
   }
 
 }

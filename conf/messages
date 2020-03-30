@@ -19,7 +19,7 @@ confirm.select.address.1    = You have not selected any address. Please
 confirm.select.address.2    = search for and select your address
 
 # No Results
-result.title.text           = Can''t find any addresses
+result.title.text           = We can not find any addresses
 results.manual.entry.text   = Enter the address manually
 results.heading.text        = We can not find any addresses for
 results.diff.postcode.text  = Try a different postcode

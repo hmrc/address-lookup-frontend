@@ -48,7 +48,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
   }
 
   object otherPageMessages {
-    val noResultsPageTitle = "Can't find any addresses"
+    val noResultsPageTitle = "We can not find any addresses"
   }
 
   val EnglishConstantsUkMode = EnglishConstants(true)

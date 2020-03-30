@@ -81,6 +81,10 @@
     }
 }
 
+.no-js a.back-link {
+    display: none;
+}
+
 /*
   Removes bottom margin from last .block-label element so that the left error border lines up with the bottom of the content,
   This is a temporary fix before we upgrade to latest radio buttons and checkboxes.

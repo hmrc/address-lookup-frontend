@@ -372,13 +372,12 @@ Response:
 
 ### Running the Application
 
-sm --start ADDRESS_LOOKUP_SERVICES -f
-sm --stop ADDRESS_LOOKUP_FRONTEND
+`sm --start ADDRESS_LOOKUP_SERVICES -f; sm --stop ADDRESS_LOOKUP_FRONTEND`
 
 run with
-sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" (when in the address-lookup-frontend folder)
+`sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"` (when in the address-lookup-frontend folder)
 
-go to localhost:9028/lookup-address/test-only/v2/test-setup if not running from another service
+go to [localhost:9028/lookup-address/test-only/v2/test-setup](http://localhost:9028/lookup-address/test-only/v2/test-setup) if not running from another service
 
 ## License
 

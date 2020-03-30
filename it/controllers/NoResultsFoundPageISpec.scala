@@ -14,7 +14,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
   object EnglishContent {
-    val title = "Can't find any addresses"
+    val title = "We can not find any addresses"
 
     def heading(postcode: String) = s"We can not find any addresses for $postcode"
 

@@ -20,7 +20,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
   val journeyData = JourneyData(JourneyConfig("continue"))
   val someJourneyDataJson = Some(Json.toJson(journeyData))
 
-  val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue")))
+  val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue", message = Some("blah"))))
   val someJourneyDataV2Json = Some(Json.toJson(journeyDataV2))
 
   val journeyDataWithTimeout = JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl"))))
@@ -258,6 +258,10 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
     "know about HMRC branding option" in new Scenario() {
       repo.init("j0").config.includeHMRCBranding must be (Some(true))
+    }
+
+    "know about optional message in the options config" in new Scenario() {
+      repo.init("agents-subscr").config.lookupPage.flatMap(_.message) must be (Some("Your business address will only be updated in your agent services account."))
     }
 
   }

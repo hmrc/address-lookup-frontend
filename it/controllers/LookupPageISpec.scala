@@ -178,6 +178,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         )
 
         doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
+
+        doc.getElementsByClass("highlight-message").text() shouldBe "message"
+
       }
 
       "not display the back button if disabled" in {

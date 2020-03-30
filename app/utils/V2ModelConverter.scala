@@ -35,7 +35,8 @@ object V2ModelConverter {
       allowedCountryCodes = v1.allowedCountryCodes,
       selectPageConfig = resolveSelectPageConfig(v1.selectPage),
       confirmPageConfig = resolveConfirmPageConfig(v1.confirmPage),
-      timeoutConfig = resolveTimeoutConfig(v1.timeout)
+      timeoutConfig = resolveTimeoutConfig(v1.timeout),
+      message = v1.lookupPage.flatMap(_.message)
     )
   }
 

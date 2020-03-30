@@ -454,7 +454,8 @@ object IntegrationTestConstants {
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
         showBackButtons = Some(false),
-        homeNavHref = Some("NAV_TITLE")
+        homeNavHref = Some("NAV_TITLE"),
+        message = Some("message")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -499,7 +500,8 @@ object IntegrationTestConstants {
         timeoutConfig = Some(TimeoutConfig(
           timeoutAmount = 120,
           timeoutUrl = "TIMEOUT_URL"
-        ))
+        )),
+        message = Some("message")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(

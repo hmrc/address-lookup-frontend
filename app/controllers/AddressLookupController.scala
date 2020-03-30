@@ -65,9 +65,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
       val isWelsh = getWelshContent(journeyData)
       val isUKMode = journeyData.config.options.isUkMode
       val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
+      val message = journeyData.config.options.message
 
       (Some(journeyData.copy(selectedAddress = None)), requestWithWelshHeader(isWelsh) {
-        Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh, isUKMode))
+        Ok(views.html.v2.lookup(id, journeyData, formPrePopped, isWelsh, isUKMode, message))
       })
     }
   }

@@ -98,7 +98,8 @@ case class LookupPage(title: Option[String] = None,
                       submitLabel: Option[String] = None,
                       resultLimitExceededMessage: Option[String] = None,
                       noResultsFoundMessage: Option[String] = None,
-                      manualAddressLinkText: Option[String] = None)
+                      manualAddressLinkText: Option[String] = None,
+                      message: Option[String] = None)
 
 case class ResolvedSelectPage(p: SelectPage, journeyConfigDefaults: JourneyConfigDefaults) {
   val title: String = p.title.getOrElse(journeyConfigDefaults.SELECT_PAGE_TITLE)

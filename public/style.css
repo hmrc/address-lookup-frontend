@@ -336,7 +336,7 @@ button:active,
 
 /* Red: #b10e1e --> #d4351c */
 .validation-summary {
-    border: 3px solid #b10e1e;
+    border: 3px solid #d4351c;
 }  
 
 .validation-message,
@@ -347,7 +347,7 @@ button:active,
 .annual-summaries--group .alert--text,
 .sent-in-error,
 .business-tax .content__body .flag.flag--urgent {
-    color: #b10e1e;
+    color: #d4351c;
 }
 
 .button--alert,
@@ -363,28 +363,28 @@ button:active,
 .tabs-nav .tabs-nav__tab .count,
 .flag.flag--urgent,
 .highlight-block--red {
-    background-color: #b10e1e;
+    background-color: #d4351c;
 }  
 
 .button--alert:active {
-    -webkit-box-shadow: 0 0 0 #b10e1e;
-    box-shadow: 0 0 0 #b10e1e;
+    -webkit-box-shadow: 0 0 0 #d4351c;
+    box-shadow: 0 0 0 #d4351c;
 }
 
 .email-form-errors .error-notification,
 .attorneyBanner--client-request-rejected {
-    border-left: 3px solid #b10e1e;
+    border-left: 3px solid #d4351c;
 }
 
 .alert-block,
 .main-nav .count {
-    background: #b10e1e;
+    background: #d4351c;
 }  
 
 .business-tax .alert--failure {
-    border-color: #b10e1e;
+    border-color: #d4351c;
 }
 
 .business-tax .content__body .flag.flag--urgent {
-    border-left: 1px solid #b10e1e;
+    border-left: 1px solid #d4351c;
 }

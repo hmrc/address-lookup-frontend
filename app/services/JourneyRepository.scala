@@ -5,7 +5,7 @@ import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
 import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
 import model._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.HttpCaching
 
 import scala.collection.JavaConverters._
@@ -18,20 +18,19 @@ trait JourneyRepository {
 
   def init(journeyName: String): JourneyData
 
-  def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]]
+  def get(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]]
 
-  def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]]
+  def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]]
 
-  def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+  def put(sessionId: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 
-  def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+  def putV2(sessionId: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 
 }
 
 @Singleton
 class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesConfig {
-
-  val cacheId = "journey-data"
+  val keyId = "journey-data"
 
   private val cfg: Map[String, JourneyData] = config("address-lookup-frontend").getObject("journeys").map { journeys =>
     journeys.keySet().asScala.map { key =>
@@ -49,12 +48,12 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
     }
   }
 
-  override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
-      cache.fetchAndGetEntry[JourneyData](cache.defaultSource, cacheId, id)
+  override def get(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
+    fetchCache[JourneyData](sessionId)
   }
 
-  override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
-    cache.fetchAndGetEntry[JsValue](cache.defaultSource, cacheId, id).map(_.map(json =>
+  override def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
+    fetchCache[JsValue](sessionId).map(_.map(json =>
       (json \ "config" \ "version").asOpt[Int] match {
         case Some(_) => json.as[JourneyDataV2]
         case None => convertToV2Model(json.as[JourneyData])
@@ -62,14 +61,24 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
     ))
   }
 
-  override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    cache.cache(cache.defaultSource, cacheId, id, data).map { res =>
-      true
-    }
+  private def fetchCache[A](sessionId: String)(implicit reads: Reads[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[A]] = {
+      for {
+        newCachedDoc <- cache.fetchAndGetEntry[A](cache.defaultSource, sessionId, keyId)
+        cachedDoc <- if (newCachedDoc.isDefined) Future.successful(newCachedDoc) else cache.fetchAndGetEntry[A](cache.defaultSource, keyId, sessionId)
+      } yield cachedDoc
   }
 
-  override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    cache.cache(cache.defaultSource, cacheId, id, data) map (_ => true)
+  override def put(sessionId: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    updateCache(sessionId, data)
+  }
+
+  override def putV2(sessionId: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    updateCache(sessionId, data)
+  }
+
+  private def updateCache[A](sessionId: String, data: A)(implicit wts: Writes[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    cache.cache(cache.defaultSource, sessionId,  keyId, data) map (_ => true)
+  }
 
   private def maybeString(v: ConfigValue): Option[String] = {
     if (v == null) None

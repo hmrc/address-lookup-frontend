@@ -32,7 +32,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   val cachedWithTimeout = CacheMap("id", Map("id" -> Json.toJson(journeyDataWithTimeout)))
 
-  class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JsValue] = None) {
+  class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JsValue] = None, useNewCache : Boolean  = true, useOldCache : Boolean  = false) {
 
     val sessionCache = new HttpCaching {
 
@@ -44,9 +44,14 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       }
 
       override def fetchAndGetEntry[T](source: String, cacheId: String, key: String)(implicit hc: HeaderCarrier, rds: Reads[T], ec: ExecutionContext): Future[Option[T]] = {
-        getResponse match {
+        val newCache : Map[String, Option[JsValue]] =  if (useNewCache) Map(s"$key-$cacheId" -> getResponse) else Map()
+        val oldCache : Map[String, Option[JsValue]] =  if (useOldCache) Map(s"$cacheId-$key" -> getResponse) else Map()
+        newCache.get(s"$key-$cacheId").flatten  match {
           case Some(resp) => Future.successful(Some(resp.as[T]))
-          case None => Future.successful(None)
+          case None => oldCache.get(s"$cacheId-$key").flatten match  {
+            case Some(resp) =>  Future.successful(Some(resp.as[T]))
+            case None =>  Future.successful(None)
+          }
         }
       }
 
@@ -77,6 +82,17 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       repo.get("any id").futureValue must be (Some(journeyDataWithTimeout))
     }
 
+    "fetch entry from New Cache" in new Scenario(getResponse = someJourneyDataWithTimeoutJson,  useNewCache = true, useOldCache = false) {
+      repo.get("any id").futureValue must be (Some(journeyDataWithTimeout))
+    }
+
+    "fetch entry from Old Cache" in new Scenario(getResponse = someJourneyDataWithTimeoutJson, useNewCache = false, useOldCache = true) {
+      repo.get("any id").futureValue must be (Some(journeyDataWithTimeout))
+    }
+
+    "fetch entry as None when both New Cache and Old Cache are empty" in new Scenario(getResponse = someJourneyDataWithTimeoutJson, useNewCache = false, useOldCache = false) {
+      repo.get("any id").futureValue must be (None)
+    }
 
   }
 
@@ -86,8 +102,23 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
       "stored as a v2 model" in new Scenario(getResponse = someJourneyDataV2Json) {
         repo.getV2("any id").futureValue must be (Some(journeyDataV2))
       }
+
       "stored as a v1 model" in new Scenario(getResponse = someJourneyDataJson) {
         repo.getV2("any id").futureValue must be (Some(convertToV2Model(journeyData)))
+      }
+
+      "stored as a v2 model from New Cache" in new Scenario(getResponse = someJourneyDataV2Json, useNewCache = true, useOldCache = false) {
+        repo.getV2("any id").futureValue must be (Some(journeyDataV2))
+      }
+
+      "stored as a v2 model from Old Cache" in new Scenario(getResponse = someJourneyDataV2Json, useNewCache = false, useOldCache = true) {
+        repo.getV2("any id").futureValue must be (Some(journeyDataV2))
+      }
+    }
+
+    "fetch v2 model entry as None" when {
+      "when both New Cache and Old Cache are empty" in new Scenario(getResponse = someJourneyDataV2Json, useNewCache = false, useOldCache = false) {
+        repo.getV2("any id").futureValue must be(None)
       }
     }
 

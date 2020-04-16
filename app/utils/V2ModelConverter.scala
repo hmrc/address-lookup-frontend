@@ -24,6 +24,7 @@ object V2ModelConverter {
     JourneyOptions(
       continueUrl = v1.continueUrl,
       homeNavHref = v1.homeNavHref,
+      accessibilityFooterUrl = v1.accessibilityFooterUrl,
       additionalStylesheetUrl =  v1.additionalStylesheetUrl,
       phaseFeedbackLink = v1.phaseFeedbackLink,
       deskProServiceName = v1.deskProServiceName,

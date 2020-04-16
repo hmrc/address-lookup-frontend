@@ -19,6 +19,7 @@ class MainTemplateViewSpec extends ViewSpec {
     val navTitle = "enNavTitle"
     val phaseBannerHtml = "enPhaseBannerHtml"
     val cookies = "Cookies"
+    val accessibility = "Accessibility"
     val privacy = "Privacy policy"
     val terms = "Terms and conditions"
     val help = "Help using GOV.UK"
@@ -32,6 +33,7 @@ class MainTemplateViewSpec extends ViewSpec {
     val navTitle = "cyNavTitle"
     val phaseBannerHtml = "cyPhaseBannerHtml"
     val cookies = "Cwcis"
+    val accessibility = "Hygyrchedd"
     val privacy = "Polisi preifatrwydd"
     val terms = "Telerau ac Amodau"
     val help = "Help wrth ddefnyddio GOV.UK"
@@ -82,7 +84,7 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe EnglishMessageConstants.home
           doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
-          doc.select(".platform-help-links").text shouldBe List(enContent.cookies, enContent.privacy, enContent.terms, enContent.help).mkString(" ")
+          doc.select(".platform-help-links").text shouldBe List(enContent.cookies, enContent.accessibility, enContent.privacy, enContent.terms, enContent.help).mkString(" ")
         }
       }
 
@@ -101,7 +103,7 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.select(".header__menu__proposition-name").text() shouldBe cyContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
           doc.getSpanAsText("phase-banner-content") shouldBe cyContent.phaseBannerHtml
-          doc.select(".platform-help-links").text shouldBe List(cyContent.cookies, cyContent.privacy, cyContent.terms, cyContent.help).mkString(" ")
+          doc.select(".platform-help-links").text shouldBe List(cyContent.cookies, cyContent.accessibility, cyContent.privacy, cyContent.terms, cyContent.help).mkString(" ")
         }
         "welsh is not enabled" in {
           val testPage = views.html.v2.main_template(
@@ -116,7 +118,7 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe EnglishMessageConstants.home
           doc.getSpanAsText("phase-banner-content") shouldBe enContent.phaseBannerHtml
-          doc.select(".platform-help-links").text shouldBe List(enContent.cookies, enContent.privacy, enContent.terms, enContent.help).mkString(" ")
+          doc.select(".platform-help-links").text shouldBe List(enContent.cookies, enContent.accessibility, enContent.privacy, enContent.terms, enContent.help).mkString(" ")
         }
       }
 

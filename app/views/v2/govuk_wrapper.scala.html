@@ -1,6 +1,7 @@
 @import config.AppConfig
 @import model.JourneyDataV2
 @import layouts.{govuk_template => hmrcGovUkTemplate}
+@import views.html.helpers.alfFooterLinks
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
@@ -80,7 +81,13 @@
 
 @footerTop = {}
 
-@footerLinks = {}
+@footerLinks = {
+    @alfFooterLinks(
+        additionalLinks = None,
+        euExitLinks = None,
+        accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.accessibilityFooterUrl)
+    )
+}
 
 @phaseBanner = {
     @journeyData.map{ jData =>
@@ -137,4 +144,4 @@
     )
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(footerLinks), true)(content)

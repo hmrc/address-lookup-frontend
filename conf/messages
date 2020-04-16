@@ -67,5 +67,13 @@ timeout.heading.text        = You''ve been inactive for a while.
 timeout.minute.text         = minute
 timeout.minutes.text        = minutes
 
-
-
+# Footer links
+footer.links.help_page.text             = Help using GOV.UK
+footer.links.help_page.url              = https://www.gov.uk/help
+footer.links.cookies.text               = Cookies
+footer.links.cookies.url                = /help/cookies
+footer.links.accessibility.text         = Accessibility
+footer.links.privacy_policy.text        = Privacy policy
+footer.links.privacy_policy.url         = /help/privacy
+footer.links.terms_and_conditions.text  = Terms and conditions
+footer.links.terms_and_conditions.url   = /help/terms-and-conditions

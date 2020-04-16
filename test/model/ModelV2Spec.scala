@@ -167,6 +167,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
 
       originalJourneyConfig.options.continueUrl mustBe resolvedJourneyConfig.options.continueUrl
       originalJourneyConfig.options.homeNavHref must contain(resolvedJourneyConfig.options.homeNavHref)
+      originalJourneyConfig.options.accessibilityFooterUrl mustBe resolvedJourneyConfig.options.accessibilityFooterUrl
       originalJourneyConfig.options.additionalStylesheetUrl mustBe resolvedJourneyConfig.options.additionalStylesheetUrl
       originalJourneyConfig.options.phaseFeedbackLink must contain(resolvedJourneyConfig.options.phaseFeedbackLink)
       originalJourneyConfig.options.deskProServiceName mustBe resolvedJourneyConfig.options.deskProServiceName

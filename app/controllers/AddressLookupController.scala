@@ -362,9 +362,9 @@ case class Proposals(proposals: Option[Seq[ProposedAddress]]) {
 
   def toHtmlOptions: Seq[(String, String)] = {
     proposals.map { props =>
-      props.map { addr =>
-        (addr.addressId, addr.toDescription)
-      }
+      props.map { addr => {
+        (addr.addressId, addr.toDescription)}
+      }.sorted
     }.getOrElse(Seq.empty)
   }
 }

@@ -20,9 +20,7 @@ class EditPageISpec extends IntegrationSpecBase {
   val WelshMessageConstants = WelshMessages(true)
 
   "The edit page" should {
-
     "when provided with no page config for english and welsh" should {
-
       "return UK edit page if uk param is true AND UK mode is false" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
 
@@ -52,7 +50,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line2" -> "Address line 2 (optional)",
           "line3" -> "Address line 3 (optional)",
           "town" -> "Town/city",
-          "postcode" -> "UK postcode (optional)"
+          "postcode" -> "Postcode (optional)"
         ))
       }
 
@@ -78,19 +76,17 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Address line 1",
           "line2" -> "Address line 2 (optional)",
           "line3" -> "Address line 3 (optional)",
           "town" -> "Town/city",
-          "postcode" -> "Postal code (optional)",
+          "postcode" -> "Postcode (optional)",
           "countryCode" -> "Country"
         ))
       }
 
       "return Non Uk edit page with default values where the 'PLAY_LANG' is set to cy but welsh config is not provided" in {
-
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
           Some(jc.labels.get.copy(cy =
@@ -120,7 +116,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("line3").`val` shouldBe "Line 3"
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
-
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
@@ -243,16 +238,16 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
           "line2" -> "Llinell cyfeiriad 2 (dewisol)",
           "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
-          "postcode" -> "Cod post y DU (dewisol)"
+          "postcode" -> "Cod post (dewisol)"
         ))
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
       }
+
       "return non UK edit page if uk param is true and should display all default values from the welsh constants with the 'PLAY_LANG' set to cy" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
@@ -294,8 +289,8 @@ class EditPageISpec extends IntegrationSpecBase {
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
       }
     }
-    "provided with custom content" should {
 
+    "provided with custom content" should {
       "return UK edit page if uk param is true AND UK mode is false WITH NO 'PLAY_LANG' set" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
@@ -319,15 +314,15 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1",
           "line2" -> "Custom Line2",
           "line3" -> "Custom Line3",
           "town" -> "Custom Town",
-          "postcode" -> "UK postcode (optional)"
+          "postcode" -> "Postcode (optional)"
         ))
       }
+
       "return UK edit page if no uk parameter provided AND UK mode is false" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
@@ -349,7 +344,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1",
           "line2" -> "Custom Line2",
@@ -359,6 +353,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "countryCode" -> "Custom Country"
         ))
       }
+
       "return UK edit page if uk parameter provided AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
@@ -377,7 +372,6 @@ class EditPageISpec extends IntegrationSpecBase {
               ))
             ))
           ))))
-
 
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
@@ -401,13 +395,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
           "line3" -> "Custom Line3 welsh",
           "town" -> "Custom Town welsh",
-          "postcode" -> "Cod post y DU (dewisol)"
+          "postcode" -> "Cod post (dewisol)"
         ))
       }
 
@@ -434,7 +427,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1",
           "line2" -> "Custom Line2",
@@ -443,6 +435,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> "Custom Postcode"
         ))
       }
+
       "return non UK edit page if uk parameter provided AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
@@ -461,7 +454,6 @@ class EditPageISpec extends IntegrationSpecBase {
               ))
             ))
           ))))
-
 
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
@@ -485,7 +477,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
@@ -494,6 +485,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> "Custom Postcode welsh"
         ))
       }
+
       "return non - UK edit page if uk param is false AND UK mode is false WITH NO 'PLAY_LANG' set" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
@@ -517,7 +509,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1",
           "line2" -> "Custom Line2",
@@ -526,6 +517,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> "Custom Postcode"
         ))
       }
+
       "return non - UK edit page if uk parameter is false AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
@@ -567,7 +559,6 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("town").`val` shouldBe "Telford"
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
-
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
@@ -576,7 +567,6 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> "Custom Postcode welsh",
           "countryCode" -> "Custom Country welsh"
         ))
-
       }
     }
   }
@@ -596,10 +586,11 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
         "town" -> "Town/city Enter town or city of the address",
-        "postcode" -> "Postal code (optional)",
+        "postcode" -> "Postcode (optional)",
         "countryCode" -> "Country"))
       testElementExists(res, EditPage.nonUkEditId)
     }
+
     "return 400 if all fields are missing and return nonUkEdit page with welsh text" in {
       stubKeystore(
         session = testJourneyId,
@@ -607,7 +598,6 @@ class EditPageISpec extends IntegrationSpecBase {
           config = journeyDataV2Minimal.config.copy(
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
-
 
       val fResponse = buildClientLookupAddress(path = "edit?uk=false").
         withHeaders(
@@ -648,7 +638,6 @@ class EditPageISpec extends IntegrationSpecBase {
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
-
       val fResponse = buildClientLookupAddress(path = "edit?uk=false").
         withHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
@@ -658,14 +647,14 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
 
       document.input("postcode") should have (value("eebb"))
-      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post yn y DU sy’n ddilys"
+      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1 Nodwch linell gyntaf y cyfeiriad",
         "line2" -> "Llinell cyfeiriad 2 (dewisol)",
         "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
-        "postcode" -> "Cod post (dewisol) Nodwch god post yn y DU sy’n ddilys"
+        "postcode" -> "Cod post (dewisol) Nodwch god post sy’n ddilys"
       ))
 
       res.status shouldBe BAD_REQUEST
@@ -682,6 +671,7 @@ class EditPageISpec extends IntegrationSpecBase {
         )),
         OK
       )
+
       val fResponse = buildClientLookupAddress(path = "edit?uk=false")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
@@ -692,6 +682,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> Seq(testPostCode),
           "countryCode" -> Seq("GB")
         ))
+
       val res = await(fResponse)
 
       res.status shouldBe SEE_OTHER
@@ -729,12 +720,13 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
         "town" -> "Town/city Enter town or city of the address",
-        "postcode" -> "UK postcode (optional)"
+        "postcode" -> "Postcode (optional)"
       ))
 
       res.status shouldBe BAD_REQUEST
       testElementExists(res, EditPage.ukEditId)
     }
+
     "return 400 if postcode is missing and return uk edit mode page with welsh text" in {
       stubKeystore(
         session = testJourneyId,
@@ -767,7 +759,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Llinell cyfeiriad 2 (dewisol)",
         "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
-        "postcode" -> "Cod post y DU (dewisol)"
+        "postcode" -> "Cod post (dewisol)"
       ))
 
       res.status shouldBe BAD_REQUEST
@@ -834,6 +826,7 @@ class EditPageISpec extends IntegrationSpecBase {
         doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
+
     "the welsh content header is set to false and welsh object isn't provided in config" should {
       "render in English" in {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
@@ -855,6 +848,7 @@ class EditPageISpec extends IntegrationSpecBase {
         doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
+
     "the welsh content header is set to false and welsh object is provided in config" should {
       "render in English" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
@@ -877,6 +871,7 @@ class EditPageISpec extends IntegrationSpecBase {
         doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
+
     "the welsh content header is set to true and welsh object provided in config" should {
       "render in Welsh" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
@@ -900,5 +895,4 @@ class EditPageISpec extends IntegrationSpecBase {
       }
     }
   }
-
 }

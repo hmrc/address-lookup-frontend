@@ -80,7 +80,7 @@ object MessageConstants {
     val timeoutSignYouOut = "For your security, we'll sign you out in"
     val timeoutResumeSession = "Resume your session"
     val timeoutInactive = "You've been inactive for a while."
-    val ukModePostcodeLabel = "UK postcode (optional)"
+    val ukModePostcodeLabel = if(isUkMode) "UK postcode (optional)" else "Postcode (optional)"
 
     val editPageAddressLine1MaxErrorMessage = "Enter a first address line using 256 characters or less"
     val editPageAddressLine2MaxErrorMessage = "Enter a second address line using 256 characters or less"
@@ -88,7 +88,7 @@ object MessageConstants {
     val editPageTownMaxErrorMessage = "Enter a town or city using 256 characters or less"
     val editPageAddressLine1MinErrorMessage = "Enter first line of address"
     val editPageTownMinErrorMessage = "Enter town or city of the address"
-    val editPagePostcodeErrorMessage = "Enter a valid UK postcode"
+    val editPagePostcodeErrorMessage = if(isUkMode) "Enter a valid UK postcode" else "Enter a valid postcode"
 
     val errorRequired = "Select the property for the address."
     val errorMin: Int => String = min => s"Minimum length is $min"
@@ -172,7 +172,7 @@ object MessageConstants {
     val errorText = "Mae problem wedi codi"
     val noResults = "Nid oeddem yn gallu dod o hyd i rywbeth sy’n cydweddu â"
     val differentSearch = "Rhowch gynnig ar enw neu rif gwahanol"
-    val ukModePostcodeLabel = "Cod post y DU (dewisol)"
+    val ukModePostcodeLabel = if(isUkMode) "Cod post y DU (dewisol)" else "Cod post (dewisol)"
 
     val tooManyResultsText = "Mae yna ormod o ganlyniadau"
     val noResultsFoundTitle = "Dim canlyniadau wedi’u darganfod"
@@ -189,7 +189,7 @@ object MessageConstants {
     val editPageAddressLine1MinErrorMessage = "Nodwch linell gyntaf y cyfeiriad"
     val editPageTownMaxErrorMessage = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
     val editPageTownMinErrorMessage = "Nodwch dref neu ddinas y cyfeiriad"
-    val editPagePostcodeErrorMessage = "Nodwch god post yn y DU sy’n ddilys"
+    val editPagePostcodeErrorMessage = if(isUkMode) "Nodwch god post yn y DU sy’n ddilys" else "Nodwch god post sy’n ddilys"
 
     val noResultsPageTitle = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
     val noResultsPageHeading = "Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer "

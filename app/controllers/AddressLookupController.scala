@@ -195,8 +195,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
           })
         }
         else {
+          val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(editAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
+            Ok(views.html.v2.non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
           })
         }
       }
@@ -205,6 +206,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
   private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
     oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), Some("GB")))
+  }
+
+  private[controllers] def addressOrEmpty(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
+    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), None))
   }
 
   // POST /:id/edit?uk=:isUkAddress

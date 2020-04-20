@@ -31,7 +31,7 @@ message: Option[String] = None
     window.onpageshow = function(event) {
       $('button[disabled]').prop('disabled', false);
     };
-</script>
+  </script>
 }
 
 @main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode, scriptElem = Some(scriptElem)) {
@@ -47,10 +47,9 @@ message: Option[String] = None
   )
 
   @helpers.form(routes.AddressLookupController.select(id)) {
-    <fieldset class="form-field-group">
-      <legend>
-        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.heading}</h1>
-      </legend>
+      <header class="page-header">
+        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.heading}</h1>
+      </header>
 
       @if(message.isDefined) {
       <div class="highlight-message highlight-message--full-width">
@@ -80,6 +79,5 @@ message: Option[String] = None
       <div class="form-field spaced-below">
         <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.lookupPageLabels.submitLabel}</button>
       </div>
-    </fieldset>
   }
 }

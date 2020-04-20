@@ -65,29 +65,29 @@ object JourneyConfigDefaults {
   }
 
   case class EnglishConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
-    val CONFIRM_PAGE_TITLE = "Confirm the address"
+    val CONFIRM_PAGE_TITLE = "Confirm address"
     val CONFIRM_PAGE_HEADING = "Review and confirm"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
     val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm address"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Change address"
 
-    val EDIT_PAGE_TITLE = "Enter the address"
-    val EDIT_PAGE_HEADING = "Enter the address"
+    val EDIT_PAGE_TITLE = "Enter address"
+    val EDIT_PAGE_HEADING = "Enter address"
     val EDIT_PAGE_LINE1_LABEL = "Address line 1"
     val EDIT_PAGE_LINE2_LABEL = "Address line 2 (optional)"
     val EDIT_PAGE_LINE3_LABEL = "Address line 3 (optional)"
     val EDIT_PAGE_TOWN_LABEL = "Town/city"
-    val EDIT_PAGE_POSTCODE_LABEL = "Postal code (optional)"
+    val EDIT_PAGE_POSTCODE_LABEL = "Postcode (optional)"
     val EDIT_PAGE_COUNTRY_LABEL = "Country"
     val EDIT_PAGE_SUBMIT_LABEL = "Continue"
 
     val LOOKUP_PAGE_TITLE = if (isUkMode) "Find UK address" else "Find address"
     val LOOKUP_PAGE_HEADING = if (isUkMode) "Find UK address" else "Find address"
     val LOOKUP_PAGE_FILTER_LABEL = "Property name or number (optional)"
-    val LOOKUP_PAGE_POSTCODE_LABEL = "UK postcode"
+    val LOOKUP_PAGE_POSTCODE_LABEL = if (isUkMode) "UK postcode" else "Postcode"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
-    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "The address does not have a UK postcode"
+    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = if (isUkMode) "The address does not have a UK postcode" else "The address does not have a postcode"
 
     val SELECT_PAGE_TITLE = "Choose address"
     val SELECT_PAGE_HEADING = "Choose address"
@@ -104,15 +104,15 @@ object JourneyConfigDefaults {
   }
 
   case class WelshConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
-    val CONFIRM_PAGE_TITLE = "Cadarnhewch y cyfeiriad"
+    val CONFIRM_PAGE_TITLE = "Cadarnhewch cyfeiriad"
     val CONFIRM_PAGE_HEADING = "Adolygu a chadarnhau"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Y cyfeiriad rydych wedi’i ddewis"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm <kbd>Cadarnhau</kbd>."
     val CONFIRM_PAGE_SUBMIT_LABEL = "Cadarnhewch gyfeiriad"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Newidiwch gyfeiriad"
 
-    val EDIT_PAGE_TITLE = "Nodwch y cyfeiriad"
-    val EDIT_PAGE_HEADING = "Nodwch y cyfeiriad"
+    val EDIT_PAGE_TITLE = "Nodwch cyfeiriad"
+    val EDIT_PAGE_HEADING = "Nodwch cyfeiriad"
     val EDIT_PAGE_LINE1_LABEL = "Llinell cyfeiriad 1"
     val EDIT_PAGE_LINE2_LABEL = "Llinell cyfeiriad 2 (dewisol)"
     val EDIT_PAGE_LINE3_LABEL = "Llinell cyfeiriad 3 (dewisol)"
@@ -124,9 +124,9 @@ object JourneyConfigDefaults {
     val LOOKUP_PAGE_TITLE = if (isUkMode) "Dod o hyd i gyfeiriad yn y DU" else "Dod o hyd i gyfeiriad"
     val LOOKUP_PAGE_HEADING = if (isUkMode) "Dod o hyd i gyfeiriad yn y DU" else "Dod o hyd i gyfeiriad"
     val LOOKUP_PAGE_FILTER_LABEL = "Enw neu rif yr eiddo (dewisol)"
-    val LOOKUP_PAGE_POSTCODE_LABEL = "Cod post yn y DU"
+    val LOOKUP_PAGE_POSTCODE_LABEL = if (isUkMode) "Cod post yn y DU" else "Cod post"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Chwiliwch am y cyfeiriad"
-    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "Nid oes gan y cyfeiriad god post yn y DU"
+    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = if (isUkMode) "Nid oes gan y cyfeiriad god post yn y DU" else "Nid oes gan y cyfeiriad god post"
 
     val SELECT_PAGE_TITLE = "Dewiswch cyfeiriad"
     val SELECT_PAGE_HEADING = "Dewiswch cyfeiriad"

@@ -401,6 +401,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
           continueUrl = "testUrl",
           homeNavHref = None,
           navTitle = None,
+          accessibilityFooterUrl = None,
           additionalStylesheetUrl = None,
           deskProServiceName = None,
           showPhaseBanner = None,

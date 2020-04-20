@@ -30,15 +30,17 @@
 
     @alfErrorSummary(messageConstants.errorText, selectForm)
 
+<header class="page-header">
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
         } else {
-            <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
     }
+</header>
 
     @if(lookup.filter.isDefined) {
         @if(!firstSearch) {

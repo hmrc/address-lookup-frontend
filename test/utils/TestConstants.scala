@@ -13,6 +13,7 @@ object TestConstants {
   val testFilterValue = "bar"
   val testPostCode = "AA1 1AA"
   val testHomeNavRef = Some("homeNavRef")
+  val testAccessibilityFooterUrl = Some("accessibilityFooterUrl")
   val testNavTitle = Some("navTitle")
   val testAdditionalStylesheetUrl = Some("additionalStylesheetUrl")
   val testShowPhaseBanner = Some(true)
@@ -136,6 +137,7 @@ object TestConstants {
     editPage = fullV1EditConfig,
     homeNavHref = testHomeNavRef,
     navTitle = testNavTitle,
+    accessibilityFooterUrl = testAccessibilityFooterUrl,
     additionalStylesheetUrl = testAdditionalStylesheetUrl,
     showPhaseBanner = testShowPhaseBanner,
     alphaPhase = testAlphaPhase,
@@ -172,7 +174,7 @@ object TestConstants {
 
   val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl))
 
-  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testAdditionalStylesheetUrl,
+  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
     testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons,
     testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig,
     fullV2TimeoutConfig)
@@ -223,7 +225,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -236,6 +238,7 @@ object TestConstants {
 
   def fullV2JourneyDataCustomConfig(testContinueUrl: String = testContinueUrl,
                                     testHomeNavHref: Option[String] = testHomeNavRef,
+                                    testAccessibilityFooterUrl: Option[String] = testAccessibilityFooterUrl,
                                     testAdditionalStylesheetUrl: Option[String] = testAdditionalStylesheetUrl,
                                     testPhaseFeedbackLink: Option[String] = testPhaseFeedbackLink,
                                     testDeskProServiceName: Option[String] = testDeskproServiceName,
@@ -254,6 +257,7 @@ object TestConstants {
     val journeyOptions = JourneyOptions(
       testContinueUrl,
       testHomeNavHref,
+      testAccessibilityFooterUrl,
       testAdditionalStylesheetUrl,
       testPhaseFeedbackLink,
       testDeskProServiceName,
@@ -287,6 +291,7 @@ object TestConstants {
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
         homeNavHref = Some("tesNavtHref"),
+        accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
         additionalStylesheetUrl = Some("testStylesheetUrl"),
         phaseFeedbackLink = Some("testFeedbackLink"),
         deskProServiceName = Some("testDeskproName"),
@@ -415,6 +420,7 @@ object TestConstants {
       |      "options":{
       |         "continueUrl":"testContinueUrl",
       |         "homeNavHref":"tesNavtHref",
+      |         "accessibilityFooterUrl": "testAccessibilityFooterUrl",
       |         "additionalStylesheetUrl":"testStylesheetUrl",
       |         "phaseFeedbackLink":"testFeedbackLink",
       |         "deskProServiceName":"testDeskproName",
@@ -760,6 +766,7 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           homeNavHref = Some("testNavHref"),
+          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
           additionalStylesheetUrl = Some("testStylesheetUrl"),
           phaseFeedbackLink = None,
           deskProServiceName = Some("testDeskproName"),
@@ -799,6 +806,7 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           homeNavHref = Some("testNavHref"),
+          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
           additionalStylesheetUrl = Some("testStylesheetUrl"),
           phaseFeedbackLink = None,
           deskProServiceName = Some("testDeskproName"),
@@ -843,6 +851,7 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           homeNavHref = Some("testNavHref"),
+          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
           additionalStylesheetUrl = Some("testStylesheetUrl"),
           phaseFeedbackLink = None,
           deskProServiceName = Some("testDeskproName"),
@@ -888,6 +897,7 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           homeNavHref = Some("testNavHref"),
+          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
           additionalStylesheetUrl = Some("testStylesheetUrl"),
           phaseFeedbackLink = None,
           deskProServiceName = Some("testDeskproName"),
@@ -934,6 +944,7 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           homeNavHref = Some("testNavHref"),
+          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
           additionalStylesheetUrl = Some("testStylesheetUrl"),
           phaseFeedbackLink = None,
           deskProServiceName = Some("testDeskproName"),

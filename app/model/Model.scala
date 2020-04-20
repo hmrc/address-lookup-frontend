@@ -162,6 +162,7 @@ case class JourneyConfig(continueUrl: String,
                          editPage: Option[EditPage] = Some(EditPage()),
                          homeNavHref: Option[String] = None,
                          navTitle: Option[String] = None,
+                         accessibilityFooterUrl: Option[String] = None,
                          additionalStylesheetUrl: Option[String] = None,
                          showPhaseBanner: Option[Boolean] = Some(false), // if phase banner is shown, it will default to "beta" unless ...
                          alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,

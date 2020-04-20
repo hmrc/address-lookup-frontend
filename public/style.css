@@ -1,17 +1,28 @@
 @import 'form-validation.css';
 @import 'header-adjust.css';
-/*#UK-Tab-hidden {*/
-    /*display: none;*/
-/*}*/
 
-/*#INT-Tab-hidden {*/
-    /*display: none;*/
-/*}*/
+/*
+#UK-Tab-hidden {
+    display: none;
+}
 
-/*#BFPO-Tab-hidden {*/
-    /*display: none;*/
-/*}*/
+#INT-Tab-hidden {
+    display: none;
+}
 
+#BFPO-Tab-hidden {
+    display: none;
+}
+*/
+
+.no-js a.back-link {
+    display: none;
+}
+
+a.back-link,
+.language-select {
+    font-size: 16px;
+}
 
 .language-select {
     float: right;
@@ -44,9 +55,7 @@
 
 #hiddentab {
     display: none;
-    checked: checked;
 }
-
 
 .warning-box {
     background: #FFBF47;
@@ -79,10 +88,6 @@
     .autocomplete__wrapper {
         width: auto;
     }
-}
-
-.no-js a.back-link {
-    display: none;
 }
 
 /*

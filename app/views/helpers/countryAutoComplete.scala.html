@@ -3,14 +3,15 @@
 
 <label class="form-label" for="countryCode">@label</label>
 <select class="form-control form-control--select input--medium" id="countryCode" name="countryCode">
-    @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s =>
-        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == "GB") "selected" else "" }>${s._2}</option>""")
-    })
+    <option id="countryCode-placeholder" value="">Select a country</option>
+    @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s => {
+        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == prePop.getOrElse("")) "selected" }>${s._2}</option>""")
+    }})
 </select>
 
 <script type="text/javascript">
-    console.log("United Kingdom")
     accessibleAutocomplete.enhanceSelectElement({
-      selectElement: document.getElementById("countryCode")
+      selectElement: document.getElementById("countryCode"),
+      defaultValue: ''
     })
 </script>

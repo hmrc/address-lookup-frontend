@@ -15,13 +15,13 @@ import utils.TestConstants._
 class NonUKModeEditViewSpec extends ViewSpec {
 
   object defaultContent {
-    val title = "Enter the address"
-    val heading = "Enter the address"
+    val title = "Enter address"
+    val heading = "Enter address"
     val addressLine1 = "Address line 1"
     val addressLine2 = "Address line 2 (optional)"
     val addressLine3 = "Address line 3 (optional)"
     val townCity = "Town/city"
-    val postcodeInternational = "Postal code (optional)"
+    val postcodeInternational = "Postcode (optional)"
     val country = "Country"
     val continue = "Continue"
   }
@@ -140,8 +140,9 @@ class NonUKModeEditViewSpec extends ViewSpec {
       doc.getTextFieldInput("postcode").`val`() shouldBe ""
 
       doc.testElementExists("countryCode")
-      doc.getDropList("countryCode").select("option").size() shouldBe 2
+      doc.getDropList("countryCode").select("option").size() shouldBe 3
       doc.getDropList("countryCode") should have(
+        option("countryCode-placeholder", "Select a country"),
         option("countryCode-FR", "France"),
         option("countryCode-AL", "Albanian")
       )

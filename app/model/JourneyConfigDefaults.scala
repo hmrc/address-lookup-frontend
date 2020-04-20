@@ -65,15 +65,15 @@ object JourneyConfigDefaults {
   }
 
   case class EnglishConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
-    val CONFIRM_PAGE_TITLE = "Confirm the address"
+    val CONFIRM_PAGE_TITLE = "Confirm address"
     val CONFIRM_PAGE_HEADING = "Review and confirm"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Your selected address"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."
     val CONFIRM_PAGE_SUBMIT_LABEL = "Confirm address"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Change address"
 
-    val EDIT_PAGE_TITLE = "Enter the address"
-    val EDIT_PAGE_HEADING = "Enter the address"
+    val EDIT_PAGE_TITLE = "Enter address"
+    val EDIT_PAGE_HEADING = "Enter address"
     val EDIT_PAGE_LINE1_LABEL = "Address line 1"
     val EDIT_PAGE_LINE2_LABEL = "Address line 2 (optional)"
     val EDIT_PAGE_LINE3_LABEL = "Address line 3 (optional)"
@@ -104,15 +104,15 @@ object JourneyConfigDefaults {
   }
 
   case class WelshConstants(isUkMode: Boolean) extends JourneyConfigDefaults {
-    val CONFIRM_PAGE_TITLE = "Cadarnhewch y cyfeiriad"
+    val CONFIRM_PAGE_TITLE = "Cadarnhewch cyfeiriad"
     val CONFIRM_PAGE_HEADING = "Adolygu a chadarnhau"
     val CONFIRM_PAGE_INFO_SUBHEADING = "Y cyfeiriad rydych wedi’i ddewis"
     val CONFIRM_PAGE_INFO_MESSAGE_HTML = "Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm <kbd>Cadarnhau</kbd>."
     val CONFIRM_PAGE_SUBMIT_LABEL = "Cadarnhewch gyfeiriad"
     val CONFIRM_PAGE_EDIT_LINK_TEXT = "Newidiwch gyfeiriad"
 
-    val EDIT_PAGE_TITLE = "Nodwch y cyfeiriad"
-    val EDIT_PAGE_HEADING = "Nodwch y cyfeiriad"
+    val EDIT_PAGE_TITLE = "Nodwch cyfeiriad"
+    val EDIT_PAGE_HEADING = "Nodwch cyfeiriad"
     val EDIT_PAGE_LINE1_LABEL = "Llinell cyfeiriad 1"
     val EDIT_PAGE_LINE2_LABEL = "Llinell cyfeiriad 2 (dewisol)"
     val EDIT_PAGE_LINE3_LABEL = "Llinell cyfeiriad 3 (dewisol)"

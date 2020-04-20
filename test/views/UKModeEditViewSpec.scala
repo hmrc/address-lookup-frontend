@@ -15,8 +15,8 @@ import utils.TestConstants._
 class UKModeEditViewSpec extends ViewSpec {
 
   object defaultContent {
-    val title = "Enter the address"
-    val heading = "Enter the address"
+    val title = "Enter address"
+    val heading = "Enter address"
     val addressLine1 = "Address line 1"
     val addressLine2 = "Address line 2 (optional)"
     val addressLine3 = "Address line 3 (optional)"

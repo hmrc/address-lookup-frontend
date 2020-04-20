@@ -34,8 +34,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         testElementExists(res, EditPage.ukEditId)
-        document.title shouldBe "Enter the address"
-        document.h1.text shouldBe "Enter the address"
+        document.title shouldBe "Enter address"
+        document.h1.text shouldBe "Enter address"
         document.submitButton.text shouldBe "Continue"
         testElementDoesntExist(res,"countryCode")
 
@@ -66,8 +66,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Enter the address"
-        document.getElementById("pageHeading").text() shouldBe "Enter the address"
+        document.title() shouldBe "Enter address"
+        document.getElementById("pageHeading").text() shouldBe "Enter address"
         document.getElementById("continue").text() shouldBe "Continue"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -107,8 +107,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch y cyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch y cyfeiriad"
+        document.title() shouldBe "Nodwch cyfeiriad"
+        document.getElementById("pageHeading").text() shouldBe "Nodwch cyfeiriad"
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -227,8 +227,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         testElementExists(res, EditPage.ukEditId)
-        document.title() shouldBe "Nodwch y cyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch y cyfeiriad"
+        document.title() shouldBe "Nodwch cyfeiriad"
+        document.getElementById("pageHeading").text() shouldBe "Nodwch cyfeiriad"
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
         Option(document.getElementById("countryCode")).isDefined shouldBe false
 
@@ -268,8 +268,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch y cyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch y cyfeiriad"
+        document.title() shouldBe "Nodwch cyfeiriad"
+        document.getElementById("pageHeading").text() shouldBe "Nodwch cyfeiriad"
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
         Option(document.getElementById("countryCode")).isDefined shouldBe true
 
@@ -607,8 +607,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch y cyfeiriad"
-      document.h1.text shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Gwall: Nodwch cyfeiriad"
+      document.h1.text shouldBe "Nodwch cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryCode")).isDefined shouldBe true
 
@@ -704,8 +704,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
       testElementExists(res, EditPage.ukEditId)
 
-      document.title shouldBe "Error: Enter the address"
-      document.h1.text shouldBe "Enter the address"
+      document.title shouldBe "Error: Enter address"
+      document.h1.text shouldBe "Enter address"
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")
 
@@ -743,8 +743,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch y cyfeiriad"
-      document.h1.text shouldBe "Nodwch y cyfeiriad"
+      document.title shouldBe "Gwall: Nodwch cyfeiriad"
+      document.h1.text shouldBe "Nodwch cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       testElementDoesntExist(res,"countryCode")
 

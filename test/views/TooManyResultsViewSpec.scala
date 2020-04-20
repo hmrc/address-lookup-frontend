@@ -83,7 +83,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
-            doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -107,7 +107,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -133,7 +133,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
-            doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -157,7 +157,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getButtonContentAsText shouldBe tooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -187,7 +187,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
-            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -211,7 +211,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -237,7 +237,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
-            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }
@@ -261,7 +261,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getButtonContentAsText shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
           }
         }

@@ -79,7 +79,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
-            doc.submitButton.text shouldBe tooManyResultsMessages.button
+            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
@@ -107,7 +107,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.submitButton.text shouldBe tooManyResultsMessages.button
+            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
@@ -135,7 +135,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
-            doc.submitButton.text shouldBe tooManyResultsMessages.button
+            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
@@ -163,7 +163,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.submitButton.text shouldBe tooManyResultsMessages.button
+            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
           }
         }
@@ -196,7 +196,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.paras.get(2).text shouldBe welshTooManyResultsMessages.line1
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-          doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
+          doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
         }
       }
@@ -229,7 +229,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.paras.get(2).text shouldBe welshTooManyResultsMessages.line1
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-          doc.submitButton.text() shouldBe welshTooManyResultsMessages.button
+          doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
         }
       }

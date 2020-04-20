@@ -5,7 +5,7 @@
 <select class="form-control form-control--select input--medium" id="countryCode" name="countryCode">
     <option id="countryCode-placeholder" value="">Select a country</option>
     @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s => {
-        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == prePop.getOrElse("")) "selected" }>${s._2}</option>""")
+        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == prePop.getOrElse("")) "selected" else "" }>${s._2}</option>""")
     }})
 </select>
 

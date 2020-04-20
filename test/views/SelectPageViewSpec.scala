@@ -181,7 +181,6 @@ class SelectPageViewSpec extends ViewSpec {
       doc.select("input[id^=addressId-]").size() shouldBe testProposalMany.proposals.get.size
       doc.select("label[for^=addressId-]").size shouldBe testProposalMany.proposals.get.size
       doc.select("label[for^=addressId-]").text shouldBe testProposalMany.proposals.get.map(_.toDescription).mkString(" ")
-
     }
     "not render any proposals" when {
       "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {

@@ -37,7 +37,9 @@
     </br>
 
     <div class="form-group">
-        <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messageConstants.anotherSearchText</button></a>
+        <a class="button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
+            @messageConstants.anotherSearchText
+        </a>
     </div>
 
     <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>

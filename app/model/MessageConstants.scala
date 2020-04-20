@@ -90,7 +90,7 @@ object MessageConstants {
     val editPageTownMinErrorMessage = "Enter town or city of the address"
     val editPagePostcodeErrorMessage = if(isUkMode) "Enter a valid UK postcode" else "Enter a valid postcode"
 
-    val errorRequired = "Select the property for the address."
+    val errorRequired = "Select the property for the address"
     val errorMin: Int => String = min => s"Minimum length is $min"
     val errorMax: Int => String = max => s"Maximum length is $max"
 
@@ -98,16 +98,16 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "search for and select your address"
 
     val lookupErrorHeading = "There is a problem"
-    val lookupPostcodeEmptyError: String = if(isUkMode) "Enter UK postcode." else "Enter postcode."
+    val lookupPostcodeEmptyError: String = if(isUkMode) "Enter UK postcode" else "Enter postcode"
     val lookupPostcodeInvalidError: String = if(isUkMode) {
-      "UK Postcode must only contains letters A - Z, and 0 - 9."
+      "UK Postcode must only contains letters A - Z, and 0 - 9"
     } else {
-      "Postcode must only contains letters A - Z, and 0 - 9."
+      "Postcode must only contains letters A - Z, and 0 - 9"
     }
     val lookupPostcodeError: String = if(isUkMode) {
-      "Enter a real UK Postcode e.g. AA1 1AA."
+      "Enter a real UK Postcode e.g. AA1 1AA"
     } else {
-      "Enter a real Postcode e.g. AA1 1AA."
+      "Enter a real Postcode e.g. AA1 1AA"
     }
     val lookupFilterError = "Your house name/number needs to be fewer than 256 characters"
     val lookupFilterHint = "For example, The Mill, 116 or Flat 37a"
@@ -155,16 +155,16 @@ object MessageConstants {
     val confirmSelectedAddressError2 = "Chwiliwch am eich cyfeiriad a’i ddewis"
 
     val lookupErrorHeading = "Mae problem wedi codi"
-    val lookupPostcodeEmptyError: String = if(isUkMode) "Nodwch god post yn y DU." else "Nodwch god post."
+    val lookupPostcodeEmptyError: String = if(isUkMode) "Nodwch god post yn y DU" else "Nodwch god post"
     val lookupPostcodeInvalidError: String = if(isUkMode) {
-      "Mae’n rhaid i’r cod post yn y DU gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig."
+      "Mae’n rhaid i’r cod post yn y DU gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig"
     } else {
-      "Mae’n rhaid i’r cod post gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig."
+      "Mae’n rhaid i’r cod post gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig"
     }
     val lookupPostcodeError: String = if(isUkMode) {
-      "Nodwch god post go iawn yn y DU, e.e. AA1 1AA."
+      "Nodwch god post go iawn yn y DU, e.e. AA1 1AA"
     } else {
-      "Nodwch god post go iawn, e.e. AA1 1AA."
+      "Nodwch god post go iawn, e.e. AA1 1AA"
     }
     val lookupFilterError = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
     val lookupFilterHint = "Er enghraifft, Tegfan, 116 neu Fflat 37a"
@@ -203,7 +203,7 @@ object MessageConstants {
     val notFoundErrorHeading = "Ni ellir dod o hyd i’r dudalen hon"
     val notFoundErrorBody = "Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir."
 
-    val errorRequired = "Dewiswch yr eiddo ar gyfer y cyfeiriad."
+    val errorRequired = "Dewiswch yr eiddo ar gyfer y cyfeiriad"
     val errorMin: Int => String = min => s"$min yw’r isafswm hyd"
     val errorMax: Int => String = max => s"$max yw’r uchafswm hyd"
   }

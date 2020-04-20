@@ -104,7 +104,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe BAD_REQUEST
 
-        val message = "Enter a real Postcode e.g. AA1 1AA."
+        val message = "Enter a real Postcode e.g. AA1 1AA"
 
         doc.errorSummary should have(
           errorSummaryMessage(LookupPage.postcodeId, message)

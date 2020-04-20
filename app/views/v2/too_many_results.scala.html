@@ -18,13 +18,15 @@
     </div>
     }
 
-    <h1 class="form-title heading-xlarge" id="pageHeading">
-        @{if(firstLookup) {
-            messageConstants.tooManyResultsText
-        } else {
-            messageConstants.cannotFindText
-        }}
-    </h1>
+    <header class="page-header">
+        <h1 class="heading-xlarge" id="pageHeading">
+            @{if(firstLookup) {
+                messageConstants.tooManyResultsText
+            } else {
+                messageConstants.cannotFindText
+            }}
+        </h1>
+    </header>
 
     <p>@messageConstants.youEntered</p>
     <ul class="list list-bullet">

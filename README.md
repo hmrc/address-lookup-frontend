@@ -120,17 +120,17 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
           "editAddressLinkText": "Enter address manually"
         },
         "lookupPageLabels": {
-          "title": "Find the address",
-          "heading": "Find the address",
+          "title": "Find address",
+          "heading": "Find address",
           "filterLabel": "Property name or number (optional)",
-          "postcodeLabel": "UK Postcode",
+          "postcodeLabel": "Postcode",
           "submitLabel": "Find address",
           "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode.",
           "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results.",
-          "manualAddressLinkText": "The address doesn't have a UK postcode"
+          "manualAddressLinkText": "The address doesn't have a postcode"
         },
         "confirmPageLabels": {
-          "title": "Confirm the address",
+          "title": "Confirm address",
           "heading": "Review and confirm",
           "infoSubheading": "Your selected address",
           "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
@@ -140,13 +140,13 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
           "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct."
         },
         "editPageLabels": {
-          "title": "Enter the address",
-          "heading": "Enter the address",
+          "title": "Enter address",
+          "heading": "Enter address",
           "line1Label": "Address line 1",
           "line2Label": "Address line 2 (optional)",
           "line3Label": "Address line 3 (optional)",
           "townLabel": "Town/City",
-          "postcodeLabel": "Postal code (optional)",
+          "postcodeLabel": "Postcode (optional)",
           "countryLabel": "Country",
           "submitLabel": "Continue"
         }
@@ -166,17 +166,17 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
           "editAddressLinkText": "Enter address manually welsh"
         },
         "lookupPageLabels": {
-          "title": "Find the address welsh",
-          "heading": "Find the address welsh",
+          "title": "Find address welsh",
+          "heading": "Find address welsh",
           "filterLabel": "Property name or number welsh (optional)",
-          "postcodeLabel": "UK Postcode welsh",
+          "postcodeLabel": "Postcode welsh",
           "submitLabel": "Find address welsh",
           "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode. welsh",
           "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results. welsh",
-          "manualAddressLinkText": "The address doesn't have a UK postcode welsh"
+          "manualAddressLinkText": "The address doesn't have a postcode welsh"
         },
         "confirmPageLabels": {
-          "title": "Confirm the address welsh",
+          "title": "Confirm address welsh",
           "heading": "Review and confirm welsh",
           "infoSubheading": "Your selected address welsh",
           "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button. welsh",
@@ -186,13 +186,13 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
           "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct. welsh"
         },
         "editPageLabels": {
-          "title": "Enter the address welsh",
-          "heading": "Enter the address welsh",
+          "title": "Enter address welsh",
+          "heading": "Enter address welsh",
           "line1Label": "Address line 1 welsh",
           "line2Label": "Address line 2 (optional) welsh",
           "line3Label": "Address line 3 (optional) welsh",
           "townLabel": "Town/City welsh",
-          "postcodeLabel": "Postal code (optional) welsh",
+          "postcodeLabel": "Postcode (optional) welsh",
           "countryLabel": "Country welsh",
           "submitLabel": "Continue welsh"
         }

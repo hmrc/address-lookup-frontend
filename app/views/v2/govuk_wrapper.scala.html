@@ -42,10 +42,12 @@
 }
 
 @headerNavLinks = {
-    <li>
-        <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.homeNavHref).getOrElse("/")}"
-         data-journey-click="primary-navigation:Click:Home">@{messageConstants.home}</a>
-    </li>
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.homeNavHref).isDefined) {
+        <li>
+            <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.homeNavHref).get}"
+             data-journey-click="primary-navigation:Click:Home">@{messageConstants.home}</a>
+        </li>
+    }
 }
 
 @insideHeader = {

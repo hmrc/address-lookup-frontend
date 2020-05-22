@@ -290,7 +290,7 @@ object TestConstants {
       version = 2,
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
-        homeNavHref = Some("tesNavtHref"),
+        homeNavHref = Some("testNavHref"),
         accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
         additionalStylesheetUrl = Some("testStylesheetUrl"),
         phaseFeedbackLink = Some("testFeedbackLink"),
@@ -419,7 +419,7 @@ object TestConstants {
       |      "version":2,
       |      "options":{
       |         "continueUrl":"testContinueUrl",
-      |         "homeNavHref":"tesNavtHref",
+      |         "homeNavHref":"testNavHref",
       |         "accessibilityFooterUrl": "testAccessibilityFooterUrl",
       |         "additionalStylesheetUrl":"testStylesheetUrl",
       |         "phaseFeedbackLink":"testFeedbackLink",

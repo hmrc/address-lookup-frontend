@@ -166,7 +166,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       originalJourneyConfig.version mustBe resolvedJourneyConfig.version
 
       originalJourneyConfig.options.continueUrl mustBe resolvedJourneyConfig.options.continueUrl
-      originalJourneyConfig.options.homeNavHref must contain(resolvedJourneyConfig.options.homeNavHref)
+      originalJourneyConfig.options.homeNavHref mustBe resolvedJourneyConfig.options.homeNavHref
       originalJourneyConfig.options.accessibilityFooterUrl mustBe resolvedJourneyConfig.options.accessibilityFooterUrl
       originalJourneyConfig.options.additionalStylesheetUrl mustBe resolvedJourneyConfig.options.additionalStylesheetUrl
       originalJourneyConfig.options.phaseFeedbackLink must contain(resolvedJourneyConfig.options.phaseFeedbackLink)
@@ -237,7 +237,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
-      resolvedJourneyConfig.options.homeNavHref mustBe "http://www.hmrc.gov.uk"
+      resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
       resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
@@ -307,7 +307,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
-      resolvedJourneyConfig.options.homeNavHref mustBe "http://www.hmrc.gov.uk"
+      resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
       resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")

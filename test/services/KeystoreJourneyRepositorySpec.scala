@@ -400,6 +400,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1Config = fullV1JourneyConfig.copy(
           continueUrl = "testUrl",
           homeNavHref = None,
+          signOutHref = None,
           navTitle = None,
           accessibilityFooterUrl = None,
           additionalStylesheetUrl = None,

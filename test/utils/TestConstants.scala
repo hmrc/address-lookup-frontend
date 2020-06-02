@@ -13,6 +13,7 @@ object TestConstants {
   val testFilterValue = "bar"
   val testPostCode = "AA1 1AA"
   val testHomeNavRef = Some("homeNavRef")
+  val testSignOutHref = Some("signOutHref")
   val testAccessibilityFooterUrl = Some("accessibilityFooterUrl")
   val testNavTitle = Some("navTitle")
   val testAdditionalStylesheetUrl = Some("additionalStylesheetUrl")
@@ -136,6 +137,7 @@ object TestConstants {
     confirmPage = fullV1ConfirmConfig,
     editPage = fullV1EditConfig,
     homeNavHref = testHomeNavRef,
+    signOutHref = testSignOutHref,
     navTitle = testNavTitle,
     accessibilityFooterUrl = testAccessibilityFooterUrl,
     additionalStylesheetUrl = testAdditionalStylesheetUrl,
@@ -174,7 +176,7 @@ object TestConstants {
 
   val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl))
 
-  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
+  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
     testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons,
     testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig,
     fullV2TimeoutConfig)
@@ -257,6 +259,7 @@ object TestConstants {
     val journeyOptions = JourneyOptions(
       testContinueUrl,
       testHomeNavHref,
+      testSignOutHref,
       testAccessibilityFooterUrl,
       testAdditionalStylesheetUrl,
       testPhaseFeedbackLink,

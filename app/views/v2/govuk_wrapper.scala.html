@@ -65,7 +65,7 @@
     )
 }
 
-@afterHeader = {@{journeyData exists (_.welshEnabled)}}
+@afterHeader = {}
 
 @timeoutScript(timeoutInSeconds: Int, timeoutUrl: String) = {
     <script src='@controllers.routes.Assets.at("timeout-dialog.js")' type="text/javascript"></script>

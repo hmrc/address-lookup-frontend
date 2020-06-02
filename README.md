@@ -77,6 +77,7 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
   "options": {
     "continueUrl": "...",
     "homeNavHref": "..",
+    "signOutHref": "..",
     "accessibilityFooterUrl": "...",
     "phaseFeedbackLink": "/help/alpha",
     "deskProServiceName": "",
@@ -209,6 +210,7 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
 |----------|-----------|-----------------|----|-------------|
 |`continueUrl`|the "off ramp" URL for a user journey|**Required**|String|N/A|
 |`homeNavHref`|value of the link href attribute for the GDS "home" link|Optional|String|`"http://www.hmrc.gov.uk/"`|
+|`signOutHref`|value of the link href attribute for the Sign out link|Optional|String|`None`|
 |`accessibilityFooterUrl`|value of the link href attribute for the "Accessibility Statement" link in the footer|Optional|String|`None`|
 |`phaseFeedbackLink`|link to provide a user feedback link for phase banner|Optional|String|`"/help/alpha"`|
 |`deskProServiceName`|name of your service in DeskPro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|

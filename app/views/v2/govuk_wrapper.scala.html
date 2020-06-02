@@ -42,6 +42,12 @@
 }
 
 @headerNavLinks = {
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.signOutHref).isDefined) {
+        <li>
+            <a id="signOutHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.signOutHref).get}"
+             data-journey-click="primary-navigation:Click:Sign out">@{messageConstants.signOut}</a>
+        </li>
+    }
     @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.homeNavHref).isDefined) {
         <li>
             <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.homeNavHref).get}"

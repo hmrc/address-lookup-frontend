@@ -23,6 +23,7 @@ case class JourneyConfigV2(version: Int,
 
 case class JourneyOptions(continueUrl: String,
                           homeNavHref: Option[String] = None,
+                          signOutHref: Option[String] = None,
                           accessibilityFooterUrl: Option[String] = None,
                           additionalStylesheetUrl: Option[String] = None,
                           phaseFeedbackLink: Option[String] = None,

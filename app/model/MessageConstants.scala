@@ -7,6 +7,7 @@ object MessageConstants {
 
     def home: String
     def back: String
+    def signOut: String
     def forPostcode: String
 
     def timeoutSeconds: String
@@ -71,6 +72,7 @@ object MessageConstants {
   case class EnglishMessageConstants(override val isUkMode: Boolean)  extends MessageConstants {
     val home = "Home"
     val back = "Back"
+    val signOut = "Sign out"
     val forPostcode = "for postcode"
 
     val timeoutSeconds = "seconds"
@@ -141,6 +143,7 @@ object MessageConstants {
   case class WelshMessageConstants(override val isUkMode: Boolean) extends MessageConstants {
     val home = "Cartref"
     val back = "Yn ôl"
+    val signOut = "Allgofnodi"
     val forPostcode = "am y cod post"
 
     val timeoutSeconds = "eiliad"

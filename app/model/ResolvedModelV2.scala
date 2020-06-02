@@ -18,6 +18,7 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
 case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
+  val signOutHref: Option[String] = journeyOptions.signOutHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
   val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(FrontendAppConfig.feedbackUrl)

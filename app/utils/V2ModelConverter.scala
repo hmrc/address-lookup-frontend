@@ -31,6 +31,7 @@ object V2ModelConverter {
       deskProServiceName = v1.deskProServiceName,
       showPhaseBanner = v1.showPhaseBanner,
       alphaPhase = v1.alphaPhase,
+      disableTranslations = Some(false),
       showBackButtons = v1.showBackButtons,
       includeHMRCBranding = v1.includeHMRCBranding,
       ukMode = v1.ukMode,

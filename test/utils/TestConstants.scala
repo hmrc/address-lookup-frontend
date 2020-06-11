@@ -21,6 +21,7 @@ object TestConstants {
   val testAlphaPhase = Some(true)
   val testPhaseFeedbackLink = Some("phaseFeedbackLink")
   val testPhaseBannerHtml = Some("phaseBannerHtml")
+  val testDisableTranslations = Some(true)
   val testShowBackButtons = Some(true)
   val testIncludeHmrcBranding = Some(true)
   val testDeskproServiceName = Some("deskproServiceName")
@@ -177,7 +178,7 @@ object TestConstants {
   val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl))
 
   val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
-    testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons,
+    testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons,
     testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig,
     fullV2TimeoutConfig)
 
@@ -194,7 +195,7 @@ object TestConstants {
 
   val fullV2JourneyData = JourneyDataV2(fullV2JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
-  val fullV2JourneyDataFromV1 = JourneyDataV2(fullV2JourneyConfig.copy(requestedVersion = Some(1)), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
+  val fullV2JourneyDataFromV1 = JourneyDataV2(fullV2JourneyConfig.copy(requestedVersion = Some(1), options = fullV2JourneyOptions.copy(disableTranslations = Some(false))), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
   val emptyJson: JsValue = Json.parse("{}")
 
@@ -227,7 +228,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -246,6 +247,7 @@ object TestConstants {
                                     testDeskProServiceName: Option[String] = testDeskproServiceName,
                                     testShowPhaseBanner: Option[Boolean] = testShowPhaseBanner,
                                     testAlphaPhase: Option[Boolean] = testAlphaPhase,
+                                    testDisableTranslations: Option[Boolean] = testDisableTranslations,
                                     testShowBackButtons: Option[Boolean] = testShowBackButtons,
                                     testIncludeHMRCBranding: Option[Boolean] = testIncludeHmrcBranding,
                                     testUkMode: Option[Boolean] = testUkMode,
@@ -266,6 +268,7 @@ object TestConstants {
       testDeskProServiceName,
       testShowPhaseBanner,
       testAlphaPhase,
+      testDisableTranslations,
       testShowBackButtons,
       testIncludeHMRCBranding,
       testUkMode,
@@ -300,6 +303,7 @@ object TestConstants {
         deskProServiceName = Some("testDeskproName"),
         showPhaseBanner = Some(true),
         alphaPhase = Some(true),
+        disableTranslations = Some(false),
         showBackButtons = Some(true),
         includeHMRCBranding = Some(true),
         ukMode = Some(true),
@@ -429,6 +433,7 @@ object TestConstants {
       |         "deskProServiceName":"testDeskproName",
       |         "showPhaseBanner":true,
       |         "alphaPhase":true,
+      |         "disableTranslations": false,
       |         "showBackButtons":true,
       |         "includeHMRCBranding":true,
       |         "ukMode":true,

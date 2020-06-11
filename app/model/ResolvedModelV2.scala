@@ -28,6 +28,7 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val phase: String = if (showPhaseBanner) {
     if (alphaPhase) "alpha" else "beta"
   } else ""
+  val disableTranslations: Boolean = journeyOptions.disableTranslations.getOrElse(false)
   val showBackButtons: Boolean = journeyOptions.showBackButtons.getOrElse(true)
   val includeHMRCBranding: Boolean = journeyOptions.includeHMRCBranding.getOrElse(true)
   val isUkMode: Boolean = journeyOptions.ukMode.contains(true)

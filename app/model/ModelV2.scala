@@ -12,7 +12,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
 
   def resolveConfigV2(isWelsh: Boolean = false) = ResolvedJourneyConfigV2(config, isWelsh)
 
-  val welshEnabled: Boolean = !config.requestedVersion.contains(1)
+  val welshEnabled: Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config.options.disableTranslations exists (_ != false)))
 }
 
 case class JourneyConfigV2(version: Int,
@@ -31,6 +31,7 @@ case class JourneyOptions(continueUrl: String,
                           showPhaseBanner: Option[Boolean] = None,
                           alphaPhase: Option[Boolean] = None,
                           showBackButtons: Option[Boolean] = None,
+                          disableTranslations: Option[Boolean] = None,
                           includeHMRCBranding: Option[Boolean] = None,
                           ukMode: Option[Boolean] = None,
                           allowedCountryCodes: Option[Set[String]] = None,

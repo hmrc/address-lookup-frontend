@@ -336,7 +336,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(labels = Some(JourneyLabels(
           en = Some(fullV2LanguageLabelsEn.copy(lookupPageLabels = None))
-        )), requestedVersion = Some(1))
+        )), requestedVersion = Some(1), options = fullV2JourneyOptions.copy(disableTranslations = Some(false)))
 
         val actual = convertToV2Model(v1JourneyData)
         val expected = fullV2JourneyData.copy(config = v2Config)
@@ -350,7 +350,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1Config = fullV1JourneyConfig.copy(selectPage = None)
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(
-          options = fullV2JourneyOptions.copy(selectPageConfig = None),
+          options = fullV2JourneyOptions.copy(selectPageConfig = None, disableTranslations = Some(false)),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(selectPageLabels = None))
           )), requestedVersion = Some(1))
@@ -367,6 +367,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1Config = fullV1JourneyConfig.copy(editPage = None)
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(
+          options = fullV2JourneyOptions.copy(disableTranslations = Some(false)),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
           )), requestedVersion = Some(1))
@@ -383,7 +384,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1Config = fullV1JourneyConfig.copy(confirmPage = None)
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(
-          options = fullV2JourneyOptions.copy(confirmPageConfig = None),
+          options = fullV2JourneyOptions.copy(confirmPageConfig = None, disableTranslations = Some(false)),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(confirmPageLabels = None))
           )), requestedVersion = Some(1))
@@ -417,6 +418,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
         val v1JourneyData = fullV1JourneyData.copy(config = v1Config)
         val v2Config = fullV2JourneyConfig.copy(
           options = journeyOptionsMinimal.copy(
+            disableTranslations = Some(false),
             selectPageConfig = fullV2SelectPageConfig,
             confirmPageConfig = fullV2ConfirmPageConfig,
             timeoutConfig = fullV2TimeoutConfig
@@ -445,6 +447,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
         val v2Config = fullV2JourneyConfig.copy(
           options = fullV2JourneyOptions.copy(
+            disableTranslations = Some(false),
             confirmPageConfig = None,
             selectPageConfig = None
           ),

@@ -1006,6 +1006,9 @@ class AddressLookupControllerSpec
       }
     }
     "return false" when {
+      "there is a welsh language cookie but welsh translations are disabled" in new Scenario {
+        controller.getWelshContent(testAppLevelJourneyConfigV2WithWelshDisabled)(reqWelsh) mustBe false
+      }
       "there is no welsh language cookie but welsh labels are provided" in new Scenario {
         val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqOther) mustBe false

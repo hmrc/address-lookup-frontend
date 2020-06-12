@@ -69,7 +69,11 @@ Journey configuration is supplied as a JSON object in the body of the request to
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
-A "cy" object is required if you wish to provide custom labels for the Welsh journey. If no custom content is provided, the default labels are used. Welsh content is displayed for users when the PLAY_LANG cookie is set to "cy". A link to enable users to change their language will be displayed on all pages.
+**Welsh translations are enabled by default in v2.**
+
+You can provide custom labels for the Welsh journey by adding a `cy` block to the config. If no custom content is provided, the default labels are used. Welsh content is displayed for users when the `PLAY_LANG` cookie is set to `"cy"`. A language toggle to enable users to change their language will be displayed on all pages.
+
+If your service doesn't have Welsh translations you can disable them setting the `disableTranslations` option to `true`. The language toggle will not be display and the PLAY_LANG cookie will be ignored.
 
 ```json
 {
@@ -83,6 +87,7 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
     "deskProServiceName": "",
     "showPhaseBanner": false,
     "alphaPhase": false,
+    "disableTranslations": true,
     "showBackButtons": false,
     "includeHMRCBranding": true,
     "allowedCountryCodes": [
@@ -104,102 +109,102 @@ A "cy" object is required if you wish to provide custom labels for the Welsh jou
       "timeoutAmount": 900,
       "timeoutUrl": "http://service/timeout-uri"
     }
-},
-    "labels": {
-      "en": {
-        "appLevelLabels": {
-          "navTitle": "",
-          "phaseBannerHtml": ""
-        },
-        "selectPageLabels": {
-          "title": "Choose address",
-          "heading": "Choose address",
-          "headingWithPostcode": "foo",
-          "proposalListLabel": "Please select one of the following addresses",
-          "submitLabel": "Continue",
-          "searchAgainLinkText": "Search again",
-          "editAddressLinkText": "Enter address manually"
-        },
-        "lookupPageLabels": {
-          "title": "Find address",
-          "heading": "Find address",
-          "filterLabel": "Property name or number (optional)",
-          "postcodeLabel": "Postcode",
-          "submitLabel": "Find address",
-          "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode.",
-          "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results.",
-          "manualAddressLinkText": "The address doesn't have a postcode"
-        },
-        "confirmPageLabels": {
-          "title": "Confirm address",
-          "heading": "Review and confirm",
-          "infoSubheading": "Your selected address",
-          "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
-          "submitLabel": "Confirm Address",
-          "searchAgainLinkText": "Search again",
-          "changeLinkText": "Edit address",
-          "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct."
-        },
-        "editPageLabels": {
-          "title": "Enter address",
-          "heading": "Enter address",
-          "line1Label": "Address line 1",
-          "line2Label": "Address line 2 (optional)",
-          "line3Label": "Address line 3 (optional)",
-          "townLabel": "Town/City",
-          "postcodeLabel": "Postcode (optional)",
-          "countryLabel": "Country",
-          "submitLabel": "Continue"
-        }
+  },
+  "labels": {
+    "en": {
+      "appLevelLabels": {
+        "navTitle": "",
+        "phaseBannerHtml": ""
       },
-      "cy": {
-        "appLevelLabels": {
-          "navTitle": "",
-          "phaseBannerHtml": ""
-        },
-        "selectPageLabels": {
-          "title": "Choose address welsh",
-          "heading": "Choose address welsh",
-          "headingWithPostcode": "foo",
-          "proposalListLabel": "Please select one of the following addresses welsh",
-          "submitLabel": "Continue welsh",
-          "searchAgainLinkText": "Search again welsh",
-          "editAddressLinkText": "Enter address manually welsh"
-        },
-        "lookupPageLabels": {
-          "title": "Find address welsh",
-          "heading": "Find address welsh",
-          "filterLabel": "Property name or number welsh (optional)",
-          "postcodeLabel": "Postcode welsh",
-          "submitLabel": "Find address welsh",
-          "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode. welsh",
-          "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results. welsh",
-          "manualAddressLinkText": "The address doesn't have a postcode welsh"
-        },
-        "confirmPageLabels": {
-          "title": "Confirm address welsh",
-          "heading": "Review and confirm welsh",
-          "infoSubheading": "Your selected address welsh",
-          "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button. welsh",
-          "submitLabel": "Confirm Address welsh",
-          "searchAgainLinkText": "Search again welsh",
-          "changeLinkText": "Edit address welsh",
-          "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct. welsh"
-        },
-        "editPageLabels": {
-          "title": "Enter address welsh",
-          "heading": "Enter address welsh",
-          "line1Label": "Address line 1 welsh",
-          "line2Label": "Address line 2 (optional) welsh",
-          "line3Label": "Address line 3 (optional) welsh",
-          "townLabel": "Town/City welsh",
-          "postcodeLabel": "Postcode (optional) welsh",
-          "countryLabel": "Country welsh",
-          "submitLabel": "Continue welsh"
-        }
+      "selectPageLabels": {
+        "title": "Choose address",
+        "heading": "Choose address",
+        "headingWithPostcode": "foo",
+        "proposalListLabel": "Please select one of the following addresses",
+        "submitLabel": "Continue",
+        "searchAgainLinkText": "Search again",
+        "editAddressLinkText": "Enter address manually"
+      },
+      "lookupPageLabels": {
+        "title": "Find address",
+        "heading": "Find address",
+        "filterLabel": "Property name or number (optional)",
+        "postcodeLabel": "Postcode",
+        "submitLabel": "Find address",
+        "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode.",
+        "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results.",
+        "manualAddressLinkText": "The address doesn't have a postcode"
+      },
+      "confirmPageLabels": {
+        "title": "Confirm address",
+        "heading": "Review and confirm",
+        "infoSubheading": "Your selected address",
+        "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.",
+        "submitLabel": "Confirm Address",
+        "searchAgainLinkText": "Search again",
+        "changeLinkText": "Edit address",
+        "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct."
+      },
+      "editPageLabels": {
+        "title": "Enter address",
+        "heading": "Enter address",
+        "line1Label": "Address line 1",
+        "line2Label": "Address line 2 (optional)",
+        "line3Label": "Address line 3 (optional)",
+        "townLabel": "Town/City",
+        "postcodeLabel": "Postcode (optional)",
+        "countryLabel": "Country",
+        "submitLabel": "Continue"
+      }
+    },
+    "cy": {
+      "appLevelLabels": {
+        "navTitle": "",
+        "phaseBannerHtml": ""
+      },
+      "selectPageLabels": {
+        "title": "Choose address welsh",
+        "heading": "Choose address welsh",
+        "headingWithPostcode": "foo",
+        "proposalListLabel": "Please select one of the following addresses welsh",
+        "submitLabel": "Continue welsh",
+        "searchAgainLinkText": "Search again welsh",
+        "editAddressLinkText": "Enter address manually welsh"
+      },
+      "lookupPageLabels": {
+        "title": "Find address welsh",
+        "heading": "Find address welsh",
+        "filterLabel": "Property name or number welsh (optional)",
+        "postcodeLabel": "Postcode welsh",
+        "submitLabel": "Find address welsh",
+        "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode. welsh",
+        "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results. welsh",
+        "manualAddressLinkText": "The address doesn't have a postcode welsh"
+      },
+      "confirmPageLabels": {
+        "title": "Confirm address welsh",
+        "heading": "Review and confirm welsh",
+        "infoSubheading": "Your selected address welsh",
+        "infoMessage": "This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button. welsh",
+        "submitLabel": "Confirm Address welsh",
+        "searchAgainLinkText": "Search again welsh",
+        "changeLinkText": "Edit address welsh",
+        "confirmChangeText": "By confirming this change, you agree that the information you have given is complete and correct. welsh"
+      },
+      "editPageLabels": {
+        "title": "Enter address welsh",
+        "heading": "Enter address welsh",
+        "line1Label": "Address line 1 welsh",
+        "line2Label": "Address line 2 (optional) welsh",
+        "line3Label": "Address line 3 (optional) welsh",
+        "townLabel": "Town/City welsh",
+        "postcodeLabel": "Postcode (optional) welsh",
+        "countryLabel": "Country welsh",
+        "submitLabel": "Continue welsh"
       }
     }
   }
+}
 ```
 #### Test Endpoint for journey setup
 * `/lookup-address/test-only/v2/test-setup` (GET)

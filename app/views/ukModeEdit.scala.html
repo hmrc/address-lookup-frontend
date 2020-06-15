@@ -58,7 +58,7 @@
       <div class="form-field spaced-below">
         @alfInput(
         editForm("postcode"),
-        '_label -> messages("ukmode.postcode.label"),
+        '_label -> journeyData.resolvedConfig.editPage.postcodeLabel,
         '_inputClass -> "form-control--block input--small"
         )
       </div>

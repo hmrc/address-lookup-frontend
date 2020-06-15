@@ -22,7 +22,7 @@
 
 @helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
 <div class="form-group">
-    <a href="@{routes.AddressLookupController.edit(id,None,Some(true))}" id="enterManual">@{messageConstants.noResultsPageEnterManually}</a>
+    <a href="@{routes.AddressLookupController.edit(id,None,Some(journeyData.resolveConfigV2(isWelsh).options.isUkMode))}" id="enterManual">@{messageConstants.noResultsPageEnterManually}</a>
 </div>
 
 <div class="form-group">

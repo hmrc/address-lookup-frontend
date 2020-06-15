@@ -4,7 +4,6 @@ import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
 import model.JourneyConfigDefaults.EnglishConstants
-import model.MessageConstants.WelshMessageConstants
 import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -80,7 +79,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
+            doc.link("enterManual") should have(
+              href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+              text(EDIT_LINK_TEXT)
+            )
           }
         }
 
@@ -108,7 +110,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
+            doc.link("enterManual") should have(
+              href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+              text(EDIT_LINK_TEXT)
+            )
           }
         }
       }
@@ -136,7 +141,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
+            doc.link("enterManual") should have(
+              href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+              text(EDIT_LINK_TEXT)
+            )
           }
         }
 
@@ -164,7 +172,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
-            doc.link("enterManual").text shouldBe EDIT_LINK_TEXT
+            doc.link("enterManual") should have(
+              href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+              text(EDIT_LINK_TEXT)
+            )
           }
         }
       }
@@ -197,7 +208,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
+          doc.link("enterManual") should have(
+            href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+            text(JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT)
+          )
         }
       }
 
@@ -230,7 +244,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual").text() shouldBe JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT
+          doc.link("enterManual") should have(
+            href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
+            text(JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT)
+          )
         }
       }
     }

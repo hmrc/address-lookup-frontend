@@ -42,5 +42,5 @@
         </a>
     </div>
 
-    <a href="@{routes.AddressLookupController.edit(id,None,Some(journeyData.resolveConfigV2(isWelsh).options.isUkMode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
+    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(journeyData.resolveConfigV2(isWelsh).options.isUkMode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
 }

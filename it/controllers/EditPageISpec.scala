@@ -315,7 +315,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line2" -> "Custom Line2",
           "line3" -> "Custom Line3",
           "town" -> "Custom Town",
-          "postcode" -> "Postcode (optional)"
+          "postcode" -> "Custom Postcode"
         ))
       }
 
@@ -396,7 +396,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line2" -> "Custom Line2 welsh",
           "line3" -> "Custom Line3 welsh",
           "town" -> "Custom Town welsh",
-          "postcode" -> "Cod post (dewisol)"
+          "postcode" -> "Custom Postcode welsh"
         ))
       }
 

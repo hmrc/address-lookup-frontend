@@ -78,7 +78,7 @@ object JourneyConfigDefaults {
     val EDIT_PAGE_LINE2_LABEL = "Address line 2 (optional)"
     val EDIT_PAGE_LINE3_LABEL = "Address line 3 (optional)"
     val EDIT_PAGE_TOWN_LABEL = "Town/city"
-    val EDIT_PAGE_POSTCODE_LABEL = "Postcode (optional)"
+    val EDIT_PAGE_POSTCODE_LABEL = if(isUkMode) "UK postcode (optional)" else "Postcode (optional)"
     val EDIT_PAGE_COUNTRY_LABEL = "Country"
     val EDIT_PAGE_SUBMIT_LABEL = "Continue"
 
@@ -117,7 +117,7 @@ object JourneyConfigDefaults {
     val EDIT_PAGE_LINE2_LABEL = "Llinell cyfeiriad 2 (dewisol)"
     val EDIT_PAGE_LINE3_LABEL = "Llinell cyfeiriad 3 (dewisol)"
     val EDIT_PAGE_TOWN_LABEL = "Tref/dinas"
-    val EDIT_PAGE_POSTCODE_LABEL = "Cod post (dewisol)"
+    val EDIT_PAGE_POSTCODE_LABEL = if(isUkMode) "Cod post y DU (dewisol)" else "Cod post (dewisol)"
     val EDIT_PAGE_COUNTRY_LABEL = "Gwlad"
     val EDIT_PAGE_SUBMIT_LABEL = "Yn eich blaen"
 

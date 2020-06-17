@@ -195,6 +195,8 @@ object TestConstants {
 
   val fullV2JourneyData = JourneyDataV2(fullV2JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
+  val fullV2JourneyDataNonUkMode = JourneyDataV2(fullV2JourneyConfig.copy(options = fullV2JourneyOptions.copy(ukMode = Some(false))), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
+
   val fullV2JourneyDataFromV1 = JourneyDataV2(fullV2JourneyConfig.copy(requestedVersion = Some(1), options = fullV2JourneyOptions.copy(disableTranslations = Some(false))), Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
   val emptyJson: JsValue = Json.parse("{}")
@@ -563,10 +565,31 @@ object TestConstants {
     )
   )
 
+  val journeyDataV2MinimalUKMode = JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl",
+        ukMode = Some(true)
+      )
+    )
+  )
+
   val journeyDataV2EnglishAndWelshMinimal = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl"),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels()),
+        cy = Some(LanguageLabels())
+      ))
+    )
+  )
+
+  val journeyDataV2EnglishAndWelshMinimalUKMode = JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(continueUrl = "testContinueUrl", ukMode = Some(true)),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels()),
         cy = Some(LanguageLabels())

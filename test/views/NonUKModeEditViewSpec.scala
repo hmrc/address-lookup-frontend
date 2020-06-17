@@ -8,7 +8,6 @@ import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.twirl.api.Html
 import utils.TestConstants._
 
 
@@ -42,6 +41,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messages = app.injector.instanceOf[MessagesApi]
   val configWithoutLabels = fullV2JourneyConfig.copy(
+    options = fullV2JourneyOptions.copy(ukMode = Some(false)),
     labels = Some(JourneyLabels(
       en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
     )))
@@ -51,10 +51,10 @@ class NonUKModeEditViewSpec extends ViewSpec {
 
       val testPage = views.html.v2.non_uk_mode_edit(
         id = testId,
-        journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
+        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),
         countries = Seq("FR" -> "France"),
-        false
+        isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)
 
@@ -83,10 +83,10 @@ class NonUKModeEditViewSpec extends ViewSpec {
     "when provided with page config" in {
       val testPage = views.html.v2.non_uk_mode_edit(
         id = testId,
-        journeyData = fullV2JourneyData,
+        journeyData = fullV2JourneyDataNonUkMode,
         editForm = nonUkEditForm(false),
         countries = Seq("FR" -> "France"),
-        false
+        isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)
 
@@ -115,10 +115,10 @@ class NonUKModeEditViewSpec extends ViewSpec {
     "When there is > 1 country" in {
       val testPage = views.html.v2.non_uk_mode_edit(
         id = testId,
-        journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
+        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),
         countries = Seq("FR" -> "France", "AL" -> "Albanian"),
-        false
+        isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)
 

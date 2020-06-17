@@ -1,6 +1,6 @@
 package views
 
-import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
+import controllers.routes
 import model.{JourneyConfigDefaults, JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -48,12 +48,13 @@ class TooManyResultsViewSpec extends ViewSpec {
     val back = "Yn ôl"
   }
 
-  def journeyData(showBackButtons: Boolean) = JourneyDataV2(
+  def journeyData(showBackButtons: Boolean, ukMode: Option[Boolean] = None) = JourneyDataV2(
     JourneyConfigV2(
       2,
       JourneyOptions(
         continueUrl = testContinueUrl,
-        showBackButtons = Some(showBackButtons)
+        showBackButtons = Some(showBackButtons),
+        ukMode = ukMode
       )
     )
   )
@@ -73,8 +74,7 @@ class TooManyResultsViewSpec extends ViewSpec {
                 None,
                 testPostCode
               ),
-              firstLookup = true,
-              isWelsh = false
+              firstLookup = true
             ).body)
 
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
@@ -85,6 +85,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
 
@@ -97,8 +98,7 @@ class TooManyResultsViewSpec extends ViewSpec {
                 Some(testFilterValue),
                 testPostCode
               ),
-              firstLookup = false,
-              isWelsh = false
+              firstLookup = false
             ).body)
 
             doc.getBackLinkText shouldBe tooManyResultsMessages.back
@@ -109,6 +109,31 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
+          }
+        }
+
+        "a filter has been entered with ukMode = true" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = true, ukMode = Some(true)),
+              lookup = model.Lookup(
+                Some(testFilterValue),
+                testPostCode
+              ),
+              firstLookup = false
+            ).body)
+
+            doc.getBackLinkText shouldBe tooManyResultsMessages.back
+            doc.title shouldBe tooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe tooManyResultsMessages.heading2
+            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
+            doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(true)).url
           }
         }
       }
@@ -123,8 +148,7 @@ class TooManyResultsViewSpec extends ViewSpec {
                 None,
                 testPostCode
               ),
-              firstLookup = true,
-              isWelsh = false
+              firstLookup = true
             ).body)
 
             doc.getBackLinkText shouldBe empty
@@ -135,6 +159,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
 
@@ -147,8 +172,7 @@ class TooManyResultsViewSpec extends ViewSpec {
                 Some(testFilterValue),
                 testPostCode
               ),
-              firstLookup = false,
-              isWelsh = false
+              firstLookup = false
             ).body)
 
             doc.getBackLinkText shouldBe empty
@@ -159,6 +183,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
       }
@@ -189,6 +214,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
 
@@ -213,6 +239,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
       }
@@ -239,6 +266,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
           }
         }
 
@@ -263,6 +291,32 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
             doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
+          }
+        }
+
+        "a filter has been entered with ukMode = true" when {
+          "there are too many addresses" in {
+            val doc = Jsoup.parse(views.html.v2.too_many_results(
+              id = testJourneyId,
+              journeyData = journeyData(showBackButtons = false, ukMode = Some(true)),
+              lookup = model.Lookup(
+                Some(testFilterValue),
+                testPostCode
+              ),
+              firstLookup = false,
+              isWelsh = true
+            ).body)
+
+            doc.getBackLinkText shouldBe empty
+            doc.title shouldBe welshTooManyResultsMessages.title
+            doc.getH1ElementAsText shouldBe welshTooManyResultsMessages.heading2
+            doc.paras.not(".language-select").get(1).text shouldBe welshTooManyResultsMessages.line1
+            doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
+            doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
+            doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(true)).url
           }
         }
       }

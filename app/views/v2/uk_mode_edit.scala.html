@@ -72,7 +72,7 @@
       <div class="form-field spaced-below">
         @alfInput(
         editForm("postcode"),
-        '_label -> messageConstants.ukModePostcodeLabel,
+        '_label -> resolvedConf.labels.editPageLabels.postcodeLabel,
         '_inputClass -> "form-control--block input--small",
         '_autoComplete -> "postal-code"
         )

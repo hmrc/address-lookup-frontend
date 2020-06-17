@@ -31,10 +31,10 @@
     <p>@messageConstants.youEntered</p>
     <ul class="list list-bullet">
         <li>@{lookup.postcode} @messageConstants.forPostcode</li>
-        <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'${filter}' ${messageConstants.nameNumberText}")}</li>
+        <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'$filter' ${messageConstants.nameNumberText}")}</li>
 
     </ul>
-    </br>
+    <br />
 
     <div class="form-group">
         <a id="anotherSearch" class="button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
@@ -42,5 +42,5 @@
         </a>
     </div>
 
-    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(true))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
+    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),Some(journeyData.resolveConfigV2(isWelsh).options.isUkMode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
 }

@@ -1,9 +1,9 @@
 package controllers
 
-import config.FrontendAppConfig.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.{EditPage, _}
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import model.{EditPage => _, LookupPage => _, _}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
@@ -11,7 +11,6 @@ import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeApplication
 import uk.gov.hmrc.address.v2.Country
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 
 class EditPageISpec extends IntegrationSpecBase {
 
@@ -130,7 +129,7 @@ class EditPageISpec extends IntegrationSpecBase {
       "return non uk edit and not error with showSearchAgainLink and searchAgainLinkText in the json should not error when uk param not provided" in {
         val config = (Json.toJson(journeyDataV2Minimal).as[JsObject] - "editPage") ++
           Json.obj("editPage" -> Json.obj("showSearchAgainLink" -> true, "searchAgainLinkText" -> "foo"))
-        stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
+        stubKeystore(testJourneyId, Json.toJson(config).as[JsObject], OK)
 
         val fResponse = buildClientLookupAddress(path = "edit?uk=false")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
@@ -143,9 +142,6 @@ class EditPageISpec extends IntegrationSpecBase {
       }
 
       "return the UK edit page with no pre-popped postcode if param not provided AND UK mode is false but uk param provided" in {
-        val testConfigWithAddressAndNotUkMode = journeyDataV2Minimal.copy(
-          selectedAddress = None, config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))
-
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
         val fResponse = buildClientLookupAddress(path = "edit?uk=true")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,

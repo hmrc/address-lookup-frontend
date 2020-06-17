@@ -56,7 +56,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
+          href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
           text(EnglishContent.manualEntry)
         )
 
@@ -122,7 +122,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
+          href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
           text(EnglishContent.manualEntry)
         )
 
@@ -156,7 +156,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
+          href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
           text(WelshContent.manualEntry)
         )
 
@@ -202,7 +202,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url),
+          href(routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url),
           text(EnglishContent.manualEntry)
         )
 

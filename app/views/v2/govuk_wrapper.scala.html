@@ -93,7 +93,8 @@
     @alfFooterLinks(
         additionalLinks = None,
         euExitLinks = None,
-        accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.accessibilityFooterUrl)
+        accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.accessibilityFooterUrl),
+        userAction = request.uri.split("/").lastOption
     )
 }
 

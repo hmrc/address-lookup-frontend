@@ -39,6 +39,8 @@ trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
     def getALinkText(id: String): String = doc.select(s"""a[id=$id]""").text()
 
+    def getALinkHrefTextByDataJourney(dataJourneyText: String): String = doc.select(s"""a[data-journey-click=$dataJourneyText]""").attr("href")
+
     def getLinkHrefAsText(id: String): String = doc.select(s"""a[id=$id]""").attr("href")
 
     def getLinkTextFromHref(href: String): String = doc.select(s"""a[href=$href]""").text()

@@ -14,7 +14,7 @@
 * limitations under the License.
 *@
 
-@(additionalLinks: Option[Html] = None, euExitLinks: Option[Html] = None, accessibilityFooterUrl: Option[String] = None, userAction: Option[String] = None)(implicit messages: Messages)
+@(additionalLinks: Option[Html] = None, euExitLinks: Option[Html] = None, accessibilityFooterUrl: Option[String] = None, userAction: String = "")(implicit messages: Messages)
 
 @euExitLinks
 
@@ -28,7 +28,7 @@
     </li>
     @accessibilityFooterUrl.map { url =>
     <li>
-        <a href='@url?service=address-lookup&userAction=@userAction.getOrElse("").replaceFirst("\\?.*$", "")'
+        <a href='@url?service=address-lookup&userAction=@userAction'
            data-sso="false"
            data-journey-click="footer:Click:Accessibility">
             @Messages("footer.links.accessibility.text")

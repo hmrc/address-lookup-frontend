@@ -1,3 +1,4 @@
+@import java.net.URI
 @import config.AppConfig
 @import model.JourneyDataV2
 @import layouts.{govuk_template => hmrcGovUkTemplate}
@@ -94,7 +95,7 @@
         additionalLinks = None,
         euExitLinks = None,
         accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.accessibilityFooterUrl),
-        userAction = request.uri.split("/").lastOption
+        userAction = new URI(request.uri).getPath().split("/").lastOption.getOrElse("")
     )
 }
 

@@ -28,7 +28,7 @@
     </li>
     @accessibilityFooterUrl.map { url =>
     <li>
-        <a href='@url?service=address-lookup&userAction=@userAction.getOrElse("")'
+        <a href='@url?service=address-lookup&userAction=@userAction.getOrElse("").replaceFirst("\\?.*$", "")'
            data-sso="false"
            data-journey-click="footer:Click:Accessibility">
             @Messages("footer.links.accessibility.text")

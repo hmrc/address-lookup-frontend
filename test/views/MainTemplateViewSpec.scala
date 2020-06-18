@@ -48,6 +48,35 @@ class MainTemplateViewSpec extends ViewSpec {
 
   "MainTemplate" should {
     "render" when {
+      "accessibility footer link when it is passed in the journey data" in {
+        val testPage = views.html.v2.main_template(title = enContent.title,
+          journeyData = Some(testAppLevelJourneyConfigV2)
+        )(testHtml)
+        val doc: Document = Jsoup.parse(testPage.body)
+
+        doc.getALinkHrefTextByDataJourney("footer:Click:Accessibility") shouldBe "testAccessibilityFooterUrl?service=address-lookup&userAction="
+      }
+
+      "accessibility footer link with userAction when it is passed in the journey data" in {
+        implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction")
+        val testPage = views.html.v2.main_template(title = enContent.title,
+          journeyData = Some(testAppLevelJourneyConfigV2)
+        )(testHtml)
+        val doc: Document = Jsoup.parse(testPage.body)
+
+        doc.getALinkHrefTextByDataJourney("footer:Click:Accessibility") shouldBe "testAccessibilityFooterUrl?service=address-lookup&userAction=testAction"
+      }
+
+      "accessibility footer link with userAction (without the additional query parameters) when it is passed in the journey data" in {
+        implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction?additionalParams=testParam")
+        val testPage = views.html.v2.main_template(title = enContent.title,
+          journeyData = Some(testAppLevelJourneyConfigV2)
+        )(testHtml)
+        val doc: Document = Jsoup.parse(testPage.body)
+
+        doc.getALinkHrefTextByDataJourney("footer:Click:Accessibility") shouldBe "testAccessibilityFooterUrl?service=address-lookup&userAction=testAction"
+      }
+
       "only the title is passed in" in {
         val testPage = views.html.v2.main_template(title = enContent.title)(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)

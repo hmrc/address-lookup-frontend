@@ -100,7 +100,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
               Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
                 Ok(views.html.v2.select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }
-            case TooManyResults(addresses, firstLookup) =>
+            case TooManyResults(_, firstLookup) =>
               None -> requestWithWelshHeader(isWelsh) {
                 Ok(views.html.v2.too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }

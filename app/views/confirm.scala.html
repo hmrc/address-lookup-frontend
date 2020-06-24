@@ -30,7 +30,7 @@
         }
         @if(journeyData.resolvedConfig.confirmPage.showChangeLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.edit(id,None,Some(IsCountryUK.countryCheck(selectedAddress)))}" id="changeLink">@{journeyData.resolvedConfig.confirmPage.changeLinkText}</a></p>
+          <p><a href="@{routes.AddressLookupController.edit(id,None)}" id="changeLink">@{journeyData.resolvedConfig.confirmPage.changeLinkText}</a></p>
         </div>
         }
         @if(journeyData.resolvedConfig.confirmPage.showConfirmChangeText){

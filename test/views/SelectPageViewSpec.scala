@@ -162,11 +162,11 @@ class SelectPageViewSpec extends ViewSpec {
     "render the edit address link" when {
       "the edit address link text is provided" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getALinkText(id = "editAddress") shouldBe Content.editAddressLinkText
-        doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
+        doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode)).url
       }
       "the edit address link text is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
         doc.getALinkText(id = "editAddress") shouldBe EnglishDefaultConstants.EDIT_LINK_TEXT
-        doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode), Some(true)).url
+        doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode)).url
       }
     }
 

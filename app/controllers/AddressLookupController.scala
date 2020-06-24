@@ -181,7 +181,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   // GET  /:id/edit
-  def edit(id: String, lookUpPostCode: Option[String], uk: Option[Boolean]): Action[AnyContent] = Action.async {
+  def edit(id: String, lookUpPostCode: Option[String]): Action[AnyContent] = Action.async {
     implicit req => withJourneyV2(id) {
       journeyData => {
         val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
@@ -189,7 +189,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         val isWelsh = getWelshContent(journeyData)
         val isUKMode = journeyData.config.options.isUkMode
 
-        if (journeyData.config.options.isUkMode || uk.contains(true)) {
+        if (isUKMode) {
           (None, requestWithWelshHeader(isWelsh) {
             Ok(views.html.v2.uk_mode_edit(id, journeyData, ukEditForm(isWelsh, isUKMode).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh, isUKMode))
           })

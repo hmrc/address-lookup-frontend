@@ -58,7 +58,7 @@
             @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification" else ""})
         </div>
         <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode), Some(true))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
+            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
         </div>
         <div class="form-group">
             <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>

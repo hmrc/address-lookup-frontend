@@ -38,7 +38,7 @@
         }
         @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showChangeLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.edit(id,None,Some(IsCountryUK.countryCheck(selectedAddress)))}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.changeLinkText}</a></p>
+          <p><a href="@{routes.AddressLookupController.edit(id,None)}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.changeLinkText}</a></p>
         </div>
         }
         @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showConfirmChangeText){

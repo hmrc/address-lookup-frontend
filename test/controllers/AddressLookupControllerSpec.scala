@@ -801,7 +801,7 @@ class AddressLookupControllerSpec
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
       val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(reqOther)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementById("back-link").html mustBe "Back"
 
@@ -813,7 +813,7 @@ class AddressLookupControllerSpec
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
       val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(reqOther)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementById("back-link").html mustBe "Yn ôl"
 
@@ -823,7 +823,7 @@ class AddressLookupControllerSpec
     "show all countries if no allowedCountryCodes configured whereby isukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = None))))
     ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("option").withAttrValue("value", "GB")
       html should include element withName("option").withAttrValue("value", "DE")
@@ -836,7 +836,7 @@ class AddressLookupControllerSpec
     "show dropdown of countries given by allowedCountryCodes if allowedCountryCodes is configured with several codes" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB", "FR"))))))
     ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
       val html = contentAsString(res).asBodyFragment
 
       html should not include element(withName("option").withAttrValue("value", "DE"))
@@ -847,7 +847,7 @@ class AddressLookupControllerSpec
     "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
     ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
       val html = contentAsString(res).asBodyFragment
 
       html should not include element(withName("option").withAttrValue("value", "GB"))
@@ -870,7 +870,7 @@ class AddressLookupControllerSpec
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
         )) {
 
-        val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
+        val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
 
         val html = contentAsString(res).asBodyFragment
 
@@ -884,7 +884,7 @@ class AddressLookupControllerSpec
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE")))))
         )
       ) {
-        val res = controller.edit("foo", Some("ZZ1 1ZZ"), None).apply(req)
+        val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
         val html = contentAsString(res).asBodyFragment
 
         html should include element withName("input")
@@ -904,7 +904,7 @@ class AddressLookupControllerSpec
     "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ"), Some(false)).apply(req)
+      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
       status(res) must be(200)
       val html = contentAsString(res).asBodyFragment
       html should include element (withName("input").withAttrValue("name", "postcode"))

@@ -33,6 +33,6 @@
     <a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}"><button class="button" type="submit" id="continue">@messages("too.many.another.search.text")</button></a>
 </div>
 
-<a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode),journeyData.resolvedConfig.cfg.ukMode)}" id="enterManual">@messages("results.manual.entry.text")</a>
+<a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messages("results.manual.entry.text")</a>
 
 }

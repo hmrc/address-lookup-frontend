@@ -212,14 +212,14 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
     oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), None))
   }
 
-  // POST /:id/edit?uk=:isUkAddress
-  def handleEdit(id: String, isUkAddress: Boolean): Action[AnyContent] = Action.async {
+  // POST /:id/edit
+  def handleEdit(id: String): Action[AnyContent] = Action.async {
     implicit req => withJourneyV2(id) {
       journeyData => {
         val isWelsh = getWelshContent(journeyData)
         val isUKMode = journeyData.config.options.isUkMode
 
-        if (isUkAddress) {
+        if (isUKMode) {
           val validatedForm = isValidPostcode(ukEditForm(isWelsh, isUKMode).bindFromRequest(), isWelsh, isUKMode)
 
           validatedForm.fold(

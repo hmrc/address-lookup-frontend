@@ -26,7 +26,7 @@
   )
 
   <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
-  @helpers.form(routes.AddressLookupController.handleEdit(id, true)) {
+  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(

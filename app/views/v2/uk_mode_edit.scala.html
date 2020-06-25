@@ -36,7 +36,7 @@
     <h1 class="heading-xlarge" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
   </header>
 
-  @helpers.form(routes.AddressLookupController.handleEdit(id, true)) {
+  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(

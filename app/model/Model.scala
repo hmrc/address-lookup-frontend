@@ -16,7 +16,7 @@ case class Timeout(timeoutAmount: Int, timeoutUrl: String)
 
 case class Select(addressId: String)
 
-case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: String) {
+case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: String = "GB") {
 
     def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
@@ -24,7 +24,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
       if(postcode.isEmpty) None else Some(postcode),
-      ForeignOfficeCountryService.find(code = countryCode) orElse ForeignOfficeCountryService.find(code = "GB")
+      ForeignOfficeCountryService.find(code = countryCode)
     )
   )
 }

@@ -2,7 +2,7 @@
 @(countries: Seq[(String, String)], field: play.api.data.Field, label: String, args: (Symbol,Any)*)(implicit messages: Messages)
 @elements = @{ FieldElements(field.id, field, null, args.toMap, messages) }
 
-<label for="countryCode" class="@if(elements.hasErrors) {form-group-error}"><span>@label</span>
+<label for="countryCode" class="@if(elements.hasErrors) {form-group-error} else {form-label}"><span>@label</span>
 
 @if(elements.hasErrors) {
     @elements.errors.map { error =>

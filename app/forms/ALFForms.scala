@@ -109,7 +109,7 @@ object ALFForms extends EmptyStringValidator {
       "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
         .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
       "postcode" -> default(text,""),
-      "countryCode" -> ignored[Option[String]](Option("GB"))
+      "countryCode" -> ignored[String]("GB")
     )(Edit.apply)(Edit.unapply)
   )
 
@@ -122,7 +122,7 @@ object ALFForms extends EmptyStringValidator {
       "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
         .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
       "postcode" -> default(text,""),
-      "countryCode" -> optional(text(2))
+      "countryCode" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageCountryErrorMessage)
     )(Edit.apply)(Edit.unapply)
   )
 

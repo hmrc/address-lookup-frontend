@@ -81,7 +81,7 @@
 
         @if(countries.size > 1) {
             <div class="form-field spaced-below">
-                @countryAutoComplete(countries, editForm("countryCode").value, resolvedConfig.labels.editPageLabels.countryLabel)
+                @countryAutoComplete(countries, editForm("countryCode"), resolvedConfig.labels.editPageLabels.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

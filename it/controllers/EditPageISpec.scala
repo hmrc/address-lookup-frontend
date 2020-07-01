@@ -415,7 +415,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line3" -> "Address line 3 (optional)",
         "town" -> "Town/city Enter town or city of the address",
         "postcode" -> "Postcode (optional)",
-        "countryCode" -> "Country"))
+        "countryCode" -> "Country Enter country of the address"))
       testElementExists(res, EditPage.nonUkEditId)
     }
 

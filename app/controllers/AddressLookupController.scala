@@ -205,11 +205,11 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
   }
 
   private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
-    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), Some("GB")))
+    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), "GB"))
   }
 
   private[controllers] def addressOrEmpty(oAddr: Option[ConfirmableAddress], lookUpPostCode: Option[String] = None): Edit = {
-    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), None))
+    oAddr.map(_.toEdit).getOrElse(Edit("", None, None, "", PostcodeHelper.displayPostcode(lookUpPostCode), ""))
   }
 
   // POST /:id/edit

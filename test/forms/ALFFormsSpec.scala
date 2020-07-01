@@ -36,7 +36,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
         "postcode" -> "AA199ZZ",
         "countryCode" -> "FR")
 
-      editFormUk.bind(data).get.countryCode mustBe Some("GB")
+      editFormUk.bind(data).get.countryCode mustBe "GB"
     }
     "should default country code if country code is not provided and all data is valid" in {
       val data = Map(
@@ -46,7 +46,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
         "town" -> "twn",
         "postcode" -> "AA199ZZ")
 
-      editFormUk.bind(data).get.countryCode mustBe Some("GB")
+      editFormUk.bind(data).get.countryCode mustBe "GB"
     }
     "should return error if line 3 > 255 chars" in {
       val data = Map(
@@ -61,7 +61,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
     }
 
     "isvalidPostCode should accept international address with no postcode because country is defaulted to GB and postcode is optional" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "", Some("FR")))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "", "FR"))).hasErrors mustBe false
     }
     Seq(("case 1", "MN 99555"),
       ("case 2","A"),
@@ -71,11 +71,11 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
       ("case 6", "SW778 2BH")).foreach{
       case (caseNum,postcode) =>
         s"$editFormUk NOT accept international address with invalid postcodes ($caseNum) because country code is defaulted to GB" in {
-          ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", postcode, Some("FR")))).hasErrors mustBe true
+          ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", postcode, "FR"))).hasErrors mustBe true
         }
     }
     "isvalidPostCode should  accept international address with valid postcode because country is defaulted to GB" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "ZZ1 1ZZ", Some("FR")))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
     }
   }
 
@@ -90,14 +90,14 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
 
       editFormNonuk.bind(data).hasErrors mustBe false
     }
-    "return no errors with valid data except and no country" in {
+    "return errors with valid data that does not have country" in {
       val data = Map(
         "line1" -> "foo1",
         "line2" -> "foo2",
         "town" -> "twn",
         "postcode" -> "fudgebarwizz123")
 
-      editFormNonuk.bind(data).hasErrors mustBe false
+      editFormNonuk.bind(data).hasErrors mustBe true
     }
   }
 
@@ -108,7 +108,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
 
       // #Scenario: UK Address no postcode
       s" accept a UK address with no postcode where for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "", Some("GB")))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "", "GB"))).hasErrors mustBe false
       }
       // #Scenario Outline: UK Address with Invalid PostCode
       Seq(
@@ -120,7 +120,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
         ("case 6","SW778 2BH")).foreach {
         case (caseNum, postcode) =>
           s"not accept a UK address with an invalid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, Some("GB")))).hasErrors mustBe true
+            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, "GB"))).hasErrors mustBe true
           }
       }
 
@@ -134,11 +134,11 @@ class ALFFormsSpec extends WordSpec with MustMatchers{
         ("case 6","B11 6HJ")).foreach{
         case  (caseNum,postcode) =>
           s"accept a UK address with a valid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, Some("GB")))).hasErrors mustBe false
+            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, "GB"))).hasErrors mustBe false
           }
       }
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "ZZ11ZZ", None))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "ZZ11ZZ", ""))).hasErrors mustBe false
       }
 
       s"$formOfTest return error if line 1 is empty" in {

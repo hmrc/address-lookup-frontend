@@ -70,7 +70,7 @@
 
         @if(countries.size > 1) {
             <div class="form-field">
-                @countryAutoComplete(countries, editForm("countryCode").value, journeyData.resolvedConfig.editPage.countryLabel)
+                @countryAutoComplete(countries, editForm("countryCode"), journeyData.resolvedConfig.editPage.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

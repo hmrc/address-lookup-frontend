@@ -715,7 +715,7 @@ class AddressLookupControllerSpec
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
@@ -723,7 +723,7 @@ class AddressLookupControllerSpec
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
@@ -733,7 +733,7 @@ class AddressLookupControllerSpec
       val spacesInPostcode = Some("AA11     2BB")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
-      val tstEdit = Edit("", None, None, "", "AA11 2BB", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "AA11 2BB", "GB")
       controller.addressOrDefault(None, spacesInPostcode) must be(tstEdit)
     }
 
@@ -743,7 +743,7 @@ class AddressLookupControllerSpec
       val lookUpPostcode = Some("AA112BB")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
-      val tstEdit = Edit("", None, None, "", "AA11 2BB", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "AA11 2BB", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
@@ -753,7 +753,7 @@ class AddressLookupControllerSpec
       val lookUpPostcode = Some("AA11     BB2")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
@@ -763,7 +763,7 @@ class AddressLookupControllerSpec
       val lookUpPostcode = Some("TF(3@r")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
@@ -773,7 +773,7 @@ class AddressLookupControllerSpec
 
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, None) must be(tstEdit)
     }
 
@@ -781,14 +781,14 @@ class AddressLookupControllerSpec
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
     "return an address when called with an empty option" in new Scenario(
       journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
-      val tstEdit = Edit("", None, None, "", "", Some("GB"))
+      val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None) must be(tstEdit)
     }
   }
@@ -930,7 +930,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo").apply(
-        req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
+        req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", "GB")): _*))
       status(res) must be(303)
     }
   }
@@ -961,7 +961,7 @@ class AddressLookupControllerSpec
       journeyData = Map("foo" -> basicJourney())
     ) {
       val res = controller.handleEdit("foo").apply(
-        req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", Some("GB"))): _*))
+        req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", "GB")): _*))
       status(res) must be(303)
     }
 
@@ -969,7 +969,7 @@ class AddressLookupControllerSpec
       journeyData = Map("foo" -> basicJourney(Some(true)))
     ) {
       val res = controller.handleEdit("foo")
-        .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", None, None, "fooBar", "", None)): _*))
+        .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", None, None, "fooBar", "", "")): _*))
       status(res) must be(303)
     }
   }

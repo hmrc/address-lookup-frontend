@@ -1,9 +1,9 @@
 package controllers
 
 import model.ProposedAddress
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest._
 
-class ProposalsSpec extends UnitSpec {
+class ProposalsSpec extends WordSpec with Matchers {
 
   "proposals" should {
     "naturally sort proposed addresses by addressId" in {

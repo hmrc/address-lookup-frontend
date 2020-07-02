@@ -3,8 +3,8 @@ package services
 
 import javax.inject.{Inject, Singleton}
 import com.google.inject.ImplementedBy
-import config.{FrontendServicesConfig, WSHttp}
-import model. ProposedAddress
+import config.FrontendAppConfig
+import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
 import services.AddressReputationFormats._
 import uk.gov.hmrc.address.uk.Postcode
@@ -12,6 +12,7 @@ import uk.gov.hmrc.address.v2._
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
@@ -21,11 +22,9 @@ trait AddressService {
 }
 
 @Singleton
-class AddressLookupAddressService @Inject()(implicit val ec: ExecutionContext) extends AddressService with FrontendServicesConfig {
+class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient)(implicit val ec: ExecutionContext) extends AddressService {
 
-  val endpoint = baseUrl("address-reputation")
-
-  val http: HttpGet = WSHttp
+  val endpoint = frontendAppConfig.addressReputationEndpoint
 
   override def find(postcode: String, filter: Option[String] = None,isukMode:Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
     http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->

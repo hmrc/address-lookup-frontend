@@ -1,0 +1,38 @@
+import sbt.Keys._
+import sbt.Tests.{Group, SubProcess}
+import sbt._
+import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, _}
+import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin, _}
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
+val appName: String = AppDependencies.appName
+
+lazy val root = Project(appName, file("."))
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .settings(majorVersion := 2)
+  .settings(scalaSettings: _*)
+  .settings(scalaVersion := "2.11.11")
+  .settings(publishingSettings: _*)
+  .settings(defaultSettings(): _*)
+  .settings(
+    libraryDependencies ++= AppDependencies.appDependencies,
+    retrieveManaged := true,
+    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+    routesGenerator := StaticRoutesGenerator
+  )
+  .configs(IntegrationTest)
+  .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(
+    scalaVersion := "2.11.12",
+    Keys.fork in IntegrationTest := false,
+    unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
+    addTestReportOption(IntegrationTest, "int-test-reports"),
+    testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+    javaOptions in IntegrationTest += "-Dlogger.resource=logback-test.xml",
+    parallelExecution in IntegrationTest := false)
+  .settings(resolvers += Resolver.jcenterRepo)
+

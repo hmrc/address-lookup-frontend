@@ -1,6 +1,6 @@
 package controllers
 
-import config.FrontendAppConfig.ALFCookieNames
+import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model.JourneyConfigDefaults.EnglishConstants
@@ -24,7 +24,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
-      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
+      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl,
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("AddressLookupFrontend"))))
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -181,7 +183,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = testContinueUrl),
+          continueUrl = testContinueUrl,
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("AddressLookupFrontend")),
         labels = Some(JourneyLabels(
           cy = Some(LanguageLabels())
         ))

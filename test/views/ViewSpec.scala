@@ -1,13 +1,16 @@
 package views
 
+import com.codahale.metrics.SharedMetricRegistries
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import uk.gov.hmrc.play.test.UnitSpec
 
-trait ViewSpec extends UnitSpec with GuiceOneAppPerSuite {
-  unitSpec: UnitSpec =>
+trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
+  unitSpec: WordSpec =>
+  SharedMetricRegistries.clear()
+
 
   implicit class DocumentTest(doc: Document) {
 

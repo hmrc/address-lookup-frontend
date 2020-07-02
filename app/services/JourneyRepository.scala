@@ -1,17 +1,17 @@
 package services
 
-import javax.inject.Singleton
 import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
-import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
+import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
+import javax.inject.{Inject, Singleton}
 import model._
 import play.api.libs.json.{JsValue, Reads, Writes}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.HttpCaching
+import utils.V2ModelConverter
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.V2ModelConverter._
 
 @ImplementedBy(classOf[KeystoreJourneyRepository])
 trait JourneyRepository {
@@ -29,16 +29,16 @@ trait JourneyRepository {
 }
 
 @Singleton
-class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesConfig {
+class KeystoreJourneyRepository @Inject()(cache: HttpCaching,
+                                          frontendAppConfig: FrontendAppConfig,
+                                          converter: V2ModelConverter) extends JourneyRepository {
   val keyId = "journey-data"
 
-  private val cfg: Map[String, JourneyData] = config("address-lookup-frontend").getObject("journeys").map { journeys =>
+  private val cfg: Map[String, JourneyData] = frontendAppConfig.config("address-lookup-frontend").getObject("journeys").map { journeys =>
     journeys.keySet().asScala.map { key =>
       (key -> journey(key, journeys))
     }.toMap
   }.getOrElse(Map.empty)
-
-  val cache: HttpCaching = AddressLookupFrontendSessionCache
 
   override def init(journeyName: String): JourneyData = {
     try {
@@ -56,16 +56,16 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
     fetchCache[JsValue](sessionId).map(_.map(json =>
       (json \ "config" \ "version").asOpt[Int] match {
         case Some(_) => json.as[JourneyDataV2]
-        case None => convertToV2Model(json.as[JourneyData])
+        case None => converter.convertToV2Model(json.as[JourneyData])
       }
     ))
   }
 
   private def fetchCache[A](sessionId: String)(implicit reads: Reads[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[A]] = {
-      for {
-        newCachedDoc <- cache.fetchAndGetEntry[A](cache.defaultSource, sessionId, keyId)
-        cachedDoc <- if (newCachedDoc.isDefined) Future.successful(newCachedDoc) else cache.fetchAndGetEntry[A](cache.defaultSource, keyId, sessionId)
-      } yield cachedDoc
+    for {
+      newCachedDoc <- cache.fetchAndGetEntry[A](cache.defaultSource, sessionId, keyId)
+      cachedDoc <- if (newCachedDoc.isDefined) Future.successful(newCachedDoc) else cache.fetchAndGetEntry[A](cache.defaultSource, keyId, sessionId)
+    } yield cachedDoc
   }
 
   override def put(sessionId: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
@@ -77,7 +77,7 @@ class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesC
   }
 
   private def updateCache[A](sessionId: String, data: A)(implicit wts: Writes[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    cache.cache(cache.defaultSource, sessionId,  keyId, data) map (_ => true)
+    cache.cache(cache.defaultSource, sessionId, keyId, data) map (_ => true)
   }
 
   private def maybeString(v: ConfigValue): Option[String] = {

@@ -5,7 +5,8 @@
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig,
 id: String,
 journeyData: JourneyDataV2,
 lookupForm: Form[Lookup],
@@ -34,7 +35,7 @@ message: Option[String] = None
   </script>
 }
 
-@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode, scriptElem = Some(scriptElem)) {
+@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode, scriptElem = Some(scriptElem)) {
 
   @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
     <div>

@@ -1,5 +1,6 @@
 package views
 
+import config.FrontendAppConfig
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
 import model.{JourneyConfigDefaults, JourneyDataV2, Lookup}
@@ -37,12 +38,13 @@ class SelectPageViewSpec extends ViewSpec {
   }
 
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false) {
-    val testPage: HtmlFormat.Appendable = views.html.v2.select("testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
+    val testPage: HtmlFormat.Appendable = views.html.v2.select(frontendAppConfig, "testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(testRequest)
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)

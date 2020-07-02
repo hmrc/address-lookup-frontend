@@ -6,7 +6,8 @@
 @import views.html.v2.{main_template => template}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
@@ -20,7 +21,7 @@
     }
 }
 
-@template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
     @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
         <div>

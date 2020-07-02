@@ -1,5 +1,6 @@
 package views
 
+import config.FrontendAppConfig
 import model._
 import forms.ALFForms._
 import org.jsoup.Jsoup
@@ -40,6 +41,8 @@ class NonUKModeEditViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messages = app.injector.instanceOf[MessagesApi]
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
   val configWithoutLabels = fullV2JourneyConfig.copy(
     options = fullV2JourneyOptions.copy(ukMode = Some(false)),
     labels = Some(JourneyLabels(
@@ -50,6 +53,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
     "when provided with no page config" in {
 
       val testPage = views.html.v2.non_uk_mode_edit(
+        frontendAppConfig,
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),
@@ -82,6 +86,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
     }
     "when provided with page config" in {
       val testPage = views.html.v2.non_uk_mode_edit(
+        frontendAppConfig,
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode,
         editForm = nonUkEditForm(false),
@@ -114,6 +119,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
     }
     "When there is > 1 country" in {
       val testPage = views.html.v2.non_uk_mode_edit(
+        frontendAppConfig,
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),

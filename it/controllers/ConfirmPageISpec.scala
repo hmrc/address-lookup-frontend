@@ -181,7 +181,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = testContinueUrl),
+          continueUrl = testContinueUrl,
+          feedbackUrl = "PLACEHOLDER",
+          contactFormServiceIdentifier = "PLACEHOLDER"),
         labels = Some(JourneyLabels(
           cy = Some(LanguageLabels())
         ))

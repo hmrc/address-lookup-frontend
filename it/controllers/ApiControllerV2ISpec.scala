@@ -96,7 +96,9 @@ class ApiControllerV2ISpec extends IntegrationSpecBase with FrontendServicesConf
           config = JourneyConfigV2(
             version = testApiVersion,
             options = JourneyOptions(
-              continueUrl = testContinueUrl
+              continueUrl = testContinueUrl,
+              feedbackUrl = "PLACEHOLDER",
+              contactFormServiceIdentifier = "PLACEHOLDER"
             )
           )
         )

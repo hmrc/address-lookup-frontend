@@ -1,5 +1,6 @@
 package controllers.api
 
+import config.FrontendAppConfig
 import controllers.AlfController
 import forms.ALFForms
 import javax.inject.{Inject, Singleton}
@@ -15,12 +16,11 @@ import utils.V2ModelConverter._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ApiController @Inject()(journeyRepository: JourneyRepository, idGenerationService: IdGenerationService)
+class ApiController @Inject()(journeyRepository: JourneyRepository, idGenerationService: IdGenerationService, config: FrontendAppConfig)
                              (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  val addressLookupEndpoint = baseUrl("address-lookup-frontend")
-
+  val addressLookupEndpoint = config.addressLookupEndpoint
   protected def uuid: String = idGenerationService.uuid
 
   private implicit val initFormat = Json.format[Init]

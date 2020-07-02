@@ -1,6 +1,5 @@
 package controllers.testonly
 
-import config.FrontendServicesConfig
 import controllers.api.ApiController
 import javax.inject.{Inject, Singleton}
 import model.JourneyData._
@@ -12,7 +11,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.mvc.Http.HeaderNames
 import services.JourneyRepository
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -3,8 +3,7 @@ package controllers
 
 import java.io.File
 
-import config.FrontendAppConfig.ALFCookieNames
-import config.{FrontendAuditConnector, FrontendServicesConfig}
+import config.{ALFCookieNames}
 import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
@@ -16,8 +15,9 @@ import spray.http.Uri
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.PostcodeHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ object countOfResults {
 }
 
 @Singleton
-class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService)
+class AddressLookupController @Inject()(journeyRepository: JourneyRepository, addressService: AddressService, countryService: CountryService, auditConnector: AuditConnector)
                                        (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
@@ -276,7 +276,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
         if (journeyData.selectedAddress.isDefined) {
           val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
 
-          FrontendAuditConnector.sendEvent(new DataEvent("address-lookup-frontend", EventTypes.Succeeded, tags = hc.toAuditTags("ConfirmAddress", req.uri), detail = Map(
+          auditConnector.sendEvent(new DataEvent("address-lookup-frontend", EventTypes.Succeeded, tags = hc.toAuditTags("ConfirmAddress", req.uri), detail = Map(
             "auditRef" -> id,
             "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
             "confirmedAddressId" -> jd.confirmedAddress.get.id.getOrElse("-")
@@ -309,7 +309,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository, ad
 
 abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
                                       (implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport with FrontendServicesConfig {
+  extends FrontendController with I18nSupport {
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))

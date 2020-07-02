@@ -13,12 +13,15 @@ object FrontendBuild extends Build with MicroService {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "frontend-bootstrap" % "12.8.0",
+    "uk.gov.hmrc" %% "bootstrap-play-25" % "5.3.0",
+    "uk.gov.hmrc" %% "play-ui" % "8.11.0-play-25",
+    "uk.gov.hmrc" %% "govuk-template" % "5.55.0-play-25",
+  //    "uk.gov.hmrc" %% "frontend-bootstrap" % "12.8.0",
     "uk.gov.hmrc" %% "address-reputation-store" % "2.37.0",
     "uk.gov.hmrc" %% "http-caching-client" % "7.0.0",
     "io.spray" %% "spray-http" % "1.3.4",
     "uk.gov.hmrc" %% "play-language" % "3.4.0"
-  )
+  ).map(_.withSources())
 
   def test(scope: String = "test") = Seq(
     "uk.gov.hmrc" %% "hmrctest" % "3.8.0-play-25" % scope,
@@ -29,7 +32,7 @@ object FrontendBuild extends Build with MicroService {
     "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope,
     "com.github.tomakehurst" % "wiremock" % "2.6.0" % "it",
     "org.mockito" % "mockito-all" % "2.0.2-beta" % scope
-  )
+  ).map(_.withSources())
 
   def itDependencies = test("it")
 

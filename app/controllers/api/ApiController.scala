@@ -11,7 +11,6 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
-import utils.V2ModelConverter._
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -28,6 +28,7 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, env: 
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
   val apiVersion2 = 2
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
+  val addressReputationEndpoint = baseUrl("address-reputation")
 
   val languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -35,6 +36,8 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, env: 
   )
 
   override def mode: Mode.Mode = env.mode
+
+  override def config(serviceName: String): Configuration = super.config(serviceName)
 
   def keyStoreUri: String = baseUrl("keystore")
 

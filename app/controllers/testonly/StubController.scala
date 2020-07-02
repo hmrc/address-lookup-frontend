@@ -42,8 +42,7 @@ object StubHelper {
 }
 
 @Singleton
-class StubController @Inject()(apiController: ApiController,journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport
-    with FrontendServicesConfig {
+class StubController @Inject()(apiController: ApiController,journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.getV2(id).map { j =>

@@ -1,9 +1,9 @@
 package services
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import com.google.inject.ImplementedBy
 import com.typesafe.config.{ConfigObject, ConfigValue}
-import config.{AddressLookupFrontendSessionCache, FrontendServicesConfig}
+import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import model._
 import play.api.libs.json.{JsValue, Reads, Writes}
 import uk.gov.hmrc.http.cache.client.HttpCaching
@@ -11,7 +11,6 @@ import uk.gov.hmrc.http.cache.client.HttpCaching
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.V2ModelConverter._
 
 @ImplementedBy(classOf[KeystoreJourneyRepository])
 trait JourneyRepository {
@@ -29,16 +28,14 @@ trait JourneyRepository {
 }
 
 @Singleton
-class KeystoreJourneyRepository extends JourneyRepository with FrontendServicesConfig {
+class KeystoreJourneyRepository @Inject()(cache: AddressLookupFrontendSessionCache, frontendAppConfig: FrontendAppConfig) extends JourneyRepository {
   val keyId = "journey-data"
 
-  private val cfg: Map[String, JourneyData] = config("address-lookup-frontend").getObject("journeys").map { journeys =>
+  private val cfg: Map[String, JourneyData] = frontendAppConfig.config("address-lookup-frontend").getObject("journeys").map { journeys =>
     journeys.keySet().asScala.map { key =>
       (key -> journey(key, journeys))
     }.toMap
   }.getOrElse(Map.empty)
-
-  val cache: HttpCaching = AddressLookupFrontendSessionCache
 
   override def init(journeyName: String): JourneyData = {
     try {

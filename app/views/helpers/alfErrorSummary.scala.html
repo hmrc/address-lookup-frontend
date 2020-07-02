@@ -11,10 +11,10 @@
     <h2 id="error-summary-heading" class="heading-medium error-summary-heading">@heading</h2>
     <ul class="error-summary-list">
     @if(form.hasErrors) {
-        @form.errors.zipWithIndex.map { case (error, index) =>
+        @form.errors.map { error =>
             @if(error.key != "") {
                 <li role="listitem">
-                    <a href="#@error.key" id="@error.key-error-summary" data-focuses="@error.key" tabindex="@{index + 2}">
+                    <a href="#@error.key" id="@error.key-error-summary" data-focuses="@error.key" tabindex="1">
                         @messages(error.message)
                     </a>
                 </li>
@@ -22,7 +22,7 @@
                 @if(error.args.nonEmpty) {
                     @if(errorArgs.contains(error.args.head)) {
                         <li role="listitem">
-                            <a href="#@error.args.head" id="@error.args.head-error-summary" data-focuses="@error.args.head" tabindex="@{index + 2}">
+                            <a href="#@error.args.head" id="@error.args.head-error-summary" data-focuses="@error.args.head" tabindex="1">
                                 @messages(error.message, error.args: _*)
                             </a>
                         </li>

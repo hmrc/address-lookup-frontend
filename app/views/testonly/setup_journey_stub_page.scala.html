@@ -1,8 +1,9 @@
-@(stubForm: Form[String])(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, stubForm: Form[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 
-@main_template(title = "Stub For starting new journey in ALF") {
+@main_template(appConfig, title = "Stub For starting new journey in ALF") {
 
 @helpers.form(controllers.testonly.routes.StubController.submitStubForNewJourney) {
 

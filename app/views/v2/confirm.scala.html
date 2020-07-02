@@ -5,11 +5,12 @@
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUkMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUkMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)}
 
-@main_template(title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@main_template(appConfig, title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
   @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
     <div>

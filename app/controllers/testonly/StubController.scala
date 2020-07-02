@@ -1,5 +1,6 @@
 package controllers.testonly
 
+import config.FrontendAppConfig
 import controllers.api.ApiController
 import javax.inject.{Inject, Singleton}
 import model.JourneyData._
@@ -35,14 +36,18 @@ object StubHelper {
     Json.toJson(JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
-        continueUrl = "This will be ignored"
+        continueUrl = "This will be ignored",
+        feedbackUrl = "PLACEHOLDER",
+        contactFormServiceIdentifier = "PLACEHOLDER"
       ),
       labels = Some(JourneyLabels()))
     )
 }
 
 @Singleton
-class StubController @Inject()(apiController: ApiController,journeyRepository: JourneyRepository)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class StubController @Inject()(apiController: ApiController,
+                               journeyRepository: JourneyRepository,
+                               frontendAppConfig: FrontendAppConfig)(implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.getV2(id).map { j =>
@@ -61,11 +66,11 @@ class StubController @Inject()(apiController: ApiController,journeyRepository: J
   }
 
   def showStubPageForJourneyInit = Action { implicit request =>
-    Ok(views.html.testonly.setup_journey_stub_page(resolvedFormWithJourneyConfig))
+    Ok(views.html.testonly.setup_journey_stub_page(frontendAppConfig, resolvedFormWithJourneyConfig))
   }
 
   def showStubPageForJourneyInitV2: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.testonly.setup_journey_v2_stub_page(TestSetupForm.form.fill(
+    Ok(views.html.testonly.setup_journey_v2_stub_page(frontendAppConfig, TestSetupForm.form.fill(
       Json.prettyPrint(
           StubHelper.defaultJourneyConfigV2JsonAsString
       ))))
@@ -73,7 +78,7 @@ class StubController @Inject()(apiController: ApiController,journeyRepository: J
   def submitStubForNewJourneyV2 = Action.async { implicit request =>
     TestSetupForm.form.bindFromRequest().fold(
       errors => {
-        Future.successful(BadRequest(views.html.testonly.setup_journey_v2_stub_page(errors)))},
+        Future.successful(BadRequest(views.html.testonly.setup_journey_v2_stub_page(frontendAppConfig, errors)))},
       valid => {
         val jConfigV2 = Json.parse(valid).as[JourneyConfigV2]
         val reqForInit: Request[JourneyConfigV2] = request.map(_ => jConfigV2)
@@ -93,7 +98,7 @@ class StubController @Inject()(apiController: ApiController,journeyRepository: J
 
   def submitStubForNewJourney = Action.async{ implicit request =>
     TestSetupForm.form.bindFromRequest().fold(
-      errors => Future.successful(BadRequest(views.html.testonly.setup_journey_stub_page(errors))),
+      errors => Future.successful(BadRequest(views.html.testonly.setup_journey_stub_page(frontendAppConfig, errors))),
       valid => {
         val jConfig = Json.parse(valid).as[JourneyConfig]
         val req = request.map(_ => jConfig)

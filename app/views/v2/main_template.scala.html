@@ -3,7 +3,8 @@
 @import uk.gov.hmrc.play.views.html.layouts
 @import views.html.v2.govuk_wrapper
 
-@(title: String,
+@(appConfig: FrontendAppConfig,
+  title: String,
   journeyData: Option[JourneyDataV2] = None,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
@@ -22,7 +23,7 @@
     }
 }
 
-@govuk_wrapper(appConfig = FrontendAppConfig,
+@govuk_wrapper(appConfig = appConfig,
                journeyData = journeyData,
                title = title,
                mainClass = mainClass,

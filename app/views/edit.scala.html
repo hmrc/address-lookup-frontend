@@ -3,7 +3,8 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInput, countryAutoComplete}
 
-@(id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyData, editForm: Form[Edit], countries: Seq[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @titleWithError = @{
     if(editForm.errors) {
@@ -13,7 +14,7 @@
     }
 }
 
-@main_template(title = titleWithError, journeyData = Some(journeyData)) {
+@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData)) {
 <div id="nonUkEdit"></div>
   @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>

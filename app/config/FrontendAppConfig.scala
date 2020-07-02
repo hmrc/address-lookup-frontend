@@ -18,7 +18,7 @@ trait AppConfig {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, env: Environment) extends AppConfig with ServicesConfig {
+class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, environment: Environment) extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
@@ -35,7 +35,7 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, env: 
     "cymraeg" -> Lang("cy")
   )
 
-  override def mode: Mode.Mode = env.mode
+  override def mode: Mode.Mode = environment.mode
 
   override def config(serviceName: String): Configuration = super.config(serviceName)
 

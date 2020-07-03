@@ -27,11 +27,11 @@ object AppDependencies {
     "org.jsoup" % "jsoup" % "1.8.1" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope,
-    "com.github.tomakehurst" % "wiremock" % "2.6.0" % "it",
     "org.mockito" % "mockito-all" % "2.0.2-beta" % scope
   ).map(_.withSources())
 
-  def itDependencies = test("it")
+  def itDependencies = test("it") ++
+  Seq("com.github.tomakehurst" % "wiremock" % "2.6.0" % "it")
 
 }
 

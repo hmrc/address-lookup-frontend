@@ -1,15 +1,12 @@
-import sbt._
-import play.sbt.PlayImport._
 import play.core.PlayVersion
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
+import play.sbt.PlayImport._
+import sbt.Tests.{Group, SubProcess}
+import sbt._
 
-object FrontendBuild extends Build with MicroService {
-
+object AppDependencies {
   val appName = "address-lookup-frontend"
 
-  override lazy val appDependencies: Seq[ModuleID] = compile ++ test() ++ itDependencies
+  lazy val appDependencies: Seq[ModuleID] = compile ++ test("test") ++ itDependencies
 
   val compile = Seq(
     ws,
@@ -36,4 +33,11 @@ object FrontendBuild extends Build with MicroService {
 
   def itDependencies = test("it")
 
+}
+
+private object TestPhases {
+  def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
+    tests map {
+      test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
+    }
 }

@@ -12,7 +12,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.{Application, Environment, Mode}
 import services.IdGenerationService
-import utils.V2ModelConverter._
+import utils.V2ModelConverter
 
 class ApiControllerISpec extends IntegrationSpecBase {
 
@@ -26,10 +26,14 @@ class ApiControllerISpec extends IntegrationSpecBase {
     .configure(fakeConfig())
     .build
 
+  val converter = app.injector.instanceOf[V2ModelConverter]
+
   lazy val addressLookupEndpoint = app.injector.instanceOf[ApiController].addressLookupEndpoint
 
   "/api/init" should {
     "convert a v1 model into v2 and store in keystore" in {
+      import converter.V2ModelConverter
+
       val v1Model = JourneyData(
         config = JourneyConfig(
           continueUrl = testContinueUrl

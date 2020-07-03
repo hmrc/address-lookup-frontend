@@ -12,26 +12,27 @@ val appName: String = AppDependencies.appName
 
 lazy val root = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
-  .settings(
-    scalaVersion := "2.11.12",
-    majorVersion := 3,
-    libraryDependencies ++= AppDependencies.appDependencies,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
-  )
+  .settings(majorVersion := 2)
+  .settings(scalaSettings: _*)
+  .settings(scalaVersion := "2.11.11")
   .settings(publishingSettings: _*)
-  .settings(PlayKeys.playDefaultPort := 9931)
-  .configs(Test)
+  .settings(defaultSettings(): _*)
   .settings(
-    scalaVersion := "2.11.12",
-    addTestReportOption(Test, "test-reports"))
+    libraryDependencies ++= AppDependencies.appDependencies,
+    retrieveManaged := true,
+    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+    routesGenerator := StaticRoutesGenerator
+  )
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
     scalaVersion := "2.11.12",
-    Keys.fork in IntegrationTest := false,
+    Keys.fork in IntegrationTest := true,
+    unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    parallelExecution in IntegrationTest := false,
-    testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value))
+    testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+    javaOptions in IntegrationTest += "-Dlogger.resource=logback-test.xml",
+    parallelExecution in IntegrationTest := false)
   .settings(resolvers += Resolver.jcenterRepo)
 

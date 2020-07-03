@@ -11,9 +11,8 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import itutil.config.IntegrationTestConstants._
-import config.FrontendServicesConfig
 
-class ApiControllerV2ISpec extends IntegrationSpecBase with FrontendServicesConfig {
+class ApiControllerV2ISpec extends IntegrationSpecBase {
 
   val testJourneyFromConfig = JourneyDataV2(
     config = JourneyConfigV2(
@@ -32,7 +31,9 @@ class ApiControllerV2ISpec extends IntegrationSpecBase with FrontendServicesConf
           showSubHeadingAndInfo = Some(false),
           showChangeLink = Some(true),
           showConfirmChangeText = Some(false)
-        ))
+        )),
+        feedbackUrl = "PLACEHOLDER",
+        contactFormServiceIdentifier = "PLACEHOLDER"
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(

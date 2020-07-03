@@ -37,13 +37,17 @@ class  StubControllerISpec extends IntegrationSpecBase {
       val basicJDataForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
           version = 2,
           options = JourneyOptions(
-            continueUrl = "testContinueUrl"
+            continueUrl = "testContinueUrl",
+            feedbackUrl = "PLACEHOLDER",
+            contactFormServiceIdentifier = "PLACEHOLDER"
           )
       )))
       val updatedContinueUrlForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = s"/lookup-address/test-only/end-of-journey/$testJourneyId"
+          continueUrl = s"/lookup-address/test-only/end-of-journey/$testJourneyId",
+          feedbackUrl = "PLACEHOLDER",
+          contactFormServiceIdentifier = "PLACEHOLDER"
         )
       )))
       val basicJourney =

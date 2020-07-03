@@ -1,5 +1,6 @@
 package views
 
+import config.FrontendAppConfig
 import forms.ALFForms._
 import model._
 import org.jsoup.Jsoup
@@ -62,6 +63,8 @@ class UKModeEditViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messages = app.injector.instanceOf[MessagesApi]
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
   val configWithoutLabels = fullV2JourneyConfig.copy(
     labels = Some(JourneyLabels(
       en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))
@@ -85,6 +88,7 @@ class UKModeEditViewSpec extends ViewSpec {
     "when provided with no page config" in {
 
       val testPage = views.html.v2.uk_mode_edit(
+        frontendAppConfig,
         id = testId,
         journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
         editForm = ukEditForm(false),
@@ -116,6 +120,7 @@ class UKModeEditViewSpec extends ViewSpec {
 
   "when provided with page config" in {
     val testPage = views.html.v2.uk_mode_edit(
+      frontendAppConfig,
       id = testId,
       journeyData = fullV2JourneyData,
       editForm = ukEditForm(false),
@@ -146,6 +151,7 @@ class UKModeEditViewSpec extends ViewSpec {
 
   "when provided with custom page config" in {
     val testPage = views.html.v2.uk_mode_edit(
+      frontendAppConfig,
       id = testId,
       journeyData = fullV2JourneyData.copy(config = configWithCustomLabels),
       editForm = ukEditForm(false),
@@ -176,6 +182,7 @@ class UKModeEditViewSpec extends ViewSpec {
 
   "when provided with default page config in Welsh" in {
     val testPage = views.html.v2.uk_mode_edit(
+      frontendAppConfig,
       id = testId,
       journeyData = fullV2JourneyData,
       editForm = ukEditForm(false),

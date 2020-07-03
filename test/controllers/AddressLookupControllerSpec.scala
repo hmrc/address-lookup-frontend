@@ -3,6 +3,7 @@ package controllers
 
 
 import com.gu.scalatest.JsoupShouldMatchers
+import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
@@ -24,8 +25,9 @@ import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.TestConstants.{Lookup => _, _}
-import utils.V2ModelConverter._
+import utils.V2ModelConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +56,12 @@ class AddressLookupControllerSpec
 
     val endpoint = "http://localhost:9000"
 
-    val journeyRepository = new KeystoreJourneyRepository {
+    val cache = app.injector.instanceOf[AddressLookupFrontendSessionCache]
+    val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+    val converter = app.injector.instanceOf[V2ModelConverter]
+    val auditConnector = app.injector.instanceOf[AuditConnector]
+
+    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
       override def init(journeyName: String): JourneyData = {
         journeyConfig
@@ -94,9 +101,9 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
@@ -104,7 +111,7 @@ class AddressLookupControllerSpec
       override def uuid = id.getOrElse(testJourneyId)
     }
 
-    val api = new ApiController(journeyRepository, MockIdGenerationService) {
+    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, converter) {
       override val addressLookupEndpoint = endpoint
     }
 
@@ -113,12 +120,15 @@ class AddressLookupControllerSpec
   "init journey with config" should {
 
     "create journey and return the 'on-ramp' URL" in new Scenario(id = Some("quix")) {
+      import converter.V2ModelConverter
+
       val v1Data = JourneyData(
         config = JourneyConfig(
           continueUrl = testContinueUrl,
           showPhaseBanner = Some(true)
         )
       )
+
       val v2Data = v1Data.toV2Model
 
       val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(v1Data.config)))
@@ -128,6 +138,8 @@ class AddressLookupControllerSpec
     }
 
     "handle a call to init without confirm change fields" in new Scenario(id = Some("quix")) {
+      import converter.V2ModelConverter
+
       //the optional confirm change fields were not in the original release
       val v1Data = JourneyData(
         JourneyConfig(
@@ -375,7 +387,10 @@ class AddressLookupControllerSpec
           version = 2,
           options = JourneyOptions(
             continueUrl = "testContinueUrl",
-            showPhaseBanner = Some(true)
+            showPhaseBanner = Some(true),
+            feedbackUrl = "PLACEHOLDER",
+            contactFormServiceIdentifier = "PLACEHOLDER"
+
           )
         )
       )
@@ -396,7 +411,9 @@ class AddressLookupControllerSpec
           options = JourneyOptions(
             continueUrl = "testContinueUrl",
             showPhaseBanner = Some(true),
-            alphaPhase = Some(false)
+            alphaPhase = Some(false),
+            feedbackUrl = "PLACEHOLDER",
+            contactFormServiceIdentifier = "PLACEHOLDER"
           ),
           labels = Some(JourneyLabels(
             en = Some(LanguageLabels(
@@ -442,7 +459,9 @@ class AddressLookupControllerSpec
   "select" should {
 
     "display the too many addresses page" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))),
+        feedbackUrl = "PLACEHOLDER",
+        contactFormServiceIdentifier = "PLACEHOLDER")))),
       proposals = Seq(ProposedAddress("1", "ZZ11 1ZZ"), ProposedAddress("2", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
@@ -569,7 +588,9 @@ class AddressLookupControllerSpec
       val WelshConstantsUkMode = WelshConstants(true)
       val WelshMessageConstants = WelshMessages(true)
 
-      val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
+      val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl",
+        feedbackUrl = "PLACEHOLDER",
+        contactFormServiceIdentifier = "PLACEHOLDER"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
       "the form had an error and welsh is enabled" when {
         "nothing was selected" in new Scenario(
           journeyDataV2 = Map("foo" -> basicWelshJourney)
@@ -614,7 +635,9 @@ class AddressLookupControllerSpec
     "display English content" when {
       "allow confirmChangeText to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
-          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true))),
+            feedbackUrl = "PLAECHOLDER",
+            contactFormServiceIdentifier = "PLAECHOLDER"), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
         ))
       ) {
@@ -624,7 +647,9 @@ class AddressLookupControllerSpec
       }
       "render address with blank string in lines correctly" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
-          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+          config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true))),
+            feedbackUrl = "PLAECHOLDER",
+            contactFormServiceIdentifier = "PLAECHOLDER"), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
         ))
       ) {
@@ -646,7 +671,9 @@ class AddressLookupControllerSpec
               continueUrl = "continue",
               confirmPageConfig = Some(ConfirmPageConfig(
                 showConfirmChangeText = Some(true)
-              ))
+              )),
+              feedbackUrl = "PLACEHOLDER",
+              contactFormServiceIdentifier = "PLACEHOLDER"
             ),
             labels = Some(JourneyLabels(
                cy = Some(LanguageLabels(
@@ -678,7 +705,9 @@ class AddressLookupControllerSpec
               continueUrl = "continue",
               confirmPageConfig = Some(ConfirmPageConfig(
                 showConfirmChangeText = Some(true)
-              ))
+              )),
+              feedbackUrl = "PLACEHOLDER",
+              contactFormServiceIdentifier = "PLACEHOLDER"
             ),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(

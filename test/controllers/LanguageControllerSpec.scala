@@ -1,6 +1,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import fixtures.ALFEFixtures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
@@ -17,7 +18,9 @@ class LanguageControllerSpec extends PlaySpec with OneAppPerSuite with ALFEFixtu
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  class TestLanguageController extends LanguageController
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
+  class TestLanguageController extends LanguageController(frontendAppConfig)
 
   "switchToLanguage" must {
 

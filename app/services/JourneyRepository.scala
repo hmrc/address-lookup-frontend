@@ -7,6 +7,7 @@ import javax.inject.{Inject, Singleton}
 import model._
 import play.api.libs.json.{JsValue, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.HttpCaching
 import utils.V2ModelConverter
 
 import scala.collection.JavaConverters._
@@ -28,7 +29,7 @@ trait JourneyRepository {
 }
 
 @Singleton
-class KeystoreJourneyRepository @Inject()(cache: AddressLookupFrontendSessionCache,
+class KeystoreJourneyRepository @Inject()(cache: HttpCaching,
                                           frontendAppConfig: FrontendAppConfig,
                                           converter: V2ModelConverter) extends JourneyRepository {
   val keyId = "journey-data"

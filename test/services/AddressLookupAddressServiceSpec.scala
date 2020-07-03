@@ -1,21 +1,17 @@
 package services
 
-import akka.actor.ActorSystem
-import com.typesafe.config.Config
+import config.FrontendAppConfig
 import model.ProposedAddress
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.Play
 import play.api.libs.json.Json
 import services.AddressReputationFormats._
 import uk.gov.hmrc.address.v2._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.collection.immutable.Seq
-import scala.concurrent.Future
 import scala.util.Random
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpResponse, Upstream5xxResponse}
-import uk.gov.hmrc.http.hooks.HttpHook
-import uk.gov.hmrc.play.http.ws.WSGet
 
 class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
 
@@ -24,26 +20,29 @@ class AddressLookupAddressServiceSpec extends PlaySpec with OneAppPerSuite with 
     implicit val hc = HeaderCarrier()
     val end = "http://localhost:42"
 
-    val get = new HttpGet with WSGet {
+//    val get = new HttpGet with WSGet {
+//
+//      override def doGet(url: String)(implicit hc: HeaderCarrier) = {
+//        if (!url.startsWith(s"$end/v2/uk/addresses?")) throw new IllegalArgumentException(s"Unexpected endpoint URL: $url")
+//        resp match {
+//          case Some(r) => Future.successful(r)
+//          case None => throw new Upstream5xxResponse("Service unavailable", 503, 503)
+//        }
+//      }
+//
+//      override val hooks: Seq[HttpHook] = Seq.empty
+//
+//      override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
+//
+//      override protected def actorSystem: ActorSystem = akka.actor.ActorSystem()
+//    }
 
-      override def doGet(url: String)(implicit hc: HeaderCarrier) = {
-        if (!url.startsWith(s"$end/v2/uk/addresses?")) throw new IllegalArgumentException(s"Unexpected endpoint URL: $url")
-        resp match {
-          case Some(r) => Future.successful(r)
-          case None => throw new Upstream5xxResponse("Service unavailable", 503, 503)
-        }
-      }
 
-      override val hooks: Seq[HttpHook] = Seq.empty
+    val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+    val httpClient = app.injector.instanceOf[HttpClient]
 
-      override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
-
-      override protected def actorSystem: ActorSystem = akka.actor.ActorSystem()
-    }
-
-    val service = new AddressLookupAddressService()(ec) {
+    val service = new AddressLookupAddressService(frontendAppConfig, httpClient)(ec) {
       override val endpoint = end
-      override val http = get
     }
   }
 

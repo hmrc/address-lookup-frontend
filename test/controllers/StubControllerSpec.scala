@@ -1,6 +1,7 @@
 package controllers
 
 import com.gu.scalatest.JsoupShouldMatchers
+import config.FrontendAppConfig
 import controllers.api.ApiController
 import controllers.testonly.{StubController, StubHelper}
 import fixtures.ALFEFixtures
@@ -47,11 +48,15 @@ class StubControllerSpec extends PlaySpec
       val journeyId: String = "11345fgh"
       val journeyConfigV2 = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(continueUrl = "testContinueUrl")
+        options = JourneyOptions(continueUrl = "testContinueUrl",
+          feedbackUrl = "PLACEHOLDER",
+          contactFormServiceIdentifier = "PLACEHOLDER")
       )
       val expectedJourneyConfigV2 = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(continueUrl = s"/end-of-journey/$journeyId")
+        options = JourneyOptions(continueUrl = s"/end-of-journey/$journeyId",
+          feedbackUrl = "PLACEHOLDER",
+          contactFormServiceIdentifier = "PLACEHOLDER")
       )
 
       val res = StubHelper.changeContinueUrlFromUserInputToStubV2(journeyConfigV2, journeyId)
@@ -77,9 +82,11 @@ class StubControllerSpec extends PlaySpec
   val mockJourneyRepository = mock[JourneyRepository]
   val mockAPIController     = mock[ApiController]
 
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
   class Setup {
     val controller = new StubController(
-      mockAPIController,mockJourneyRepository
+      mockAPIController,mockJourneyRepository, frontendAppConfig
     )(app.injector.instanceOf[ExecutionContext],app.injector.instanceOf[MessagesApi])
     reset(mockAPIController)
     reset(mockJourneyRepository)
@@ -119,7 +126,9 @@ class StubControllerSpec extends PlaySpec
       val jcv2 = JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = "/end-of-journey/bar"
+          continueUrl = "/end-of-journey/bar",
+          feedbackUrl = "PLACEHOLDER",
+          contactFormServiceIdentifier = "PLACEHOLDER"
         )
       )
       val matchedRequestContainingJourneyConfig = FakeRequest().map(_ => jcv2)

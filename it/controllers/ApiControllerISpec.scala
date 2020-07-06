@@ -1,5 +1,6 @@
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import controllers.api.ApiController
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
@@ -20,11 +21,15 @@ class ApiControllerISpec extends IntegrationSpecBase {
     override def uuid: String = testJourneyId
   }
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
-    .configure(fakeConfig())
-    .build
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+
+    new GuiceApplicationBuilder()
+      .in(Environment.simple(mode = Mode.Dev))
+      .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
+      .configure(fakeConfig())
+      .build
+  }
 
   val converter = app.injector.instanceOf[V2ModelConverter]
 

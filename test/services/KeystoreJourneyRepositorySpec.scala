@@ -23,7 +23,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue",
     feedbackUrl = Some("PLACEHOLDER"),
-    contactFormServiceIdentifier = Some("PLACEHOLDER"))))
+    contactFormServiceIdentifier = Some("AddressLookupFrontend"))))
   val someJourneyDataV2Json = Some(Json.toJson(journeyDataV2))
 
   val journeyDataWithTimeout = JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl"))))

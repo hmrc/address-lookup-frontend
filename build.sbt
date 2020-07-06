@@ -28,7 +28,7 @@ lazy val root = Project(appName, file("."))
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
     scalaVersion := "2.11.12",
-    Keys.fork in IntegrationTest := true,
+    Keys.fork in IntegrationTest := false,
     unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
     addTestReportOption(IntegrationTest, "int-test-reports"),
     testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),

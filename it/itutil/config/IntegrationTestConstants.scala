@@ -316,9 +316,9 @@ object IntegrationTestConstants {
     """.stripMargin)
   lazy val journeyDataV2Full: JourneyDataV2 = journeyDataV2FullJson.as[JourneyDataV2]
 
-  val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl, feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")))
+  val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl, feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))))
   val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
-  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl, feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER"))
+  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl, feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER")))
   val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = testContinueUrl))
 
   val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
@@ -434,8 +434,8 @@ object IntegrationTestConstants {
       version = 2,
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -457,8 +457,8 @@ object IntegrationTestConstants {
         continueUrl = "testContinueUrl",
         showBackButtons = Some(false),
         homeNavHref = Some("NAV_TITLE"),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -504,8 +504,8 @@ object IntegrationTestConstants {
           timeoutAmount = 120,
           timeoutUrl = "TIMEOUT_URL"
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -553,8 +553,8 @@ object IntegrationTestConstants {
           showChangeLink = Some(true),
           showConfirmChangeText = Some(true)
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -648,8 +648,8 @@ object IntegrationTestConstants {
           timeoutUrl = "TIMEOUT_URL"
         ))),
         ukMode = Some(allBooleanSetAndAppropriateOptions),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -705,7 +705,7 @@ object IntegrationTestConstants {
         journeyConfig
       ))
 
-  def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false), feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")),
+  def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false), feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))),
                                            selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress) =
     Json.toJson(
       JourneyDataV2(
@@ -721,17 +721,17 @@ object IntegrationTestConstants {
       )
     )
 
-  val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), ukMode = Some(true), feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")))
-  val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")))
-  val journeyDataV2ResultLimit: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")))
-  val journeyDataV2Minimal: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, feedbackUrl = "PLACEHOLDER", contactFormServiceIdentifier = "PLACEHOLDER")))
+  val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), ukMode = Some(true), feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))))
+  val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))))
+  val journeyDataV2ResultLimit: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))))
+  val journeyDataV2Minimal: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, feedbackUrl = Some("PLACEHOLDER"), contactFormServiceIdentifier = Some("PLACEHOLDER"))))
 
   def journeyDataV2EditLabels(ukModeBool: Option[Boolean]): JourneyDataV2 = JourneyDataV2(JourneyConfigV2(
     2,
     JourneyOptions(
       testContinueUrl, ukMode = ukModeBool,
-      feedbackUrl = "PLACEHOLDER",
-      contactFormServiceIdentifier = "PLACEHOLDER"
+      feedbackUrl = Some("PLACEHOLDER"),
+      contactFormServiceIdentifier = Some("PLACEHOLDER")
     ),
     Some(JourneyLabels(
       Some(LanguageLabels(
@@ -760,8 +760,8 @@ object IntegrationTestConstants {
         selectPageConfig = Some(SelectPageConfig(
           proposalListLimit = Some(50)
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       Some(JourneyLabels(
         Some(LanguageLabels(
@@ -787,8 +787,8 @@ object IntegrationTestConstants {
         selectPageConfig = Some(SelectPageConfig(
           proposalListLimit = Some(50)
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       Some(JourneyLabels(
         None,

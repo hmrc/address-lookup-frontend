@@ -21,8 +21,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
-  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(journeyOptions.feedbackUrl)
-  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(Some(journeyOptions.contactFormServiceIdentifier))(Some(_))
+  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.orElse(journeyOptions.feedbackUrl).get
+  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(journeyOptions.contactFormServiceIdentifier)(Some(_))
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)
   val alphaPhase: Boolean = journeyOptions.alphaPhase.getOrElse(false)
   val phase: String = if (showPhaseBanner) {

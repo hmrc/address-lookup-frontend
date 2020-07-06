@@ -57,8 +57,8 @@ class TooManyResultsViewSpec extends ViewSpec {
         continueUrl = testContinueUrl,
         showBackButtons = Some(showBackButtons),
         ukMode = ukMode,
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       )
     )
   )

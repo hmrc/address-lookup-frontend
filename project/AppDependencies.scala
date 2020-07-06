@@ -14,14 +14,13 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "8.11.0-play-25",
     "uk.gov.hmrc" %% "govuk-template" % "5.55.0-play-25",
   //    "uk.gov.hmrc" %% "frontend-bootstrap" % "12.8.0",
-    "uk.gov.hmrc" %% "address-reputation-store" % "2.37.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "7.0.0",
+    "uk.gov.hmrc" %% "address-reputation-store" % "2.40.0",
+    "uk.gov.hmrc" %% "http-caching-client" % "9.1.0-play-25",
     "io.spray" %% "spray-http" % "1.3.4",
     "uk.gov.hmrc" %% "play-language" % "3.4.0"
   ).map(_.withSources())
 
   def test(scope: String = "test") = Seq(
-    "uk.gov.hmrc" %% "hmrctest" % "3.8.0-play-25" % scope,
     "org.scalatest" %% "scalatest" % "3.0.8" % scope,
     "org.pegdown" % "pegdown" % "1.6.0" % scope,
     "org.jsoup" % "jsoup" % "1.8.1" % scope,

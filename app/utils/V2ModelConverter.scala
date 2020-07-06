@@ -41,8 +41,8 @@ class V2ModelConverter @Inject()(frontendAppConfig: FrontendAppConfig) {
       selectPageConfig = resolveSelectPageConfig(v1.selectPage),
       confirmPageConfig = resolveConfirmPageConfig(v1.confirmPage),
       timeoutConfig = resolveTimeoutConfig(v1.timeout),
-      feedbackUrl = frontendAppConfig.feedbackUrl,
-      contactFormServiceIdentifier = frontendAppConfig.contactFormServiceIdentifier
+      feedbackUrl = Some(frontendAppConfig.feedbackUrl),
+      contactFormServiceIdentifier = Some(frontendAppConfig.contactFormServiceIdentifier)
     )
   }
 

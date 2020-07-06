@@ -32,8 +32,8 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           showChangeLink = Some(true),
           showConfirmChangeText = Some(false)
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -98,8 +98,8 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
             version = testApiVersion,
             options = JourneyOptions(
               continueUrl = testContinueUrl,
-              feedbackUrl = "PLACEHOLDER",
-              contactFormServiceIdentifier = "PLACEHOLDER"
+              feedbackUrl = Some("PLACEHOLDER"),
+              contactFormServiceIdentifier = Some("PLACEHOLDER")
             )
           )
         )

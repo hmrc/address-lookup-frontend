@@ -38,8 +38,8 @@ case class JourneyOptions(continueUrl: String,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
                           timeoutConfig: Option[TimeoutConfig] = None,
-                          feedbackUrl: String,
-                          contactFormServiceIdentifier: String
+                          feedbackUrl: Option[String] = None,
+                          contactFormServiceIdentifier: Option[String] = None
                          ) {
   val isUkMode: Boolean = ukMode contains true
 

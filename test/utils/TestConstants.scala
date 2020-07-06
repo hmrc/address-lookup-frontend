@@ -180,7 +180,7 @@ object TestConstants {
   val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
     testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons,
     testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig,
-    fullV2TimeoutConfig, "PLACEHOLDER", "PLACEHOLDER")
+    fullV2TimeoutConfig, Some("PLACEHOLDER"), Some("PLACEHOLDER"))
 
   val fullV2LanguageLabelsEn = LanguageLabels(
     appLevelLabels = fullV2AppLabels,
@@ -230,7 +230,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, "PLACEHOLDER", "PLACEHOLDER")
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, Some("PLACEHOLDER"), Some("PLACEHOLDER"))
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -277,7 +277,7 @@ object TestConstants {
       testAllowedCountryCodes,
       testSelectPage,
       testConfirmPageConfig,
-      testTimeoutConfig, "PLACEHOLDER", "PLACEHOLDER"
+      testTimeoutConfig, Some("PLACEHOLDER"), Some("PLACEHOLDER")
     )
 
     JourneyDataV2(
@@ -324,8 +324,8 @@ object TestConstants {
           timeoutAmount = 120,
           timeoutUrl = "testTimeoutUrl"
         )),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -563,8 +563,8 @@ object TestConstants {
       version = 2,
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       )
     )
   )
@@ -575,8 +575,8 @@ object TestConstants {
       options = JourneyOptions(
         continueUrl = "testContinueUrl",
         ukMode = Some(true),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       )
     )
   )
@@ -585,8 +585,8 @@ object TestConstants {
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl",
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"),
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels()),
         cy = Some(LanguageLabels())
@@ -598,8 +598,8 @@ object TestConstants {
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl", ukMode = Some(true),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"),
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels()),
         cy = Some(LanguageLabels())
@@ -675,8 +675,8 @@ object TestConstants {
         version = 2,
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -699,8 +699,8 @@ object TestConstants {
           continueUrl = "testContinueUrl",
           showBackButtons = Some(true),
           selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
           title = Some("testTitle"),
@@ -722,8 +722,8 @@ object TestConstants {
           continueUrl = "testContinueUrl",
           showBackButtons = Some(true),
           selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
           title = Some("testTitle"),
@@ -745,8 +745,8 @@ object TestConstants {
           continueUrl = "testContinueUrl",
           showBackButtons = Some(true),
           selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -782,8 +782,8 @@ object TestConstants {
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
           showBackButtons = Some(false),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         )
       )
     )
@@ -794,8 +794,8 @@ object TestConstants {
         version = 2,
         options = JourneyOptions(
           continueUrl = "testContinueUrl",
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         )
       )
     )
@@ -808,8 +808,8 @@ object TestConstants {
           continueUrl = "testContinueUrl",
           showBackButtons = Some(true),
           selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         )
       )
     )
@@ -837,8 +837,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -879,8 +879,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -927,8 +927,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -974,8 +974,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
@@ -1022,8 +1022,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = None,
@@ -1071,8 +1071,8 @@ object TestConstants {
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl"
           )),
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         ),
         labels = Some(JourneyLabels(
           en = None,
@@ -1092,8 +1092,8 @@ object TestConstants {
       options = JourneyOptions(
         continueUrl = "",
         showBackButtons = Some(false),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")
       )
     )
   )

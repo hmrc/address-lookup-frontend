@@ -388,8 +388,8 @@ class AddressLookupControllerSpec
           options = JourneyOptions(
             continueUrl = "testContinueUrl",
             showPhaseBanner = Some(true),
-            feedbackUrl = "PLACEHOLDER",
-            contactFormServiceIdentifier = "PLACEHOLDER"
+            feedbackUrl = Some("PLACEHOLDER"),
+            contactFormServiceIdentifier = Some("PLACEHOLDER")
 
           )
         )
@@ -412,8 +412,8 @@ class AddressLookupControllerSpec
             continueUrl = "testContinueUrl",
             showPhaseBanner = Some(true),
             alphaPhase = Some(false),
-            feedbackUrl = "PLACEHOLDER",
-            contactFormServiceIdentifier = "PLACEHOLDER"
+            feedbackUrl = Some("PLACEHOLDER"),
+            contactFormServiceIdentifier = Some("PLACEHOLDER")
           ),
           labels = Some(JourneyLabels(
             en = Some(LanguageLabels(
@@ -460,8 +460,8 @@ class AddressLookupControllerSpec
 
     "display the too many addresses page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))),
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER")))),
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER"))))),
       proposals = Seq(ProposedAddress("1", "ZZ11 1ZZ"), ProposedAddress("2", "ZZ11 1ZZ"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
@@ -589,8 +589,8 @@ class AddressLookupControllerSpec
       val WelshMessageConstants = WelshMessages(true)
 
       val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl",
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
+        feedbackUrl = Some("PLACEHOLDER"),
+        contactFormServiceIdentifier = Some("PLACEHOLDER")), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
       "the form had an error and welsh is enabled" when {
         "nothing was selected" in new Scenario(
           journeyDataV2 = Map("foo" -> basicWelshJourney)
@@ -636,8 +636,8 @@ class AddressLookupControllerSpec
       "allow confirmChangeText to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true))),
-            feedbackUrl = "PLAECHOLDER",
-            contactFormServiceIdentifier = "PLAECHOLDER"), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+            feedbackUrl = Some("PLACEHOLDER"),
+            contactFormServiceIdentifier = Some("PLACEHOLDER")), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "line2")), Some("ZZ11 1ZZ"))))
         ))
       ) {
@@ -648,8 +648,8 @@ class AddressLookupControllerSpec
       "render address with blank string in lines correctly" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true))),
-            feedbackUrl = "PLAECHOLDER",
-            contactFormServiceIdentifier = "PLAECHOLDER"), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
+            feedbackUrl = Some("PLACEHOLDER"),
+            contactFormServiceIdentifier = Some("PLACEHOLDER")), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = Some(List("line1", "", "line3")), Some("ZZ11 1ZZ"))))
         ))
       ) {
@@ -672,8 +672,8 @@ class AddressLookupControllerSpec
               confirmPageConfig = Some(ConfirmPageConfig(
                 showConfirmChangeText = Some(true)
               )),
-              feedbackUrl = "PLACEHOLDER",
-              contactFormServiceIdentifier = "PLACEHOLDER"
+              feedbackUrl = Some("PLACEHOLDER"),
+              contactFormServiceIdentifier = Some("PLACEHOLDER")
             ),
             labels = Some(JourneyLabels(
                cy = Some(LanguageLabels(
@@ -706,8 +706,8 @@ class AddressLookupControllerSpec
               confirmPageConfig = Some(ConfirmPageConfig(
                 showConfirmChangeText = Some(true)
               )),
-              feedbackUrl = "PLACEHOLDER",
-              contactFormServiceIdentifier = "PLACEHOLDER"
+              feedbackUrl = Some("PLACEHOLDER"),
+              contactFormServiceIdentifier = Some("PLACEHOLDER")
             ),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(

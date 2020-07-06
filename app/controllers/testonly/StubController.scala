@@ -36,9 +36,7 @@ object StubHelper {
     Json.toJson(JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
-        continueUrl = "This will be ignored",
-        feedbackUrl = "PLACEHOLDER",
-        contactFormServiceIdentifier = "PLACEHOLDER"
+        continueUrl = "This will be ignored"
       ),
       labels = Some(JourneyLabels()))
     )

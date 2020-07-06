@@ -173,8 +173,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
               options = JourneyOptions(
                 continueUrl = testContinueUrl,
                 showBackButtons = Some(false),
-                feedbackUrl = "PLACEHOLDER",
-                contactFormServiceIdentifier = "PLACEHOLDER"
+                feedbackUrl = Some("PLACEHOLDER"),
+                contactFormServiceIdentifier = Some("PLACEHOLDER")
               ),
               labels = Some(JourneyLabels(
                 en = Some(LanguageLabels()),

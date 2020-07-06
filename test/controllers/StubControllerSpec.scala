@@ -10,7 +10,7 @@ import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
 import play.api.i18n.MessagesApi
@@ -49,14 +49,14 @@ class StubControllerSpec extends PlaySpec
       val journeyConfigV2 = JourneyConfigV2(
         version = 2,
         options = JourneyOptions(continueUrl = "testContinueUrl",
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER")
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER"))
       )
       val expectedJourneyConfigV2 = JourneyConfigV2(
         version = 2,
         options = JourneyOptions(continueUrl = s"/end-of-journey/$journeyId",
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER")
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER"))
       )
 
       val res = StubHelper.changeContinueUrlFromUserInputToStubV2(journeyConfigV2, journeyId)
@@ -75,19 +75,19 @@ class StubControllerSpec extends PlaySpec
                 },
            "labels" : {}
       }""".stripMargin)
-     res.as[JourneyConfigV2]
+      res.as[JourneyConfigV2]
     }
   }
 
   val mockJourneyRepository = mock[JourneyRepository]
-  val mockAPIController     = mock[ApiController]
+  val mockAPIController = mock[ApiController]
 
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   class Setup {
     val controller = new StubController(
-      mockAPIController,mockJourneyRepository, frontendAppConfig
-    )(app.injector.instanceOf[ExecutionContext],app.injector.instanceOf[MessagesApi])
+      mockAPIController, mockJourneyRepository, frontendAppConfig
+    )(app.injector.instanceOf[ExecutionContext], app.injector.instanceOf[MessagesApi])
     reset(mockAPIController)
     reset(mockJourneyRepository)
   }
@@ -109,12 +109,12 @@ class StubControllerSpec extends PlaySpec
         }""".stripMargin)
 
       doc.getElementsByTag("form").first().attr("action") mustBe "/v2/test-setup"
-      }
     }
+  }
 
-    "submitStubForNewJourneyV2" should {
-      val basicJourney =
-        """{
+  "submitStubForNewJourneyV2" should {
+    val basicJourney =
+      """{
         |  "version": 2,
         |     "options":{
         |         "continueUrl":"testContinueUrl"
@@ -127,8 +127,8 @@ class StubControllerSpec extends PlaySpec
         version = 2,
         options = JourneyOptions(
           continueUrl = "/end-of-journey/bar",
-          feedbackUrl = "PLACEHOLDER",
-          contactFormServiceIdentifier = "PLACEHOLDER"
+          feedbackUrl = Some("PLACEHOLDER"),
+          contactFormServiceIdentifier = Some("PLACEHOLDER")
         )
       )
       val matchedRequestContainingJourneyConfig = FakeRequest().map(_ => jcv2)
@@ -136,7 +136,7 @@ class StubControllerSpec extends PlaySpec
       when(mockAPIController.initWithConfigV2).thenReturn(Action.async(BodyParsers.parse.json[JourneyConfigV2])(
         _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/lookup"))))
 
-      when(mockJourneyRepository.putV2(Matchers.eq("bar"),Matchers.any())(Matchers.any(),Matchers.any()))
+      when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(true))
 
       val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest().withFormUrlEncodedBody(
@@ -145,11 +145,11 @@ class StubControllerSpec extends PlaySpec
 
       redirectLocation(res).get mustBe "/lookup-address/bar/lookup"
     }
-      "return 400 if journeyConfig is not provided" in new Setup {
-        val res = controller.submitStubForNewJourneyV2()(FakeRequest())
+    "return 400 if journeyConfig is not provided" in new Setup {
+      val res = controller.submitStubForNewJourneyV2()(FakeRequest())
 
-        status(res) mustBe BAD_REQUEST
-        Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text() mustBe titleForV2StubPage
-      }
+      status(res) mustBe BAD_REQUEST
+      Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text() mustBe titleForV2StubPage
+    }
   }
 }

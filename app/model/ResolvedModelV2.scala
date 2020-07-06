@@ -21,6 +21,7 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
+  // This should never resolve to None here
   val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.orElse(journeyOptions.feedbackUrl).get
   val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(journeyOptions.contactFormServiceIdentifier)(Some(_))
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)

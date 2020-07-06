@@ -2,6 +2,7 @@
 package controllers
 
 
+import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
 import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
@@ -9,10 +10,11 @@ import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.http.HeaderNames
@@ -26,7 +28,7 @@ import services.{AddressService, CountryService, IdGenerationService, KeystoreJo
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.TestConstants.{Lookup => _, _}
+import utils.TestConstants.{Lookup ⇒ _, _}
 import utils.V2ModelConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,9 +36,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupControllerSpec
     extends PlaySpec
-      with OneAppPerSuite
+      with GuiceOneAppPerSuite
       with JsoupShouldMatchers
       with ScalaFutures with ALFEFixtures {
+
+  SharedMetricRegistries.clear()
 
   implicit lazy val materializer = app.materializer
 

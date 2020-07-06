@@ -423,7 +423,9 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             disableTranslations = Some(false),
             selectPageConfig = fullV2SelectPageConfig,
             confirmPageConfig = fullV2ConfirmPageConfig,
-            timeoutConfig = fullV2TimeoutConfig
+            timeoutConfig = fullV2TimeoutConfig,
+            feedbackUrl = Some("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"),
+            contactFormServiceIdentifier = Some("AddressLookupFrontend")
           ),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(appLevelLabels = None))

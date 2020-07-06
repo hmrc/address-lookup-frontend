@@ -1,8 +1,10 @@
 
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import config.FrontendAppConfig
 import fixtures.ALFEFixtures
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.i18n.MessagesApi
@@ -14,7 +16,8 @@ import uk.gov.hmrc.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LanguageControllerSpec extends PlaySpec with OneAppPerSuite with ALFEFixtures {
+class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFEFixtures {
+  SharedMetricRegistries.clear()
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 

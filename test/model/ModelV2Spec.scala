@@ -12,7 +12,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.fromJson[JourneyDataV2](journeyDataV2FullJson) mustBe JsSuccess(journeyDataV2Full)
     }
     "read successfully from minimal json" in {
-      Json.fromJson[JourneyDataV2](journeyDataV2MinimalJson) mustBe JsSuccess(journeyDataV2Minimal)
+      Json.fromJson[JourneyDataV2](journeyDataV2MinimalJson) mustBe JsSuccess(journeyDataV2MinimalExpected)
     }
     "fail to read when the journey config is missing from the json" in {
       Json.fromJson[JourneyDataV2](emptyJson) mustBe JsError(JsPath \ "config", ValidationError("error.path.missing"))
@@ -22,7 +22,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.toJson(journeyDataV2Full) mustBe journeyDataV2FullJson
     }
     "write to json from minimal model" in {
-      Json.toJson(journeyDataV2Minimal) mustBe journeyDataV2MinimalJson
+      Json.toJson(journeyDataV2MinimalExpected) mustBe journeyDataV2MinimalJson
     }
   }
 
@@ -239,7 +239,9 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
-      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+      // TODO: Add tests to check that we do get back what we configure as a real url
+//      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "feedbackUrl"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
       resolvedJourneyConfig.options.showPhaseBanner mustBe false
       resolvedJourneyConfig.options.alphaPhase mustBe false
@@ -260,7 +262,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("feedbackUrl")
 
       resolvedJourneyConfig.labels.selectPageLabels.title mustBe EnglishConstantsNonUkMode.SELECT_PAGE_TITLE
       resolvedJourneyConfig.labels.selectPageLabels.heading mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING
@@ -309,7 +311,9 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
-      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+      // TODO: Add tests to check that we do get back what we configure as a real url
+//      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "feedbackUrl"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
       resolvedJourneyConfig.options.showPhaseBanner mustBe false
       resolvedJourneyConfig.options.alphaPhase mustBe false
@@ -330,7 +334,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("feedbackUrl")
 
       resolvedJourneyConfig.labels.selectPageLabels.title mustBe WelshConstantsNonUkMode.SELECT_PAGE_TITLE
       resolvedJourneyConfig.labels.selectPageLabels.heading mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING

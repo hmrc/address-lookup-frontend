@@ -1,5 +1,6 @@
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
 import config.FrontendAppConfig
 import controllers.api.ApiController
@@ -11,6 +12,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
 import play.api.i18n.MessagesApi
@@ -25,9 +27,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class StubControllerSpec extends PlaySpec
-  with OneAppPerSuite
+  with GuiceOneAppPerSuite
   with JsoupShouldMatchers
   with ScalaFutures with ALFEFixtures with MockitoSugar {
+
+  SharedMetricRegistries.clear()
 
   implicit val hc = HeaderCarrier()
   implicit lazy val materializer = app.materializer

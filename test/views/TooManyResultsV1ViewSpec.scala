@@ -56,7 +56,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
-            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(true)).url
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
 
@@ -79,7 +79,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
-            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(false)).url
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
 
@@ -102,7 +102,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
-            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode), Some(true)).url
+            doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
       }

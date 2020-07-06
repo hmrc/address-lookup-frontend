@@ -16,7 +16,7 @@ case class Timeout(timeoutAmount: Int, timeoutUrl: String)
 
 case class Select(addressId: String)
 
-case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: Option[String]) {
+case class Edit(line1: String, line2: Option[String], line3: Option[String], town: String, postcode: String, countryCode: String = "GB") {
 
     def toConfirmableAddress(auditRef: String): ConfirmableAddress = ConfirmableAddress(
     auditRef,
@@ -24,7 +24,7 @@ case class Edit(line1: String, line2: Option[String], line3: Option[String], tow
     ConfirmableAddressDetails(
       Some(List(line1) ++ line2.map(_.toString).toList ++ line3.map(_.toString).toList ++ List(town)),
       if(postcode.isEmpty) None else Some(postcode),
-      countryCode.fold(ForeignOfficeCountryService.find(code = "GB"))(code => ForeignOfficeCountryService.find(code = code))
+      ForeignOfficeCountryService.find(code = countryCode)
     )
   )
 }
@@ -237,7 +237,7 @@ case class ConfirmableAddressDetails(lines: Option[List[String]] = None,
 
   def toEdit: Edit = {
     val el = editLines
-    Edit(el._1, el._2, el._3, el._4, PostcodeHelper.displayPostcode(postcode), country.map(_.code))
+    Edit(el._1, el._2, el._3, el._4, PostcodeHelper.displayPostcode(postcode), country.map(_.code).get)
   }
 
   def editLines: (String, Option[String], Option[String], String) = {

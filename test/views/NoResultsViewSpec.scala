@@ -41,7 +41,7 @@ class NoResultsViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe EnglishContent.heading(testPostCode)
         doc.getButtonContentAsText shouldBe EnglishContent.tryAgainButton
         doc.getALinkText("enterManual") shouldBe EnglishContent.enterManualLink
-        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None).url
       }
     }
 
@@ -55,7 +55,7 @@ class NoResultsViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe EnglishContent.heading(testPostCode)
         doc.getButtonContentAsText shouldBe EnglishContent.tryAgainButton
         doc.getALinkText("enterManual") shouldBe EnglishContent.enterManualLink
-        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None).url
       }
     }
 
@@ -69,7 +69,7 @@ class NoResultsViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe EnglishContent.heading(testPostCode)
         doc.getButtonContentAsText shouldBe EnglishContent.tryAgainButton
         doc.getALinkText("enterManual") shouldBe EnglishContent.enterManualLink
-        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None).url
       }
     }
 
@@ -83,7 +83,7 @@ class NoResultsViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe WelshContent.heading(testPostCode)
         doc.getButtonContentAsText shouldBe WelshContent.tryAgainButton
         doc.getALinkText("enterManual") shouldBe WelshContent.enterManualLink
-        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(false)).url
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None).url
       }
 
       "Render the view and display the Back button with UK Mode = true" in {
@@ -95,7 +95,7 @@ class NoResultsViewSpec extends ViewSpec {
         doc.getH1ElementAsText shouldBe WelshContent.heading(testPostCode)
         doc.getButtonContentAsText shouldBe WelshContent.tryAgainButton
         doc.getALinkText("enterManual") shouldBe WelshContent.enterManualLink
-        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None, Some(true)).url
+        doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, None).url
       }
     }
   }

@@ -26,7 +26,7 @@
   )
 
   <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
-  @helpers.form(routes.AddressLookupController.handleEdit(id, false)) {
+  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
@@ -70,7 +70,7 @@
 
         @if(countries.size > 1) {
             <div class="form-field">
-                @countryAutoComplete(countries, editForm("countryCode").value, journeyData.resolvedConfig.editPage.countryLabel)
+                @countryAutoComplete(countries, editForm("countryCode"), journeyData.resolvedConfig.editPage.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

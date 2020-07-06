@@ -1,18 +1,47 @@
-@(countries: Seq[(String, String)], prePop: Option[String], label: String)(implicit messages: Messages)
-@import play.api.libs.json.{JsArray, Json}
+@import views.html.helper.FieldElements
+@(countries: Seq[(String, String)], field: play.api.data.Field, label: String, args: (Symbol,Any)*)(implicit messages: Messages)
+@elements = @{ FieldElements(field.id, field, null, args.toMap, messages) }
 
-<label class="form-label" for="countryCode">@label</label>
+<label for="countryCode" class="@if(elements.hasErrors) {form-group-error} else {form-label}"><span>@label</span>
+
+@if(elements.hasErrors) {
+    @elements.errors.map { error =>
+        <span class="error-notification"
+            @if(elements.args.contains('_error_id)) {
+                id="@elements.args.get('_error_id)"
+            }
+        role="tooltip"
+        data-journey="search-page:error:@elements.field.name">
+            @Messages(error)
+        </span>
+    }
+}
+
 <select class="form-control form-control--select input--medium" id="countryCode" name="countryCode">
     <option id="countryCode-placeholder" value="">Select a country</option>
     @HtmlFormat.fill(countries.to[collection.immutable.Seq].map{s => {
-        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == prePop.getOrElse("")) "selected" else "" }>${s._2}</option>""")
+        Html(s"""<option id="countryCode-${s._1}" value="${s._1}"${if(s._1 == field.value.getOrElse("")) "selected" else "" }>${s._2}</option>""")
     }})
 </select>
+
+</label>
+
 
 <script type="text/javascript">
     accessibleAutocomplete.enhanceSelectElement({
       selectElement: document.getElementById("countryCode"),
       name: 'countryCodeAutocomplete',
-      defaultValue: ''
+      defaultValue: '',
+      @*
+        TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
+        https://github.com/alphagov/accessible-autocomplete/issues/260
+        When this is fixed the custom validation / onConfirm bypass can be removed
+      *@
+      onConfirm: () => {
+         const countryCode = $("#countryCode-select > option").filter(function() {
+             return this.text == $("#countryCode").val()
+         }).val();
+         $("#countryCode-select").val(countryCode);
+      }
     })
 </script>

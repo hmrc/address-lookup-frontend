@@ -20,43 +20,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
   "The edit page" should {
     "when provided with no page config for english and welsh" should {
-      "return UK edit page if uk param is true AND UK mode is false" in {
+      "return Non UK edit page if UK mode is false" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("en")),
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        val document = Jsoup.parse(res.body)
-        testElementExists(res, EditPage.ukEditId)
-        document.title shouldBe "Enter address"
-        document.h1.text shouldBe "Enter address"
-        document.submitButton.text shouldBe "Continue"
-        testElementDoesntExist(res,"countryCode")
-
-        document.input("line1") should have (value("1 High Street"))
-        document.input("line2") should have (value("Line 2"))
-        document.input("line3") should have (value("Line 3"))
-        document.input("town") should have (value("Telford"))
-        document.input("postcode") should have (value("AB11 1AB"))
-
-        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Address line 1",
-          "line2" -> "Address line 2 (optional)",
-          "line3" -> "Address line 3 (optional)",
-          "town" -> "Town/city",
-          "postcode" -> "Postcode (optional)"
-        ))
-      }
-
-      "return Non UK edit page if no uk parameter provided AND UK mode is false" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
-
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
@@ -95,7 +62,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
         stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck"
@@ -126,12 +93,12 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return non uk edit and not error with showSearchAgainLink and searchAgainLinkText in the json should not error when uk param not provided" in {
+      "return non uk edit and not error with showSearchAgainLink and searchAgainLinkText in the json should not error" in {
         val config = (Json.toJson(journeyDataV2Minimal).as[JsObject] - "editPage") ++
           Json.obj("editPage" -> Json.obj("showSearchAgainLink" -> true, "searchAgainLinkText" -> "foo"))
         stubKeystore(testJourneyId, Json.toJson(config).as[JsObject], OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
@@ -141,20 +108,7 @@ class EditPageISpec extends IntegrationSpecBase {
         testElementExists(res, EditPage.nonUkEditId)
       }
 
-      "return the UK edit page with no pre-popped postcode if param not provided AND UK mode is false but uk param provided" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        testElementExists(res, EditPage.ukEditId)
-        testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode))
-      }
-
-      "redirect to the UK edit page if uk param provided and UK mode is true" in {
+      "redirect to the UK edit page if uk UK mode is true" in {
         val testConfigWithAddressAndUkMode = journeyDataV2Minimal.copy(
           selectedAddress = Some(
             ConfirmableAddress("foo", Some("bar"), ConfirmableAddressDetails(Some(List("wizz", "bang")), Some("fooP"), Some(Country("GB", "United Kingdom"))))
@@ -162,7 +116,7 @@ class EditPageISpec extends IntegrationSpecBase {
         )
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
@@ -180,7 +134,7 @@ class EditPageISpec extends IntegrationSpecBase {
         )
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -189,10 +143,10 @@ class EditPageISpec extends IntegrationSpecBase {
         testElementExists(res, EditPage.ukEditId)
       }
 
-      "redirect to the International edit page if Uk mode is false and uk param not provided but selected address in keystore" in {
+      "redirect to the International edit page if Uk mode is false but selected address in keystore" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -203,7 +157,7 @@ class EditPageISpec extends IntegrationSpecBase {
     }
 
     "provided with only custom content that has welsh block" should {
-      "return UK edit page if uk param is true and should display all default values from the welsh constants with the 'PLAY_LANG' set to cy" in {
+      "return non UK edit page if uk mode is false and should display all default values from the welsh constants with the 'PLAY_LANG' set to cy" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
           Some(jc.labels.get.copy(cy =
@@ -213,48 +167,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
         stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        val document = Jsoup.parse(res.body)
-        testElementExists(res, EditPage.ukEditId)
-        document.title() shouldBe "Nodwch cyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch cyfeiriad"
-        document.getElementById("continue").text() shouldBe "Yn eich blaen"
-        Option(document.getElementById("countryCode")).isDefined shouldBe false
-
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
-
-        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
-          "town" -> "Tref/dinas",
-          "postcode" -> "Cod post (dewisol)"
-        ))
-        testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
-      }
-
-      "return non UK edit page if uk param is true and should display all default values from the welsh constants with the 'PLAY_LANG' set to cy" in {
-        val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
-        val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
-          Some(jc.labels.get.copy(cy =
-            Some(LanguageLabels(
-            ))
-          ))))
-
-        stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
-
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
@@ -287,42 +200,11 @@ class EditPageISpec extends IntegrationSpecBase {
     }
 
     "provided with custom content" should {
-      "return UK edit page if uk param is true AND UK mode is false WITH NO 'PLAY_LANG' set" in {
+
+      "return UK edit page if UK mode is false" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-          .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        val document = Jsoup.parse(res.body)
-        testElementExists(res, EditPage.ukEditId)
-        document.title() shouldBe "edit-title"
-        document.getElementById("pageHeading").text() shouldBe "edit-heading"
-        document.getElementById("continue").text() shouldBe "edit-submitLabel"
-        Option(document.getElementById("countryCode")).isDefined shouldBe false
-
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
-
-        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode"
-        ))
-      }
-
-      "return UK edit page if no uk parameter provided AND UK mode is false" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
-
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -350,60 +232,10 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return UK edit page if uk parameter provided AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
-        val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
-        val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
-          Some(jc.labels.get.copy(cy =
-            Some(LanguageLabels(
-              editPageLabels = Some(EditPageLabels(
-                title = Some("edit-title welsh"),
-                heading = Some("edit-heading welsh"),
-                line1Label = Some("Custom Line1 welsh"),
-                line2Label = Some("Custom Line2 welsh"),
-                line3Label = Some("Custom Line3 welsh"),
-                townLabel = Some("Custom Town welsh"),
-                postcodeLabel = Some("Custom Postcode welsh"),
-                countryLabel = Some("Custom Country welsh"),
-                submitLabel = Some("edit-submitLabel welsh")
-              ))
-            ))
-          ))))
-
-        stubKeystore(testJourneyId, configWithWelsh, OK)
-
-        val fResponse = buildClientLookupAddress(path = "edit?uk=true")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        val document = Jsoup.parse(res.body)
-        testElementExists(res, EditPage.ukEditId)
-        document.title() shouldBe "edit-title welsh"
-        document.getElementById("pageHeading").text() shouldBe "edit-heading welsh"
-        document.getElementById("continue").text() shouldBe "edit-submitLabel welsh"
-
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
-
-        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Custom Line1 welsh",
-          "line2" -> "Custom Line2 welsh",
-          "line3" -> "Custom Line3 welsh",
-          "town" -> "Custom Town welsh",
-          "postcode" -> "Custom Postcode welsh"
-        ))
-      }
-
-      "return non UK edit page if uk param is true AND UK mode is false WITH NO 'PLAY_LANG' set" in {
+      "return non UK edit page if UK mode is false WITH NO 'PLAY_LANG' set" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -432,7 +264,7 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return non UK edit page if uk parameter provided AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
+      "return non UK edit page if UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
           Some(jc.labels.get.copy(cy =
@@ -453,7 +285,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
@@ -482,10 +314,10 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return non - UK edit page if uk param is false AND UK mode is false WITH NO 'PLAY_LANG' set" in {
+      "return non - UK edit page if UK mode is false WITH NO 'PLAY_LANG' set" in {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -514,7 +346,7 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return non - UK edit page if uk parameter is false AND UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
+      "return non - UK edit page if UK mode is false WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
           Some(jc.labels.get.copy(cy =
@@ -535,7 +367,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
-        val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+        val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
@@ -571,7 +403,7 @@ class EditPageISpec extends IntegrationSpecBase {
     "return 400 if all fields are missing and return nonUkEdit page with english text" in {
       stubKeystore(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))).as[JsObject], OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
@@ -583,7 +415,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line3" -> "Address line 3 (optional)",
         "town" -> "Town/city Enter town or city of the address",
         "postcode" -> "Postcode (optional)",
-        "countryCode" -> "Country"))
+        "countryCode" -> "Country Enter country of the address"))
       testElementExists(res, EditPage.nonUkEditId)
     }
 
@@ -595,7 +427,7 @@ class EditPageISpec extends IntegrationSpecBase {
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=false").
+      val fResponse = buildClientLookupAddress(path = "edit").
         withHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
@@ -634,7 +466,7 @@ class EditPageISpec extends IntegrationSpecBase {
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=false").
+      val fResponse = buildClientLookupAddress(path = "edit").
         withHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
@@ -668,7 +500,7 @@ class EditPageISpec extends IntegrationSpecBase {
         OK
       )
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=false")
+      val fResponse = buildClientLookupAddress(path = "edit")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -690,9 +522,9 @@ class EditPageISpec extends IntegrationSpecBase {
       stubKeystore(
         session = testJourneyId,
         theData = Json.toJson(journeyDataV2Minimal.copy(
-          config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))).as[JsObject], OK)
+          config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true))))).as[JsObject], OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=true").
+      val fResponse = buildClientLookupAddress(path = "edit").
         withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
@@ -716,7 +548,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Address line 2 (optional)",
         "line3" -> "Address line 3 (optional)",
         "town" -> "Town/city Enter town or city of the address",
-        "postcode" -> "Postcode (optional)"
+        "postcode" -> "UK postcode (optional)"
       ))
 
       res.status shouldBe BAD_REQUEST
@@ -728,10 +560,10 @@ class EditPageISpec extends IntegrationSpecBase {
         session = testJourneyId,
         theData = Json.toJson(journeyDataV2Minimal.copy(
           config = journeyDataV2Minimal.config.copy(
-            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
+            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true)),
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=true").
+      val fResponse = buildClientLookupAddress(path = "edit").
         withHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
@@ -755,7 +587,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line2" -> "Llinell cyfeiriad 2 (dewisol)",
         "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas Nodwch dref neu ddinas y cyfeiriad",
-        "postcode" -> "Cod post (dewisol)"
+        "postcode" -> "Cod post y DU (dewisol)"
       ))
 
       res.status shouldBe BAD_REQUEST
@@ -784,7 +616,7 @@ class EditPageISpec extends IntegrationSpecBase {
         OK
       )
 
-      val fResponse = buildClientLookupAddress(path = "edit?uk=true").
+      val fResponse = buildClientLookupAddress(path = "edit").
         withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
         post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -806,7 +638,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
-        val fResponse = buildClientLookupAddress("edit?uk=true")
+        val fResponse = buildClientLookupAddress("edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck"
@@ -828,7 +660,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
-        val fResponse = buildClientLookupAddress("edit?uk=true")
+        val fResponse = buildClientLookupAddress("edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
@@ -851,7 +683,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
-        val fResponse = buildClientLookupAddress("edit?uk=true")
+        val fResponse = buildClientLookupAddress("edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
@@ -874,7 +706,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
-        val fResponse = buildClientLookupAddress("edit?uk=true")
+        val fResponse = buildClientLookupAddress("edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = true),
             "Csrf-Token" -> "nocheck"

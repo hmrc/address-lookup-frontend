@@ -50,6 +50,7 @@ object MessageConstants {
     def editPageAddressLine1MinErrorMessage: String
     def editPageTownMinErrorMessage: String
     def editPagePostcodeErrorMessage: String
+    def editPageCountryErrorMessage: String
 
     def noResultsPageTitle: String
     def noResultsPageHeading: String
@@ -91,6 +92,7 @@ object MessageConstants {
     val editPageAddressLine1MinErrorMessage = "Enter first line of address"
     val editPageTownMinErrorMessage = "Enter town or city of the address"
     val editPagePostcodeErrorMessage = if(isUkMode) "Enter a valid UK postcode" else "Enter a valid postcode"
+    val editPageCountryErrorMessage = "Enter country of the address"
 
     val errorRequired = "Select the property for the address"
     val errorMin: Int => String = min => s"Minimum length is $min"
@@ -193,6 +195,7 @@ object MessageConstants {
     val editPageTownMaxErrorMessage = "Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai"
     val editPageTownMinErrorMessage = "Nodwch dref neu ddinas y cyfeiriad"
     val editPagePostcodeErrorMessage = if(isUkMode) "Nodwch god post yn y DU sy’n ddilys" else "Nodwch god post sy’n ddilys"
+    val editPageCountryErrorMessage = "Nodwch gwlad y cyfeiriad"
 
     val noResultsPageTitle = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
     val noResultsPageHeading = "Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer "

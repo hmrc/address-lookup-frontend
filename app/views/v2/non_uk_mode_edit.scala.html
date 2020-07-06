@@ -37,7 +37,7 @@
     <h1 class="heading-xlarge" id="pageHeading">@{resolvedConfig.labels.editPageLabels.heading}</h1>
   </header>
 
-  @helpers.form(routes.AddressLookupController.handleEdit(id, false)) {
+  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
@@ -81,7 +81,7 @@
 
         @if(countries.size > 1) {
             <div class="form-field spaced-below">
-                @countryAutoComplete(countries, editForm("countryCode").value, resolvedConfig.labels.editPageLabels.countryLabel)
+                @countryAutoComplete(countries, editForm("countryCode"), resolvedConfig.labels.editPageLabels.countryLabel)
             </div>
         } else {
             @defining(countries.head._1) { countryCode =>

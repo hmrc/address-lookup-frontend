@@ -162,7 +162,7 @@ trait PageContentHelper {
   def labelForFieldsMatch(response: Future[WSResponse], idOfFieldExpectedLabelTextForFieldMapping: Map[String, String]): Unit = {
     val elems = getDocFromResponse(response).getElementsByTag("label")
     idOfFieldExpectedLabelTextForFieldMapping.foreach { case (fieldId: String, expectedtextOfLabel: String) =>
-      elems.select(s"[for=$fieldId]").get(0).text() shouldBe expectedtextOfLabel
+      elems.select(s"[for=$fieldId]").get(0).getElementsByTag("span").text() shouldBe expectedtextOfLabel
     }
   }
 

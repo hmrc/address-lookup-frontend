@@ -1,11 +1,14 @@
 package model
 
+import config.FrontendAppConfig
 import org.scalatest.{MustMatchers, WordSpecLike}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
 import utils.TestConstants._
 
-class ModelV2Spec extends WordSpecLike with MustMatchers {
+class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuite {
+  val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "JourneyDataV2" should {
     "read successfully from full json" in {
@@ -161,7 +164,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
   "ResolvedJourneyConfigV2" should {
     "return a full model without defaulting any values" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Full.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true, appConfig)
 
       originalJourneyConfig.version mustBe resolvedJourneyConfig.version
 
@@ -231,7 +234,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
 
     "return a full model with all possible English default values" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Minimal.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = false)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = false, appConfig)
       val EnglishConstantsNonUkMode = JourneyConfigDefaults.EnglishConstants(false)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
@@ -239,9 +242,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
-      // TODO: Add tests to check that we do get back what we configure as a real url
-//      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
-      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "feedbackUrl"
+      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
       resolvedJourneyConfig.options.showPhaseBanner mustBe false
       resolvedJourneyConfig.options.alphaPhase mustBe false
@@ -262,7 +263,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("feedbackUrl")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
 
       resolvedJourneyConfig.labels.selectPageLabels.title mustBe EnglishConstantsNonUkMode.SELECT_PAGE_TITLE
       resolvedJourneyConfig.labels.selectPageLabels.heading mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING
@@ -303,7 +304,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
 
     "return a full model with all possible default values including English and Welsh content" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2EnglishAndWelshMinimal.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true, appConfig)
       val WelshConstantsNonUkMode = JourneyConfigDefaults.WelshConstants(false)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
@@ -311,10 +312,10 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
       resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
-      // TODO: Add tests to check that we do get back what we configure as a real url
-//      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
-      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "feedbackUrl"
+
+      resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
+
       resolvedJourneyConfig.options.showPhaseBanner mustBe false
       resolvedJourneyConfig.options.alphaPhase mustBe false
       resolvedJourneyConfig.options.phase mustBe ""
@@ -334,7 +335,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
       resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("feedbackUrl")
+      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
 
       resolvedJourneyConfig.labels.selectPageLabels.title mustBe WelshConstantsNonUkMode.SELECT_PAGE_TITLE
       resolvedJourneyConfig.labels.selectPageLabels.heading mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING
@@ -388,25 +389,25 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
   "ResolvedJourneyOptions" should {
     //TODO: isUKMode, provided and false
     "set the isUkMode to true" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(true))).isUkMode mustBe true
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(true)), appConfig).isUkMode mustBe true
     }
     "set the isUkMode to false" when {
       "ukMode is missing" in {
-        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = None)).isUkMode mustBe false
+        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = None), appConfig).isUkMode mustBe false
       }
       "ukMode is set to false" in {
-        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(false))).isUkMode mustBe false
+        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(false)), appConfig).isUkMode mustBe false
       }
     }
 
     "set the phase value to alpha" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true),showPhaseBanner = Some(true))).phase mustBe "alpha"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true),showPhaseBanner = Some(true)), appConfig).phase mustBe "alpha"
     }
     "set the phase value to beta" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(true))).phase mustBe "beta"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(true)), appConfig).phase mustBe "beta"
     }
     "set the phase value to empty string" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(false))).phase mustBe ""
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(false)), appConfig).phase mustBe ""
     }
   }
 }

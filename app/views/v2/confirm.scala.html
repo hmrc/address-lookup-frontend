@@ -9,7 +9,7 @@
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)}
 
-@main_template(appConfig, title = journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@main_template(appConfig, title = journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
   @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
     <div>
@@ -18,36 +18,36 @@
   }
 
   <header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.heading}</h1>
+    <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading}</h1>
   </header>
 
   @if(selectedAddress.isDefined) {
     @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
       <fieldset class="form-field-group">
         <div class="form-field">
-          @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showSubHeadingAndInfo) {
-            <h2>@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.infoSubheading}</h2>
-            <p id="infoMessage">@Html(journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.infoMessage)</p>
+          @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showSubHeadingAndInfo) {
+            <h2>@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.infoSubheading}</h2>
+            <p id="infoMessage">@Html(journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.infoMessage)</p>
           }
           @address_confirmation_display(selectedAddress.get.address)
         </div>
-        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showSearchAgainLink) {
+        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showSearchAgainLink) {
           <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.searchAgainLinkText}</a></p>
+            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.searchAgainLinkText}</a></p>
           </div>
         }
-        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showChangeLink) {
+        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showChangeLink) {
         <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.edit(id,None)}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.changeLinkText}</a></p>
+          <p><a href="@{routes.AddressLookupController.edit(id,None)}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.changeLinkText}</a></p>
         </div>
         }
-        @if(journeyData.resolveConfigV2(isWelsh).options.confirmPageConfig.showConfirmChangeText){
+        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showConfirmChangeText){
         <div class="form-field">
-          <p id="confirmChangeText">@journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.confirmChangeText</p>
+          <p id="confirmChangeText">@journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.confirmChangeText</p>
         </div>
         }
         <div class="form-field">
-          <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.confirmPageLabels.submitLabel}</button>
+          <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.submitLabel}</button>
         </div>
       </fieldset>
     }

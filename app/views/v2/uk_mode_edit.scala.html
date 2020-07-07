@@ -9,7 +9,7 @@
 @(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-@resolvedConf = @{journeyData.resolveConfigV2(isWelsh)}
+@resolvedConf = @{journeyData.resolveConfigV2(isWelsh, appConfig)}
 
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 

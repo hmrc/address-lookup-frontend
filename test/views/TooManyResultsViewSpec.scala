@@ -56,9 +56,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       JourneyOptions(
         continueUrl = testContinueUrl,
         showBackButtons = Some(showBackButtons),
-        ukMode = ukMode,
-        feedbackUrl = Some("PLACEHOLDER"),
-        contactFormServiceIdentifier = Some("AddressLookupFrontend")
+        ukMode = ukMode
       )
     )
   )

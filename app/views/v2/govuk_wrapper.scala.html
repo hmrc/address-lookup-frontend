@@ -7,7 +7,8 @@
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(appConfig: AppConfig,
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig,
   title: String,
   journeyData: Option[JourneyDataV2] = None,
   mainClass: Option[String] = None,
@@ -25,8 +26,8 @@
 @messageConstants = @{if(welshEnabled) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
 @links = {
-    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.additionalStylesheetUrl).isDefined) {
-        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.additionalStylesheetUrl).get}">
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.additionalStylesheetUrl).isDefined) {
+        <link rel="stylesheet" id="customStyleSheet" type="text/css" href="@{journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.additionalStylesheetUrl).get}">
     }
 }
 
@@ -43,15 +44,15 @@
 }
 
 @headerNavLinks = {
-    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.signOutHref).isDefined) {
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.signOutHref).isDefined) {
         <li>
-            <a id="signOutHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.signOutHref).get}"
+            <a id="signOutHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled, appConfig).options.signOutHref).get}"
              data-journey-click="primary-navigation:Click:Sign out">@{messageConstants.signOut}</a>
         </li>
     }
-    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.homeNavHref).isDefined) {
+    @if(journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.homeNavHref).isDefined) {
         <li>
-            <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled).options.homeNavHref).get}"
+            <a id="homeNavHref" href="@{journeyData.map(_.resolveConfigV2(welshEnabled, appConfig).options.homeNavHref).get}"
              data-journey-click="primary-navigation:Click:Home">@{messageConstants.home}</a>
         </li>
     }
@@ -59,7 +60,7 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-        navTitle = journeyData.flatMap(_.resolveConfigV2(welshEnabled).labels.appLevelLabels.navTitle),
+        navTitle = journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).labels.appLevelLabels.navTitle),
         navTitleLink = None,
         showBetaLink = false,
         navLinks = Some(headerNavLinks)
@@ -74,7 +75,7 @@
 }
 
 @scripts = {
-    @journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
+    @journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
     @scriptElem
 }
 
@@ -94,18 +95,18 @@
     @alfFooterLinks(
         additionalLinks = None,
         euExitLinks = None,
-        accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.accessibilityFooterUrl),
+        accessibilityFooterUrl = journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.accessibilityFooterUrl),
         userAction = new URI(request.uri).getPath().split("/").lastOption.getOrElse("")
     )
 }
 
 @phaseBanner = {
     @journeyData.map{ jData =>
-        @if(jData.resolveConfigV2(welshEnabled).options.showPhaseBanner) {
-            <div class="@{jData.resolveConfigV2(welshEnabled).options.phase}-banner" id="phase-banner">
+        @if(jData.resolveConfigV2(welshEnabled, appConfig).options.showPhaseBanner) {
+            <div class="@{jData.resolveConfigV2(welshEnabled, appConfig).options.phase}-banner" id="phase-banner">
                 <p>
-                    <strong class="phase-tag" id="phase-tag">@{jData.resolveConfigV2(welshEnabled).options.phase.toUpperCase}</strong>
-                    <span id="phase-banner-content">@Html(jData.resolveConfigV2(welshEnabled).labels.appLevelLabels.phaseBannerHtml)</span>
+                    <strong class="phase-tag" id="phase-tag">@{jData.resolveConfigV2(welshEnabled, appConfig).options.phase.toUpperCase}</strong>
+                    <span id="phase-banner-content">@Html(jData.resolveConfigV2(welshEnabled, appConfig).labels.appLevelLabels.phaseBannerHtml)</span>
                 </p>
             </div>
         }
@@ -117,7 +118,7 @@
         betaBanner = phaseBanner,
         includeGridWrapper = false,
         serviceInfoContent = Some(serviceInfoContent),
-        includeHMRCBranding = journeyData.map(_.resolveConfigV2(welshEnabled).options.includeHMRCBranding).getOrElse(true),
+        includeHMRCBranding = journeyData.map(_.resolveConfigV2(welshEnabled, appConfig).options.includeHMRCBranding).getOrElse(true),
         setLang = {if(welshEnabled) "cy" else "en"}
     )
 }
@@ -139,8 +140,8 @@
 }
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(
-    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.deskProServiceName)),
-    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled).options.deskProServiceName)))}
+    appConfig.buildReportAProblemPartialUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.deskProServiceName)),
+    appConfig.buildReportAProblemNonJSUrl(journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.deskProServiceName)))}
 
 @content = {
     @uiLayouts.main_content(

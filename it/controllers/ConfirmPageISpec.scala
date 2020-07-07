@@ -24,9 +24,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
-      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl,
-        feedbackUrl = Some("PLACEHOLDER"),
-        contactFormServiceIdentifier = Some("AddressLookupFrontend"))))
+      val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
@@ -183,9 +181,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val json = journeyDataV2WithSelectedAddressJson(JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = testContinueUrl,
-          feedbackUrl = Some("PLACEHOLDER"),
-          contactFormServiceIdentifier = Some("AddressLookupFrontend")),
+          continueUrl = testContinueUrl),
         labels = Some(JourneyLabels(
           cy = Some(LanguageLabels())
         ))

@@ -13,7 +13,7 @@
 
 @main_template(appConfig, title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
-@if(journeyData.resolveConfigV2().options.showBackButtons) {
+@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
     <div>
         <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>

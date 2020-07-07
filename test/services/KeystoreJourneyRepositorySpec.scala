@@ -21,9 +21,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
   val journeyData = JourneyData(JourneyConfig("continue"))
   val someJourneyDataJson = Some(Json.toJson(journeyData))
 
-  val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue",
-    feedbackUrl = Some("PLACEHOLDER"),
-    contactFormServiceIdentifier = Some("AddressLookupFrontend"))))
+  val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue")))
   val someJourneyDataV2Json = Some(Json.toJson(journeyDataV2))
 
   val journeyDataWithTimeout = JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120,"testUrl"))))
@@ -423,9 +421,7 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
             disableTranslations = Some(false),
             selectPageConfig = fullV2SelectPageConfig,
             confirmPageConfig = fullV2ConfirmPageConfig,
-            timeoutConfig = fullV2TimeoutConfig,
-            feedbackUrl = Some("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"),
-            contactFormServiceIdentifier = Some("AddressLookupFrontend")
+            timeoutConfig = fullV2TimeoutConfig
           ),
           labels = Some(JourneyLabels(
             en = Some(fullV2LanguageLabelsEn.copy(appLevelLabels = None))

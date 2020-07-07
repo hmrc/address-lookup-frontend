@@ -40,9 +40,7 @@ class V2ModelConverter @Inject()(frontendAppConfig: FrontendAppConfig) {
       allowedCountryCodes = v1.allowedCountryCodes,
       selectPageConfig = resolveSelectPageConfig(v1.selectPage),
       confirmPageConfig = resolveConfirmPageConfig(v1.confirmPage),
-      timeoutConfig = resolveTimeoutConfig(v1.timeout),
-      feedbackUrl = Some(frontendAppConfig.feedbackUrl),
-      contactFormServiceIdentifier = Some(frontendAppConfig.contactFormServiceIdentifier)
+      timeoutConfig = resolveTimeoutConfig(v1.timeout)
     )
   }
 

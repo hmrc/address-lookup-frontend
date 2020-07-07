@@ -1,5 +1,6 @@
 package model
 
+import config.FrontendAppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json.{Format, JsPath, Json}
@@ -10,7 +11,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
                          confirmedAddress: Option[ConfirmableAddress] = None
                         ) {
 
-  def resolveConfigV2(isWelsh: Boolean = false) = ResolvedJourneyConfigV2(config, isWelsh)
+  def resolveConfigV2(isWelsh: Boolean = false, appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, isWelsh, appConfig)
 
   val welshEnabled: Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config.options.disableTranslations exists (_ != false)))
 }
@@ -37,10 +38,7 @@ case class JourneyOptions(continueUrl: String,
                           allowedCountryCodes: Option[Set[String]] = None,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
-                          timeoutConfig: Option[TimeoutConfig] = None,
-                          feedbackUrl: Option[String] = None,
-                          contactFormServiceIdentifier: Option[String] = None
-                         ) {
+                          timeoutConfig: Option[TimeoutConfig] = None) {
   val isUkMode: Boolean = ukMode contains true
 
 }

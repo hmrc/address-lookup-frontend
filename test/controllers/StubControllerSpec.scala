@@ -52,15 +52,11 @@ class StubControllerSpec extends PlaySpec
       val journeyId: String = "11345fgh"
       val journeyConfigV2 = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(continueUrl = "testContinueUrl",
-          feedbackUrl = Some("PLACEHOLDER"),
-          contactFormServiceIdentifier = Some("AddressLookupFrontend"))
+        options = JourneyOptions(continueUrl = "testContinueUrl")
       )
       val expectedJourneyConfigV2 = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(continueUrl = s"/end-of-journey/$journeyId",
-          feedbackUrl = Some("PLACEHOLDER"),
-          contactFormServiceIdentifier = Some("AddressLookupFrontend"))
+        options = JourneyOptions(continueUrl = s"/end-of-journey/$journeyId")
       )
 
       val res = StubHelper.changeContinueUrlFromUserInputToStubV2(journeyConfigV2, journeyId)
@@ -130,9 +126,7 @@ class StubControllerSpec extends PlaySpec
       val jcv2 = JourneyConfigV2(
         version = 2,
         options = JourneyOptions(
-          continueUrl = "/end-of-journey/bar",
-          feedbackUrl = Some("PLACEHOLDER"),
-          contactFormServiceIdentifier = Some("AddressLookupFrontend")
+          continueUrl = "/end-of-journey/bar"
         )
       )
       val matchedRequestContainingJourneyConfig = FakeRequest().map(_ => jcv2)

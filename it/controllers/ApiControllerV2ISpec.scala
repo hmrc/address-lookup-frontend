@@ -31,9 +31,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           showSubHeadingAndInfo = Some(false),
           showChangeLink = Some(true),
           showConfirmChangeText = Some(false)
-        )),
-        feedbackUrl = Some("PLACEHOLDER"),
-        contactFormServiceIdentifier = Some("AddressLookupFrontend")
+        ))
       ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
@@ -97,9 +95,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           config = JourneyConfigV2(
             version = testApiVersion,
             options = JourneyOptions(
-              continueUrl = testContinueUrl,
-              feedbackUrl = Some("PLACEHOLDER"),
-              contactFormServiceIdentifier = Some("AddressLookupFrontend")
+              continueUrl = testContinueUrl
             )
           )
         )

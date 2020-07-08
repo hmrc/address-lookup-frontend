@@ -1,6 +1,6 @@
 package controllers
 
-import config.FrontendAppConfig.ALFCookieNames
+import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model.JourneyConfigDefaults.EnglishConstants

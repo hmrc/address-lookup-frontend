@@ -1,16 +1,18 @@
 package utils
 
 import config.FrontendAppConfig
+import javax.inject.{Inject, Singleton}
 import model._
 
-object V2ModelConverter {
+@Singleton
+class V2ModelConverter @Inject()(frontendAppConfig: FrontendAppConfig) {
   implicit class V2ModelConverter(journeyData: JourneyData) {
     val toV2Model: JourneyDataV2 = convertToV2Model(journeyData)
   }
 
   def convertToV2Model(v1: JourneyData): JourneyDataV2 = {
     val journeyConfig = JourneyConfigV2 (
-      version = FrontendAppConfig.apiVersion2,
+      version = frontendAppConfig.apiVersion2,
       options = resolveJourneyOptions(v1.config),
       labels = resolveLabels(v1.config.navTitle, v1.config.phaseBannerHtml, v1.config.lookupPage, v1.config.selectPage,
         v1.config.editPage, v1.config.confirmPage),

@@ -230,7 +230,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -557,6 +557,15 @@ object TestConstants {
     """.stripMargin)
 
   val journeyDataV2Minimal = JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl"
+      )
+    )
+  )
+
+  val journeyDataV2MinimalExpected = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(

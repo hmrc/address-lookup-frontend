@@ -1,11 +1,13 @@
 package services
 
+import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import uk.gov.hmrc.address.v2.Country
 
 class ForeignOfficeCountryServiceSpec extends PlaySpec with OneAppPerSuite {
 
   class Scenario {
+    SharedMetricRegistries.clear()
     val service = new ForeignOfficeCountryService
   }
 

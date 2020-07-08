@@ -1,6 +1,6 @@
 # Address Lookup Frontend
 
-[![Build Status](https://travis-ci.org/hmrc/address-lookup-frontend.svg)](https://travis-ci.org/hmrc/address-lookup-frontend-new) [ ![Download](https://api.bintray.com/packages/hmrc/releases/address-lookup-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/address-lookup-frontend/_latestVersion)
+[![Build Status](https://travis-ci.org/hmrc/address-lookup-frontend.svg)](https://travis-ci.org/hmrc/address-lookup-frontend-new) [ ![Download](https://api.bintray.com/packages/hmrc/releases/address-lookup-frontend/images/download.svg)<!-- @IGNORE PREVIOUS: link --> ](https://bintray.com/hmrc/releases/address-lookup-frontend/_latestVersion)<!-- @IGNORE PREVIOUS: link -->
 
 This microservice provides a user interface for entering and editing addresses. Assistance is provided to the end-user for looking up their address from a database (via the backend service [address-lookup](https://github.com/hmrc/address-lookup)).
 
@@ -386,8 +386,8 @@ Response:
 run with
 `sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"` (when in the address-lookup-frontend folder)
 
-go to [localhost:9028/lookup-address/test-only/v2/test-setup](http://localhost:9028/lookup-address/test-only/v2/test-setup) if not running from another service
+go to [localhost:9028/lookup-address/test-only/v2/test-setup](http://localhost:9028/lookup-address/test-only/v2/test-setup)<!-- @IGNORE PREVIOUS: link --> if not running from another service
 
 ## License
 
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")<!-- @IGNORE PREVIOUS: link -->

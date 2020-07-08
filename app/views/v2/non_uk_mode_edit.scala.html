@@ -5,10 +5,11 @@
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-@resolvedConfig = @{journeyData.resolveConfigV2(isWelsh)}
+@resolvedConfig = @{journeyData.resolveConfigV2(isWelsh, appConfig)}
 
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
@@ -20,7 +21,7 @@
     }
 }
 
-@main_template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
 
 <div id="nonUkEdit"></div>
   @if(resolvedConfig.options.showBackButtons) {

@@ -3,9 +3,10 @@
 
 @import model._
 
-@(id: String, journeyData: JourneyData, postcode: String)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyData, postcode: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("result.title.text"), journeyData = Some(journeyData)) {
+@main_template(appConfig, title = messages("result.title.text"), journeyData = Some(journeyData)) {
 
 @if(journeyData.resolvedConfig.showBackButtons) {
 <div>

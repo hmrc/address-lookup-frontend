@@ -1,5 +1,6 @@
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import controllers.api.ApiController
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
@@ -12,7 +13,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.{Application, Environment, Mode}
 import services.IdGenerationService
-import utils.V2ModelConverter._
+import utils.V2ModelConverter
 
 class ApiControllerISpec extends IntegrationSpecBase {
 
@@ -20,16 +21,24 @@ class ApiControllerISpec extends IntegrationSpecBase {
     override def uuid: String = testJourneyId
   }
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
-    .configure(fakeConfig())
-    .build
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+
+    new GuiceApplicationBuilder()
+      .in(Environment.simple(mode = Mode.Dev))
+      .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
+      .configure(fakeConfig())
+      .build
+  }
+
+  val converter = app.injector.instanceOf[V2ModelConverter]
 
   lazy val addressLookupEndpoint = app.injector.instanceOf[ApiController].addressLookupEndpoint
 
   "/api/init" should {
     "convert a v1 model into v2 and store in keystore" in {
+      import converter.V2ModelConverter
+
       val v1Model = JourneyData(
         config = JourneyConfig(
           continueUrl = testContinueUrl

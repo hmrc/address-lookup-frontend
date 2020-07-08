@@ -1,5 +1,6 @@
 package views
 
+import config.FrontendAppConfig
 import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -41,6 +42,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+
   implicit val enMessages: Messages = Messages(Lang("en"), messagesApi)
   val testHtml = Html("")
   val EnglishMessageConstants = EnglishMessages(true)
@@ -49,7 +52,8 @@ class MainTemplateViewSpec extends ViewSpec {
   "MainTemplate" should {
     "render" when {
       "accessibility footer link when it is passed in the journey data" in {
-        val testPage = views.html.v2.main_template(title = enContent.title,
+        val testPage = views.html.v2.main_template(
+          frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
         )(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
@@ -59,7 +63,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "accessibility footer link with userAction when it is passed in the journey data" in {
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction")
-        val testPage = views.html.v2.main_template(title = enContent.title,
+        val testPage = views.html.v2.main_template(
+          frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
         )(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
@@ -69,7 +74,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "accessibility footer link with userAction (without the additional query parameters) when it is passed in the journey data" in {
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction?additionalParams=testParam")
-        val testPage = views.html.v2.main_template(title = enContent.title,
+        val testPage = views.html.v2.main_template(
+          frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
         )(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
@@ -78,7 +84,8 @@ class MainTemplateViewSpec extends ViewSpec {
       }
 
       "only the title is passed in" in {
-        val testPage = views.html.v2.main_template(title = enContent.title)(testHtml)
+        val testPage = views.html.v2.main_template(
+          frontendAppConfig,title = enContent.title)(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
 
         doc.title shouldBe enContent.title
@@ -87,6 +94,7 @@ class MainTemplateViewSpec extends ViewSpec {
       "title and journeyData without welsh are passed in" when {
         "welsh is enabled" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2WithWelsh),
             welshEnabled = true
@@ -102,6 +110,7 @@ class MainTemplateViewSpec extends ViewSpec {
         }
         "welsh is not enabled" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2)
           )(testHtml)
@@ -120,6 +129,7 @@ class MainTemplateViewSpec extends ViewSpec {
       "title and journeyData with welsh are passed in" when {
         "welsh is enabled" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2WithWelsh),
             welshEnabled = true
@@ -136,6 +146,7 @@ class MainTemplateViewSpec extends ViewSpec {
         }
         "welsh is not enabled" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2WithWelsh)
           )(testHtml)
@@ -154,6 +165,7 @@ class MainTemplateViewSpec extends ViewSpec {
       "timeout" should {
         "should display correct text in Welsh mode" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2),
             welshEnabled = true
@@ -177,6 +189,7 @@ class MainTemplateViewSpec extends ViewSpec {
 
         "should display correct text in english mode" in {
           val testPage = views.html.v2.main_template(
+            frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2)
           )(testHtml)

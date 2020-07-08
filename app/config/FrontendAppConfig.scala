@@ -1,7 +1,9 @@
 package config
 
-import play.api.Play.{configuration, current}
+import javax.inject.{Inject, Singleton}
+import play.api.{Configuration, Environment, Mode}
 import play.api.i18n.Lang
+import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
   val analyticsToken: String
@@ -15,23 +17,31 @@ trait AppConfig {
   def buildReportAProblemNonJSUrl(service: Option[String]): String
 }
 
-object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
+@Singleton
+class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration, environment: Environment) extends AppConfig with ServicesConfig {
 
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  val appName = runModeConfiguration.getString("appName").get
   val contactFormServiceIdentifier = "AddressLookupFrontend"
   val homeUrl = "http://www.hmrc.gov.uk"
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
   val apiVersion2 = 2
+  val addressLookupEndpoint = baseUrl("address-lookup-frontend")
+  val addressReputationEndpoint = baseUrl("address-reputation")
 
   val languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
 
-  object ALFCookieNames {
-    val useWelsh = "Use-Welsh"
-  }
+  override def mode: Mode.Mode = environment.mode
+
+  override def config(serviceName: String): Configuration = super.config(serviceName)
+
+  def keyStoreUri: String = baseUrl("keystore")
+
+  def cacheDomain: String = getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -46,3 +56,9 @@ object FrontendAppConfig extends AppConfig with FrontendServicesConfig {
     s"/contact/problem_reports_nonjs?service=${service.getOrElse(contactFormServiceIdentifier)}"
   }
 }
+
+object ALFCookieNames {
+  val useWelsh = "Use-Welsh"
+}
+
+

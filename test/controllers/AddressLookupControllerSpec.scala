@@ -2,16 +2,19 @@
 package controllers
 
 
+import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
+import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.http.HeaderNames
@@ -24,17 +27,20 @@ import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestConstants.{Lookup => _, _}
-import utils.V2ModelConverter._
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import utils.TestConstants.{Lookup ⇒ _, _}
+import utils.V2ModelConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupControllerSpec
     extends PlaySpec
-      with OneAppPerSuite
+      with GuiceOneAppPerSuite
       with JsoupShouldMatchers
       with ScalaFutures with ALFEFixtures {
+
+  SharedMetricRegistries.clear()
 
   implicit lazy val materializer = app.materializer
 
@@ -54,7 +60,12 @@ class AddressLookupControllerSpec
 
     val endpoint = "http://localhost:9000"
 
-    val journeyRepository = new KeystoreJourneyRepository {
+    val cache = app.injector.instanceOf[AddressLookupFrontendSessionCache]
+    val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+    val converter = app.injector.instanceOf[V2ModelConverter]
+    val auditConnector = app.injector.instanceOf[AuditConnector]
+
+    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
       override def init(journeyName: String): JourneyData = {
         journeyConfig
@@ -94,9 +105,9 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
@@ -104,7 +115,7 @@ class AddressLookupControllerSpec
       override def uuid = id.getOrElse(testJourneyId)
     }
 
-    val api = new ApiController(journeyRepository, MockIdGenerationService) {
+    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, converter) {
       override val addressLookupEndpoint = endpoint
     }
 
@@ -113,12 +124,15 @@ class AddressLookupControllerSpec
   "init journey with config" should {
 
     "create journey and return the 'on-ramp' URL" in new Scenario(id = Some("quix")) {
+      import converter.V2ModelConverter
+
       val v1Data = JourneyData(
         config = JourneyConfig(
           continueUrl = testContinueUrl,
           showPhaseBanner = Some(true)
         )
       )
+
       val v2Data = v1Data.toV2Model
 
       val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(v1Data.config)))
@@ -128,6 +142,8 @@ class AddressLookupControllerSpec
     }
 
     "handle a call to init without confirm change fields" in new Scenario(id = Some("quix")) {
+      import converter.V2ModelConverter
+
       //the optional confirm change fields were not in the original release
       val v1Data = JourneyData(
         JourneyConfig(
@@ -376,6 +392,7 @@ class AddressLookupControllerSpec
           options = JourneyOptions(
             continueUrl = "testContinueUrl",
             showPhaseBanner = Some(true)
+
           )
         )
       )

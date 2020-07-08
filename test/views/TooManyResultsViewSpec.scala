@@ -1,5 +1,6 @@
 package views
 
+import config.FrontendAppConfig
 import controllers.routes
 import model.{JourneyConfigDefaults, JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
@@ -13,6 +14,7 @@ import utils.TestConstants._
 class TooManyResultsViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages = app.injector.instanceOf[MessagesApi]
+  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val testHtml = Html("")
 
@@ -68,6 +70,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "no filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -92,6 +95,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -116,6 +120,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered with ukMode = true" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true, ukMode = Some(true)),
               lookup = model.Lookup(
@@ -142,6 +147,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "no filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -166,6 +172,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -196,6 +203,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "no filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -221,6 +229,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -248,6 +257,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "no filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -273,6 +283,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -298,6 +309,7 @@ class TooManyResultsViewSpec extends ViewSpec {
         "a filter has been entered with ukMode = true" when {
           "there are too many addresses" in {
             val doc = Jsoup.parse(views.html.v2.too_many_results(
+              frontendAppConfig,
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false, ukMode = Some(true)),
               lookup = model.Lookup(

@@ -3,7 +3,8 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInput}
 
-@(id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyData, lookupForm: Form[Lookup], message: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @titleWithError = @{
   if(lookupForm.errors) {
@@ -13,7 +14,7 @@
   }
 }
 
-@main_template(title = titleWithError, journeyData = Some(journeyData)) {
+@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData)) {
 
   @if(journeyData.config.showBackButtons.getOrElse(true)) {
     <div>

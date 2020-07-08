@@ -4,7 +4,6 @@ import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, Welsh
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import config.FrontendAppConfig.ALFCookieNames
 
 class NotFoundISpec extends IntegrationSpecBase {
 

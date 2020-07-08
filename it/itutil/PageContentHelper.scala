@@ -3,15 +3,15 @@ package itutil
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.defaultAwaitTimeout
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.{Await, Future}
 
 trait PageContentHelper {
-  unitSpec: UnitSpec =>
+  unitSpec: WordSpec with Matchers =>
 
   implicit class ViewTestDoc(doc: Document) {
     def title: Elements = doc.select("title")

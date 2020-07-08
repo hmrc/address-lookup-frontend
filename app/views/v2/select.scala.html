@@ -6,7 +6,8 @@
 @import views.html.v2.{main_template => template}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
@@ -14,15 +15,15 @@
 
 @titleWithError = @{
     if(selectForm.errors) {
-        errorPrefix + journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
+        errorPrefix + journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.title
     } else {
-        journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.title
+        journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.title
     }
 }
 
-@template(title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
-    @if(journeyData.resolveConfigV2(isWelsh).options.showBackButtons) {
+    @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
         <div>
             <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
         </div>
@@ -33,12 +34,12 @@
 <header class="page-header">
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
         } else {
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.heading}</h1>
+        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
     }
 </header>
 
@@ -55,13 +56,13 @@
 
     @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         <div class="form-group">
-            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification" else ""})
+            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification" else ""})
         </div>
         <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.editAddressLinkText}</a></p>
+            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a></p>
         </div>
         <div class="form-group">
-            <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh).labels.selectPageLabels.submitLabel}</button>
+            <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel}</button>
         </div>
     }
 }

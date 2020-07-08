@@ -18,12 +18,23 @@ package itutil
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
-import uk.gov.hmrc.play.test.UnitSpec
 
-trait IntegrationSpecBase extends UnitSpec with LoginStub
+trait IntegrationSpecBase extends WordSpec with LoginStub
   with GivenWhenThen
   with OneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig with PageContentHelper {
+
+  import scala.concurrent.duration._
+  import scala.concurrent.{Await, Future}
+
+  implicit val defaultTimeout: FiniteDuration = 5 seconds
+
+  implicit def extractAwait[A](future: Future[A]): A = await[A](future)
+
+  def await[A](future: Future[A])(implicit timeout: Duration): A = Await.result(future, timeout)
+
+  // Convenience to avoid having to wrap andThen() parameters in Future.successful
+  implicit def liftFuture[A](v: A): Future[A] = Future.successful(v)
 
   val mockHost = WireMockHelper.wiremockHost
   val mockPort = WireMockHelper.wiremockPort

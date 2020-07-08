@@ -6,13 +6,14 @@
 
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
-@(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
-@main_template(title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@main_template(appConfig, title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
 
-@if(journeyData.resolveConfigV2().options.showBackButtons) {
+@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
     <div>
         <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
     </div>

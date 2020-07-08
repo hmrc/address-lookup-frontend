@@ -1,6 +1,7 @@
 
-@()(implicit request: Request[_], messages: Messages)
+@import config.FrontendAppConfig
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("no.journey.title.text")) {
+@main_template(appConfig, title = messages("no.journey.title.text")) {
   <h1>@messages("no.journey.heading.text")</h1>
 }

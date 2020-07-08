@@ -1,5 +1,6 @@
 package controllers.api
 
+import config.FrontendAppConfig
 import controllers.AlfController
 import forms.ALFForms
 import javax.inject.{Inject, Singleton}
@@ -10,24 +11,28 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
-import utils.V2ModelConverter._
+import utils.V2ModelConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ApiController @Inject()(journeyRepository: JourneyRepository, idGenerationService: IdGenerationService)
+class ApiController @Inject()(journeyRepository: JourneyRepository,
+                              idGenerationService: IdGenerationService,
+                              config: FrontendAppConfig,
+                              converter: V2ModelConverter)
                              (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
   extends AlfController(journeyRepository) {
 
-  val addressLookupEndpoint = baseUrl("address-lookup-frontend")
-
+  val addressLookupEndpoint = config.addressLookupEndpoint
   protected def uuid: String = idGenerationService.uuid
 
   private implicit val initFormat = Json.format[Init]
 
   // POST /init
   def initWithConfig = Action.async(parse.json[JourneyConfig]) { implicit req =>
+    import converter.V2ModelConverter
     val id = uuid
+
     journeyRepository.putV2(id, JourneyData(req.body).toV2Model).map(success =>
       Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup")
     )

@@ -3,9 +3,9 @@ package model
 import config.FrontendAppConfig
 import model.JourneyConfigDefaults.{EnglishConstants, JourneyConfigDefaults, WelshConstants}
 
-case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Boolean) {
+case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Boolean, appConfig: FrontendAppConfig) {
   val version: Int = journeyConfig.version
-  val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options)
+  val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options, appConfig)
   val journeyConfigDefaults : JourneyConfigDefaults = if (isWelsh)  WelshConstants(options.isUkMode) else  EnglishConstants(options.isUkMode)
 
   val labels: ResolvedLanguageLabels = journeyConfig.labels match {
@@ -15,14 +15,15 @@ case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Bool
   }
 }
 
-case class ResolvedJourneyOptions(journeyOptions: JourneyOptions) {
+case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: FrontendAppConfig) {
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
-  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(FrontendAppConfig.feedbackUrl)
-  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.fold(Some(FrontendAppConfig.contactFormServiceIdentifier))(Some(_))
+  // This should never resolve to None here
+  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
+  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.orElse(Some(appConfig.contactFormServiceIdentifier))
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)
   val alphaPhase: Boolean = journeyOptions.alphaPhase.getOrElse(false)
   val phase: String = if (showPhaseBanner) {

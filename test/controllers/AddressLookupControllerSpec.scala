@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package controllers
 
@@ -10,7 +25,7 @@ import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
@@ -20,7 +35,7 @@ import play.api.Play
 import play.api.http.HeaderNames
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{Cookie, Result}
+import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.http.Status.BAD_REQUEST
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +43,7 @@ import services.{AddressService, CountryService, IdGenerationService, KeystoreJo
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.TestConstants.{Lookup ⇒ _, _}
+import utils.TestConstants.{Lookup => _, _}
 import utils.V2ModelConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -65,6 +80,8 @@ class AddressLookupControllerSpec
     val converter = app.injector.instanceOf[V2ModelConverter]
     val auditConnector = app.injector.instanceOf[AuditConnector]
 
+    val components = app.injector.instanceOf[MessagesControllerComponents]
+
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
       override def init(journeyName: String): JourneyData = {
@@ -99,15 +116,14 @@ class AddressLookupControllerSpec
     }
 
     val countryService = new CountryService {
-
       override def findAll(enFlag: Boolean = true) = Seq(Country("GB", "United Kingdom"), Country("DE", "Germany"), Country("FR", "France"))
 
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
@@ -115,7 +131,7 @@ class AddressLookupControllerSpec
       override def uuid = id.getOrElse(testJourneyId)
     }
 
-    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, converter) {
+    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, converter, components) {
       override val addressLookupEndpoint = endpoint
     }
 

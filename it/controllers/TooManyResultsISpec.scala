@@ -8,11 +8,8 @@ import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
-
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
   object tooManyResultsMessages {
     val title = "No results found"

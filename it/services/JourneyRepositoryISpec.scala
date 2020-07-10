@@ -4,18 +4,12 @@ import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.V2ModelConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class JourneyRepositoryISpec extends IntegrationSpecBase {
-
-  override implicit lazy val app = {
-    SharedMetricRegistries.clear()
-    FakeApplication(additionalConfiguration = fakeConfig())
-  }
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

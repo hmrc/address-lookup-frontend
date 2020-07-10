@@ -1,21 +1,34 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package views
 
 import config.FrontendAppConfig
 import model.{JourneyConfigDefaults, _}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.Messages.Implicits._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import org.scalatest.matchers
 
 class ConfirmViewSpec extends ViewSpec {
-
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val messagesApi = app.injector.instanceOf[MessagesApi]
   val frontendConfig = app.injector.instanceOf[FrontendAppConfig]
+  val messagesApi = app.injector.instanceOf[MessagesApi]
 
   "ConfirmView" should {
     "render English default content" when {
@@ -37,10 +50,12 @@ class ConfirmViewSpec extends ViewSpec {
         testTimeoutConfig = None,
         testLabels = None
       )
+
       val messages = MessageConstants.EnglishMessageConstants(true)
 
-
       "isWelsh is false" when {
+        implicit val lang: Lang = Lang("en")
+
         "show back button is true" in {
           val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
@@ -342,6 +357,8 @@ class ConfirmViewSpec extends ViewSpec {
       val messages = MessageConstants.WelshMessageConstants(true)
 
       "isWelsh is true" when {
+        implicit val lang: Lang = Lang("cy")
+
         "show back button is true" in {
           val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
@@ -628,6 +645,8 @@ class ConfirmViewSpec extends ViewSpec {
       }
     }
     "render configured content" when {
+      implicit val lang: Lang = Lang("en")
+
       "English content is provided" when {
         val messages = MessageConstants.EnglishMessageConstants(true)
 
@@ -662,6 +681,8 @@ class ConfirmViewSpec extends ViewSpec {
       }
     }
     "Welsh content is provided" when {
+      implicit val lang: Lang = Lang("cy")
+
       val messages = MessageConstants.WelshMessageConstants(true)
 
       "a confirmed address has been defined" in {

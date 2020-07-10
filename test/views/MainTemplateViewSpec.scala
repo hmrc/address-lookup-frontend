@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package views
 
 import config.FrontendAppConfig
@@ -44,7 +60,6 @@ class MainTemplateViewSpec extends ViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
-  implicit val enMessages: Messages = Messages(Lang("en"), messagesApi)
   val testHtml = Html("")
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
@@ -52,6 +67,8 @@ class MainTemplateViewSpec extends ViewSpec {
   "MainTemplate" should {
     "render" when {
       "accessibility footer link when it is passed in the journey data" in {
+        implicit val lang: Lang = Lang("en")
+
         val testPage = views.html.v2.main_template(
           frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
@@ -62,7 +79,9 @@ class MainTemplateViewSpec extends ViewSpec {
       }
 
       "accessibility footer link with userAction when it is passed in the journey data" in {
+        implicit val lang: Lang = Lang("en")
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction")
+
         val testPage = views.html.v2.main_template(
           frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
@@ -74,6 +93,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "accessibility footer link with userAction (without the additional query parameters) when it is passed in the journey data" in {
         implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "testAction?additionalParams=testParam")
+        implicit val lang: Lang = Lang("en")
+
         val testPage = views.html.v2.main_template(
           frontendAppConfig,title = enContent.title,
           journeyData = Some(testAppLevelJourneyConfigV2)
@@ -84,6 +105,8 @@ class MainTemplateViewSpec extends ViewSpec {
       }
 
       "only the title is passed in" in {
+        implicit val lang: Lang = Lang("en")
+
         val testPage = views.html.v2.main_template(
           frontendAppConfig,title = enContent.title)(testHtml)
         val doc: Document = Jsoup.parse(testPage.body)
@@ -93,6 +116,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "title and journeyData without welsh are passed in" when {
         "welsh is enabled" in {
+          implicit val lang: Lang = Lang("cy")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,
@@ -109,6 +134,8 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.getSpanAsText("phase-banner-content") shouldBe cyContent.phaseBannerHtml
         }
         "welsh is not enabled" in {
+          implicit val lang: Lang = Lang("en")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,
@@ -128,12 +155,14 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "title and journeyData with welsh are passed in" when {
         "welsh is enabled" in {
+          implicit val lang: Lang = Lang("cy")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,
             journeyData = Some(testAppLevelJourneyConfigV2WithWelsh),
             welshEnabled = true
-          )(testHtml)(testRequest, Messages(Lang("cy"), messagesApi))
+          )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.title shouldBe enContent.title
@@ -145,6 +174,8 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.select(".platform-help-links").text shouldBe List(cyContent.cookies, cyContent.accessibility, cyContent.privacy, cyContent.terms, cyContent.help).mkString(" ")
         }
         "welsh is not enabled" in {
+          implicit val lang: Lang = Lang("en")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,
@@ -164,6 +195,8 @@ class MainTemplateViewSpec extends ViewSpec {
 
       "timeout" should {
         "should display correct text in Welsh mode" in {
+          implicit val lang: Lang = Lang("cy")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,
@@ -188,6 +221,8 @@ class MainTemplateViewSpec extends ViewSpec {
         }
 
         "should display correct text in english mode" in {
+          implicit val lang: Lang = Lang("en")
+
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
             title = enContent.title,

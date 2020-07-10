@@ -8,13 +8,11 @@ import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
 import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 
 
 class ConfirmPageISpec extends IntegrationSpecBase {
 
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
   val EnglishConstantsUkMode = EnglishConstants(true)

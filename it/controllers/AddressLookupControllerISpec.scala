@@ -7,12 +7,9 @@ import model.{ConfirmableAddress, ConfirmableAddressDetails}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import play.api.test.FakeApplication
 import uk.gov.hmrc.address.v2.Country
 
 class AddressLookupControllerISpec extends IntegrationSpecBase {
-
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {

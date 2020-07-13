@@ -58,8 +58,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         auditConnector: AuditConnector,
                                         frontendAppConfig: FrontendAppConfig,
                                         messagesControllerComponents: MessagesControllerComponents)
-                                       (override implicit val ec: ExecutionContext, override implicit val messages: Messages,
-                                        implicit val lang: Lang)
+                                       (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
   def countries(welshFlag: Boolean = false): Seq[(String, String)] = countryService.findAll(welshFlag).map { c =>
@@ -97,6 +96,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   def select(id: String): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
+      implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
+
       val isUKMode = journeyData.config.options.isUkMode
 
       lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
@@ -161,6 +162,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   def handleSelect(id: String, filter: Option[String], postcode: String): Action[AnyContent] = Action.async {
     implicit req => withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
+      implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
+
       val isUKMode = journeyData.config.options.isUkMode
       val bound = selectForm(isWelsh).bindFromRequest()
 
@@ -329,7 +332,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 }
 
 abstract class AlfController @Inject()(journeyRepository: JourneyRepository, messagesControllerComponents: MessagesControllerComponents)
-                                      (implicit val ec: ExecutionContext, val messages: Messages)
+                                      (implicit val ec: ExecutionContext)
   extends FrontendController(messagesControllerComponents) with I18nSupport {
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {

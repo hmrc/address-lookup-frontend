@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LanguageController @Inject()(config: FrontendAppConfig, controllerComponents: MessagesControllerComponents, languageUtils: LanguageUtils)(implicit val ec: ExecutionContext, implicit val messages: Messages)
+class LanguageController @Inject()(config: FrontendAppConfig, controllerComponents: MessagesControllerComponents, languageUtils: LanguageUtils)(implicit val ec: ExecutionContext)
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>

@@ -37,7 +37,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
                               config: FrontendAppConfig,
                               converter: V2ModelConverter,
                               controllerComponents: MessagesControllerComponents)
-                             (override implicit val ec: ExecutionContext, override implicit val messages: Messages, implicit val lang: Langs)
+                             (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, controllerComponents) {
 
   val addressLookupEndpoint = config.addressLookupEndpoint

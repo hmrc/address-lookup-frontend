@@ -1,19 +1,16 @@
 package controllers
 
-import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 
 class SelectPageISpec extends IntegrationSpecBase {
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
   val EnglishConstantsUkMode = EnglishConstants(true)
@@ -266,8 +263,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -287,8 +284,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to false and welsh object is provided in config" should {
@@ -309,8 +306,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
       }
     }
     "the welsh content header is set to true and welsh object provided in config" should {
@@ -331,8 +328,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
         doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
+        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
+        doc.paras should have(elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
       }
     }
   }

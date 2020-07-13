@@ -19,9 +19,10 @@ package itutil
 import java.net.{URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.util.UUID
+
 import itutil.config.IntegrationTestConstants._
-import play.api.libs.Crypto
 import play.api.libs.ws.WSCookie
+import play.api.libs.crypto.CookieSigner
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http.SessionKeys
 
@@ -55,6 +56,8 @@ trait LoginStub extends SessionCookieBaker {
 }
 
 trait SessionCookieBaker {
+  def cookieSigner: CookieSigner
+
   val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
   def cookieValue(sessionData: Map[String,String]): String = {
     def encode(data: Map[String, String]): PlainText = {
@@ -62,7 +65,7 @@ trait SessionCookieBaker {
         case (k, v) => URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
       }.mkString("&")
       val key = "yNhI04vHs9<_HWbC`]20u`37=NGLGYY5:0Tg5?y`W<NoJnXWqmjcgZBec@rOxb^G".getBytes
-      PlainText(Crypto.sign(encoded, key) + "-" + encoded)
+      PlainText(cookieSigner.sign(encoded, key) + "-" + encoded)
     }
 
     val encodedCookie = encode(sessionData)
@@ -72,7 +75,7 @@ trait SessionCookieBaker {
   }
 
   def getCookieData(cookie: WSCookie): Map[String, String] = {
-    getCookieData(cookie.value.get)
+    getCookieData(cookie.value)
   }
 
   def getCookieData(cookieData: String): Map[String, String] = {

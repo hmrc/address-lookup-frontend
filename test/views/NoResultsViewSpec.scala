@@ -1,10 +1,25 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package views
 
 import config.FrontendAppConfig
 import controllers.routes
 import org.jsoup.Jsoup
-import play.api.i18n.Messages.Implicits._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
@@ -13,7 +28,7 @@ import views.html.v2.no_results
 class NoResultsViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit val messages = app.injector.instanceOf[MessagesApi]
+  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   object EnglishContent {
@@ -34,6 +49,8 @@ class NoResultsViewSpec extends ViewSpec {
 
   "The 'No results' view" when {
     "rendered with the default English config" should {
+      implicit val lang: Lang = Lang("en")
+
       "Render the view and display the Back button" in {
         val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2Minimal, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
@@ -48,6 +65,8 @@ class NoResultsViewSpec extends ViewSpec {
     }
 
     "rendered with the default English config (UK Mode = true)" should {
+      implicit val lang: Lang = Lang("en")
+
       "Render the view and display the Back button with UK Mode = true" in {
         val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2MinimalUKMode, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
@@ -62,6 +81,8 @@ class NoResultsViewSpec extends ViewSpec {
     }
 
     "rendered with custom English config" should {
+      implicit val lang: Lang = Lang("en")
+
       "Render the view without the Back button" in {
         val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
@@ -76,6 +97,8 @@ class NoResultsViewSpec extends ViewSpec {
     }
 
     "rendered with the default Welsh config" should {
+      implicit val lang: Lang = Lang("cy")
+
       "Render the view and display the Back button" in {
         val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimal, postcode = testPostCode, isWelsh = true)
         val doc = Jsoup.parse(noResultsView.body)

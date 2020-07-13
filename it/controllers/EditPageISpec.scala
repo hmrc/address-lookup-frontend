@@ -9,12 +9,10 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import play.api.test.FakeApplication
 import uk.gov.hmrc.address.v2.Country
 
 class EditPageISpec extends IntegrationSpecBase {
 
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)
 

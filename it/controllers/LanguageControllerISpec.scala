@@ -4,11 +4,9 @@ import itutil.IntegrationSpecBase
 import play.api.Play
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
-import play.api.test.FakeApplication
 
 class LanguageControllerISpec extends IntegrationSpecBase {
 
-  override implicit lazy val app: FakeApplication = FakeApplication(additionalConfiguration = fakeConfig())
   implicit lazy val messagesAPI: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   s"${controllers.routes.LanguageController.switchToLanguage("english")}" must {

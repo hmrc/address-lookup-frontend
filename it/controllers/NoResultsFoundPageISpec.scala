@@ -7,11 +7,8 @@ import model._
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
-
-  override implicit lazy val app = FakeApplication(additionalConfiguration = fakeConfig())
 
   object EnglishContent {
     val title = "We can not find any addresses"

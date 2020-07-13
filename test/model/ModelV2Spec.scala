@@ -1,7 +1,22 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package model
 
 import org.scalatest.{MustMatchers, WordSpecLike}
-import play.api.data.validation.ValidationError
 import play.api.libs.json._
 import utils.TestConstants._
 
@@ -15,7 +30,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.fromJson[JourneyDataV2](journeyDataV2MinimalJson) mustBe JsSuccess(journeyDataV2MinimalExpected)
     }
     "fail to read when the journey config is missing from the json" in {
-      Json.fromJson[JourneyDataV2](emptyJson) mustBe JsError(JsPath \ "config", ValidationError("error.path.missing"))
+      Json.fromJson[JourneyDataV2](emptyJson) mustBe JsError(JsPath \ "config", JsonValidationError("error.path.missing"))
     }
 
     "write to json from full model" in {
@@ -31,10 +46,10 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.fromJson[JourneyConfigV2](journeyConfigV2MinimalJson) mustBe JsSuccess(journeyConfigV2Minimal)
     }
     "fail to read from json with version missing" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingVersionJson) mustBe JsError(JsPath \ "version", ValidationError("error.path.missing"))
+      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingVersionJson) mustBe JsError(JsPath \ "version", JsonValidationError("error.path.missing"))
     }
     "fail to read from json with journey options missing" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingConfigJson) mustBe JsError(JsPath \ "options", ValidationError("error.path.missing"))
+      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingConfigJson) mustBe JsError(JsPath \ "options", JsonValidationError("error.path.missing"))
     }
 
     "write to json with minimal data" in {
@@ -47,7 +62,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
       Json.fromJson[JourneyOptions](journeyOptionsMinimalJson) mustBe JsSuccess(journeyOptionsMinimal)
     }
     "fail to read from json with continue url missing" in {
-      Json.fromJson[JourneyOptions](emptyJson) mustBe JsError(JsPath \ "continueUrl", ValidationError("error.path.missing"))
+      Json.fromJson[JourneyOptions](emptyJson) mustBe JsError(JsPath \ "continueUrl", JsonValidationError("error.path.missing"))
     }
 
     "write to json with minimal data" in {
@@ -77,13 +92,13 @@ class ModelV2Spec extends WordSpecLike with MustMatchers {
 
   "TimeoutConfig" should {
     "fail to read from json with timeout amount missing" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigLessThanMinJson) mustBe JsError(JsPath \ "timeoutAmount", ValidationError("error.min", 120))
+      Json.fromJson[TimeoutConfig](timeoutConfigLessThanMinJson) mustBe JsError(JsPath \ "timeoutAmount", JsonValidationError("error.min", 120))
     }
     "fail to read from json with timeout url missing" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigMissingAmountJson) mustBe JsError(JsPath \ "timeoutAmount", ValidationError("error.path.missing"))
+      Json.fromJson[TimeoutConfig](timeoutConfigMissingAmountJson) mustBe JsError(JsPath \ "timeoutAmount", JsonValidationError("error.path.missing"))
     }
     "fail to read from json when timeout amount is less than 120" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigMissingUrlJson) mustBe JsError(JsPath \ "timeoutUrl", ValidationError("error.path.missing"))
+      Json.fromJson[TimeoutConfig](timeoutConfigMissingUrlJson) mustBe JsError(JsPath \ "timeoutUrl", JsonValidationError("error.path.missing"))
     }
   }
 

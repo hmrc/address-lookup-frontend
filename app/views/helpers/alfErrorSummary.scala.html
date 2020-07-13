@@ -19,7 +19,8 @@
   errorArgs: Seq[String] = Seq.empty,
   classes: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
-<div class="govuk-error-summary@if(form.hasErrors) {govuk-error-summary__show} @classes.mkString(" ")"
+<div class="error-summary@if(form.hasErrors) { error-summary--show} @classes.mkString(" ")"
+     id="error-summary-display"
      role="alert"
      aria-labelledby="error-summary-heading"
      tabindex="1">

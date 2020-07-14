@@ -56,8 +56,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         addressService: AddressService,
                                         countryService: CountryService,
                                         auditConnector: AuditConnector,
-                                        frontendAppConfig: FrontendAppConfig,
-                                        messagesControllerComponents: MessagesControllerComponents)
+                                        implicit val frontendAppConfig: FrontendAppConfig,
+                                        messagesControllerComponents: MessagesControllerComponents,
+                                        lookup: views.html.v2.lookup)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -87,7 +88,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
 
       (Some(journeyData.copy(selectedAddress = None)), requestWithWelshHeader(isWelsh) {
-        Ok(views.html.v2.lookup(frontendAppConfig, id, journeyData, formPrePopped, isWelsh, isUKMode))
+        Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode))
       })
     }
   }
@@ -103,7 +104,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
         errors => Future.successful(
           (None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(views.html.v2.lookup(frontendAppConfig, id, journeyData, errors, isWelsh, isUKMode))
+            BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
           })
         ),
         lookup => {

@@ -1,7 +1,7 @@
 # UK only mode
 ukmode.uk.label = United Kingdom
 ukmode.postcode.label = UK postcode (optional)
-service.name = Lookup Address
+service.name = 
 service.homePageUrl =
 
 # Common

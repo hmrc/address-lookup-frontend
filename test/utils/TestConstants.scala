@@ -28,6 +28,7 @@ object TestConstants {
   val testAllowedCountryCodes = Some(Set("GB", "UK"))
   val testTimeoutAmount = 20
   val testTimeoutUrl = "timeoutUrl"
+  val testTimeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
   val testUkMode = Some(true)
 
   val testAuditRef = "Jid123"
@@ -129,7 +130,7 @@ object TestConstants {
     Confirm.infoMessage, Confirm.submitLabel, Confirm.showSearchAgainLink, Confirm.searchAgainLinkText, Confirm.showChangeLink,
     Confirm.changeLinkText, Confirm.showConfirmChangeLink, Confirm.confirmChangeText))
 
-  val fullV1TimeoutConfig = Some(Timeout(testTimeoutAmount, testTimeoutUrl))
+  val fullV1TimeoutConfig = Some(Timeout(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
 
   val fullV1JourneyConfig = JourneyConfig(
     continueUrl = testContinueUrl,
@@ -175,7 +176,7 @@ object TestConstants {
 
   val fullV2ConfirmPageConfig = Some(ConfirmPageConfig(Confirm.showSearchAgainLink, Confirm.showSubHeading, Confirm.showChangeLink, Confirm.showConfirmChangeLink))
 
-  val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl))
+  val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
 
   val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
     testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons,
@@ -215,9 +216,10 @@ object TestConstants {
 
   val journeyLabelsMinimal = JourneyLabels(None, None)
 
-  val timeoutConfigLessThanMinJson: JsValue = Json.parse("""{"timeoutAmount":119, "timeoutUrl": "testTimeoutUrl"}""")
-  val timeoutConfigMissingAmountJson: JsValue = Json.parse("""{"timeoutUrl": "testTimeoutUrl"}""")
-  val timeoutConfigMissingUrlJson: JsValue = Json.parse("""{"timeoutAmount":120}""")
+  val timeoutConfigMissingKeepAliveUrlJson: JsValue = Json.parse("""{"timeoutAmount":119, "timeoutUrl": "testTimeoutUrl", "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"}""")
+  val timeoutConfigLessThanMinJson: JsValue = Json.parse("""{"timeoutAmount":119, "timeoutUrl": "testTimeoutUrl", "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"}""")
+  val timeoutConfigMissingAmountJson: JsValue = Json.parse("""{"timeoutUrl": "testTimeoutUrl", "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"}""")
+  val timeoutConfigMissingUrlJson: JsValue = Json.parse("""{"timeoutAmount":120, "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"}""")
 
   val confirmPageConfigMinimal = ConfirmPageConfig(None, None, None, None)
 
@@ -322,7 +324,8 @@ object TestConstants {
         )),
         timeoutConfig = Some(TimeoutConfig(
           timeoutAmount = 120,
-          timeoutUrl = "testTimeoutUrl"
+          timeoutUrl = "testTimeoutUrl",
+          timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
         ))
       ),
       labels = Some(JourneyLabels(
@@ -455,7 +458,8 @@ object TestConstants {
       |         },
       |         "timeoutConfig":{
       |            "timeoutAmount":120,
-      |            "timeoutUrl":"testTimeoutUrl"
+      |            "timeoutUrl":"testTimeoutUrl",
+      |            "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"
       |         }
       |      },
       |      "labels":{
@@ -820,7 +824,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(
@@ -860,7 +865,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(
@@ -906,7 +912,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(
@@ -951,7 +958,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(
@@ -997,7 +1005,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(
@@ -1044,7 +1053,8 @@ object TestConstants {
           confirmPageConfig = None,
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl"
+            timeoutUrl = "testTimeoutUrl",
+            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
           ))
         ),
         labels = Some(JourneyLabels(

@@ -239,12 +239,13 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
             | "continueUrl" : "continue",
             | "timeout" : {
             |   "timeoutAmount" : 120,
-            |   "timeoutUrl" : "timeout"
+            |   "timeoutUrl" : "timeout",
+            |   "timeoutKeepAliveUrl" : "keepAlive"
             | }
             |}
           """.stripMargin).as[JourneyConfig]
 
-        parsedJson.timeout mustBe Some(Timeout(120,"timeout"))
+        parsedJson.timeout mustBe Some(Timeout(120,"timeout", "keepAlive"))
       }
     }
   }

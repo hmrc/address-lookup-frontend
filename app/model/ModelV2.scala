@@ -54,7 +54,8 @@ case class ConfirmPageConfig(showSearchAgainLink: Option[Boolean] = None,
                             )
 
 case class TimeoutConfig(timeoutAmount: Int,
-                         timeoutUrl: String
+                         timeoutUrl: String,
+                         timeoutKeepAliveUrl: String
                         )
 
 case class JourneyLabels(en: Option[LanguageLabels] = None,
@@ -135,7 +136,8 @@ object ConfirmPageConfig {
 object TimeoutConfig {
   implicit val timeoutFormat: Format[TimeoutConfig] = (
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
-      (JsPath \ "timeoutUrl").format[String]
+      (JsPath \ "timeoutUrl").format[String] and
+      (JsPath \ "timeoutKeepAliveUrl").format[String]
     ) (TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
 }
 

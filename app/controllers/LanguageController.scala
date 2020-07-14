@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Lang, Messages}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Flash, MessagesControllerComponents}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -33,7 +33,7 @@ class LanguageController @Inject()(config: FrontendAppConfig, controllerComponen
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
     val lang: Lang = config.languageMap.getOrElse(language, languageUtils.getCurrentLang)
     val redirectURL = request.headers.get(REFERER).getOrElse(throw new InternalServerException(s"[LanguageController][switchToLanguage] Header: $REFERER did not have a value"))
-    Redirect(redirectURL).withLang(Lang.apply(lang.code)) //.flashing(languageUtils.FlashWithSwitchIndicator)
+    Redirect(redirectURL).withLang(Lang.apply(lang.code)).flashing(Flash(Map("switching-language" → "true")))
   }
 
 }

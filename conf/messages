@@ -1,6 +1,8 @@
 # UK only mode
 ukmode.uk.label = United Kingdom
 ukmode.postcode.label = UK postcode (optional)
+service.name = Lookup Address
+service.homePageUrl =
 
 # Common
 common.error.text           = There is a problem
@@ -77,3 +79,13 @@ footer.links.privacy_policy.text        = Privacy policy
 footer.links.privacy_policy.url         = /help/privacy
 footer.links.terms_and_conditions.text  = Terms and conditions
 footer.links.terms_and_conditions.url   = /help/terms-and-conditions
+
+footer.govukHelp.text = Help using GOV.UK
+footer.govukHelp.url = https://www.gov.uk/help
+footer.cookies.text = Cookies
+footer.cookies.url = /help/cookies
+footer.accessibility.text = Accessibility Statement
+footer.privacy.text = Privacy policy
+footer.privacy.url = /help/privacy
+footer.termsConditions.text = Terms and conditions
+footer.termsConditions.url = /help/terms-and-conditions

@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.mvc.Http.HeaderNames
 import services.JourneyRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.testonly.setup_journey_v2_stub_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -61,8 +62,9 @@ object StubHelper {
 @Singleton
 class StubController @Inject()(apiController: ApiController,
                                journeyRepository: JourneyRepository,
-                               frontendAppConfig: FrontendAppConfig,
-                               controllerComponents: MessagesControllerComponents)(implicit val ec: ExecutionContext) extends FrontendController(controllerComponents) with I18nSupport {
+                               implicit val frontendAppConfig: FrontendAppConfig,
+                               controllerComponents: MessagesControllerComponents,
+                               setup_journey_v2_stub_page: setup_journey_v2_stub_page)(implicit val ec: ExecutionContext) extends FrontendController(controllerComponents) with I18nSupport {
 
   def showResultOfJourney(id: String): Action[AnyContent] = Action.async { implicit request =>
     journeyRepository.getV2(id).map { j =>
@@ -85,7 +87,7 @@ class StubController @Inject()(apiController: ApiController,
   }
 
   def showStubPageForJourneyInitV2: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.testonly.setup_journey_v2_stub_page(frontendAppConfig, TestSetupForm.form.fill(
+    Ok(setup_journey_v2_stub_page(TestSetupForm.form.fill(
       Json.prettyPrint(
           StubHelper.defaultJourneyConfigV2JsonAsString
       ))))
@@ -93,7 +95,7 @@ class StubController @Inject()(apiController: ApiController,
   def submitStubForNewJourneyV2 = Action.async { implicit request =>
     TestSetupForm.form.bindFromRequest().fold(
       errors => {
-        Future.successful(BadRequest(views.html.testonly.setup_journey_v2_stub_page(frontendAppConfig, errors)))},
+        Future.successful(BadRequest(setup_journey_v2_stub_page(errors)))},
       valid => {
         val jConfigV2 = Json.parse(valid).as[JourneyConfigV2]
         val reqForInit: Request[JourneyConfigV2] = request.map(_ => jConfigV2)

@@ -17,12 +17,12 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import views.html.helpers.{alfErrorSummary, alfInputRadioGroup}
 
-@import model._
+@import model.{Select => ModelSelect, _}
 @import views.html.v2.{main_template => template}
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang)
+@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 

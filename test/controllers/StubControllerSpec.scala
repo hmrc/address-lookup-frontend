@@ -38,6 +38,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.JourneyRepository
 import uk.gov.hmrc.http.HeaderCarrier
+import views.html.testonly.setup_journey_v2_stub_page
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -101,8 +102,10 @@ class StubControllerSpec extends PlaySpec
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   val components = app.injector.instanceOf[MessagesControllerComponents]
 
+  val setup_journey_v2_stub_page = app.injector.instanceOf[setup_journey_v2_stub_page]
+
   class Setup {
-    val controller = new StubController(mockAPIController, mockJourneyRepository, frontendAppConfig, components)
+    val controller = new StubController(mockAPIController, mockJourneyRepository, frontendAppConfig, components, setup_journey_v2_stub_page)
     
     reset(mockAPIController)
     reset(mockJourneyRepository)

@@ -56,8 +56,15 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         addressService: AddressService,
                                         countryService: CountryService,
                                         auditConnector: AuditConnector,
-                                        frontendAppConfig: FrontendAppConfig,
-                                        messagesControllerComponents: MessagesControllerComponents)
+                                        implicit val frontendAppConfig: FrontendAppConfig,
+                                        messagesControllerComponents: MessagesControllerComponents,
+                                        lookup: views.html.v2.lookup,
+                                        select: views.html.v2.select,
+                                        uk_mode_edit: views.html.v2.uk_mode_edit,
+                                        non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
+                                        confirm: views.html.v2.confirm,
+                                        no_results: views.html.v2.no_results,
+                                        too_many_results: views.html.v2.too_many_results)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -87,7 +94,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
 
       (Some(journeyData.copy(selectedAddress = None)), requestWithWelshHeader(isWelsh) {
-        Ok(views.html.v2.lookup(frontendAppConfig, id, journeyData, formPrePopped, isWelsh, isUKMode))
+        Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode))
       })
     }
   }
@@ -103,7 +110,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
         errors => Future.successful(
           (None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(views.html.v2.lookup(frontendAppConfig, id, journeyData, errors, isWelsh, isUKMode))
+            BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
           })
         ),
         lookup => {
@@ -120,15 +127,15 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
               val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
 
               Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-                Ok(views.html.v2.select(frontendAppConfig, id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
+                Ok(select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }
             case TooManyResults(_, firstLookup) =>
               None -> requestWithWelshHeader(isWelsh) {
-                Ok(views.html.v2.too_many_results(frontendAppConfig, id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
+                Ok(too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }
             case NoResults =>
               None -> requestWithWelshHeader(isWelsh) {
-                Ok(views.html.v2.no_results(frontendAppConfig, id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
+                Ok(no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
               }
           }
         }
@@ -170,7 +177,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       bound.fold(
         errors => {
           (None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(views.html.v2.select(frontendAppConfig, id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
+            BadRequest(select(id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
           })
         },
         selection => {
@@ -184,7 +191,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                   })
                 case None =>
                   (None, requestWithWelshHeader(isWelsh) {
-                    BadRequest(views.html.v2.select(frontendAppConfig, id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
+                    BadRequest(select(id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
                   })
               }
             }
@@ -215,13 +222,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
         if (isUKMode) {
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.uk_mode_edit(frontendAppConfig, id, journeyData, ukEditForm(isWelsh, isUKMode).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh, isUKMode))
+            Ok(uk_mode_edit(id, journeyData, ukEditForm(isWelsh, isUKMode).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh, isUKMode))
           })
         }
         else {
           val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.non_uk_mode_edit(frontendAppConfig, id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
+            Ok(non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
           })
         }
       }
@@ -248,7 +255,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
           validatedForm.fold(
             errors => (None, requestWithWelshHeader(isWelsh) {
-              BadRequest(views.html.v2.uk_mode_edit(frontendAppConfig, id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh, isUKMode))
+              BadRequest(uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh, isUKMode))
             }),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), requestWithWelshHeader(isWelsh) {
               Redirect(routes.AddressLookupController.confirm(id))
@@ -259,7 +266,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
           validatedForm.fold(
             errors => (None, requestWithWelshHeader(isWelsh) {
-              BadRequest(views.html.v2.non_uk_mode_edit(frontendAppConfig, id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh, isUKMode = isUKMode))
+              BadRequest(non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh, isUKMode = isUKMode))
             }),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), requestWithWelshHeader(isWelsh) {
               Redirect(routes.AddressLookupController.confirm(id))
@@ -279,7 +286,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
         journeyData.selectedAddress.map(_ =>
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.confirm(frontendAppConfig, id, journeyData, journeyData.selectedAddress, isWelsh, isUKMode))
+            Ok(confirm(id, journeyData, journeyData.selectedAddress, isWelsh, isUKMode))
           })
         )
         .getOrElse(

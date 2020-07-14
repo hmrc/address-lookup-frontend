@@ -31,7 +31,7 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
   implicit class DocumentTest(doc: Document) {
 
-    val getBackLinkText: String =  doc.select(".back-link").text()
+    val getBackLinkText: String =  doc.select(".govuk-back-link").text()
 
     val getParagraphAsText: String = doc.getElementsByTag("p").text()
 
@@ -43,15 +43,15 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
     val getFirstH2ElementAsText: String = doc.getElementsByTag("h2").first().text()
 
-    val getFormElements: Elements = doc.getElementsByClass("form-field-group")
+    val getFormElements: Elements = doc.getElementsByClass("govuk-form-group")
 
     val getErrorSummaryMessage: String = doc.select("#error-summary-display ul").text()
 
     val getButtonContentAsText: String = doc.select("button[type=submit]").text()
 
-    val getHintAsText: String = doc.select(s"""span[class=form-hint]""").text()
+    def getHintAsText(hintClass: String = "govuk-hint"): String = doc.select(s"""span[class=$hintClass]""").text()
 
-    val getFieldErrorMessageHeading: String = doc.select("#error-summary-heading").text()
+    val getFieldErrorMessageHeading: String = doc.select("#error-summary-title").text()
 
     def getSpanAsText: String = doc.select("span").text()
 
@@ -71,13 +71,17 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
     def getTextFieldInput(name: String): Elements = doc.select(s"""input[name=$name]""")
 
-    def getTextFieldLabel(name: String): String = doc.select(s"label[for=$name]").select("span").text()
+    def getTextFieldLabel(name: String, textElement: String = "label"): String = doc.select(s"label[for=$name]").text()
 
-    def getFieldErrorMessageContent(fieldName: String): String = doc.select(s"""a[id=$fieldName-error-summary]""").text()
+    def getSelectOption(name: String): Elements = doc.select(s"""option[name=${name}]""")
+    def getSelectOptionValue(name: String): String = getSelectOption(name).attr("value")
+    def getSelectOptionLabel(name: String): String = getSelectOption(name).text()
+
+    def getFieldErrorMessageContent(fieldName: String): String = doc.select(s"""a[href=#$fieldName]""").text()
 
     def paras: Elements = doc.select("p")
 
-    def bulletPointList: Elements = doc.select("ul[class=list list-bullet]")
+    def bulletPointList: Elements = doc.select("ul[class=govuk-list govuk-list-bullet]")
 
     def getDropList(id:String) = doc.select(s"select[id=$id]")
 

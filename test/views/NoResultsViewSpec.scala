@@ -29,7 +29,8 @@ class NoResultsViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val no_results = app.injector.instanceOf[no_results]
 
   object EnglishContent {
     val title = "We can not find any addresses"
@@ -52,7 +53,7 @@ class NoResultsViewSpec extends ViewSpec {
       implicit val lang: Lang = Lang("en")
 
       "Render the view and display the Back button" in {
-        val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2Minimal, postcode = testPostCode)
+        val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2Minimal, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
 
         doc.title shouldBe EnglishContent.title
@@ -68,7 +69,7 @@ class NoResultsViewSpec extends ViewSpec {
       implicit val lang: Lang = Lang("en")
 
       "Render the view and display the Back button with UK Mode = true" in {
-        val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2MinimalUKMode, postcode = testPostCode)
+        val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2MinimalUKMode, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
 
         doc.title shouldBe EnglishContent.title
@@ -84,7 +85,7 @@ class NoResultsViewSpec extends ViewSpec {
       implicit val lang: Lang = Lang("en")
 
       "Render the view without the Back button" in {
-        val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
+        val noResultsView = no_results(id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
         val doc = Jsoup.parse(noResultsView.body)
 
         doc.title shouldBe EnglishContent.title
@@ -100,7 +101,7 @@ class NoResultsViewSpec extends ViewSpec {
       implicit val lang: Lang = Lang("cy")
 
       "Render the view and display the Back button" in {
-        val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimal, postcode = testPostCode, isWelsh = true)
+        val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimal, postcode = testPostCode, isWelsh = true)
         val doc = Jsoup.parse(noResultsView.body)
 
         doc.title shouldBe WelshContent.title
@@ -112,7 +113,7 @@ class NoResultsViewSpec extends ViewSpec {
       }
 
       "Render the view and display the Back button with UK Mode = true" in {
-        val noResultsView = no_results(frontendAppConfig, id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimalUKMode, postcode = testPostCode, isWelsh = true)
+        val noResultsView = no_results(id = testJourneyId, journeyData = journeyDataV2EnglishAndWelshMinimalUKMode, postcode = testPostCode, isWelsh = true)
         val doc = Jsoup.parse(noResultsView.body)
 
         doc.title shouldBe WelshContent.title

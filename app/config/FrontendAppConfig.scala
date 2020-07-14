@@ -51,7 +51,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, runMode: 
     "cymraeg" -> Lang("cy")
   )
 
-//  override def mode: RunMode = environment.mode
+  val footerLinkItems: Seq[String] = runModeConfiguration.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
+
+  //  override def mode: RunMode = environment.mode
 
   override def config(serviceName: String): Configuration = super.config(serviceName)
 

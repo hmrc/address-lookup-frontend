@@ -14,15 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import views.html.helpers.{alfErrorSummary, alfInputRadioGroup}
-
-@import model._
-@import views.html.v2.{main_template => template}
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
-
+@import model.{Select => ModelSelect, _}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[Select], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang)
+@import views.html.templates.page_template
+
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, radios: GovukRadios,
+page: page_template)
+@(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: FrontendAppConfig)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
@@ -36,25 +35,17 @@
     }
 }
 
-@template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
-
-    @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-        <div>
-            <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
-        </div>
-    }
-
-    @alfErrorSummary(messageConstants.errorText, selectForm)
+@page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
 <header class="page-header">
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+            <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
         } else {
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+            <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+        <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
     }
 </header>
 
@@ -69,15 +60,27 @@
         }
     }
 
-    @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
-        <div class="form-group">
-            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification" else ""})
-        </div>
-        <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a></p>
-        </div>
-        <div class="form-group">
-            <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel}</button>
-        </div>
+    @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+        @radios(Radios(
+            formGroupClasses = "form-group",
+            errorMessage = selectForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+            name = "addressId",
+            items = proposals.proposals match {
+            case Some(ps) ⇒ ps.map(p ⇒
+                RadioItem(
+                    content = HtmlContent(p.toDescription),
+                    value = Some(p.addressId),
+                    id = Some(s"addressId-${p.addressId}"),
+                    checked = selectForm("p.addressId").value.isDefined))
+            case None ⇒ Seq.empty
+        }))
+
+        <p class="govuk-!-margin-bottom-6 govuk-body">
+            <a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" class="govuk-link" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
+        </p>
+
+        @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel),
+            name=Some("continue"),
+            inputType=Some("submit")))
     }
 }

@@ -52,10 +52,14 @@ object ALFForms extends EmptyStringValidator {
   def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
 
   def postcodeConstraint(isWelsh: Boolean, isUkMode: Boolean): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
-    case empty if empty.isEmpty => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeEmptyError)))
-    case chars if hasInvalidChars(chars) => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeInvalidError)))
-    case postcode if isInvalidPostcode(postcode) => Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeError)))
-    case _ => Valid
+    case empty if empty.isEmpty =>
+      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeEmptyError)))
+    case chars if hasInvalidChars(chars) =>
+      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeInvalidError)))
+    case postcode if isInvalidPostcode(postcode) =>
+      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeError)))
+    case _ =>
+      Valid
   })
 
 

@@ -19,12 +19,14 @@ package views
 import config.FrontendAppConfig
 import controllers.routes
 import org.jsoup.Jsoup
+import org.scalatest.Ignore
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
 import views.html.no_results
 
+@Ignore
 class NoResultsV1ViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]

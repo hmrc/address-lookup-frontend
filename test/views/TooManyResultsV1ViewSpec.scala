@@ -20,12 +20,14 @@ import config.FrontendAppConfig
 import controllers.routes
 import model.JourneyConfigDefaults
 import org.jsoup.Jsoup
+import org.scalatest.Ignore
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.TestConstants._
 
+@Ignore
 class TooManyResultsV1ViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]

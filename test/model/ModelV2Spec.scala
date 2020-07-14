@@ -18,10 +18,12 @@ package model
 
 import config.FrontendAppConfig
 import org.scalatest.{MustMatchers, WordSpecLike}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json._
 import utils.TestConstants._
 
-class ModelV2Spec extends WordSpecLike with MustMatchers {
+class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuite {
+  val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "JourneyDataV2" should {
     "read successfully from full json" in {

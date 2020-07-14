@@ -25,7 +25,7 @@ object AppDependencies {
     "org.pegdown" % "pegdown" % "1.6.0" % scope,
     "org.jsoup" % "jsoup" % "1.8.1" % scope,
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-    "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % scope,
     "org.mockito" % "mockito-all" % "2.0.2-beta" % scope
   ).map(_.withSources())
 

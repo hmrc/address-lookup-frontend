@@ -13,7 +13,7 @@ class LanguageControllerISpec extends IntegrationSpecBase {
     "swap to english and redirect back" in {
       val response = await(buildClientLanguage("english", "testRef").get)
       response.status shouldBe SEE_OTHER
-      response.cookie(Play.langCookieName).get.value shouldBe Some("en")
+      response.cookie(Play.langCookieName).get.value shouldBe "en"
     }
   }
 
@@ -21,7 +21,7 @@ class LanguageControllerISpec extends IntegrationSpecBase {
     "swap to welsh and redirect back" in {
       val response = await(buildClientLanguage("cymraeg", "testRef").get)
       response.status shouldBe SEE_OTHER
-      response.cookie(Play.langCookieName).get.value shouldBe Some("cy")
+      response.cookie(Play.langCookieName).get.value shouldBe "cy"
     }
   }
 

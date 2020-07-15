@@ -501,7 +501,7 @@ object IntegrationTestConstants {
         timeoutConfig = Some(TimeoutConfig(
           timeoutAmount = 120,
           timeoutUrl = "TIMEOUT_URL",
-          timeoutKeepAliveUrl = "KEEP_ALIVE_URL"
+          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
         ))
       ),
       labels = Some(JourneyLabels(
@@ -597,7 +597,7 @@ object IntegrationTestConstants {
       timeout = returnNoneOrConfig(Some(Timeout(
         timeoutAmount = 120,
         timeoutUrl = "TIMEOUT_URL",
-        timeoutKeepAliveUrl = "KEEP_ALIVE_URL"
+        timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
       ))),
       ukMode = Some(allBooleanSetAndAppropriateOptions)
     )
@@ -642,7 +642,7 @@ object IntegrationTestConstants {
         timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
           timeoutAmount = 120,
           timeoutUrl = "TIMEOUT_URL",
-          timeoutKeepAliveUrl = "KEEP_ALIVE_URL"
+          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
         ))),
         ukMode = Some(allBooleanSetAndAppropriateOptions)
       ),

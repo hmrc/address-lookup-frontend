@@ -28,7 +28,7 @@ object TestConstants {
   val testAllowedCountryCodes = Some(Set("GB", "UK"))
   val testTimeoutAmount = 20
   val testTimeoutUrl = "timeoutUrl"
-  val testTimeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+  val testTimeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
   val testUkMode = Some(true)
 
   val testAuditRef = "Jid123"
@@ -325,7 +325,7 @@ object TestConstants {
         timeoutConfig = Some(TimeoutConfig(
           timeoutAmount = 120,
           timeoutUrl = "testTimeoutUrl",
-          timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+          timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
         ))
       ),
       labels = Some(JourneyLabels(
@@ -825,7 +825,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(
@@ -866,7 +866,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(
@@ -913,7 +913,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(
@@ -959,7 +959,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(
@@ -1006,7 +1006,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(
@@ -1054,7 +1054,7 @@ object TestConstants {
           timeoutConfig = Some(TimeoutConfig(
             timeoutAmount = 120,
             timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = "testTimeoutKeepAliveUrl"
+            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
           ))
         ),
         labels = Some(JourneyLabels(

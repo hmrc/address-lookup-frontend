@@ -163,6 +163,8 @@ class MainTemplateViewSpec extends ViewSpec {
       }
 
       "timeout" should {
+        def compacted(value: String) = value replaceAll("\\n\\s*", "")
+
         "should display correct text in Welsh mode" in {
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
@@ -175,7 +177,7 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.title shouldBe enContent.title
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
-          textOfScript shouldBe
+          val expectedTextOfScript =
             """$.timeoutDialog({
               |    timeout: 120,
               |    countdown: 120,
@@ -196,7 +198,9 @@ class MainTemplateViewSpec extends ViewSpec {
               |    // Renew the address-lookup session as well as the calling service
               |    // Taken from https://github.com/hmrc/assets-frontend/blob/master/assets/patterns/help-users-when-we-time-them-out-of-a-service/timeoutDialog.js#L138
               |    $.get('/lookup-address/renewSession', function () {})
-              |})"""
+              |})""".stripMargin
+
+          compacted(textOfScript) shouldBe compacted(expectedTextOfScript)
         }
 
         "should display correct text in english mode" in {
@@ -208,9 +212,9 @@ class MainTemplateViewSpec extends ViewSpec {
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.title shouldBe enContent.title
-          val textOfScript: String = doc.getElementById("timeoutScript").html().trim()
+          val textOfScript: String = doc.getElementById("timeoutScript").html()
 
-          textOfScript shouldBe
+          val expectedTextScript =
             """$.timeoutDialog({
               |    timeout: 120,
               |    countdown: 120,
@@ -231,7 +235,9 @@ class MainTemplateViewSpec extends ViewSpec {
               |    // Renew the address-lookup session as well as the calling service
               |    // Taken from https://github.com/hmrc/assets-frontend/blob/master/assets/patterns/help-users-when-we-time-them-out-of-a-service/timeoutDialog.js#L138
               |    $.get('/lookup-address/renewSession', function () {})
-              |})""".trim()
+              |})""".stripMargin
+
+          compacted(textOfScript) shouldBe compacted(expectedTextScript)
         }
       }
     }

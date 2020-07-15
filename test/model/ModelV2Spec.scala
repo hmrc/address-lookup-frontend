@@ -85,9 +85,6 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
     "fail to read from json with timeout url missing" in {
       Json.fromJson[TimeoutConfig](timeoutConfigMissingAmountJson) mustBe JsError(JsPath \ "timeoutAmount", ValidationError("error.path.missing"))
     }
-    "fail to read from json with keep-alive url missing" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigMissingKeepAliveUrlJson) mustBe JsError(JsPath \ "timeoutKeepAliveUrl", ValidationError("error.path.missing"))
-    }
     "fail to read from json when timeout amount is less than 120" in {
       Json.fromJson[TimeoutConfig](timeoutConfigMissingUrlJson) mustBe JsError(JsPath \ "timeoutUrl", ValidationError("error.path.missing"))
     }

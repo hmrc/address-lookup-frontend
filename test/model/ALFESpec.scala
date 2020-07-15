@@ -245,7 +245,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
             |}
           """.stripMargin).as[JourneyConfig]
 
-        parsedJson.timeout mustBe Some(Timeout(120,"timeout", "keepAlive"))
+        parsedJson.timeout mustBe Some(Timeout(120,"timeout", Some("keepAlive")))
       }
     }
   }

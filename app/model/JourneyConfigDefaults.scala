@@ -87,7 +87,7 @@ object JourneyConfigDefaults {
     val LOOKUP_PAGE_FILTER_LABEL = "Property name or number (optional)"
     val LOOKUP_PAGE_POSTCODE_LABEL = if (isUkMode) "UK postcode" else "Postcode"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Find address"
-    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = if (isUkMode) "The address does not have a UK postcode" else "The address does not have a postcode"
+    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "Enter the address manually"
 
     val SELECT_PAGE_TITLE = "Choose address"
     val SELECT_PAGE_HEADING = "Choose address"
@@ -126,7 +126,7 @@ object JourneyConfigDefaults {
     val LOOKUP_PAGE_FILTER_LABEL = "Enw neu rif yr eiddo (dewisol)"
     val LOOKUP_PAGE_POSTCODE_LABEL = if (isUkMode) "Cod post yn y DU" else "Cod post"
     val LOOKUP_PAGE_SUBMIT_LABEL = "Chwiliwch am y cyfeiriad"
-    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = if (isUkMode) "Nid oes gan y cyfeiriad god post yn y DU" else "Nid oes gan y cyfeiriad god post"
+    val LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT = "Nodwch y cyfeiriad â llaw"
 
     val SELECT_PAGE_TITLE = "Dewiswch cyfeiriad"
     val SELECT_PAGE_HEADING = "Dewiswch cyfeiriad"

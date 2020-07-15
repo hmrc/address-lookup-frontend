@@ -275,7 +275,7 @@ Labels for the "lookup" page.
 |`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|
 |`noResultsFoundMessage`|message to display in infobox above lookup form when no results were found|Optional|String|`"Sorry, we couldn't find anything for that postcode."`|
 |`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
-|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"The address does not have a UK postcode"`|
+|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"Enter the address manually"`|
 
 #### Select page label JSON object
 

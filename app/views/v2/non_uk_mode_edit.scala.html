@@ -19,103 +19,128 @@
 @import views.html.helpers.{alfErrorSummary, alfInput, countryAutoComplete}
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
-
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages)
+@import views.html.helpers.head
+@import config.FooterLinks
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-@resolvedConfig = @{journeyData.resolveConfigV2(isWelsh, appConfig)}
+@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
+form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
+errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
+}
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
+
+@errorPrefix = @{
+    if(isWelsh) "Gwall: " else "Error: "
+}
 
 @titleWithError = @{
     if(editForm.errors) {
-        errorPrefix + resolvedConfig.labels.editPageLabels.title
+        errorPrefix + resolvedConf.labels.editPageLabels.title
     } else {
-        resolvedConfig.labels.editPageLabels.title
+        resolvedConf.labels.editPageLabels.title
     }
 }
 
-@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@scriptElem = {
+    <script type="text/javascript">
+            window.onpageshow = function (event) {
+                $('button[disabled]').prop('disabled', false);
+            };
+    </script>
+}
 
-<div id="nonUkEdit"></div>
-  @if(resolvedConfig.options.showBackButtons) {
-    <div>
-      <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-    </div>
-  }
+@beforeContent = {
+@banner(Banner())
 
-  @alfErrorSummary(
-    messageConstants.errorText, editForm
-  )
+@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
+    @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
+}
 
-  <header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{resolvedConfig.labels.editPageLabels.heading}</h1>
-  </header>
+@languageSwitch(LanguageSelect(
+    messages.lang.code match {
+        case "en" ⇒ En
+        case "cy" ⇒ Cy
+    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+)
+)
+}
 
-  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
-    <fieldset class="form-field-group">
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line1"),
-          '_label -> resolvedConfig.labels.editPageLabels.line1Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line1")
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line2"),
-          '_label -> resolvedConfig.labels.editPageLabels.line2Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line2"
-        )
-      </div>
-        <div class="form-field spaced-below">
-            @alfInput(
-            editForm("line3"),
-            '_label -> resolvedConfig.labels.editPageLabels.line3Label,
-            '_inputClass -> "form-control form-control--block input--medium",
-            '_autoComplete -> "address-line3"
-            )
+@govukLayout(
+    pageTitle = Some(titleWithError),
+    headBlock = Some(head()),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(footer(Footer(
+        meta = Some(Meta(
+            visuallyHiddenTitle = Some("Support links"),
+            items = Some(FooterLinks())
+        ))
+    )))
+) {
+    <div id="nonUkEdit"></div>
+    @if(resolvedConf.options.showBackButtons) {
+        <div>
+            <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
         </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("town"),
-          '_label -> resolvedConfig.labels.editPageLabels.townLabel,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-level2"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("postcode"),
-          '_label -> resolvedConfig.labels.editPageLabels.postcodeLabel,
-          '_inputClass -> "form-control form-control--block input--small",
-          '_autoComplete -> "postal-code"
-        )
-      </div>
+    }
 
-        @if(countries.size > 1) {
-            <div class="form-field spaced-below">
-                @countryAutoComplete(countries, editForm("countryCode"), resolvedConfig.labels.editPageLabels.countryLabel)
-            </div>
-        } else {
-            @defining(countries.head._1) { countryCode =>
-                <input type="hidden" name="countryCode" value="@countryCode"/>
-            }
-            @defining(countries.head._2) { countryName =>
-                <div class="form-field">
-                    <label for="@countryName">
-                        <span>@resolvedConfig.labels.editPageLabels.countryLabel</span>
-                        <input type="text" readonly="" disabled="" class="form-control--block input--medium" value="@countryName"/>
-                    </label>
+    @alfErrorSummary(
+        messageConstants.errorText, editForm
+    )
+
+    <header class="page-header">
+        <h1 class="heading-xlarge" id="pageHeading">@{
+            resolvedConf.labels.editPageLabels.heading
+        }</h1>
+    </header>
+
+    @form(routes.AddressLookupController.handleEdit(id)) {
+        <fieldset class="form-field-group">
+            @textInput(Input(value = editForm("line1").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line1")))
+            @textInput(Input(value = editForm("line2").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line2")))
+            @textInput(Input(value = editForm("line3").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line3")))
+            @textInput(Input(value = editForm("town").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-level2")))
+            @textInput(Input(value = editForm("postcode").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("postal-code")))
+
+            @if(countries.size > 1) {
+                <div class="form-field spaced-below">
+                @countryAutoComplete(countries, editForm("countryCode"), resolvedConf.labels.editPageLabels.countryLabel)
                 </div>
+            } else {
+                @defining(countries.head._1) { countryCode =>
+                    <input type="hidden" name="countryCode" value="@countryCode"/>
+                }
+                @defining(countries.head._2) { countryName =>
+                    <div class="form-field">
+                        <label for="@countryName">
+                            <span>@resolvedConf.labels.editPageLabels.countryLabel</span>
+                            <input type="text" readonly="" disabled="" class="form-control--block input--medium" value="@countryName"/>
+                        </label>
+                    </div>
+                }
             }
-        }
 
-      <div class="form-field">
-        <button class="button" type="submit" id="continue">@{resolvedConfig.labels.editPageLabels.submitLabel}</button>
-      </div>
-    </fieldset>
-  }
+            @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.editPageLabels.submitLabel),
+                name = Some("continue"),
+                inputType = Some("submit")))
+        </fieldset>
+    }
 }

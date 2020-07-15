@@ -25,7 +25,7 @@ import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
@@ -43,8 +43,9 @@ import services.{AddressService, CountryService, IdGenerationService, KeystoreJo
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.TestConstants.{Lookup => _, _}
+import utils.TestConstants.{Lookup ⇒ _, _}
 import utils.V2ModelConverter
+import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -81,6 +82,11 @@ class AddressLookupControllerSpec
     val auditConnector = app.injector.instanceOf[AuditConnector]
 
     val components = app.injector.instanceOf[MessagesControllerComponents]
+
+    val lookup = app.injector.instanceOf[lookup]
+    val select = app.injector.instanceOf[select]
+    val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+    val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
@@ -121,9 +127,9 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 

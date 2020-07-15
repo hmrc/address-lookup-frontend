@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
 import model.{JourneyConfigDefaults, JourneyDataV2, Lookup}
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -28,6 +28,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utils.TestConstants._
+import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 class SelectPageViewSpec extends ViewSpec {
 
@@ -53,16 +54,20 @@ class SelectPageViewSpec extends ViewSpec {
     val editAddressLinkText = "cyTestEditAddressLinkText"
   }
 
-  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false) {
-    implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
-
-    val testPage: HtmlFormat.Appendable = views.html.v2.select(frontendAppConfig, "testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
-    val doc: Document = Jsoup.parse(testPage.body)
-  }
-
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup = app.injector.instanceOf[lookup]
+  val select = app.injector.instanceOf[select]
+  val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
+
+  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
+    implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
+
+    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
+    val doc: Document = Jsoup.parse(testPage.body)
+  }
 
   val EnglishMessageConstants = EnglishMessages(true)
   val WelshMessageConstants = WelshMessages(true)

@@ -60,7 +60,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         messagesControllerComponents: MessagesControllerComponents,
                                         lookup: views.html.v2.lookup,
                                         select: views.html.v2.select,
-                                        uk_mode_edit: views.html.v2.uk_mode_edit)
+                                        uk_mode_edit: views.html.v2.uk_mode_edit,
+                                        non_uk_mode_edit: views.html.v2.non_uk_mode_edit)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -224,7 +225,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
         else {
           val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.non_uk_mode_edit(frontendAppConfig, id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
+            Ok(non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
           })
         }
       }
@@ -262,7 +263,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
           validatedForm.fold(
             errors => (None, requestWithWelshHeader(isWelsh) {
-              BadRequest(views.html.v2.non_uk_mode_edit(frontendAppConfig, id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh, isUKMode = isUKMode))
+              BadRequest(non_uk_mode_edit(id, journeyData, errors, allowedCountries(countries(isWelsh), journeyData.config.options.allowedCountryCodes), isWelsh = isWelsh, isUKMode = isUKMode))
             }),
             edit => (Some(journeyData.copy(selectedAddress = Some(edit.toConfirmableAddress(id)))), requestWithWelshHeader(isWelsh) {
               Redirect(routes.AddressLookupController.confirm(id))

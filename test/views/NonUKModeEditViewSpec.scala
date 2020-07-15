@@ -25,6 +25,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
+import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 
 class NonUKModeEditViewSpec extends ViewSpec {
@@ -56,7 +57,11 @@ class NonUKModeEditViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messagesApi = app.injector.instanceOf[MessagesApi]
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup = app.injector.instanceOf[lookup]
+  val select = app.injector.instanceOf[select]
+  val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
   val configWithoutLabels = fullV2JourneyConfig.copy(
     options = fullV2JourneyOptions.copy(ukMode = Some(false)),
@@ -68,8 +73,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
     implicit val lang: Lang = Lang("en")
 
     "when provided with no page config" in {
-      val testPage = views.html.v2.non_uk_mode_edit(
-        frontendAppConfig,
+      val testPage = non_uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),
@@ -104,8 +108,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
     "when provided with page config" in {
       implicit val lang: Lang = Lang("en")
 
-      val testPage = views.html.v2.non_uk_mode_edit(
-        frontendAppConfig,
+      val testPage = non_uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode,
         editForm = nonUkEditForm(false),
@@ -137,8 +140,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
       doc.getElementById("continue").text() shouldBe configuredContent.continue
     }
     "When there is > 1 country" in {
-      val testPage = views.html.v2.non_uk_mode_edit(
-        frontendAppConfig,
+      val testPage = non_uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(false),

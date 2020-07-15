@@ -163,6 +163,8 @@ class MainTemplateViewSpec extends ViewSpec {
       }
 
       "timeout" should {
+        def compacted(value: String) = value replaceAll("\\n\\s*", "")
+
         "should display correct text in Welsh mode" in {
           val testPage = views.html.v2.main_template(
             frontendAppConfig,
@@ -175,16 +177,30 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.title shouldBe enContent.title
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
-          textOfScript shouldBe
-            """$.timeoutDialog({timeout: 120, countdown: 30, """ +
-              """time: "eiliad", """ +
-              """title: "Rydych ar fin cael eich allgofnodi", """ +
-              """message: "Er eich diogelwch, byddwn yn eich allgofnodi cyn pen", """ +
-              """minute_text: "munud", """ +
-              """minutes_text: "o funudau", """ +
-              """keep_alive_button_text: "Ailddechrau eich sesiwn", """ +
-              """heading_text: "Rydych wedi bod yn anweithredol am sbel.", """ +
-              """keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=testTimeoutUrl'});var dialogOpen;"""
+          val expectedTextOfScript =
+            """$.timeoutDialog({
+              |    timeout: 120,
+              |    countdown: 120,
+              |    time: "eiliad",
+              |    title: "Rydych ar fin cael eich allgofnodi",
+              |    message: "Er eich diogelwch, byddwn yn eich allgofnodi cyn pen",
+              |    minute_text: "munud",
+              |    minutes_text: "o funudau",
+              |    keep_alive_button_text: "Ailddechrau eich sesiwn",
+              |    heading_text: "Rydych wedi bod yn anweithredol am sbel.",
+              |    keep_alive_url: "testTimeoutKeepAliveUrl",
+              |    logout_url: '/lookup-address/destroySession?timeoutUrl=testTimeoutUrl'
+              |});
+              |
+              |var dialogOpen;
+              |
+              |$(document).on("click", "#timeout-keep-signin-btn", function() {
+              |    // Renew the address-lookup session as well as the calling service
+              |    // Taken from https://github.com/hmrc/assets-frontend/blob/master/assets/patterns/help-users-when-we-time-them-out-of-a-service/timeoutDialog.js#L138
+              |    $.get('/lookup-address/renewSession', function () {})
+              |})""".stripMargin
+
+          compacted(textOfScript) shouldBe compacted(expectedTextOfScript)
         }
 
         "should display correct text in english mode" in {
@@ -198,16 +214,30 @@ class MainTemplateViewSpec extends ViewSpec {
           doc.title shouldBe enContent.title + " - enNavTitle - GOV.UK"
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
-          textOfScript shouldBe
-            """$.timeoutDialog({timeout: 120, countdown: 30, """ +
-              """time: "seconds", """ +
-              """title: "You're about to be signed out", """ +
-              """message: "For your security, we'll sign you out in", """ +
-              """minute_text: "minute", """ +
-              """minutes_text: "minutes", """ +
-              """keep_alive_button_text: "Resume your session", """ +
-              """heading_text: "You've been inactive for a while.", """ +
-              """keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=testTimeoutUrl'});var dialogOpen;"""
+          val expectedTextScript =
+            """$.timeoutDialog({
+              |    timeout: 120,
+              |    countdown: 120,
+              |    time: "seconds",
+              |    title: "You're about to be signed out",
+              |    message: "For your security, we'll sign you out in",
+              |    minute_text: "minute",
+              |    minutes_text: "minutes",
+              |    keep_alive_button_text: "Resume your session",
+              |    heading_text: "You've been inactive for a while.",
+              |    keep_alive_url: "testTimeoutKeepAliveUrl",
+              |    logout_url: '/lookup-address/destroySession?timeoutUrl=testTimeoutUrl'
+              |});
+              |
+              |var dialogOpen;
+              |
+              |$(document).on("click", "#timeout-keep-signin-btn", function() {
+              |    // Renew the address-lookup session as well as the calling service
+              |    // Taken from https://github.com/hmrc/assets-frontend/blob/master/assets/patterns/help-users-when-we-time-them-out-of-a-service/timeoutDialog.js#L138
+              |    $.get('/lookup-address/renewSession', function () {})
+              |})""".stripMargin
+
+          compacted(textOfScript) shouldBe compacted(expectedTextScript)
         }
       }
     }

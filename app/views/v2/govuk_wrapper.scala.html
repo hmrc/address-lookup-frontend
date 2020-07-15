@@ -76,13 +76,36 @@
 
 @afterHeader = {}
 
-@timeoutScript(timeoutInSeconds: Int, timeoutUrl: String) = {
+@timeoutScript(timeoutInSeconds: Int, timeoutUrl: String, timeoutKeepAliveUrl: Option[String]) = {
     <script src='@controllers.routes.Assets.at("timeout-dialog.js")' type="text/javascript"></script>
-    <script id="timeoutScript" type="text/javascript">$.timeoutDialog({timeout: @timeoutInSeconds, countdown: 30, time: "@Html(messageConstants.timeoutSeconds)", title: "@Html(messageConstants.timeoutSignedOut)", message: "@Html(messageConstants.timeoutSignYouOut)", minute_text: "@Html(messageConstants.timeoutMinute)", minutes_text: "@Html(messageConstants.timeoutMinutes)", keep_alive_button_text: "@Html(messageConstants.timeoutResumeSession)", heading_text: "@Html(messageConstants.timeoutInactive)", keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'});var dialogOpen;</script>
+    <script id="timeoutScript" type="text/javascript">
+        $.timeoutDialog({
+            timeout: @timeoutInSeconds,
+            countdown: 120,
+            time: "@Html(messageConstants.timeoutSeconds)",
+            title: "@Html(messageConstants.timeoutSignedOut)",
+            message: "@Html(messageConstants.timeoutSignYouOut)",
+            minute_text: "@Html(messageConstants.timeoutMinute)",
+            minutes_text: "@Html(messageConstants.timeoutMinutes)",
+            keep_alive_button_text: "@Html(messageConstants.timeoutResumeSession)",
+            heading_text: "@Html(messageConstants.timeoutInactive)",
+            keep_alive_url: "@timeoutKeepAliveUrl.getOrElse("/lookup-address/renewSession")",
+            logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'
+        });
+
+        var dialogOpen;
+        @if(timeoutKeepAliveUrl.isDefined) {
+            $(document).on("click", "#timeout-keep-signin-btn", function() {
+                // Renew the address-lookup session as well as the calling service
+                // Taken from https://github.com/hmrc/assets-frontend/blob/master/assets/patterns/help-users-when-we-time-them-out-of-a-service/timeoutDialog.js#L138
+                $.get('/lookup-address/renewSession', function () {})
+            })
+        }
+    </script>
 }
 
 @scripts = {
-    @journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl)))
+    @journeyData.flatMap(_.resolveConfigV2(welshEnabled, appConfig).options.timeoutConfig.map(t => timeoutScript(t.timeoutAmount, t.timeoutUrl, t.timeoutKeepAliveUrl)))
     @scriptElem
 }
 

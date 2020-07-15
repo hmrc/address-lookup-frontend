@@ -110,7 +110,8 @@ object IntegrationTestConstants {
       |      ],
       |      "timeout":{
       |         "timeoutAmount":120,
-      |         "timeoutUrl":"timeoutUrl"
+      |         "timeoutUrl":"timeoutUrl",
+      |         "timeoutKeepAliveUrl":"testTimeoutKeepAliveUrl"
       |      },
       |      "ukMode":true
       |   },
@@ -214,7 +215,8 @@ object IntegrationTestConstants {
       |         },
       |         "timeoutConfig":{
       |            "timeoutAmount":120,
-      |            "timeoutUrl":"testTimeoutUrl"
+      |            "timeoutUrl":"testTimeoutUrl",
+      |            "timeoutKeepAliveUrl":"testTimeoutKeepAliveUrl"
       |         }
       |      },
       |      "labels":{
@@ -498,7 +500,8 @@ object IntegrationTestConstants {
         )),
         timeoutConfig = Some(TimeoutConfig(
           timeoutAmount = 120,
-          timeoutUrl = "TIMEOUT_URL"
+          timeoutUrl = "TIMEOUT_URL",
+          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
         ))
       ),
       labels = Some(JourneyLabels(
@@ -593,7 +596,8 @@ object IntegrationTestConstants {
       allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
       timeout = returnNoneOrConfig(Some(Timeout(
         timeoutAmount = 120,
-        timeoutUrl = "TIMEOUT_URL"
+        timeoutUrl = "TIMEOUT_URL",
+        timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
       ))),
       ukMode = Some(allBooleanSetAndAppropriateOptions)
     )
@@ -637,7 +641,8 @@ object IntegrationTestConstants {
         allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
         timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
           timeoutAmount = 120,
-          timeoutUrl = "TIMEOUT_URL"
+          timeoutUrl = "TIMEOUT_URL",
+          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
         ))),
         ukMode = Some(allBooleanSetAndAppropriateOptions)
       ),

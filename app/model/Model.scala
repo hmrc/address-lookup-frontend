@@ -12,7 +12,7 @@ import utils.PostcodeHelper
 
 case class Lookup(filter: Option[String], postcode: String)
 
-case class Timeout(timeoutAmount: Int, timeoutUrl: String)
+case class Timeout(timeoutAmount: Int, timeoutUrl: String, timeoutKeepAliveUrl: Option[String])
 
 case class Select(addressId: String)
 
@@ -287,7 +287,8 @@ object JourneyData {
 
   implicit val timeoutFormat: Format[Timeout] = (
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
-      (JsPath \ "timeoutUrl").format[String]
+      (JsPath \ "timeoutUrl").format[String] and
+      (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
     ) (Timeout.apply, unlift(Timeout.unapply))
   implicit val journeyConfigFormat = Json.format[JourneyConfig]
   implicit val journeyDataFormat = Json.format[JourneyData]

@@ -119,5 +119,5 @@ class V2ModelConverter @Inject()(frontendAppConfig: FrontendAppConfig) {
       )
 
   private def resolveTimeoutConfig(optTimeout: Option[Timeout]): Option[TimeoutConfig] =
-    optTimeout map (v1 => TimeoutConfig(v1.timeoutAmount, v1.timeoutUrl))
+    optTimeout map (v1 => TimeoutConfig(v1.timeoutAmount, v1.timeoutUrl, v1.timeoutKeepAliveUrl))
 }

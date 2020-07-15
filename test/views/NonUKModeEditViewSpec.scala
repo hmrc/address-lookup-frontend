@@ -15,7 +15,7 @@ import utils.TestConstants._
 class NonUKModeEditViewSpec extends ViewSpec {
 
   object defaultContent {
-    val title = "Enter address"
+    val title = "Enter address - navTitle - GOV.UK"
     val heading = "Enter address"
     val addressLine1 = "Address line 1"
     val addressLine2 = "Address line 2 (optional)"
@@ -27,7 +27,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
   }
 
   object configuredContent {
-    val title = "editTitle"
+    val title = "editTitle - navTitle - GOV.UK"
     val heading = "editHeading"
     val additionalStylesheet = "testStylesheetUrl"
     val addressLine1 = "editLine1"

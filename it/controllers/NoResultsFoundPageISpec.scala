@@ -80,7 +80,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe EnglishContent.title
+        doc.title shouldBe EnglishContent.title + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=back-link]") should have(

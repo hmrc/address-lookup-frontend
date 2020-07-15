@@ -83,7 +83,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       doc.select("a[class=back-link]") should have(
         text("Back")
       )
-      doc.title shouldBe "confirm-title"
+      doc.title shouldBe "confirm-title - NAV_TITLE - GOV.UK"
       doc.h1.text() shouldBe "confirm-heading"
       doc.submitButton.text() shouldBe "confirm-submitLabel"
       doc.address should have(

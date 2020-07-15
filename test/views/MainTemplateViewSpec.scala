@@ -101,9 +101,9 @@ class MainTemplateViewSpec extends ViewSpec {
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe enContent.title
-          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
-          doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
+          doc.title shouldBe cyContent.title + " - cyNavTitle - GOV.UK"
+          doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe cyContent.additionalStylesheet
+          doc.getLinkHrefAsText("homeNavHref") shouldBe cyContent.navHref
           doc.select(".header__menu__proposition-name").text() shouldBe cyContent.navTitle
           doc.getALinkText("homeNavHref") shouldBe WelshMessageConstants.home
           doc.getSpanAsText("phase-banner-content") shouldBe cyContent.phaseBannerHtml
@@ -116,7 +116,7 @@ class MainTemplateViewSpec extends ViewSpec {
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe enContent.title
+          doc.title shouldBe enContent.title + " - enNavTitle - GOV.UK"
           doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
           doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
           doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
@@ -136,7 +136,7 @@ class MainTemplateViewSpec extends ViewSpec {
           )(testHtml)(testRequest, Messages(Lang("cy"), messagesApi))
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe enContent.title
+          doc.title shouldBe enContent.title + " - cyNavTitle - GOV.UK"
           doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe cyContent.additionalStylesheet
           doc.getLinkHrefAsText("homeNavHref") shouldBe cyContent.navHref
           doc.select(".header__menu__proposition-name").text() shouldBe cyContent.navTitle
@@ -152,7 +152,7 @@ class MainTemplateViewSpec extends ViewSpec {
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe enContent.title
+          doc.title shouldBe enContent.title + " - enNavTitle - GOV.UK"
           doc.getStyleLinkHrefAsText("customStyleSheet") shouldBe enContent.additionalStylesheet
           doc.getLinkHrefAsText("homeNavHref") shouldBe enContent.navHref
           doc.select(".header__menu__proposition-name").text() shouldBe enContent.navTitle
@@ -195,7 +195,7 @@ class MainTemplateViewSpec extends ViewSpec {
           )(testHtml)
           val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.title shouldBe enContent.title
+          doc.title shouldBe enContent.title + " - enNavTitle - GOV.UK"
           val textOfScript: String = doc.getElementById("timeoutScript").html()
 
           textOfScript shouldBe

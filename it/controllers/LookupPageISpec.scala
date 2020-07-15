@@ -155,7 +155,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.title shouldBe fullLookupPageConfig.title.get
+        doc.title shouldBe fullLookupPageConfig.title.get + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
 
         doc.select("a[class=back-link]") should have(
@@ -213,7 +213,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe fullLookupPageConfig.title.get
+        doc.title shouldBe fullLookupPageConfig.title.get + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
 
         doc.select("a[class=back-link]") should have(

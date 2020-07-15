@@ -22,7 +22,13 @@
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang)
+@import views.html.helpers.head
+@import config.FooterLinks
+
+@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
+form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
+errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+@(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: FrontendAppConfig)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
@@ -36,25 +42,57 @@
     }
 }
 
-@template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@scriptElem = {
+    <script type="text/javascript">
+            window.onpageshow = function(event) {
+                $('button[disabled]').prop('disabled', false);
+            };
+    </script>
+}
 
-    @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-        <div>
-            <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
-        </div>
+@beforeContent = {
+@banner(Banner())
+
+@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
+    @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
+}
+
+@languageSwitch(LanguageSelect(messages.lang.code match {
+    case "en" ⇒ En
+    case "cy" ⇒ Cy
+}, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+)
+)
+}
+
+@govukLayout(
+    pageTitle = Some(titleWithError),
+    headBlock = Some(head()),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(footer(Footer(
+        meta = Some(Meta(
+            visuallyHiddenTitle = Some("Support links"),
+            items = Some(FooterLinks())
+        ))
+    )))
+) {
+
+    @if(selectForm.hasErrors) {
+        @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
+            errorList = selectForm.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"), content = HtmlContent(messages(error.message)))}))
     }
-
-    @alfErrorSummary(messageConstants.errorText, selectForm)
 
 <header class="page-header">
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+            <h1 class="govuk-heading-l" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
         } else {
-            <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+            <h1 class="govuk-heading-l" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
         }
     } else {
-        <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+        <h1 class="govuk-heading-l" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
     }
 </header>
 
@@ -69,15 +107,24 @@
         }
     }
 
-    @helpers.form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
-        <div class="form-group">
-            @alfInputRadioGroup(selectForm("addressId"), proposals.toHtmlOptions, '_legend -> journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel, '_labelClass -> "block-label", '_ariaDescribedBy -> {if(selectForm.errors) "error-notification" else ""})
-        </div>
-        <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a></p>
-        </div>
-        <div class="form-group">
-            <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel}</button>
-        </div>
+    @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+        @radios(Radios(
+            classes = "govuk-form-border",
+            formGroupClasses = "form-group",
+            hint = Some(Hint(content = HtmlContent(""))),
+            errorMessage = selectForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+            name = journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel,
+            items = proposals.proposals match {
+            case Some(ps) ⇒ ps.map(p ⇒ RadioItem(content = HtmlContent(p.toDescription), value = Some(p.addressId)))
+            case None ⇒ Seq.empty
+        }))
+
+        <p class="govuk-!-margin-bottom-6 govuk-body">
+            <a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" class="govuk-link" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
+        </p>
+
+        @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel),
+            name=Some("continue"),
+            inputType=Some("submit")))
     }
 }

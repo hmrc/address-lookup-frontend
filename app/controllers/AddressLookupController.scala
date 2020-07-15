@@ -58,7 +58,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         auditConnector: AuditConnector,
                                         implicit val frontendAppConfig: FrontendAppConfig,
                                         messagesControllerComponents: MessagesControllerComponents,
-                                        lookup: views.html.v2.lookup)
+                                        lookup: views.html.v2.lookup,
+                                        select: views.html.v2.select)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -121,7 +122,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
               val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
 
               Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-                Ok(views.html.v2.select(frontendAppConfig, id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
+                Ok(select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }
             case TooManyResults(_, firstLookup) =>
               None -> requestWithWelshHeader(isWelsh) {
@@ -171,7 +172,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       bound.fold(
         errors => {
           (None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(views.html.v2.select(frontendAppConfig, id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
+            BadRequest(select(id, journeyData, errors, Proposals(journeyData.proposals), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
           })
         },
         selection => {
@@ -185,7 +186,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                   })
                 case None =>
                   (None, requestWithWelshHeader(isWelsh) {
-                    BadRequest(views.html.v2.select(frontendAppConfig, id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
+                    BadRequest(select(id, journeyData, bound, Proposals(Some(props)), Lookup(filter, postcode), firstSearch = true, isWelsh = isWelsh, isUKMode = isUKMode))
                   })
               }
             }

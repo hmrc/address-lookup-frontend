@@ -24,11 +24,13 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
+import views.html.v2.confirm
 
 class ConfirmViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val frontendConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendConfig = app.injector.instanceOf[FrontendAppConfig]
   val messagesApi = app.injector.instanceOf[MessagesApi]
+  val confirm = app.injector.instanceOf[confirm]
 
   "ConfirmView" should {
     "render English default content" when {
@@ -57,7 +59,7 @@ class ConfirmViewSpec extends ViewSpec {
         implicit val lang: Lang = Lang("en")
 
         "show back button is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -88,7 +90,7 @@ class ConfirmViewSpec extends ViewSpec {
             testTimeoutConfig = None,
             testLabels = None
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe ""
@@ -102,7 +104,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "a confirmed address has been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -116,7 +118,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "a confirmed address has not been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, None, isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, None, isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
           val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 
@@ -131,7 +133,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show subheading and info is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -167,7 +169,7 @@ class ConfirmViewSpec extends ViewSpec {
             )),
             testLabels = None
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -181,7 +183,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show search again link is true " in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -217,7 +219,7 @@ class ConfirmViewSpec extends ViewSpec {
             )),
             testLabels = None
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -231,7 +233,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show change link is true " in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -267,7 +269,7 @@ class ConfirmViewSpec extends ViewSpec {
             )),
             testLabels = None
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -281,7 +283,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show confirm change options is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -317,7 +319,7 @@ class ConfirmViewSpec extends ViewSpec {
             )),
             testLabels = None
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -360,7 +362,7 @@ class ConfirmViewSpec extends ViewSpec {
         implicit val lang: Lang = Lang("cy")
 
         "show back button is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -393,7 +395,7 @@ class ConfirmViewSpec extends ViewSpec {
               cy = Some(LanguageLabels())
             ))
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe ""
@@ -407,7 +409,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "a confirmed address has been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -421,7 +423,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "a confirmed address has not been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, None, isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, None, isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
           val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 
@@ -436,7 +438,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show subheading and info is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -474,7 +476,7 @@ class ConfirmViewSpec extends ViewSpec {
               cy = Some(LanguageLabels())
             ))
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -488,7 +490,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show search again link is true " in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -526,7 +528,7 @@ class ConfirmViewSpec extends ViewSpec {
               cy = Some(LanguageLabels())
             ))
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -540,7 +542,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show change link is true " in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -578,7 +580,7 @@ class ConfirmViewSpec extends ViewSpec {
               cy = Some(LanguageLabels())
             ))
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -592,7 +594,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "show confirm change options is true" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -630,7 +632,7 @@ class ConfirmViewSpec extends ViewSpec {
               cy = Some(LanguageLabels())
             ))
           )
-          val testPage = views.html.v2.confirm(frontendConfig, "", testJourneyConfig, Some(testAddress), isWelsh = true)
+          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -651,7 +653,7 @@ class ConfirmViewSpec extends ViewSpec {
         val messages = MessageConstants.EnglishMessageConstants(true)
 
         "a confirmed address has been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", journeyDataV2Full, Some(testAddress), isWelsh = false)
+          val testPage = confirm("", journeyDataV2Full, Some(testAddress), isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
 
           doc.getBackLinkText shouldBe messages.back
@@ -665,7 +667,7 @@ class ConfirmViewSpec extends ViewSpec {
         }
 
         "a confirmed address has not been defined" in {
-          val testPage = views.html.v2.confirm(frontendConfig, "", journeyDataV2Full, None, isWelsh = false)
+          val testPage = confirm("", journeyDataV2Full, None, isWelsh = false)
           val doc: Document = Jsoup.parse(testPage.body)
           val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 
@@ -686,7 +688,7 @@ class ConfirmViewSpec extends ViewSpec {
       val messages = MessageConstants.WelshMessageConstants(true)
 
       "a confirmed address has been defined" in {
-        val testPage = views.html.v2.confirm(frontendConfig, "", journeyDataV2Full, Some(testAddress), isWelsh = true)
+        val testPage = confirm("", journeyDataV2Full, Some(testAddress), isWelsh = true)
         val doc: Document = Jsoup.parse(testPage.body)
 
         doc.getBackLinkText shouldBe messages.back
@@ -700,7 +702,7 @@ class ConfirmViewSpec extends ViewSpec {
       }
 
       "a confirmed address has not been defined" in {
-        val testPage = views.html.v2.confirm(frontendConfig, "", journeyDataV2Full, None, isWelsh = true)
+        val testPage = confirm("", journeyDataV2Full, None, isWelsh = true)
         val doc: Document = Jsoup.parse(testPage.body)
         val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
 

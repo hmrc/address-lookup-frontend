@@ -96,30 +96,30 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
 
 
     <header class="page-header">
-        <h1 class="heading-xlarge" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
+        <h1 class="govuk-heading-xl" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
     </header>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
             @textInput(Input(value = editForm("line1").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
-                name = editForm("line1").name, id = editForm("line1").name))
+                name = editForm("line1").name, id = editForm("line1").name, classes = "govuk-input--width-20"))
             @textInput(Input(value = editForm("line2").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
-                name = editForm("line2").name, id = editForm("line2").name))
+                name = editForm("line2").name, id = editForm("line2").name, classes = "govuk-input--width-20"))
             @textInput(Input(value = editForm("line3").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
-                name = editForm("line3").name, id = editForm("line3").name))
+                name = editForm("line3").name, id = editForm("line3").name, classes = "govuk-input--width-20"))
             @textInput(Input(value = editForm("town").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
-                name = editForm("town").name, id = editForm("town").name))
+                name = editForm("town").name, id = editForm("town").name, classes = "govuk-input--width-20"))
             @textInput(Input(value = editForm("postcode").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
                 formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
-                name = editForm("postcode").name, id = editForm("postcode").name))
+                name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10"))
 
             @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
                 name = Some("continue"),

@@ -61,7 +61,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         lookup: views.html.v2.lookup,
                                         select: views.html.v2.select,
                                         uk_mode_edit: views.html.v2.uk_mode_edit,
-                                        non_uk_mode_edit: views.html.v2.non_uk_mode_edit)
+                                        non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
+                                        confirm: views.html.v2.confirm)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -283,7 +284,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
         journeyData.selectedAddress.map(_ =>
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(views.html.v2.confirm(frontendAppConfig, id, journeyData, journeyData.selectedAddress, isWelsh, isUKMode))
+            Ok(confirm(id, journeyData, journeyData.selectedAddress, isWelsh, isUKMode))
           })
         )
         .getOrElse(

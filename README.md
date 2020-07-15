@@ -133,7 +133,7 @@ If your service doesn't have Welsh translations you can disable them setting the
         "submitLabel": "Find address",
         "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode.",
         "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results.",
-        "manualAddressLinkText": "The address doesn't have a postcode"
+        "manualAddressLinkText": "Enter the address manually"
       },
       "confirmPageLabels": {
         "title": "Confirm address",
@@ -179,7 +179,7 @@ If your service doesn't have Welsh translations you can disable them setting the
         "submitLabel": "Find address welsh",
         "noResultsFoundMessage": "Sorry, we couldn't find anything for that postcode. welsh",
         "resultLimitExceededMessage": "There were too many results. Please add additional details to limit the number of results. welsh",
-        "manualAddressLinkText": "The address doesn't have a postcode welsh"
+        "manualAddressLinkText": "Enter the address manually welsh"
       },
       "confirmPageLabels": {
         "title": "Confirm address welsh",

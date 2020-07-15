@@ -109,13 +109,16 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         @radios(Radios(
-            classes = "govuk-form-border",
             formGroupClasses = "form-group",
-            hint = Some(Hint(content = HtmlContent(""))),
             errorMessage = selectForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
-            name = journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel,
+            name = "addressId",
             items = proposals.proposals match {
-            case Some(ps) ⇒ ps.map(p ⇒ RadioItem(content = HtmlContent(p.toDescription), value = Some(p.addressId)))
+            case Some(ps) ⇒ ps.map(p ⇒
+                RadioItem(
+                    content = HtmlContent(p.toDescription),
+                    value = Some(p.addressId),
+                    id = Some(s"addressId-${p.addressId}"),
+                    checked = selectForm("p.addressId").value.isDefined))
             case None ⇒ Seq.empty
         }))
 

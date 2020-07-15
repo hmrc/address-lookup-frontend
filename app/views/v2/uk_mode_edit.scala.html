@@ -19,83 +19,111 @@
 @import views.html.helpers.{alfErrorSummary, alfInput}
 @import views.html.v2.main_template
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
-
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import views.html.helpers.head
+@import config.FooterLinks
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-@resolvedConf = @{journeyData.resolveConfigV2(isWelsh, appConfig)}
+@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
+        form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
+        errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
-
-@titleWithError = @{
-  if(editForm.errors) {
-    errorPrefix + resolvedConf.labels.editPageLabels.title
-  } else {
-    resolvedConf.labels.editPageLabels.title
-  }
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
 }
 
-@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
-<div id="ukEdit"></div>
-  @if(resolvedConf.options.showBackButtons) {
-    <div>
-      <a id="back-link" class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-    </div>
-  }
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
 
-  @alfErrorSummary(
-   messageConstants.errorText, editForm
-  )
+@errorPrefix = @{
+    if(isWelsh) "Gwall: " else "Error: "
+}
 
-  <header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
-  </header>
+@titleWithError = @{
+    if(editForm.errors) {
+        errorPrefix + resolvedConf.labels.editPageLabels.title
+    } else {
+        resolvedConf.labels.editPageLabels.title
+    }
+}
 
-  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
-    <fieldset class="form-field-group">
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line1"),
-          '_label -> resolvedConf.labels.editPageLabels.line1Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line1")
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line2"),
-          '_label -> resolvedConf.labels.editPageLabels.line2Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line2"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-        editForm("line3"),
-        '_label -> resolvedConf.labels.editPageLabels.line3Label,
-        '_inputClass -> "form-control form-control--block input--medium",
-        '_autoComplete -> "address-line3"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("town"),
-          '_label -> resolvedConf.labels.editPageLabels.townLabel,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-level2"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-        editForm("postcode"),
-        '_label -> resolvedConf.labels.editPageLabels.postcodeLabel,
-        '_inputClass -> "form-control form-control--block input--small",
-        '_autoComplete -> "postal-code"
-        )
-      </div>
-      <div class="form-field">
-        <button class="button" type="submit" id="continue">@{resolvedConf.labels.editPageLabels.submitLabel}</button>
-      </div>
-    </fieldset>
-  }
+@scriptElem = {
+    <script type="text/javascript">
+            window.onpageshow = function (event) {
+                $('button[disabled]').prop('disabled', false);
+            };
+    </script>
+}
+
+@beforeContent = {
+@banner(Banner())
+
+@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
+    @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
+}
+
+@languageSwitch(LanguageSelect(
+    messages.lang.code match {
+        case "en" ⇒ En
+        case "cy" ⇒ Cy
+    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+)
+)
+}
+
+
+@govukLayout(
+    pageTitle = Some(titleWithError),
+    headBlock = Some(head()),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(footer(Footer(
+        meta = Some(Meta(
+            visuallyHiddenTitle = Some("Support links"),
+            items = Some(FooterLinks())
+        ))
+    )))
+) {
+    <div id="ukEdit"></div>
+    @if(resolvedConf.options.showBackButtons) {
+        <div>
+            <a id="back-link" class="back-link" href="javascript:history.back()">@messageConstants.back</a>
+        </div>
+    }
+
+    @alfErrorSummary(
+        messageConstants.errorText, editForm
+    )
+
+    <header class="page-header">
+        <h1 class="heading-xlarge" id="pageHeading">@{
+            resolvedConf.labels.editPageLabels.heading
+        }</h1>
+    </header>
+
+    @form(routes.AddressLookupController.handleEdit(id)) {
+        <fieldset class="form-field-group">
+            @textInput(Input(value = editForm("line1").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line1")))
+            @textInput(Input(value = editForm("line2").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line2")))
+            @textInput(Input(value = editForm("line3").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line3")))
+            @textInput(Input(value = editForm("town").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-level2")))
+            @textInput(Input(value = editForm("postcode").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("postal-code")))
+
+            @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.editPageLabels.submitLabel),
+                name = Some("continue"),
+                inputType = Some("submit")))
+        </fieldset>
+    }
 }

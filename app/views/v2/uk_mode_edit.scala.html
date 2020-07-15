@@ -22,10 +22,11 @@
 @import config.FrontendAppConfig
 @import views.html.helpers.head
 @import config.FooterLinks
+@import views.html.helper._
 
 @this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
-        form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
-        errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
+errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios, select: GovukSelect)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @messageConstants = @{
@@ -59,7 +60,8 @@
 @beforeContent = {
 @banner(Banner())
 
-@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
+@if(resolvedConf.options.showBackButtons) {
+    <div id="ukEdit"></div>
     @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
 }
 
@@ -86,42 +88,41 @@
         ))
     )))
 ) {
-    <div id="ukEdit"></div>
-    @if(resolvedConf.options.showBackButtons) {
-        <div>
-            <a id="back-link" class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-        </div>
+
+    @if(editForm.hasErrors) {
+        @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
+            errorList = editForm.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"), content = HtmlContent(messages(error.message)))}))
     }
 
-    @alfErrorSummary(
-        messageConstants.errorText, editForm
-    )
 
     <header class="page-header">
         <h1 class="heading-xlarge" id="pageHeading">@{resolvedConf.labels.editPageLabels.heading}</h1>
     </header>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
-        <fieldset class="form-field-group">
             @textInput(Input(value = editForm("line1").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line1")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
+                name = editForm("line1").name, id = editForm("line1").name))
             @textInput(Input(value = editForm("line2").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line2")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
+                name = editForm("line2").name, id = editForm("line2").name))
             @textInput(Input(value = editForm("line3").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line3")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
+                name = editForm("line3").name, id = editForm("line3").name))
             @textInput(Input(value = editForm("town").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-level2")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
+                name = editForm("town").name, id = editForm("town").name))
             @textInput(Input(value = editForm("postcode").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
-                formGroupClasses = "form-field-group", autocomplete = Some("postal-code")))
+                formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+                name = editForm("postcode").name, id = editForm("postcode").name))
 
-            @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.editPageLabels.submitLabel),
+            @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
                 name = Some("continue"),
                 inputType = Some("submit")))
-        </fieldset>
     }
 }

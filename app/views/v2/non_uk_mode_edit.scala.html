@@ -22,10 +22,12 @@
 @import config.FrontendAppConfig
 @import views.html.helpers.head
 @import config.FooterLinks
+@import views.html.helper._
+@import uk.gov.hmrc.govukfrontend.views.html.components
 
 @this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
 form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
-errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios, select: GovukSelect)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @messageConstants = @{
@@ -59,7 +61,8 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
 @beforeContent = {
 @banner(Banner())
 
-@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
+@if(resolvedConf.options.showBackButtons) {
+    <div id="nonUkEdit"></div>
     @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
 }
 
@@ -85,16 +88,11 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
         ))
     )))
 ) {
-    <div id="nonUkEdit"></div>
-    @if(resolvedConf.options.showBackButtons) {
-        <div>
-            <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-        </div>
-    }
 
-    @alfErrorSummary(
-        messageConstants.errorText, editForm
-    )
+    @if(editForm.hasErrors) {
+        @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
+            errorList = editForm.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"), content = HtmlContent(messages(error.message)))}))
+    }
 
     <header class="page-header">
         <h1 class="heading-xlarge" id="pageHeading">@{
@@ -103,44 +101,39 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
     </header>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
-        <fieldset class="form-field-group">
             @textInput(Input(value = editForm("line1").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line1")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
+                name = editForm("line1").name, id = editForm("line1").name))
             @textInput(Input(value = editForm("line2").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line2")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
+                name = editForm("line2").name, id = editForm("line2").name))
             @textInput(Input(value = editForm("line3").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line3")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
+                name = editForm("line3").name, id = editForm("line3").name))
             @textInput(Input(value = editForm("town").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-level2")))
+                formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
+                name = editForm("town").name, id = editForm("town").name))
             @textInput(Input(value = editForm("postcode").value,
                 label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
-                formGroupClasses = "form-field-group", autocomplete = Some("postal-code")))
+                formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+                name = editForm("postcode").name, id = editForm("postcode").name))
 
-            @if(countries.size > 1) {
-                <div class="form-field spaced-below">
-                @countryAutoComplete(countries, editForm("countryCode"), resolvedConf.labels.editPageLabels.countryLabel)
-                </div>
-            } else {
-                @defining(countries.head._1) { countryCode =>
-                    <input type="hidden" name="countryCode" value="@countryCode"/>
-                }
-                @defining(countries.head._2) { countryName =>
-                    <div class="form-field">
-                        <label for="@countryName">
-                            <span>@resolvedConf.labels.editPageLabels.countryLabel</span>
-                            <input type="text" readonly="" disabled="" class="form-control--block input--medium" value="@countryName"/>
-                        </label>
-                    </div>
-                }
-            }
+            @select(components.Select(
+                id = "countryCode",
+                name = "countryCode",
+                errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+                items = countries.map{
+                    case (k,v) ⇒ SelectItem(value = Some(k), text = v)
+                },
+                formGroupClasses = "form-field-group"
+            ))
 
-            @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.editPageLabels.submitLabel),
+            @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
                 name = Some("continue"),
                 inputType = Some("submit")))
-        </fieldset>
     }
 }

@@ -15,28 +15,65 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers
-
 @import model._
-
 @import v2.main_template
-
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
-
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import views.html.helpers.head
+@import config.FooterLinks
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
+@this(govukLayout: GovukLayout, form: FormWithCSRF, head: head, footer: GovukFooter, banner: HmrcBanner, languageSwitch: HmrcLanguageSelect, govukBackLink: GovukBackLink, button: govukButton)
+@(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@main_template(appConfig, title = messageConstants.noResultsFoundTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
+}
 
-@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-    <div>
-        <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-    </div>
-    }
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
+
+@scriptElem = {
+    <script type="text/javascript">
+            window.onpageshow = function (event) {
+                $('button[disabled]').prop('disabled', false);
+            };
+    </script>
+}
+
+@beforeContent = {
+@banner(Banner())
+
+@if(resolvedConf.options.showBackButtons) {
+    <div id="nonUkEdit"></div>
+    @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
+}
+
+@languageSwitch(LanguageSelect(
+    messages.lang.code match {
+        case "en" ⇒ En
+        case "cy" ⇒ Cy
+    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+)
+)
+}
+
+@govukLayout(
+    pageTitle = Some(resolvedConf.labels.confirmPageLabels.title),
+    headBlock = Some(head()),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(footer(Footer(
+        meta = Some(Meta(
+            visuallyHiddenTitle = Some("Support links"),
+            items = Some(FooterLinks())
+        ))
+    )))
+) {
 
     <header class="page-header">
-        <h1 class="heading-xlarge" id="pageHeading">
+        <h1 class="govuk-heading-xl" id="pageHeading">
             @{if(firstLookup) {
                 messageConstants.tooManyResultsText
             } else {
@@ -46,18 +83,16 @@
     </header>
 
     <p>@messageConstants.youEntered</p>
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list-bullet">
         <li>@{lookup.postcode} @messageConstants.forPostcode</li>
         <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'$filter' ${messageConstants.nameNumberText}")}</li>
 
     </ul>
     <br />
 
-    <div class="form-group">
-        <a id="anotherSearch" class="button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
+        <p><a id="anotherSearch" class="govuk-button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
             @messageConstants.anotherSearchText
-        </a>
-    </div>
+        </a></p>
 
-    <a href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a>
+    <p><a class="govuk-link" href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a></p>
 }

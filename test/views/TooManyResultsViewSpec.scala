@@ -25,11 +25,14 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.TestConstants._
+import views.html.v2.too_many_results
 
 class TooManyResultsViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val too_many_results = app.injector.instanceOf[too_many_results]
+
 
   val testHtml = Html("")
 
@@ -86,8 +89,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       "the back buttons are enabled in the journey config" when {
         "no filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -111,8 +113,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -136,8 +137,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered with ukMode = true" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true, ukMode = Some(true)),
               lookup = model.Lookup(
@@ -163,8 +163,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       "the back buttons are not enabled in the journey config" when {
         "no filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -188,8 +187,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -221,8 +219,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       "the back buttons are enabled in the journey config" when {
         "no filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -247,8 +244,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = true),
               lookup = model.Lookup(
@@ -275,8 +271,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       "the back buttons are not enabled in the journey config" when {
         "no filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -301,8 +296,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false),
               lookup = model.Lookup(
@@ -327,8 +321,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
         "a filter has been entered with ukMode = true" when {
           "there are too many addresses" in {
-            val doc = Jsoup.parse(views.html.v2.too_many_results(
-              frontendAppConfig,
+            val doc = Jsoup.parse(too_many_results(
               id = testJourneyId,
               journeyData = journeyData(showBackButtons = false, ukMode = Some(true)),
               lookup = model.Lookup(

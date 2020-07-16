@@ -45,7 +45,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.TestConstants.{Lookup ⇒ _, _}
 import utils.V2ModelConverter
-import views.html.v2.{confirm, lookup, no_results, non_uk_mode_edit, select, uk_mode_edit}
+import views.html.v2.{confirm, lookup, no_results, non_uk_mode_edit, select, too_many_results, uk_mode_edit}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -89,6 +89,7 @@ class AddressLookupControllerSpec
     val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
     val confirm = app.injector.instanceOf[confirm]
     val no_results = app.injector.instanceOf[no_results]
+    val too_many_results = app.injector.instanceOf[too_many_results]
 
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
@@ -129,9 +130,9 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 

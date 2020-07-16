@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
@@ -83,11 +99,11 @@ class StubControllerSpec extends PlaySpec
   val mockAPIController = mock[ApiController]
 
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val components = app.injector.instanceOf[MessagesControllerComponents]
 
   class Setup {
-    val controller = new StubController(
-      mockAPIController, mockJourneyRepository, frontendAppConfig
-    )(app.injector.instanceOf[ExecutionContext], app.injector.instanceOf[MessagesApi])
+    val controller = new StubController(mockAPIController, mockJourneyRepository, frontendAppConfig, components)
+    
     reset(mockAPIController)
     reset(mockJourneyRepository)
   }

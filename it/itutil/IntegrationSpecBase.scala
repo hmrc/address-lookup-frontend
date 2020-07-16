@@ -18,6 +18,10 @@ package itutil
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
+import play.api.Application
+import play.api.Mode.Test
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.crypto.CookieSigner
 
 trait IntegrationSpecBase extends WordSpec with LoginStub
   with GivenWhenThen
@@ -38,6 +42,13 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
 
   val mockHost = WireMockHelper.wiremockHost
   val mockPort = WireMockHelper.wiremockPort
+
+  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(fakeConfig())
+    .in(Test)
+    .build()
+
+  val cookieSigner = app.injector.instanceOf[CookieSigner]
 
   override def beforeEach(): Unit = {
     resetWiremock()

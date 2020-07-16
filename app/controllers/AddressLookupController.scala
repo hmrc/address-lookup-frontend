@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package controllers
 
@@ -8,7 +23,7 @@ import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
 import model._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Lang, Messages, MessagesApi}
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import spray.http.Uri
@@ -41,9 +56,10 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         addressService: AddressService,
                                         countryService: CountryService,
                                         auditConnector: AuditConnector,
-                                        frontendAppConfig: FrontendAppConfig)
-                                       (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
-  extends AlfController(journeyRepository) {
+                                        frontendAppConfig: FrontendAppConfig,
+                                        messagesControllerComponents: MessagesControllerComponents)
+                                       (override implicit val ec: ExecutionContext)
+  extends AlfController(journeyRepository, messagesControllerComponents) {
 
   def countries(welshFlag: Boolean = false): Seq[(String, String)] = countryService.findAll(welshFlag).map { c =>
     (c.code -> c.name)
@@ -80,6 +96,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   def select(id: String): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
+      implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
+
       val isUKMode = journeyData.config.options.isUkMode
 
       lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
@@ -144,6 +162,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   def handleSelect(id: String, filter: Option[String], postcode: String): Action[AnyContent] = Action.async {
     implicit req => withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
+      implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
+
       val isUKMode = journeyData.config.options.isUkMode
       val bound = selectForm(isWelsh).bindFromRequest()
 
@@ -311,9 +331,9 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   }
 }
 
-abstract class AlfController @Inject()(journeyRepository: JourneyRepository)
-                                      (implicit val ec: ExecutionContext, implicit val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport {
+abstract class AlfController @Inject()(journeyRepository: JourneyRepository, messagesControllerComponents: MessagesControllerComponents)
+                                      (implicit val ec: ExecutionContext)
+  extends FrontendController(messagesControllerComponents) with I18nSupport {
 
   protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))(action: JourneyData => (Option[JourneyData], Result))(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))

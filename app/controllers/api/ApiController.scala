@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.api
 
 import config.FrontendAppConfig
@@ -6,9 +22,9 @@ import forms.ALFForms
 import javax.inject.{Inject, Singleton}
 import model.JourneyData._
 import model._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Langs, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.Action
+import play.api.mvc.{Action, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
 import utils.V2ModelConverter
@@ -19,9 +35,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class ApiController @Inject()(journeyRepository: JourneyRepository,
                               idGenerationService: IdGenerationService,
                               config: FrontendAppConfig,
-                              converter: V2ModelConverter)
-                             (override implicit val ec: ExecutionContext, override implicit val messagesApi: MessagesApi)
-  extends AlfController(journeyRepository) {
+                              converter: V2ModelConverter,
+                              controllerComponents: MessagesControllerComponents)
+                             (override implicit val ec: ExecutionContext)
+  extends AlfController(journeyRepository, controllerComponents) {
 
   val addressLookupEndpoint = config.addressLookupEndpoint
   protected def uuid: String = idGenerationService.uuid

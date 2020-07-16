@@ -123,13 +123,16 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
                 name = "countryCode",
                 errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
                 items = countries.map{
-                    case (k,v) ⇒ SelectItem(value = Some(k), text = v)
+                    case (k,v) ⇒ SelectItem(
+                        value = Some(k),
+                        text = v,
+                        attributes = Map("name" → v, "id" → s"countryCode-$k"))
                 },
                 formGroupClasses = "form-field-group"
             ))
 
             @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
                 name = Some("continue"),
-                inputType = Some("submit")))
+                inputType = Some("submit"), attributes = Map("id" → "continue")))
     }
 }

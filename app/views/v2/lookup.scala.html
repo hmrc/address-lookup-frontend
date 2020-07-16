@@ -100,7 +100,8 @@ message: Option[String] = None
           name = lookupForm("postcode").name,
           value = lookupForm("postcode").value,
           classes = "govuk-input--width-10",
-          id = lookupForm("postcode").id, errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+          id = lookupForm("postcode").id,
+          errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
             <a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress" class="govuk-link">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.manualAddressLinkText}</a>

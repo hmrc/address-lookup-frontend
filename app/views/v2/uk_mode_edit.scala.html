@@ -119,6 +119,6 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
 
             @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
                 name = Some("continue"),
-                inputType = Some("submit")))
+                inputType = Some("submit"), attributes = Map("id" → "continue")))
     }
 }

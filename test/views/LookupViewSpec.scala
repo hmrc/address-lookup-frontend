@@ -86,8 +86,9 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getHintAsText() shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL
+          doc.getHintAsText() shouldBe lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
@@ -101,8 +102,9 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe content.postcodeLabel
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe content.filterLabel + " " + lookupFilterHint
+          doc.getHintAsText() shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe content.filterLabel
+          doc.getHintAsText("govuk-hint") shouldBe lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe content.manualAddressLinkText
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe content.submitLabel
@@ -173,8 +175,9 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + lookupFilterHint
+          doc.getHintAsText() shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL
+          doc.getHintAsText() shouldBe lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
@@ -190,8 +193,9 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe LOOKUP_PAGE_POSTCODE_LABEL
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe EnglishMessagesUKMode.lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL + " " + EnglishMessagesUKMode.lookupFilterHint
+          doc.getHintAsText() shouldBe EnglishMessagesUKMode.lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe LOOKUP_PAGE_FILTER_LABEL
+          doc.getHintAsText() shouldBe EnglishMessagesUKMode.lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe LOOKUP_PAGE_SUBMIT_LABEL
@@ -205,8 +209,9 @@ class LookupViewSpec extends ViewSpec {
           doc.hasTextFieldInput("postcode") shouldBe true
           doc.getTextFieldLabel("postcode") shouldBe content.cyPostcodeLabel
           doc.hasTextFieldInput("filter") shouldBe true
-          doc.getHintAsText shouldBe lookupFilterHint
-          doc.getTextFieldLabel("filter") shouldBe content.cyFilterLabel + " " + lookupFilterHint
+          doc.getHintAsText() shouldBe lookupFilterHint
+          doc.getTextFieldLabel("filter") shouldBe content.cyFilterLabel
+          doc.getHintAsText() shouldBe lookupFilterHint
           doc.getALinkText("manualAddress") shouldBe content.cyManualAddressLinkText
           doc.getLinkHrefAsText("manualAddress") shouldBe routes.AddressLookupController.edit(testId).url
           doc.getButtonContentAsText shouldBe content.cySubmitLabel

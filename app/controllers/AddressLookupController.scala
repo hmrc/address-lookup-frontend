@@ -62,7 +62,8 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
                                         select: views.html.v2.select,
                                         uk_mode_edit: views.html.v2.uk_mode_edit,
                                         non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
-                                        confirm: views.html.v2.confirm)
+                                        confirm: views.html.v2.confirm,
+                                        no_results: views.html.v2.no_results)
                                        (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -133,7 +134,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
               }
             case NoResults =>
               None -> requestWithWelshHeader(isWelsh) {
-                Ok(views.html.v2.no_results(frontendAppConfig, id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
+                Ok(no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
               }
           }
         }

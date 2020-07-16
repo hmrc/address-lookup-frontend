@@ -107,7 +107,8 @@ If your service doesn't have Welsh translations you can disable them setting the
     },
     "timeoutConfig": {
       "timeoutAmount": 900,
-      "timeoutUrl": "http://service/timeout-uri"
+      "timeoutUrl": "http://service/timeout-uri",
+      "timeoutKeepAliveUrl": "http://service/keep-alive-uri"
     }
   },
   "labels": {
@@ -254,6 +255,7 @@ Configuration of the timeout popup in which user is shown a popup allowing them 
 |----------|-----------|-----------------|----|-------------|
 |`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
 |`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
+|`timeoutKeepAliveUrl`|keep alive url to keep the session alive on calling service|Optional|String|N/A|
 
 #### Top-level label JSON object
 

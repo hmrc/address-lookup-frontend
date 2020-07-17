@@ -17,12 +17,9 @@
 @import model._
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 @import config.FrontendAppConfig
-@import views.html.helpers.head
-@import config.FooterLinks
+@import views.html.templates.page_template
 
-@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
-form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
-        errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect)
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, page: page_template)
 @(id: String,
 journeyData: JourneyDataV2,
 lookupForm: Form[Lookup],
@@ -42,47 +39,8 @@ message: Option[String] = None
     journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.title
   }
 }
-@scriptElem = {
-  <script type="text/javascript">
-    window.onpageshow = function(event) {
-      $('button[disabled]').prop('disabled', false);
-    };
-  </script>
-}
 
-@beforeContent = {
-    @banner(Banner())
-
-    @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-        @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
-    }
-
-    @languageSwitch(LanguageSelect(messages.lang.code match {
-        case "en" ⇒ En
-        case "cy" ⇒ Cy
-    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-        Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-    )
-    )
-}
-
-@govukLayout(
-    pageTitle = Some(titleWithError),
-    headBlock = Some(head()),
-    beforeContentBlock = Some(beforeContent),
-    scriptsBlock = Some(scriptElem),
-    footerBlock = Some(footer(Footer(
-        meta = Some(Meta(
-            visuallyHiddenTitle = Some("Support links"),
-            items = Some(FooterLinks())
-        ))
-    )))
-    ) {
-
-    @if(lookupForm.hasErrors) {
-        @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
-            errorList = lookupForm.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"), content = HtmlContent(messages(error.message)))}))
-    }
+@page(titleWithError, Some(lookupForm), journeyData, isWelsh, isUKMode) {
 
   @form(routes.AddressLookupController.select(id)) {
       <header class="page-header">
@@ -115,7 +73,6 @@ message: Option[String] = None
           id = lookupForm("filter").id,
           errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
           hint = Some(Hint(content = HtmlContent(messageConstants.lookupFilterHint)))))
-
 
       @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.submitLabel),
           name=Some("continue"),

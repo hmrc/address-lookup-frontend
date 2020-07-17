@@ -1,0 +1,95 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.{FooterLinks, FrontendAppConfig}
+@import model.JourneyDataV2
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
+@import java.net.URI
+
+@this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
+form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
+HmrcLanguageSelect, errorSummary: GovukErrorSummary)
+@(title: String, form: Option[Form[_]], journeyData: JourneyDataV2, isWelsh: Boolean, isUKMode: Boolean)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
+
+@userAction = @{
+    new URI(request.uri).getPath().split("/").lastOption.getOrElse("")
+}
+
+@head = {
+    <!--[if lte IE 8]><link href='@controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
+    <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.at("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+
+    <link href='@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.css")' media="screen" rel="stylesheet" type="text/css" />
+}
+
+@scriptElem = {
+    <script type="text/javascript" src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
+    <script type="text/javascript">
+            window.onpageshow = function(event) {
+                $('button[disabled]').prop('disabled', false);
+            };
+    </script>
+}
+
+@resolvedJourneyConfig = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
+
+@beforeContent = {
+@banner(Banner())
+
+@if(resolvedJourneyConfig.options.showBackButtons) {
+    @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
+}
+
+@languageSwitch(LanguageSelect(messages.lang.code match {
+    case "en" ⇒ En
+    case "cy" ⇒ Cy
+}, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+))
+}
+
+@govukLayout(
+    pageTitle = Some(title),
+    headBlock = Some(head),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(footer(Footer(
+        meta = Some(Meta(
+            visuallyHiddenTitle = Some("Support links"),
+            items = Some(FooterLinks(resolvedJourneyConfig.options.accessibilityFooterUrl, userAction))
+        ))
+    )))
+) {
+
+    @form.map { f =>
+        @if(f.hasErrors) {
+            @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
+                errorList = f.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"),
+                content = HtmlContent(messages(error.message)))}))
+        }
+    }
+
+    @content
+
+    @help(ReportTechnicalIssue(
+        serviceCode = appConfig.appName,
+        language = Some(messages.lang.language)
+    ))
+}

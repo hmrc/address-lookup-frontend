@@ -15,14 +15,12 @@
  *@
 
 @import model.{Select => ModelSelect, _}
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import config.FrontendAppConfig
-@import views.html.helpers.head
-@import config.FooterLinks
+@import views.html.templates.page_template
 
-@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
-form: FormWithCSRF, textarea: govukTextarea, button: govukButton, govukBackLink: GovukBackLink,
-errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLanguageSelect, radios: GovukRadios)
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, radios: GovukRadios,
+page: page_template)
 @(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: FrontendAppConfig)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
@@ -37,47 +35,7 @@ errorSummary: GovukErrorSummary, textInput: GovukInput, languageSwitch: HmrcLang
     }
 }
 
-@scriptElem = {
-    <script type="text/javascript">
-            window.onpageshow = function(event) {
-                $('button[disabled]').prop('disabled', false);
-            };
-    </script>
-}
-
-@beforeContent = {
-@banner(Banner())
-
-@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-    @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
-}
-
-@languageSwitch(LanguageSelect(messages.lang.code match {
-    case "en" ⇒ En
-    case "cy" ⇒ Cy
-}, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-)
-)
-}
-
-@govukLayout(
-    pageTitle = Some(titleWithError),
-    headBlock = Some(head()),
-    beforeContentBlock = Some(beforeContent),
-    scriptsBlock = Some(scriptElem),
-    footerBlock = Some(footer(Footer(
-        meta = Some(Meta(
-            visuallyHiddenTitle = Some("Support links"),
-            items = Some(FooterLinks())
-        ))
-    )))
-) {
-
-    @if(selectForm.hasErrors) {
-        @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
-            errorList = selectForm.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"), content = HtmlContent(messages(error.message)))}))
-    }
+@page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
 <header class="page-header">
     @if(lookup.filter.isDefined) {

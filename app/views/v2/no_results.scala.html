@@ -14,13 +14,12 @@
  * limitations under the License.
  *@
 
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import model._
-@import views.html.helpers.head
 @import config.FrontendAppConfig
-@import config.FooterLinks
+@import views.html.templates.page_template
 
-@this(govukLayout: GovukLayout, form: FormWithCSRF, head: head, footer: GovukFooter, banner: HmrcBanner, languageSwitch: HmrcLanguageSelect, govukBackLink: GovukBackLink, button: govukButton)
+@this(form: FormWithCSRF, button: govukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @messageConstants = @{
@@ -31,44 +30,7 @@
     journeyData.resolveConfigV2(isWelsh, appConfig)
 }
 
-@scriptElem = {
-    <script type="text/javascript">
-            window.onpageshow = function (event) {
-                $('button[disabled]').prop('disabled', false);
-            };
-    </script>
-}
-
-@beforeContent = {
-@banner(Banner())
-
-@if(resolvedConf.options.showBackButtons) {
-    <div id="nonUkEdit"></div>
-    @govukBackLink(BackLink(href = "javascript:history.back()", content = HtmlContent(messageConstants.back)))
-}
-
-@languageSwitch(LanguageSelect(
-    messages.lang.code match {
-        case "en" ⇒ En
-        case "cy" ⇒ Cy
-    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-)
-)
-}
-
-@govukLayout(
-    pageTitle = Some(messageConstants.noResultsPageTitle),
-    headBlock = Some(head()),
-    beforeContentBlock = Some(beforeContent),
-    scriptsBlock = Some(scriptElem),
-    footerBlock = Some(footer(Footer(
-        meta = Some(Meta(
-            visuallyHiddenTitle = Some("Support links"),
-            items = Some(FooterLinks())
-        ))
-    )))
-) {
+@page(messageConstants.noResultsPageTitle, None, journeyData, isWelsh, isUKMode) {
 
     <header class="page-header">
         <h1 class="govuk-heading-xl" id="pageHeading">@{

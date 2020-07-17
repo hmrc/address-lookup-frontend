@@ -20,15 +20,19 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.footer.FooterItem
 
 object FooterLinks {
-  def apply()(implicit messages: Messages, appConfig: FrontendAppConfig): Seq[FooterItem] = appConfig.footerLinkItems.flatMap { item =>
-    val keyPrefix = s"footer.$item"
-    val textKey = s"$keyPrefix.text"
-    val urlKey = s"$keyPrefix.url"
-    if (
-      messages.isDefinedAt(textKey) && messages.isDefinedAt(urlKey)
-    ) Some(FooterItem(
-      text = Some(messages(textKey)),
-      href = Some(messages(urlKey))
-    )) else None
-  }
+  def apply(accessibilityFooterUrl: Option[String], userAction: String)(implicit messages: Messages, appConfig: FrontendAppConfig): Seq[FooterItem] =
+    appConfig.footerLinkItems.flatMap { item =>
+      val keyPrefix = s"footer.$item"
+      val textKey = s"$keyPrefix.text"
+      val urlKey = s"$keyPrefix.url"
+      if (
+        messages.isDefinedAt(textKey) && messages.isDefinedAt(urlKey)
+      ) Some(FooterItem(
+        text = Some(messages(textKey)),
+        href = Some(messages(urlKey))
+      )) else None
+   } ++ accessibilityFooterUrl.map { url => FooterItem(
+      text = Some(messages("footer.links.accessibility.text")),
+      href = Some(s"$url?service=address-lookup&userAction=$userAction")
+    ) }.toList
 }

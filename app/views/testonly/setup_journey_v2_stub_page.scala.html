@@ -14,37 +14,26 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.head
 @import config.FrontendAppConfig
-@import config.FooterLinks
+@import views.html.templates.page_template
+@import model.JourneyDataV2
+@import model.JourneyOptions
 
-@this(govukLayout: GovukLayout, head: head, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
-form: FormWithCSRF, textarea: govukTextarea, button: govukButton)
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, page: page_template)
 @(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@govukLayout(
-    pageTitle = Some("Stub For starting new journey in ALF with V2 config"),
-    headBlock = Some(head()),
-    beforeContentBlock = Some(banner(Banner())),
+@dummyJourney = @{
+    JourneyDataV2(JourneyConfigV2(2, JourneyOptions("")))
+}
 
-    footerBlock = Some(footer(Footer(
-        meta = Some(Meta(
-            visuallyHiddenTitle = Some("Support links"),
-            items = Some(FooterLinks())
-        ))
-    )))
-) {
+@page("Stub For starting new journey in ALF with V2 config", Some(stubForm), dummyJourney, false, false) {
 
     @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
         <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
 
-        @textarea(Textarea(name="journeyConfig", id="journeyConfig", rows=15, value=stubForm("journeyConfig").value))
+        @textarea(Textarea(name = "journeyConfig", id = "journeyConfig", rows = 15, value = stubForm("journeyConfig").value))
 
-        @button(Button(name=Some("continue"), inputType=Some("submit"), content=HtmlContent("Start New Journey")))
+        @button(Button(name = Some("continue"), inputType = Some("submit"), content = HtmlContent("Start New Journey")))
     }
 
-    @help(ReportTechnicalIssue(
-        serviceCode = appConfig.appName,
-        language = Some(messages.lang.language)
-    ))
-}
+}@import model.JourneyConfigV2

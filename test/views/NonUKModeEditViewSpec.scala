@@ -72,7 +72,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
   "Non UK Mode Page" should {
     implicit val lang: Lang = Lang("en")
 
-//    "when provided with no page config" in {
+    "when provided with no page config" in {
 //      val testPage = non_uk_mode_edit(
 //        id = testId,
 //        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
@@ -103,9 +103,9 @@ class NonUKModeEditViewSpec extends ViewSpec {
 //      doc.getSelectOptionValue("France") shouldBe "FR"
 //
 //      doc.getElementById("continue").text() shouldBe defaultContent.continue
-//    }
+    }
 
-//    "when provided with page config" in {
+    "when provided with page config" in {
 //      implicit val lang: Lang = Lang("en")
 //
 //      val testPage = non_uk_mode_edit(
@@ -138,7 +138,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
 //      doc.getSelectOptionValue("France") shouldBe "FR"
 //
 //      doc.getElementById("continue").text() shouldBe configuredContent.continue
-//    }
+    }
 
     "When there is > 1 country" in {
       val testPage = non_uk_mode_edit(
@@ -168,7 +168,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
       doc.getTextFieldInput("postcode").`val`() shouldBe ""
 
       doc.testElementExists("countryCode")
-      doc.getDropList("countryCode").select("option").size() shouldBe 2
+      doc.getDropList("countryCode").select("option").size() shouldBe 3
       doc.getDropList("countryCode") should have(
         option("countryCode-FR", "France"),
         option("countryCode-AL", "Albanian")

@@ -21,7 +21,7 @@
 
 @this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
-HmrcLanguageSelect, errorSummary: GovukErrorSummary)
+HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner)
 @(title: String, form: Option[Form[_]], journeyData: JourneyDataV2, isWelsh: Boolean, isUKMode: Boolean)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
@@ -51,18 +51,27 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary)
 }
 
 @beforeContent = {
-@banner(Banner())
+    @banner(Banner())
 
-@if(resolvedJourneyConfig.options.showBackButtons) {
-    @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
-}
+    @if(resolvedJourneyConfig.options.showBackButtons) {
+        @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
+    }
 
-@languageSwitch(LanguageSelect(messages.lang.code match {
-    case "en" ⇒ En
-    case "cy" ⇒ Cy
-}, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-    Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-))
+    @languageSwitch(LanguageSelect(messages.lang.code match {
+        case "en" ⇒ En
+        case "cy" ⇒ Cy
+    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+        Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+    ))
+
+    @if(resolvedJourneyConfig.options.showPhaseBanner){
+        @phaseBanner(PhaseBanner(
+            tag = Some(Tag(
+                content = HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+            )),
+            content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.options.phase)
+        ))
+    }
 }
 
 @govukLayout(

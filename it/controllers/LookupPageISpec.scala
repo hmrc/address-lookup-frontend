@@ -4,9 +4,12 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
 import model.JourneyConfigDefaults.EnglishConstants
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
+import play.api.Application
+import play.api.Mode.Test
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 
 import scala.util.Random
@@ -23,6 +26,12 @@ class LookupPageISpec extends IntegrationSpecBase {
 
   // TODO: Make hint configurable as part of welsh translation
   val hardCodedFormHint = " For example, The Mill, 116 or Flat 37a"
+
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(fakeConfig())
+    .configure("error.required" → "Postcode is required")
+    .in(Test)
+    .build()
 
   "The lookup page" when {
     "when provided with no page config" should {
@@ -84,7 +93,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         )
 
         doc.input(LookupPage.postcodeId) should have(
-          errorMessage(message),
+          errorMessage("Error: error.required"),
           value("")
         )
       }
@@ -108,7 +117,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         )
 
         doc.input(LookupPage.postcodeId) should have(
-          errorMessage(message),
+          errorMessage(s"Error: $message"),
           value("QQ")
         )
       }
@@ -133,7 +142,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         )
 
         doc.input(LookupPage.filterId) should have(
-          errorMessage(message),
+          errorMessage(s"Error: $message Error: error.required"),
           value(filterValue)
         )
       }

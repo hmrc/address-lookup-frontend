@@ -162,13 +162,13 @@ trait PageContentHelper {
   def labelForFieldsMatch(response: Future[WSResponse], idOfFieldExpectedLabelTextForFieldMapping: Map[String, String]): Unit = {
     val elems = getDocFromResponse(response).getElementsByTag("label")
     idOfFieldExpectedLabelTextForFieldMapping.foreach { case (fieldId: String, expectedtextOfLabel: String) =>
-      elems.select(s"[for=$fieldId]").get(0).getElementsByTag("span").text() shouldBe expectedtextOfLabel
+      elems.select(s"[for=$fieldId]").get(0).text() shouldBe expectedtextOfLabel
     }
   }
 
   def testElementExists(response: Future[WSResponse], elementId: String): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementById(elementId) should not be null
+    doc.getElementsByClass(elementId) should not be null
   }
 
   def testElementDoesntExist(response: Future[WSResponse], elementId: String): Unit = {
@@ -178,38 +178,43 @@ trait PageContentHelper {
 
   def testCustomPartsOfGovWrapperElementsForDefaultConfig(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
-    testElementDoesntExist(response, "phase-banner")
-    testElementDoesntExist(response, "customStyleSheet")
-    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
-    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=AddressLookupFrontend""")
+//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
+    testElementDoesntExist(response, "govuk-phase-banner")
+    // TODO: Add additionalStyleSheet option support - see v1
+    //testElementDoesntExist(response, "customStyleSheet")
+    doc.select(".govuk-link").last().attr("href") shouldBe "/contact/problem_reports_nonjs?newTab=true&service=address-lookup-frontend"
+    doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
 
   def testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(response: Future[WSResponse], navTitle: String): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe navTitle
-    doc.getElementById("phase-tag").text() shouldBe "ALPHA"
-    doc.getElementById("phase-banner-content").text() shouldBe "PHASE_BANNER_HTML"
-    testElementExists(response, "phase-banner")
-    doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
-    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=DESKPRO_SERVICE_NAME"
-    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=DESKPRO_SERVICE_NAME""")
-    doc.getElementById("timeoutScript").html().contains("timeout: 120") shouldBe true
-    doc.getElementById("timeoutScript").html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
-    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe navTitle
+    doc.getElementsByClass("govuk-phase-banner__content__tag").text() shouldBe "alpha"
+    doc.getElementsByClass("govuk-phase-banner__content").text() shouldBe "alpha PHASE_BANNER_HTML"
+    testElementExists(response, "govuk-phase-banner")
+    // TODO: Add additionalStyleSheet option support - see v1
+    //doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=DESKPRO_SERVICE_NAME"
+    // /contact/problem_reports_nonjs?newTab=true&service=address-lookup-frontend
+    doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=deskpro_service_name""")
+    // TODO: Re-introduce timeout script support
+//    doc.getElementById("timeoutScript").html().contains("timeout: 120") shouldBe true
+//    doc.getElementById("timeoutScript").html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
+//    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
   }
 
   def testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
-    doc.getElementById("phase-tag") shouldBe null
-    doc.getElementById("phase-banner-content") shouldBe null
-    testElementDoesntExist(response, "phase-banner")
-    testElementDoesntExist(response, "customStyleSheet")
-    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
-    doc.getElementsByClass("report-error").first().child(0).text().contains("""/contact/problem_reports_ajax?service=AddressLookupFrontend""")
-    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false
-    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe false
-    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
+    doc.getElementsByClass("govuk-phase-banner__content__tag").first() shouldBe null
+    doc.getElementsByClass("govuk-phase-banner__content").first() shouldBe null
+    testElementDoesntExist(response, "govuk-phase-banner")
+    // TODO: Add additionalStyleSheet option support - see v1
+    // testElementDoesntExist(response, "customStyleSheet")
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
+    doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=address_lookup_frontend""")
+//    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false
+//    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe false
+//    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
   }
 }

@@ -67,9 +67,9 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBann
     @if(resolvedJourneyConfig.options.showPhaseBanner){
         @phaseBanner(PhaseBanner(
             tag = Some(Tag(
-                content = HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+                content = HtmlContent(resolvedJourneyConfig.options.phase)
             )),
-            content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.options.phase)
+            content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
         ))
     }
 }

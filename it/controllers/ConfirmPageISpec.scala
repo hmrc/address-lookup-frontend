@@ -31,7 +31,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text("Back")
       )
       doc.title shouldBe CONFIRM_PAGE_TITLE
@@ -78,7 +78,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text("Back")
       )
       doc.title shouldBe "confirm-title"
@@ -117,7 +117,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text("Back")
       )
       doc.title shouldBe "confirm-title"
@@ -150,7 +150,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text("Back")
       )
       doc.title shouldBe "confirm-title"
@@ -192,7 +192,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text(WelshMessageConstants.back)
       )
       doc.title shouldBe WelshConstantsUkMode.CONFIRM_PAGE_TITLE
@@ -225,7 +225,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
-      doc.select("a[class=back-link]") should have(
+      doc.select("a[class=govuk-back-link]") should have(
         text(WelshMessageConstants.back)
       )
       doc.title shouldBe "cy-confirm-title"

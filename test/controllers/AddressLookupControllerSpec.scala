@@ -429,7 +429,8 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withClass("govuk-phase-banner__text").withValue("BETA")
+      html should include element withClass("govuk-phase-banner__text")
+      html should include element withClass("govuk-phase-banner").withValue("BETA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
@@ -456,7 +457,8 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withClass("govuk-phase-banner__text").withValue("BETA")
+      html should include element withClass("govuk-phase-banner__text")
+      html should include element withClass("govuk-phase-banner").withValue("BETA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
         .withValue("enPhaseBannerHtml")
     }
@@ -467,7 +469,8 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withClass("govuk-phase-banner__text").withValue("ALPHA")
+      html should include element withClass("govuk-phase-banner__text")
+      html should include element withClass("govuk-phase-banner").withValue("ALPHA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
         .withValue("This is a new service – your feedback will help us to improve it.")
     }
@@ -478,8 +481,8 @@ class AddressLookupControllerSpec
     ) {
       val res = call(controller.lookup("foo"), req)
       val html = contentAsString(res).asBodyFragment
-      html should include element withClass("govuk-phase-banner__text").withValue("ALPHA")
-      html should include element withClass("govuk-phase-banner")
+      html should include element withClass("govuk-phase-banner__text")
+      html should include element withClass("govuk-phase-banner").withValue("ALPHA")
         .withValue("enPhaseBannerHtml")
     }
   }

@@ -34,7 +34,7 @@ trait PageContentHelper {
 
     def errorSummary = doc.select("div.govuk-error-summary__body")
 
-    def bulletPointList = doc.select("ul[class=list list-bullet]")
+    def bulletPointList = doc.select("ul[class=govuk-list govuk-list-bullet]")
   }
 
   def value(value: String): HavePropertyMatcher[Elements, String] =

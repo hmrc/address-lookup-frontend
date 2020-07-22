@@ -32,7 +32,7 @@ trait PageContentHelper {
 
     def address = doc.select("div[id=address]")
 
-    def errorSummary = doc.select("div[id=error-summary-display]")
+    def errorSummary = doc.select("div.govuk-error-summary__body")
 
     def bulletPointList = doc.select("ul[class=list list-bullet]")
   }
@@ -123,7 +123,7 @@ trait PageContentHelper {
   def errorSummaryMessage(id: String, message: String): HavePropertyMatcher[Elements, String] =
     new HavePropertyMatcher[Elements, String] {
       def apply(element: Elements) = {
-        val errorMessage = element.select(s"a[id=$id-error-summary]")
+        val errorMessage = element.select("a")
 
         HavePropertyMatchResult(
           errorMessage.text() == message,

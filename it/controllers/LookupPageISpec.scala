@@ -43,7 +43,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.title shouldBe LOOKUP_PAGE_TITLE
         doc.h1.text() shouldBe LOOKUP_PAGE_HEADING
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -155,7 +155,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.title shouldBe fullLookupPageConfig.title.get
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -189,7 +189,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.select("a[class=back-link]") should not have (
+        doc.select("a[class=govuk-back-link]") should not have (
           text("Back")
           )
       }
@@ -213,7 +213,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.title shouldBe fullLookupPageConfig.title.get
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -254,7 +254,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.title shouldBe fullLookupPageConfig.title.get
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 

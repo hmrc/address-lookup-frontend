@@ -62,27 +62,27 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBann
     }
 
     @beforeContent = {
-    @banner(Banner())
+        @if(resolvedJourneyConfig.options.showPhaseBanner){
+            @phaseBanner(PhaseBanner(
+                tag = Some(Tag(
+                    content = HtmlContent(resolvedJourneyConfig.options.phase)
+                )),
+                content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+            ))
+        }
 
-    @if(resolvedJourneyConfig.options.showBackButtons) {
-        @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
-    }
+        @banner(Banner())
 
-    @languageSwitch(LanguageSelect(messages.lang.code match {
-        case "en" ⇒ En
-        case "cy" ⇒ Cy
-    }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-        Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-    ))
+        @if(resolvedJourneyConfig.options.showBackButtons) {
+            @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
+        }
 
-    @if(resolvedJourneyConfig.options.showPhaseBanner){
-        @phaseBanner(PhaseBanner(
-            tag = Some(Tag(
-                content = HtmlContent(resolvedJourneyConfig.options.phase)
-            )),
-            content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+        @languageSwitch(LanguageSelect(messages.lang.code match {
+            case "en" ⇒ En
+            case "cy" ⇒ Cy
+        }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+            Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
         ))
-    }
     }
 
     @fullTitle = @{

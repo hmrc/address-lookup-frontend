@@ -31,7 +31,7 @@ class JourneyConfigDefaultsSpec extends WordSpecLike with MustMatchers {
 
       "correctly render the phaseBanner for a supplied feedbackUrl" in {
         englishConstants(ukMode = false).defaultPhaseBannerHtml("/foo") mustBe
-          s"This is a new service – your <a href='/foo'>feedback</a> will help us to improve it."
+          s"This is a new service – your <a href='/foo' class='govuk-link'>feedback</a> will help us to improve it."
       }
     }
 
@@ -41,7 +41,7 @@ class JourneyConfigDefaultsSpec extends WordSpecLike with MustMatchers {
 
       "correctly render the phaseBanner for a supplied feedbackUrl" in {
         welshConstants(ukMode = false).defaultPhaseBannerHtml("/foo") mustBe
-          s"Mae hwn yn wasanaeth newydd – bydd eich <a href='/foo'>adborth</a> yn ein helpu i’w wella."
+          s"Mae hwn yn wasanaeth newydd – bydd eich <a href='/foo' class='govuk-link'>adborth</a> yn ein helpu i’w wella."
       }
     }
   }

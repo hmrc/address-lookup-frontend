@@ -81,6 +81,6 @@ page: page_template)
 
         @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel),
             name=Some("continue"),
-            inputType=Some("submit")))
+            inputType=Some("submit"), attributes = Map("id" → "continue")))
     }
 }

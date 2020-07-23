@@ -71,7 +71,7 @@
 
             @button(Button(content = HtmlContent(resolvedConf.labels.confirmPageLabels.submitLabel),
                 name = Some("continue"),
-                inputType = Some("submit")))
+                inputType = Some("submit"), attributes = Map("id" → "continue")))
         }
     } else {
         <p>@{

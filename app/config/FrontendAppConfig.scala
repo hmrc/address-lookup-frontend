@@ -19,6 +19,7 @@ package config
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment, Mode}
 import play.api.i18n.Lang
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 trait AppConfig {
@@ -72,6 +73,12 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, runMode: 
 
   def buildReportAProblemNonJSUrl(service: Option[String]): String = {
     s"/contact/problem_reports_nonjs?service=${service.getOrElse(contactFormServiceIdentifier)}"
+  }
+
+  def langToLanguage(langCode: String): Language = langCode match {
+    case "en" ⇒ En
+    case "cy" ⇒ Cy
+    case _ => En
   }
 }
 

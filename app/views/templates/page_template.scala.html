@@ -71,7 +71,9 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBann
             ))
         }
 
-        @banner(Banner())
+        @if(resolvedJourneyConfig.options.includeHMRCBranding) {
+            @banner(Banner(language = appConfig.langToLanguage(messages.lang.code)))
+        }
 
         @if(resolvedJourneyConfig.options.showBackButtons) {
             @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
@@ -116,7 +118,7 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBann
         @content
 
         @help(ReportTechnicalIssue(
-            serviceCode = appConfig.appName,
+            serviceCode = resolvedJourneyConfig.options.deskProServiceName.getOrElse(appConfig.contactFormServiceIdentifier),
             language = Some(messages.lang.language)
         ))
     }

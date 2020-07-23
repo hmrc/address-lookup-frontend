@@ -182,7 +182,7 @@ trait PageContentHelper {
     testElementDoesntExist(response, "govuk-phase-banner")
     // TODO: Add additionalStyleSheet option support - see v1
     //testElementDoesntExist(response, "customStyleSheet")
-    doc.select(".govuk-link").last().attr("href") shouldBe "/contact/problem_reports_nonjs?newTab=true&service=address-lookup-frontend"
+    doc.select(".govuk-link").last().attr("href") shouldBe "/contact/problem_reports_nonjs?newTab=true&service=AddressLookupFrontend"
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
 

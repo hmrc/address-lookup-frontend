@@ -14,61 +14,73 @@
  * limitations under the License.
  *@
 
-@import model._
-@import templates.address_confirmation_display
-@import uk.gov.hmrc.play.views.html.helpers
-@import views.html.v2.main_template
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
-
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUkMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
+@import model._
+@import templates.{address_confirmation_display, page_template}
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)}
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput,
+        radios: GovukRadios, select: GovukSelect, page: page_template)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@main_template(appConfig, title = journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.title, journeyData = Some(journeyData), welshEnabled = isWelsh) {
-
-  @if(journeyData.config.options.showBackButtons.getOrElse(true)) {
-    <div>
-      <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
-    </div>
-  }
-
-  <header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading}</h1>
-  </header>
-
-  @if(selectedAddress.isDefined) {
-    @helpers.form(controllers.routes.AddressLookupController.handleConfirm(id)) {
-      <fieldset class="form-field-group">
-        <div class="form-field">
-          @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showSubHeadingAndInfo) {
-            <h2>@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.infoSubheading}</h2>
-            <p id="infoMessage">@Html(journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.infoMessage)</p>
-          }
-          @address_confirmation_display(selectedAddress.get.address)
-        </div>
-        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showSearchAgainLink) {
-          <div class="form-field">
-            <p><a href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.searchAgainLinkText}</a></p>
-          </div>
-        }
-        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showChangeLink) {
-        <div class="form-field">
-          <p><a href="@{routes.AddressLookupController.edit(id,None)}" id="changeLink">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.changeLinkText}</a></p>
-        </div>
-        }
-        @if(journeyData.resolveConfigV2(isWelsh, appConfig).options.confirmPageConfig.showConfirmChangeText){
-        <div class="form-field">
-          <p id="confirmChangeText">@journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.confirmChangeText</p>
-        </div>
-        }
-        <div class="form-field">
-          <button class="button" type="submit" id="continue">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.submitLabel}</button>
-        </div>
-      </fieldset>
-    }
-  } else {
-    <p>@{messageConstants.confirmSelectedAddressError1} <a href="@{routes.AddressLookupController.lookup(id)}" id="lookupLink">@{messageConstants.confirmSelectedAddressError2}</a>.</p>
-  }
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
 }
-<!--TODO: Remove unreachable redirect to the lookup page-->
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
+
+@page(resolvedConf.labels.confirmPageLabels.title, None, journeyData, isWelsh, isUKMode) {
+
+    <header class="page-header">
+        <h1 class="govuk-heading-xl" id="pageHeading">@{
+            journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading
+        }</h1>
+    </header>
+
+    @if(selectedAddress.isDefined) {
+        @form(controllers.routes.AddressLookupController.handleConfirm(id)) {
+            @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
+                <h2>@{
+                    resolvedConf.labels.confirmPageLabels.infoSubheading
+                }</h2>
+                <p class="govuk-body" id="infoMessage">@Html(resolvedConf.labels.confirmPageLabels.infoMessage)</p>
+            }
+            @address_confirmation_display(selectedAddress.get.address)
+
+            @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
+                <p class="govuk-body"><a href="@{
+                    routes.AddressLookupController.lookup(id)
+                }" id="searchAgainLink">@{
+                    resolvedConf.labels.confirmPageLabels.searchAgainLinkText
+                }</a></p>
+            }
+
+            @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
+                <p><a href="@{
+                    routes.AddressLookupController.edit(id, None)
+                }" class="govuk-link" id="changeLink">@{
+                    resolvedConf.labels.confirmPageLabels.changeLinkText
+                }</a></p>
+            }
+
+            @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
+                <p id="confirmChangeText">@resolvedConf.labels.confirmPageLabels.confirmChangeText</p>
+            }
+
+            @button(Button(content = HtmlContent(resolvedConf.labels.confirmPageLabels.submitLabel),
+                name = Some("continue"),
+                inputType = Some("submit")))
+        }
+    } else {
+        <p>@{
+            messageConstants.confirmSelectedAddressError1
+        } <a href="@{
+            routes.AddressLookupController.lookup(id)
+        }" id="lookupLink">@{
+            messageConstants.confirmSelectedAddressError2
+        }</a>.</p>
+    }
+}
+    <!--TODO: Remove unreachable redirect to the lookup page-->

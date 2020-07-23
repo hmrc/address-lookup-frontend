@@ -25,6 +25,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
+import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 
 class UKModeEditViewSpec extends ViewSpec {
@@ -78,7 +79,12 @@ class UKModeEditViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val messagesApi = app.injector.instanceOf[MessagesApi]
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup = app.injector.instanceOf[lookup]
+  val select = app.injector.instanceOf[select]
+  val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
+
 
   val configWithoutLabels = fullV2JourneyConfig.copy(
     labels = Some(JourneyLabels(
@@ -103,8 +109,7 @@ class UKModeEditViewSpec extends ViewSpec {
     implicit val lang: Lang = Lang("en")
 
     "when provided with no page config" in {
-      val testPage = views.html.v2.uk_mode_edit(
-        frontendAppConfig,
+      val testPage = uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
         editForm = ukEditForm(false),
@@ -137,8 +142,7 @@ class UKModeEditViewSpec extends ViewSpec {
   "when provided with page config" in {
     implicit val lang: Lang = Lang("en")
 
-    val testPage = views.html.v2.uk_mode_edit(
-      frontendAppConfig,
+    val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData,
       editForm = ukEditForm(false),
@@ -170,8 +174,7 @@ class UKModeEditViewSpec extends ViewSpec {
   "when provided with custom page config" in {
     implicit val lang: Lang = Lang("en")
 
-    val testPage = views.html.v2.uk_mode_edit(
-      frontendAppConfig,
+    val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData.copy(config = configWithCustomLabels),
       editForm = ukEditForm(false),
@@ -203,8 +206,7 @@ class UKModeEditViewSpec extends ViewSpec {
   "when provided with default page config in Welsh" in {
     implicit val lang: Lang = Lang("cy")
 
-    val testPage = views.html.v2.uk_mode_edit(
-      frontendAppConfig,
+    val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData,
       editForm = ukEditForm(false),

@@ -15,107 +15,106 @@
  *@
 
 @import model._
-@import uk.gov.hmrc.play.views.html.helpers
-@import views.html.helpers.{alfErrorSummary, alfInput, countryAutoComplete}
-@import views.html.v2.main_template
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
-
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components
+@import views.html.templates.page_template
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-@resolvedConfig = @{journeyData.resolveConfigV2(isWelsh, appConfig)}
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, radios: GovukRadios,
+            select: GovukSelect, page: page_template)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
+}
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
+}
+
+@errorPrefix = @{
+    if(isWelsh) "Gwall: " else "Error: "
+}
 
 @titleWithError = @{
     if(editForm.errors) {
-        errorPrefix + resolvedConfig.labels.editPageLabels.title
+        errorPrefix + resolvedConf.labels.editPageLabels.title
     } else {
-        resolvedConfig.labels.editPageLabels.title
+        resolvedConf.labels.editPageLabels.title
     }
 }
 
-@main_template(appConfig, title = titleWithError, journeyData = Some(journeyData), welshEnabled = isWelsh, isUKMode = isUKMode) {
+@page(titleWithError, Some(editForm), journeyData, isWelsh, isUKMode) {
 
-<div id="nonUkEdit"></div>
-  @if(resolvedConfig.options.showBackButtons) {
-    <div>
-      <a class="back-link" href="javascript:history.back()">@messageConstants.back</a>
-    </div>
-  }
+    <header class="page-header">
+        <h1 class="govuk-heading-xl" id="pageHeading">@{
+            resolvedConf.labels.editPageLabels.heading
+        }</h1>
+    </header>
 
-  @alfErrorSummary(
-    messageConstants.errorText, editForm
-  )
+    @form(routes.AddressLookupController.handleEdit(id)) {
+            @textInput(Input(value = editForm("line1").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
+                name = editForm("line1").name, id = editForm("line1").name, classes = "govuk-input--width-20",
+                errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+            @textInput(Input(value = editForm("line2").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
+                name = editForm("line2").name, id = editForm("line2").name, classes = "govuk-input--width-20",
+                errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+            @textInput(Input(value = editForm("line3").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
+                name = editForm("line3").name, id = editForm("line3").name, classes = "govuk-input--width-20",
+                errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+            @textInput(Input(value = editForm("town").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
+                name = editForm("town").name, id = editForm("town").name, classes = "govuk-input--width-20",
+                errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+            @textInput(Input(value = editForm("postcode").value,
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
+                formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+                name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
+                errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
-  <header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{resolvedConfig.labels.editPageLabels.heading}</h1>
-  </header>
+            @select(components.Select(
+                id = "countryCode",
+                name = "countryCode",
+                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.countryLabel)),
+                errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+                items = Seq(SelectItem(value = Some(""), text="Select a country")) ++ countries.map {
+                    case (k,v) ⇒ SelectItem(
+                        value = Some(k),
+                        text = v,
+                        attributes = Map("name" → v, "id" → s"countryCode-$k"))
+                },
+                formGroupClasses = "form-field-group"
+            ))
 
-  @helpers.form(routes.AddressLookupController.handleEdit(id)) {
-    <fieldset class="form-field-group">
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line1"),
-          '_label -> resolvedConfig.labels.editPageLabels.line1Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line1")
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("line2"),
-          '_label -> resolvedConfig.labels.editPageLabels.line2Label,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-line2"
-        )
-      </div>
-        <div class="form-field spaced-below">
-            @alfInput(
-            editForm("line3"),
-            '_label -> resolvedConfig.labels.editPageLabels.line3Label,
-            '_inputClass -> "form-control form-control--block input--medium",
-            '_autoComplete -> "address-line3"
-            )
-        </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("town"),
-          '_label -> resolvedConfig.labels.editPageLabels.townLabel,
-          '_inputClass -> "form-control form-control--block input--medium",
-          '_autoComplete -> "address-level2"
-        )
-      </div>
-      <div class="form-field spaced-below">
-        @alfInput(
-          editForm("postcode"),
-          '_label -> resolvedConfig.labels.editPageLabels.postcodeLabel,
-          '_inputClass -> "form-control form-control--block input--small",
-          '_autoComplete -> "postal-code"
-        )
-      </div>
+            <script type="text/javascript" src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
+            <script type="text/javascript">
+                accessibleAutocomplete.enhanceSelectElement({
+                    selectElement: document.getElementById("countryCode"),
+                    name: 'countryCodeAutocomplete',
+                    defaultValue: '',
+                    @*
+                      TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
+                      https://github.com/alphagov/accessible-autocomplete/issues/260
+                      When this is fixed the custom validation / onConfirm bypass can be removed
+                    *@
+                    onConfirm: () => {
+                        const countryCode = $("#countryCode > option").filter(function() {
+                            return this.text == $("#countryCode").val()
+                        }).val();
+                        $("#countryCode").val(countryCode);
+                    }
+                })
+            </script>
 
-        @if(countries.size > 1) {
-            <div class="form-field spaced-below">
-                @countryAutoComplete(countries, editForm("countryCode"), resolvedConfig.labels.editPageLabels.countryLabel)
-            </div>
-        } else {
-            @defining(countries.head._1) { countryCode =>
-                <input type="hidden" name="countryCode" value="@countryCode"/>
-            }
-            @defining(countries.head._2) { countryName =>
-                <div class="form-field">
-                    <label for="@countryName">
-                        <span>@resolvedConfig.labels.editPageLabels.countryLabel</span>
-                        <input type="text" readonly="" disabled="" class="form-control--block input--medium" value="@countryName"/>
-                    </label>
-                </div>
-            }
-        }
-
-      <div class="form-field">
-        <button class="button" type="submit" id="continue">@{resolvedConfig.labels.editPageLabels.submitLabel}</button>
-      </div>
-    </fieldset>
-  }
+            @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
+                name = Some("continue"),
+                inputType = Some("submit"), attributes = Map("id" → "continue")))
+    }
 }

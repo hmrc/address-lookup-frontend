@@ -35,3 +35,8 @@ lazy val root = Project(appName, file("."))
     parallelExecution in IntegrationTest := false)
   .settings(resolvers += Resolver.jcenterRepo)
 
+TwirlKeys.templateImports ++= Seq(
+  "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+  "uk.gov.hmrc.govukfrontend.views.html.components._",
+  "uk.gov.hmrc.govukfrontend.views.html.helpers._"
+)

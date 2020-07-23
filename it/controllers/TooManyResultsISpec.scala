@@ -67,7 +67,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
             val doc = getDocFromResponse(res)
 
-            doc.select("a[class=back-link]") should have(
+            doc.select("a[class=govuk-back-link]") should have(
               text("Back")
             )
             doc.title shouldBe tooManyResultsMessages.title
@@ -98,7 +98,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
             val doc = getDocFromResponse(res)
 
-            doc.select("a[class=back-link]") should have(
+            doc.select("a[class=govuk-back-link]") should have(
               text("Back")
             )
             doc.title shouldBe tooManyResultsMessages.title
@@ -129,7 +129,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
             val doc = getDocFromResponse(res)
 
-            doc.select("a[class=back-link]") shouldNot have(
+            doc.select("a[class=govuk-back-link]") shouldNot have(
               text("Back")
             )
             doc.title shouldBe tooManyResultsMessages.title
@@ -160,7 +160,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
             val doc = getDocFromResponse(res)
 
-            doc.select("a[class=back-link]") shouldNot have(
+            doc.select("a[class=govuk-back-link]") shouldNot have(
               text("Back")
             )
             doc.title shouldBe tooManyResultsMessages.title
@@ -201,7 +201,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
           doc.title shouldBe welshTooManyResultsMessages.title
           doc.h1.text() shouldBe welshTooManyResultsMessages.heading1
-          doc.paras.get(2).text shouldBe welshTooManyResultsMessages.line1
+          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
@@ -237,7 +237,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
           doc.title shouldBe welshTooManyResultsMessages.title
           doc.h1.text() shouldBe welshTooManyResultsMessages.heading2
-          doc.paras.get(2).text shouldBe welshTooManyResultsMessages.line1
+          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
           doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
           doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button

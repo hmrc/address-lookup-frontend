@@ -14,35 +14,39 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import views.html.v2.main_template
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
+@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import model._
-
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages)
+@import views.html.templates.page_template
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
+@this(form: FormWithCSRF, button: govukButton, page: page_template)
+@(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@main_template(appConfig, title = messageConstants.noResultsPageTitle, journeyData = Some(journeyData), welshEnabled = isWelsh) {
-
-@if(journeyData.resolveConfigV2(isWelsh, appConfig).options.showBackButtons) {
-<div>
-    <a class="back-link" href="javascript:history.back()">@{messageConstants.back}</a>
-</div>
+@messageConstants = @{
+    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
 }
 
-<header class="page-header">
-    <h1 class="heading-xlarge" id="pageHeading">@{s"${messageConstants.noResultsPageHeading} $postcode"}</h1>
-</header>
-
-@helpers.form(controllers.routes.AddressLookupController.lookup(id)) {
-<div class="form-group">
-    <a href="@{routes.AddressLookupController.edit(id,None)}" id="enterManual">@{messageConstants.noResultsPageEnterManually}</a>
-</div>
-
-<div class="form-group">
-    <button class="button" type="submit" id="continue">@{messageConstants.noResultsPageDifferentPostcode}</button>
-</div>
+@resolvedConf = @{
+    journeyData.resolveConfigV2(isWelsh, appConfig)
 }
+
+@page(messageConstants.noResultsPageTitle, None, journeyData, isWelsh, isUKMode) {
+
+    <header class="page-header">
+        <h1 class="govuk-heading-xl" id="pageHeading">@{
+            s"${messageConstants.noResultsPageHeading} $postcode"
+        }</h1>
+    </header>
+
+    @form(controllers.routes.AddressLookupController.lookup(id)) {
+        <p><a class="govuk-link" href="@{
+            routes.AddressLookupController.edit(id, None)
+        }" id="enterManual">@{
+            messageConstants.noResultsPageEnterManually
+        }</a></p>
+
+        @button(Button(content = HtmlContent(messageConstants.noResultsPageDifferentPostcode),
+            name = Some("continue"),
+            inputType = Some("submit")))
+    }
 }

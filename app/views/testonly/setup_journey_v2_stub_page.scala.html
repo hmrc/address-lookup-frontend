@@ -15,19 +15,25 @@
  *@
 
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig, stubForm: Form[String])(implicit request: Request[_], messages: Messages)
+@import views.html.templates.page_template
+@import model.JourneyDataV2
+@import model.JourneyOptions
 
-@import uk.gov.hmrc.play.views.html.helpers
+@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, page: page_template)
+@(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@main_template(appConfig, title = "Stub For starting new journey in ALF with V2 config") {
-
-@helpers.form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
-<h1 class="form-title heading-large" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
-<textarea name="journeyConfig" id="journeyConfig" rows="15" class="form-group">@{stubForm("journeyConfig").value.getOrElse("")}
-</textarea>
-
-    <div class="form-field spaced-below">
-        <button class="button" type="submit" id="continue">Start New Journey</button>
-    </div>
-    }
+@dummyJourney = @{
+    JourneyDataV2(JourneyConfigV2(2, JourneyOptions("")))
 }
+
+@page("Stub For starting new journey in ALF with V2 config", Some(stubForm), dummyJourney, false, false) {
+
+    @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
+        <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
+
+        @textarea(Textarea(name = "journeyConfig", id = "journeyConfig", rows = 15, value = stubForm("journeyConfig").value))
+
+        @button(Button(name = Some("continue"), inputType = Some("submit"), content = HtmlContent("Start New Journey")))
+    }
+
+}@import model.JourneyConfigV2

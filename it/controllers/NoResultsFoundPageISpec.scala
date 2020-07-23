@@ -48,7 +48,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe EnglishContent.title
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -80,7 +80,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe EnglishContent.title + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -114,7 +114,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe EnglishContent.title
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
@@ -148,7 +148,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe WelshContent.title
         doc.h1.text() shouldBe WelshContent.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should have(
+        doc.select("a[class=govuk-back-link]") should have(
           text("Yn ôl")
         )
 
@@ -194,7 +194,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         doc.title shouldBe EnglishContent.title
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
-        doc.select("a[class=back-link]") should not have (
+        doc.select("a[class=govuk-back-link]") should not have (
           text("Back")
           )
 

@@ -76,6 +76,6 @@ message: Option[String] = None
 
       @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.submitLabel),
           name=Some("continue"),
-          inputType=Some("submit")))
+          inputType=Some("submit"), attributes = Map("id" → "continue")))
   }
 }

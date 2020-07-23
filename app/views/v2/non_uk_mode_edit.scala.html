@@ -88,6 +88,7 @@
                     case (k,v) ⇒ SelectItem(
                         value = Some(k),
                         text = v,
+                        selected = k == editForm("countryCode").value.getOrElse(""),
                         attributes = Map("name" → v, "id" → s"countryCode-$k"))
                 },
                 formGroupClasses = "form-field-group"
@@ -105,10 +106,10 @@
                       When this is fixed the custom validation / onConfirm bypass can be removed
                     *@
                     onConfirm: () => {
-                        const countryCode = $("#countryCode > option").filter(function() {
+                        const countryCode = $("#countryCode-select > option").filter(function() {
                             return this.text == $("#countryCode").val()
                         }).val();
-                        $("#countryCode").val(countryCode);
+                        $("#countryCode-select").val(countryCode);
                     }
                 })
             </script>

@@ -18,10 +18,12 @@
 @import model.JourneyDataV2
 @import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import java.net.URI
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
 
 @this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
-        form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
-HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog)
+form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
+HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog,
+header: HmrcHeader)
 @(title: String, form: Option[Form[_]], journeyData: JourneyDataV2, isWelsh: Boolean, isUKMode: Boolean)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
     @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
@@ -97,6 +99,11 @@ HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBann
     @govukLayout(
         pageTitle = Some(fullTitle),
         headBlock = Some(head),
+        headerBlock = Some(header(Header(
+            signOutHref = resolvedJourneyConfig.options.signOutHref,
+            homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse(""),
+            serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle
+        ))),
         beforeContentBlock = Some(beforeContent),
         scriptsBlock = Some(scriptElem),
         footerBlock = Some(footer(Footer(

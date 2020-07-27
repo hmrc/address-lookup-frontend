@@ -35,6 +35,7 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
   val signOutHref: Option[String] = journeyOptions.signOutHref
+  val serviceHref: Option[String] = journeyOptions.serviceHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
   val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
   // This should never resolve to None here

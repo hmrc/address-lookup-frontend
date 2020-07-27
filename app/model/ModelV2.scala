@@ -35,8 +35,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
 case class JourneyConfigV2(version: Int,
                            options: JourneyOptions,
                            labels: Option[JourneyLabels] = None,
-                           requestedVersion: Option[Int] = None
-                          )
+                           requestedVersion: Option[Int] = None)
 
 case class JourneyOptions(continueUrl: String,
                           homeNavHref: Option[String] = None,
@@ -54,7 +53,9 @@ case class JourneyOptions(continueUrl: String,
                           allowedCountryCodes: Option[Set[String]] = None,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
-                          timeoutConfig: Option[TimeoutConfig] = None) {
+                          timeoutConfig: Option[TimeoutConfig] = None,
+                          serviceHref: Option[String] = None) {
+
   val isUkMode: Boolean = ukMode contains true
 
 }

@@ -103,8 +103,9 @@ header: HmrcHeader)
         headBlock = Some(head),
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,
-            homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse(""),
-            serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle
+            homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse("https://www.gov.uk/"),
+            serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle,
+            serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse("")
         ))),
         beforeContentBlock = Some(beforeContent),
         scriptsBlock = Some(scriptElem),

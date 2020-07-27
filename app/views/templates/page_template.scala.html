@@ -55,11 +55,13 @@ header: HmrcHeader)
             ))
         )
 
+        <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
         <script type="text/javascript" src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
         <script type="text/javascript">
                 window.onpageshow = function(event) {
                     $('button[disabled]').prop('disabled', false);
                 };
+                window.GOVUKFrontend.initAll();
         </script>
     }
 

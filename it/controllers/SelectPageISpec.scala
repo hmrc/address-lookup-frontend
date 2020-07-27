@@ -49,7 +49,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         testIds.foreach {
           id => {
-            val fieldId = (s"addressId-$id")
+            val fieldId = (s"addressId")
             doc.radio(fieldId) should have(
               value(id),
               label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
@@ -89,7 +89,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         testIds.foreach {
           id => {
-            val fieldId = (s"addressId-$id")
+            val fieldId = (s"addressId")
             doc.radio(fieldId) should have(
               value(id),
               label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")

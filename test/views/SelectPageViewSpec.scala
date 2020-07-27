@@ -197,19 +197,19 @@ class SelectPageViewSpec extends ViewSpec {
 
     "render proposals" when {
       "there is 1 proposal" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.select("input[id^=addressId-]").size shouldBe testProposal.proposals.get.size
-        doc.select("label[for^=addressId-]").size shouldBe testProposal.proposals.get.size
-        doc.select("label[for^=addressId-]").text shouldBe testProposal.proposals.get.head.toDescription
+        doc.select("input[id^=addressId]").size shouldBe testProposal.proposals.get.size
+        doc.select("label[for^=addressId]").size shouldBe testProposal.proposals.get.size
+        doc.select("label[for^=addressId]").text shouldBe testProposal.proposals.get.head.toDescription
       }
     }
     "there are many proposals" in new Setup(testSelectPageConfig, testProposalMany, testLookup, firstSearch = true) {
-      doc.select("input[id^=addressId-]").size() shouldBe testProposalMany.proposals.get.size
-      doc.select("label[for^=addressId-]").size shouldBe testProposalMany.proposals.get.size
-      doc.select("label[for^=addressId-]").text shouldBe testProposalMany.proposals.get.map(_.toDescription).mkString(" ")
+      doc.select("input[id^=addressId]").size() shouldBe testProposalMany.proposals.get.size
+      doc.select("label[for^=addressId]").size shouldBe testProposalMany.proposals.get.size
+      doc.select("label[for^=addressId]").text shouldBe testProposalMany.proposals.get.map(_.toDescription).mkString(" ")
     }
     "not render any proposals" when {
       "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {
-        doc.select("input[id^=addressId-]").size() shouldBe testProposalNone.proposals.get.size
+        doc.select("input[id^=addressId]").size() shouldBe testProposalNone.proposals.get.size
       }
     }
 

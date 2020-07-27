@@ -63,14 +63,14 @@ page: page_template)
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         @radios(Radios(
             formGroupClasses = "form-group",
-            errorMessage = selectForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+            errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
             name = "addressId",
             items = proposals.proposals match {
             case Some(ps) ⇒ ps.map(p ⇒
                 RadioItem(
                     content = HtmlContent(p.toDescription),
                     value = Some(p.addressId),
-                    id = Some(s"addressId-${p.addressId}"),
+                    id = Some(s"addressId"),
                     checked = selectForm("p.addressId").value.isDefined))
             case None ⇒ Seq.empty
         }))

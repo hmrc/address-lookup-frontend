@@ -11,9 +11,9 @@ import play.api.libs.json.Json
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
   object EnglishContent {
-    val title = "We can not find any addresses"
+    val title = "We cannot find any addresses"
 
-    def heading(postcode: String) = s"We can not find any addresses for $postcode"
+    def heading(postcode: String) = s"We cannot find any addresses for $postcode"
 
     val manualEntry = "Enter the address manually"
     val submitButton = "Try a different postcode"

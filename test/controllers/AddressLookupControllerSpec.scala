@@ -506,7 +506,7 @@ class AddressLookupControllerSpec
       val html = contentAsString(res).asBodyFragment
 
       status(res) must be(200)
-      html.getElementById("pageHeading").html mustBe "We can not find any addresses for ZZ11 1ZZ"
+      html.getElementById("pageHeading").html mustBe "We cannot find any addresses for ZZ11 1ZZ"
     }
 
     "display a single address on confirmation page" in new Scenario(

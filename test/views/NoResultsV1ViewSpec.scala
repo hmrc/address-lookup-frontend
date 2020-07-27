@@ -33,8 +33,8 @@ class NoResultsV1ViewSpec extends ViewSpec {
   val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   object EnglishContent {
-    val title = "We can not find any addresses"
-    def heading(postcode: String) = s"We can not find any addresses for $postcode"
+    val title = "We cannot find any addresses"
+    def heading(postcode: String) = s"We cannot find any addresses for $postcode"
     val back = "Back"
     val tryAgainButton = "Try a different postcode"
     val enterManualLink = "Enter the address manually"

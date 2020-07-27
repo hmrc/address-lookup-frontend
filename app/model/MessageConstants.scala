@@ -136,8 +136,8 @@ object MessageConstants {
     val noResults = "We could not find a match with"
     val differentSearch = "Try a different name or number"
 
-    val noResultsPageTitle = "We can not find any addresses"
-    val noResultsPageHeading = "We can not find any addresses for"
+    val noResultsPageTitle = "We cannot find any addresses"
+    val noResultsPageHeading = "We cannot find any addresses for"
     val noResultsPageEnterManually = "Enter the address manually"
     val noResultsPageDifferentPostcode = "Try a different postcode"
 

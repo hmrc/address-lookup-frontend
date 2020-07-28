@@ -35,7 +35,6 @@ header: HmrcHeader)
     @head = {
         <!--[if lte IE 8]><link href='@controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
         <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.at("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
-
         <link href='@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.css")' media="screen" rel="stylesheet" type="text/css" />
     }
 
@@ -56,12 +55,18 @@ header: HmrcHeader)
         )
 
         <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
+        <script src='@controllers.routes.Assets.at("lib/hmrc-frontend/hmrc/all.js")'></script>
         <script type="text/javascript" src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
         <script type="text/javascript">
                 window.onpageshow = function(event) {
                     $('button[disabled]').prop('disabled', false);
                 };
+
                 window.GOVUKFrontend.initAll();
+                const timeoutDialog = document.getElementsByName("hmrc-timeout-dialog").item(0);
+                if (timeoutDialog && window.HMRCFrontend.TimeoutDialog) {
+                    new window.HMRCFrontend.TimeoutDialog(timeoutDialog).init();
+                }
         </script>
     }
 
@@ -116,7 +121,6 @@ header: HmrcHeader)
             ))
         )))
     ) {
-
         @form.map { f =>
             @if(f.hasErrors) {
                 @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),

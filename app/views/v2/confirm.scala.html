@@ -43,7 +43,7 @@
                 <h2 class="govuk-heading-m">@{
                     resolvedConf.labels.confirmPageLabels.infoSubheading
                 }</h2>
-                <p class="govuk-body" id="infoMessage">@Html(resolvedConf.labels.confirmPageLabels.infoMessage)</p>
+                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(resolvedConf.labels.confirmPageLabels.infoMessage)</p>
             }
             @address_confirmation_display(selectedAddress.get.address)
 
@@ -56,7 +56,7 @@
             }
 
             @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
-                <p><a href="@{
+                <p class="govuk-!-margin-bottom-7"><a href="@{
                     routes.AddressLookupController.edit(id, None)
                 }" class="govuk-link" id="changeLink">@{
                     resolvedConf.labels.confirmPageLabels.changeLinkText

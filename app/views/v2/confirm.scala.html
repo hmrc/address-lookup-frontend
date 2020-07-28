@@ -48,7 +48,7 @@
             @address_confirmation_display(selectedAddress.get.address)
 
             @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
-                <p class="govuk-body"><a href="@{
+                <p class="govuk-link"><a href="@{
                     routes.AddressLookupController.lookup(id)
                 }" id="searchAgainLink">@{
                     resolvedConf.labels.confirmPageLabels.searchAgainLinkText
@@ -64,7 +64,7 @@
             }
 
             @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
-                <p id="confirmChangeText">@resolvedConf.labels.confirmPageLabels.confirmChangeText</p>
+                <p class="govuk-body" id="confirmChangeText">@resolvedConf.labels.confirmPageLabels.confirmChangeText</p>
             }
 
             @button(Button(content = HtmlContent(resolvedConf.labels.confirmPageLabels.submitLabel),

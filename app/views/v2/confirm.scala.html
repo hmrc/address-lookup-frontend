@@ -40,7 +40,7 @@
     @if(selectedAddress.isDefined) {
         @form(controllers.routes.AddressLookupController.handleConfirm(id)) {
             @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
-                <h2>@{
+                <h2 class="govuk-heading-m">@{
                     resolvedConf.labels.confirmPageLabels.infoSubheading
                 }</h2>
                 <p class="govuk-body" id="infoMessage">@Html(resolvedConf.labels.confirmPageLabels.infoMessage)</p>

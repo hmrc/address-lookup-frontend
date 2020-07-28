@@ -46,11 +46,9 @@
 
 @page(titleWithError, Some(editForm), journeyData, isWelsh, isUKMode) {
 
-    <header class="page-header">
-        <h1 class="govuk-heading-xl" id="pageHeading">@{
-            resolvedConf.labels.editPageLabels.heading
-        }</h1>
-    </header>
+    <h1 class="govuk-heading-xl" id="pageHeading">
+        @{resolvedConf.labels.editPageLabels.heading}
+    </h1>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
             @textInput(Input(value = editForm("line1").value,

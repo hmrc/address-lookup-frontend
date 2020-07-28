@@ -32,15 +32,13 @@
 
 @page(messageConstants.noResultsFoundTitle, None, journeyData, isWelsh, isUKMode) {
 
-    <header class="page-header">
-        <h1 class="govuk-heading-xl" id="pageHeading">
-            @{if(firstLookup) {
-                messageConstants.tooManyResultsText
-            } else {
-                messageConstants.cannotFindText
-            }}
-        </h1>
-    </header>
+    <h1 class="govuk-heading-xl" id="pageHeading">
+        @{if(firstLookup) {
+            messageConstants.tooManyResultsText
+        } else {
+            messageConstants.cannotFindText
+        }}
+    </h1>
 
     <p>@messageConstants.youEntered</p>
     <ul class="govuk-list govuk-list-bullet">

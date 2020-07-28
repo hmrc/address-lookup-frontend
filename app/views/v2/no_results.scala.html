@@ -32,11 +32,9 @@
 
 @page(messageConstants.noResultsPageTitle, None, journeyData, isWelsh, isUKMode) {
 
-    <header class="page-header">
-        <h1 class="govuk-heading-xl" id="pageHeading">@{
-            s"${messageConstants.noResultsPageHeading} $postcode"
-        }</h1>
-    </header>
+    <h1 class="govuk-heading-xl" id="pageHeading">
+        @{s"${messageConstants.noResultsPageHeading} $postcode"}
+    </h1>
 
     @form(controllers.routes.AddressLookupController.lookup(id)) {
         <p><a class="govuk-link" href="@{

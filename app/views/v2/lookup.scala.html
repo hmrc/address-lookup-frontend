@@ -43,9 +43,9 @@ message: Option[String] = None
 @page(titleWithError, Some(lookupForm), journeyData, isWelsh, isUKMode) {
 
   @form(routes.AddressLookupController.select(id)) {
-      <header class="page-header">
-        <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.heading}</h1>
-      </header>
+      <h1 class="govuk-heading-xl" id="pageHeading">
+        @{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.heading}
+      </h1>
 
       @if(message.isDefined) {
       <div class="highlight-message highlight-message--full-width">

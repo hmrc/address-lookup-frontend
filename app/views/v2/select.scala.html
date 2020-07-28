@@ -37,7 +37,6 @@ page: page_template)
 
 @page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
-<header class="page-header">
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
             <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
@@ -47,7 +46,6 @@ page: page_template)
     } else {
         <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
     }
-</header>
 
     @if(lookup.filter.isDefined) {
         @if(!firstSearch) {

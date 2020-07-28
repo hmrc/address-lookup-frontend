@@ -33,11 +33,9 @@
 
 @page(resolvedConf.labels.confirmPageLabels.title, None, journeyData, isWelsh, isUKMode) {
 
-    <header class="page-header">
-        <h1 class="govuk-heading-xl" id="pageHeading">@{
-            journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading
-        }</h1>
-    </header>
+    <h1 class="govuk-heading-xl" id="pageHeading">
+        @{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading}
+    </h1>
 
     @if(selectedAddress.isDefined) {
         @form(controllers.routes.AddressLookupController.handleConfirm(id)) {

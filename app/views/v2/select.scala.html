@@ -59,6 +59,10 @@ page: page_template)
     }
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+        <p class="govuk-!-margin-bottom-6 govuk-body">
+            <a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" class="govuk-link" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
+        </p>
+
         @radios(Radios(
             formGroupClasses = "form-group",
             errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
@@ -72,10 +76,6 @@ page: page_template)
                     checked = selectForm("p.addressId").value.isDefined))
             case None ⇒ Seq.empty
         }))
-
-        <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" class="govuk-link" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
-        </p>
 
         @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel),
             name=Some("continue"),

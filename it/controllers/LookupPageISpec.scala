@@ -71,7 +71,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           text(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
         )
 
-        doc.submitButton.text() shouldBe "Find address"
+        doc.submitButton.text() shouldBe "Continue"
       }
 
       "Show the default 'postcode not entered' error message" in {

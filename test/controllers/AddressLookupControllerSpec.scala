@@ -238,7 +238,7 @@ class AddressLookupControllerSpec
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("Postcode")
         html should include element withName("input").withAttrValue("name", "postcode")
-        html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
         html should include element withAttrValue("id", "manualAddress").withValue("Enter the address manually")
         html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
         html.getElementById("filter").`val` mustBe "The House"
@@ -256,7 +256,7 @@ class AddressLookupControllerSpec
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
         html should include element withName("input").withAttrValue("name", "postcode")
-        html should include element withName("button").withAttrValue("type", "submit").withValue("Find address")
+        html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
         html should include element withAttrValue("id", "manualAddress").withValue("Enter the address manually")
         html.getElementById("postcode").`val` mustBe ""
         html.getElementById("filter").`val` mustBe ""
@@ -324,7 +324,7 @@ class AddressLookupControllerSpec
           html should include element withName("input").withAttrValue("name", "filter")
           html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post")
           html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwiliwch am y cyfeiriad")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwilio eto")
           html should include element withAttrValue("id", "manualAddress").withValue("Nodwch y cyfeiriad â llaw")
           html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
           html.getElementById("filter").`val` mustBe "The House"
@@ -343,7 +343,7 @@ class AddressLookupControllerSpec
           html should include element withName("input").withAttrValue("name", "filter")
           html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post yn y DU")
           html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwiliwch am y cyfeiriad")
+          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwilio eto")
           html should include element withAttrValue("id", "manualAddress").withValue("Nodwch y cyfeiriad â llaw")
           html.getElementById("postcode").`val` mustBe ""
           html.getElementById("filter").`val` mustBe ""

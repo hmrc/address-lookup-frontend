@@ -88,12 +88,14 @@ header: HmrcHeader)
             @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
         }
 
-        @languageSwitch(LanguageSelect(messages.lang.code match {
-            case "en" ⇒ En
-            case "cy" ⇒ Cy
-        }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
-            Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
-        ))
+        @if(!resolvedJourneyConfig.options.disableTranslations) {
+            @languageSwitch(LanguageSelect(messages.lang.code match {
+                case "en" ⇒ En
+                case "cy" ⇒ Cy
+            }, En -> s"${controllers.routes.LanguageController.switchToLanguage("english")}",
+                Cy -> s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}"
+            ))
+        }
     }
 
     @fullTitle = @{

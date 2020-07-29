@@ -48,7 +48,7 @@
             @address_confirmation_display(selectedAddress.get.address)
 
             @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
-                <p class="govuk-link"><a href="@{
+                <p><a class="govuk-link" href="@{
                     routes.AddressLookupController.lookup(id)
                 }" id="searchAgainLink">@{
                     resolvedConf.labels.confirmPageLabels.searchAgainLinkText
@@ -56,9 +56,9 @@
             }
 
             @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
-                <p class="govuk-!-margin-bottom-7"><a href="@{
+                <p class="govuk-!-margin-bottom-7"><a class="govuk-link" href="@{
                     routes.AddressLookupController.edit(id, None)
-                }" class="govuk-link" id="changeLink">@{
+                }" id="changeLink">@{
                     resolvedConf.labels.confirmPageLabels.changeLinkText
                 }</a></p>
             }
@@ -74,7 +74,7 @@
     } else {
         <p>@{
             messageConstants.confirmSelectedAddressError1
-        } <a href="@{
+        } <a class="govuk-link" href="@{
             routes.AddressLookupController.lookup(id)
         }" id="lookupLink">@{
             messageConstants.confirmSelectedAddressError2

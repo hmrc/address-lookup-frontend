@@ -53,14 +53,14 @@ page: page_template)
                 <p id="no-results">@{messageConstants.noResults} '@{lookup.filter.get}'.</p>
             </div>
             <div>
-                <p><a href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messageConstants.differentSearch}</a></p>
+                <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messageConstants.differentSearch}</a></p>
             </div>
         }
     }
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" class="govuk-link" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
+            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
         </p>
 
         @radios(Radios(

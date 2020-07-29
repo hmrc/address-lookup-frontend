@@ -62,7 +62,7 @@ message: Option[String] = None
           errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress" class="govuk-link">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.manualAddressLinkText}</a>
+            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.manualAddressLinkText}</a>
         </p>
 
       @textInput(Input(

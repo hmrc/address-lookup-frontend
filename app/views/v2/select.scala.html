@@ -67,6 +67,12 @@ page: page_template)
             formGroupClasses = "form-group",
             errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
             name = "addressId",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel),
+                    classes = "govuk-visually-hidden"
+                ))
+            )),
             items = proposals.proposals match {
             case Some(ps) ⇒ ps.map(p ⇒
                 RadioItem(

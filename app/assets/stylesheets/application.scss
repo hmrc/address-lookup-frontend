@@ -9,7 +9,7 @@ nav.hmrc-language-select {
 }
 
 .autocomplete__menu {
-  font-family: "GDS Transport",Arial,sans-serif;
+  font-family: "GDS Transport", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
@@ -17,4 +17,10 @@ nav.hmrc-language-select {
   font-size: 1rem;
   line-height: 1.25;
   color: #0b0c0c;
+}
+
+.govuk-form-group--error {
+  .autocomplete__input {
+    border: 2px solid #d4351c;
+  }
 }

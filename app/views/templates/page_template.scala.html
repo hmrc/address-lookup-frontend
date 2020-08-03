@@ -112,7 +112,8 @@ header: HmrcHeader)
             signOutHref = resolvedJourneyConfig.options.signOutHref,
             homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse("https://www.gov.uk/"),
             serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle,
-            serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse("")
+            serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse(""),
+            language = if (messages.lang.code == "cy") Cy else En
         ))),
         beforeContentBlock = Some(beforeContent),
         scriptsBlock = Some(scriptElem),

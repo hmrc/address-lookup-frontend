@@ -3,8 +3,17 @@ footer.links.privacy_policy.text        = Polisi preifatrwydd
 footer.links.terms_and_conditions.text  = Telerau ac Amodau
 footer.links.help_page.text             = Help wrth ddefnyddio GOV.UK
 footer.links.accessibility.text         = Datganiad hygyrchedd
-
 footer.links.help_page.url              = https://www.gov.uk/help
 footer.links.cookies.url                = /help/cookies
 footer.links.privacy_policy.url         = /help/privacy
 footer.links.terms_and_conditions.url   = /help/terms-and-conditions
+
+footer.govukHelp.text = Help wrth ddefnyddio GOV.UK
+footer.govukHelp.url = https://www.gov.uk/help
+footer.cookies.text = Cwcis
+footer.cookies.url = /help/cookies
+footer.accessibility.text = Datganiad hygyrchedd
+footer.privacy.text = Polisi preifatrwydd
+footer.privacy.url = /help/privacy
+footer.termsConditions.text = Telerau ac Amodau
+footer.termsConditions.url = /help/terms-and-conditions

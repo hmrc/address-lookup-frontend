@@ -19,11 +19,11 @@ package views
 import config.FrontendAppConfig
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
+import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import model.{JourneyConfigDefaults, JourneyDataV2, Lookup}
-import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -56,11 +56,11 @@ class SelectPageViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val lookup = app.injector.instanceOf[lookup]
-  val select = app.injector.instanceOf[select]
-  val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
-  val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
+  implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup: lookup = app.injector.instanceOf[lookup]
+  val select: select = app.injector.instanceOf[select]
+  val uk_mode_edit: uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val non_uk_mode_edit: non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
     implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
@@ -69,11 +69,11 @@ class SelectPageViewSpec extends ViewSpec {
     val doc: Document = Jsoup.parse(testPage.body)
   }
 
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
+  val EnglishMessageConstants: EnglishMessages = EnglishMessages(true)
+  val WelshMessageConstants: WelshMessages = WelshMessages(true)
 
-  val EnglishDefaultConstants = JourneyConfigDefaults.EnglishConstants(true)
-  val WelshDefaultConstants = JourneyConfigDefaults.WelshConstants(true)
+  val EnglishDefaultConstants: JourneyConfigDefaults.EnglishConstants = JourneyConfigDefaults.EnglishConstants(true)
+  val WelshDefaultConstants: JourneyConfigDefaults.WelshConstants = JourneyConfigDefaults.WelshConstants(true)
 
   "Select Page" should {
     "render the back button in english" when {
@@ -197,19 +197,23 @@ class SelectPageViewSpec extends ViewSpec {
 
     "render proposals" when {
       "there is 1 proposal" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.select("input[id^=addressId]").size shouldBe testProposal.proposals.get.size
-        doc.select("label[for^=addressId]").size shouldBe testProposal.proposals.get.size
-        doc.select("label[for^=addressId]").text shouldBe testProposal.proposals.get.head.toDescription
+        doc.select(s"input[name^=addressId]").size shouldBe testProposal.proposals.get.size
+        doc.select("input[id^=testAddressId]").size shouldBe 1
+        doc.select("label[for^=testAddressId]").size shouldBe 1
+        doc.select("label[for^=testAddressId]").text shouldBe testProposal.proposals.get.head.toDescription
       }
     }
     "there are many proposals" in new Setup(testSelectPageConfig, testProposalMany, testLookup, firstSearch = true) {
-      doc.select("input[id^=addressId]").size() shouldBe testProposalMany.proposals.get.size
-      doc.select("label[for^=addressId]").size shouldBe testProposalMany.proposals.get.size
-      doc.select("label[for^=addressId]").text shouldBe testProposalMany.proposals.get.map(_.toDescription).mkString(" ")
+      doc.select(s"input[name^=addressId]").size shouldBe testProposalMany.proposals.get.size
+      for ((proposal, count) <- testProposalMany.proposals.get.zipWithIndex) {
+        doc.select(s"input[id^=testAddressId$count]").size shouldBe 1
+        doc.select(s"label[for^=testAddressId$count]").size shouldBe 1
+        doc.select(s"label[for^=testAddressId$count]").text shouldBe proposal.toDescription
+      }
     }
     "not render any proposals" when {
       "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {
-        doc.select("input[id^=addressId]").size() shouldBe testProposalNone.proposals.get.size
+        doc.select("input[id^=testAddressId]").size() shouldBe testProposalNone.proposals.get.size
       }
     }
 

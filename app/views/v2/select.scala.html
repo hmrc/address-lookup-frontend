@@ -78,8 +78,8 @@ page: page_template)
                 RadioItem(
                     content = HtmlContent(p.toDescription),
                     value = Some(p.addressId),
-                    id = Some(s"addressId"),
-                    checked = selectForm("p.addressId").value.isDefined))
+                    id = Some(s"${p.addressId}"),
+                    checked = selectForm(s"${p.addressId}").value.isDefined))
             case None ⇒ Seq.empty
         }))
 

@@ -90,7 +90,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None): Action[AnyContent] = Action.async { implicit req =>
     withJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
-      implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+      implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
       val isUKMode = journeyData.config.options.isUkMode
       val formPrePopped = lookupForm(isWelsh).fill(Lookup(filter, PostcodeHelper.displayPostcode(postcode)))
@@ -106,7 +106,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
     withFutureJourneyV2(id) { journeyData =>
       val isWelsh = getWelshContent(journeyData)
       implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
-      implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+      implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
       val isUKMode = journeyData.config.options.isUkMode
 
@@ -222,7 +222,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
         val allowedSeqCountries = (s: Seq[(String, String)]) => allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val isUKMode = journeyData.config.options.isUkMode
 
@@ -254,7 +254,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
     implicit req => withJourneyV2(id) {
       journeyData => {
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val isUKMode = journeyData.config.options.isUkMode
         if (isUKMode) {
@@ -289,7 +289,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
     implicit req => withJourneyV2(id) {
       journeyData => {
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val isUKMode = journeyData.config.options.isUkMode
 
@@ -312,7 +312,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
     implicit req => withJourneyV2(id) {
       journeyData => {
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("en"), Lang("cy")) else Seq()
+        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         if (journeyData.selectedAddress.isDefined) {
           val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)

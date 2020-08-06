@@ -56,8 +56,8 @@ header: HmrcHeader)
 
         <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
         <script src='@controllers.routes.Assets.at("lib/hmrc-frontend/hmrc/all.js")'></script>
-        <script type="text/javascript" src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
-        <script type="text/javascript">
+        <script src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
+        <script>
                 window.onpageshow = function(event) {
                     $('button[disabled]').prop('disabled', false);
                 };

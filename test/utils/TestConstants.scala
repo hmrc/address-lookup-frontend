@@ -662,7 +662,7 @@ object TestConstants {
       proposals = Some(Seq(
         ProposedAddress(
           town = Some("Telford"),
-          addressId = "testAddressId",
+          addressId = "testAddressId0",
           postcode = "TF3 4NT",
           lines = List("1 High Street", "Line 2", "Line 3"),
           county = Some("Shropshire")
@@ -670,7 +670,7 @@ object TestConstants {
 
         ProposedAddress(
           town = Some("Telford"),
-          addressId = "testAddressId",
+          addressId = "testAddressId1",
           postcode = "TF3 4NT",
           lines = List("2 High Street", "Line 2", "Line 3"),
           county = Some("Shropshire")
@@ -678,7 +678,7 @@ object TestConstants {
 
         ProposedAddress(
           town = Some("Telford"),
-          addressId = "testAddressId",
+          addressId = "testAddressId2",
           postcode = "TF3 4NT",
           lines = List("3 High Street", "Line 2", "Line 3"),
           county = Some("Shropshire")

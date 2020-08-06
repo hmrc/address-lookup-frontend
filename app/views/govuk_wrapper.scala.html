@@ -48,7 +48,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("style.css")">
     <link rel="stylesheet" href="@routes.Assets.at("timeout-dialog.css")">
     <link rel="stylesheet" href="@routes.Assets.at("accessible-autocomplete.min.css")">
-    <script src='@controllers.routes.Assets.at("accessible-autocomplete.min.js")' type="text/javascript"></script>
+    <script src='@controllers.routes.Assets.at("accessible-autocomplete.min.js")'></script>
 }
 
 @headerNavLinks = {
@@ -67,9 +67,9 @@
 @afterHeader = {}
 
 @timeoutScript(timeoutInSeconds: Int, timeoutUrl: String) = {
-    <script src='@controllers.routes.Assets.at("timeout-dialog.js")' type="text/javascript"></script>
+    <script src='@controllers.routes.Assets.at("timeout-dialog.js")'></script>
 
-    <script type="text/javascript">$.timeoutDialog({timeout: @timeoutInSeconds, countdown: 30, time: "@Html(messages("timeout.seconds.text"))", title: "@Html(messages("timeout.about.signout.text"))", message: "@Html(messages("timeout.sign.you.out.text"))", minute_text: "@Html(messages("timeout.minute.text"))", minutes_text: "@Html(messages("timeout.minutes.text"))", keep_alive_button_text: "@Html(messages("timeout.resume.session.text"))", heading_text: "@Html(messages("timeout.heading.text"))", keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'});var dialogOpen;</script>
+    <script>$.timeoutDialog({timeout: @timeoutInSeconds, countdown: 30, time: "@Html(messages("timeout.seconds.text"))", title: "@Html(messages("timeout.about.signout.text"))", message: "@Html(messages("timeout.sign.you.out.text"))", minute_text: "@Html(messages("timeout.minute.text"))", minutes_text: "@Html(messages("timeout.minutes.text"))", keep_alive_button_text: "@Html(messages("timeout.resume.session.text"))", heading_text: "@Html(messages("timeout.heading.text"))", keep_alive_url: '/lookup-address/renewSession',logout_url: '/lookup-address/destroySession?timeoutUrl=@timeoutUrl'});var dialogOpen;</script>
 }
 
 @scripts = {

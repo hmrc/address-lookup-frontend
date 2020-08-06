@@ -87,13 +87,13 @@
                         value = Some(k),
                         text = v,
                         selected = k == editForm("countryCode").value.getOrElse(""),
-                        attributes = Map("name" → v, "id" → s"countryCode-$k"))
+                        attributes = Map("id" → s"countryCode-$k"))
                 },
                 formGroupClasses = "form-field-group"
             ))
 
-            <script type="text/javascript" src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
-            <script type="text/javascript">
+            <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
+            <script>
                 accessibleAutocomplete.enhanceSelectElement({
                     selectElement: document.getElementById("countryCode"),
                     name: 'countryCodeAutocomplete',

@@ -74,11 +74,12 @@ page: page_template)
                 ))
             )),
             items = proposals.proposals match {
-                case Some(ps) ⇒ ps.zipWithIndex.map { case (p, i) ⇒ RadioItem(
-                    content = HtmlContent(p.toDescription),
-                    value = Some(p.addressId),
-                    id = if (i == 0) Some("addressId") else Some(s"addressId-$i"),
-                    checked = selectForm(s"${p.addressId}").value.isDefined)
+                case Some(ps) ⇒ ps.zipWithIndex.map { case (p, idx) ⇒
+                    RadioItem(
+                        content = HtmlContent(p.toDescription),
+                        value = Some(p.addressId),
+                        id = if (idx == 0) Some("addressId") else Some(s"addressId-$idx"),
+                        checked = selectForm(s"${p.addressId}").value.isDefined)
                 }
             case None ⇒ Seq.empty
         }))

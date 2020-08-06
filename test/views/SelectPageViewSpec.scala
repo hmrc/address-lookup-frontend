@@ -211,9 +211,9 @@ class SelectPageViewSpec extends ViewSpec {
           doc.select("label[for=addressId]").size shouldBe 1
           doc.select("label[for=addressId]").text shouldBe proposal.toDescription
         } else {
-          doc.select(s"input[id=addressId-${count + 1}]").size shouldBe 1
-          doc.select(s"label[for=addressId-${count + 1}]").size shouldBe 1
-          doc.select(s"label[for=addressId-${count + 1}]").text shouldBe proposal.toDescription
+          doc.select(s"input[id=addressId-${count}]").size shouldBe 1
+          doc.select(s"label[for=addressId-${count}]").size shouldBe 1
+          doc.select(s"label[for=addressId-${count}]").text shouldBe proposal.toDescription
         }
       }
     }

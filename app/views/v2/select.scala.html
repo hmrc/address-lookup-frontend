@@ -15,15 +15,12 @@
  *@
 
 @import model.{Select => ModelSelect, _}
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
 @this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, radios: GovukRadios,
 page: page_template)
 @(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, lang: Lang, appConfig: FrontendAppConfig)
-
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
@@ -50,10 +47,10 @@ page: page_template)
     @if(lookup.filter.isDefined) {
         @if(!firstSearch) {
             <div class="form-field">
-                <p id="no-results">@{messageConstants.noResults} '@{lookup.filter.get}'.</p>
+                <p id="no-results">@{messages("constants.noResults")} '@{lookup.filter.get}'.</p>
             </div>
             <div>
-                <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messageConstants.differentSearch}</a></p>
+                <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a></p>
             </div>
         }
     }

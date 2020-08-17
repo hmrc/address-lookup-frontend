@@ -15,42 +15,37 @@
  *@
 
 @import model._
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
 @this(form: FormWithCSRF, button: govukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@messageConstants = @{
-    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
-}
-
 @resolvedConf = @{
     journeyData.resolveConfigV2(isWelsh, appConfig)
 }
 
-@page(messageConstants.noResultsFoundTitle, None, journeyData, isWelsh, isUKMode) {
+@page(messages("constants.noResultsFoundTitle"), None, journeyData, isWelsh, isUKMode) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
         @{if(firstLookup) {
-            messageConstants.tooManyResultsText
+            messages("constants.tooManyResultsText")
         } else {
-            messageConstants.cannotFindText
+            messages("constants.cannotFindText")
         }}
     </h1>
 
-    <p>@messageConstants.youEntered</p>
+    <p>@messages("constants.youEntered")</p>
     <ul class="govuk-list govuk-list-bullet">
-        <li>@{lookup.postcode} @messageConstants.forPostcode</li>
-        <li>@{lookup.filter.fold(messageConstants.nothingText)(filter => s"'$filter' ${messageConstants.nameNumberText}")}</li>
+        <li>@{lookup.postcode} @messages("constants.forPostcode")</li>
+        <li>@{lookup.filter.fold(messages("constants.nothingText"))(filter => s"'$filter' ${messages("constants.nameNumberText")}")}</li>
 
     </ul>
     <br />
 
         <p><a id="anotherSearch" class="govuk-button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
-            @messageConstants.anotherSearchText
+            @messages("constants.anotherSearchText")
         </a></p>
 
-    <p><a class="govuk-link" href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messageConstants.tooManyResultsManualLink</a></p>
+    <p><a class="govuk-link" href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messages("constants.tooManyResultsManualLink")</a></p>
 }

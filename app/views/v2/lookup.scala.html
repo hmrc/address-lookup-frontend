@@ -15,7 +15,6 @@
  *@
 
 @import model._
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
@@ -27,8 +26,6 @@ isWelsh: Boolean,
 isUKMode: Boolean = true,
 message: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
-
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
 
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
@@ -72,7 +69,7 @@ message: Option[String] = None
           classes = "govuk-input--width-20",
           id = lookupForm("filter").id,
           errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
-          hint = Some(Hint(content = HtmlContent(messageConstants.lookupFilterHint)))))
+          hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
       @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.submitLabel),
           name=Some("continue"),

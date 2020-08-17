@@ -24,6 +24,7 @@ import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.{default, ignored, mapping, optional, text}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.i18n.Messages
 import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
@@ -45,52 +46,50 @@ object Helpers {
 }
 object ALFForms extends EmptyStringValidator {
 
-  def messageConstants(isWelsh:Boolean, isUkMode: Boolean = true): MessageConstants = if(isWelsh) WelshMessageConstants(isUkMode) else EnglishMessageConstants(isUkMode)
-
   def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
 
   def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
 
-  def postcodeConstraint(isWelsh: Boolean, isUkMode: Boolean): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
+  def postcodeConstraint(isUkMode: Boolean)(implicit messages: Messages): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
     case empty if empty.isEmpty =>
-      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeEmptyError)))
+      Invalid(Seq(ValidationError(messages(s"constants.lookupPostcodeEmptyError${if (isUkMode) ".ukMode" else ""}"))))
     case chars if hasInvalidChars(chars) =>
-      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeInvalidError)))
+      Invalid(Seq(ValidationError(messages(s"constants.lookupPostcodeInvalidError${if (isUkMode) ".ukMode" else ""}"))))
     case postcode if isInvalidPostcode(postcode) =>
-      Invalid(Seq(ValidationError(messageConstants(isWelsh, isUkMode).lookupPostcodeError)))
+      Invalid(Seq(ValidationError(messages(s"constants.lookupPostcodeError${if (isUkMode) ".ukMode" else ""}"))))
     case _ =>
       Valid
   })
 
 
-  def lookupForm(isWelsh: Boolean = false, isUkMode: Boolean = false) = Form(
+  def lookupForm(isUkMode: Boolean = false)(implicit messages: Messages) = Form(
     mapping(
-      "filter" -> optional(text.verifying(messageConstants(isWelsh, isUkMode).lookupFilterError, txt => txt.length < 256)),
-      "postcode" -> text.verifying(postcodeConstraint(isWelsh, isUkMode))
+      "filter" -> optional(text.verifying(messages(s"constants.lookupFilterError"), txt => txt.length < 256)),
+      "postcode" -> text.verifying(postcodeConstraint(isUkMode))
     )(Lookup.apply)(Lookup.unapply)
   )
 
   val minimumLength: Int = 1
   val maximumLength: Int = 255
 
-  def minimumConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
-    if(value.length >= minimumLength) Valid else Invalid(messageConstants(isWelsh).errorMin(minimumLength))
+  def minimumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
+    if(value.length >= minimumLength) Valid else Invalid(messages(s"constants.errorMin").replace("$min", minimumLength.toString))
   )
 
-  def maximumConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
-    if(value.length <= maximumLength) Valid else Invalid(messageConstants(isWelsh).errorMax(maximumLength))
+  def maximumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
+    if(value.length <= maximumLength) Valid else Invalid(messages(s"constants.errorMax").replace("$max", maximumLength.toString))
   )
 
-  def nonEmptyConstraint(isWelsh: Boolean): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
-    if(value.nonEmpty) Valid else Invalid(messageConstants(isWelsh).errorRequired)
+  def nonEmptyConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
+    if(value.nonEmpty) Valid else Invalid(messages(s"constants.errorRequired"))
   )
 
-  def selectForm(isWelsh: Boolean = false) = Form(
+  def selectForm()(implicit messages: Messages) = Form(
     mapping(
       "addressId" -> default(text, "").verifying(StopOnFirstFail(
-        nonEmptyConstraint(isWelsh),
-        minimumConstraint(isWelsh),
-        maximumConstraint(isWelsh)
+        nonEmptyConstraint(),
+        minimumConstraint(),
+        maximumConstraint()
       ))
     )(Select.apply)(Select.unapply)
   )
@@ -108,40 +107,40 @@ object ALFForms extends EmptyStringValidator {
   } )
 
 
-  def isValidPostcode(form: Form[Edit], isWelsh: Boolean = false, isUKMode: Boolean = true): Form[Edit] = {
+  def isValidPostcode(form: Form[Edit])(implicit messages: Messages): Form[Edit] = {
     val isGB: Boolean = form("countryCode").value.fold(true)(_ == "GB")
     val postcode = form("postcode").value.getOrElse("")
 
     (isGB, postcode) match {
-      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messageConstants(isWelsh, isUKMode).editPagePostcodeErrorMessage)
+      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messages(s"constants.editPagePostcodeErrorMessage"))
       case _ => form
     }
   }
 
 
-  def ukEditForm(isWelsh: Boolean = false, isUKMode: Boolean = true): Form[Edit] = Form(
+  def ukEditForm()(implicit messages: Messages): Form[Edit] = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageAddressLine1MinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine1MaxErrorMessage)),
-      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine2MaxErrorMessage))),
-      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine3MaxErrorMessage))),
-      "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
+      "line1" -> customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))
+        .verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+      "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
+      "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
+      "town" -> customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))
+        .verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage"))),
       "postcode" -> default(text,""),
       "countryCode" -> ignored[String]("GB")
     )(Edit.apply)(Edit.unapply)
   )
 
-  def nonUkEditForm(isWelsh: Boolean = false, isUKMode: Boolean = false) = Form(
+  def nonUkEditForm()(implicit messages: Messages) = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageAddressLine1MinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine1MaxErrorMessage)),
-      "line2" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine2MaxErrorMessage))),
-      "line3" -> optional(text.verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageAddressLine3MaxErrorMessage))),
-      "town" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageTownMinErrorMessage)
-        .verifying(constraintString256(messageConstants(isWelsh, isUKMode).editPageTownMaxErrorMessage)),
+      "line1" -> customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))
+        .verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+      "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
+      "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
+      "town" -> customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))
+        .verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage"))),
       "postcode" -> default(text,""),
-      "countryCode" -> customErrorTextValidation(messageConstants(isWelsh, isUKMode).editPageCountryErrorMessage)
+      "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
     )(Edit.apply)(Edit.unapply)
   )
 

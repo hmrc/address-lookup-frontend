@@ -110,7 +110,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
       val isUKMode = journeyData.config.options.isUkMode
 
-      lookupForm(isWelsh, journeyData.config.options.isUkMode).bindFromRequest().fold(
+      lookupForm(journeyData.config.options.isUkMode).bindFromRequest().fold(
         errors => Future.successful(
           (None -> requestWithWelshHeader(isWelsh) {
             BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
@@ -130,7 +130,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
               val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
 
               Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-                Ok(select(id, journeyData, selectForm(isWelsh), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
+                Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
               }
             case TooManyResults(_, firstLookup) =>
               None -> requestWithWelshHeader(isWelsh) {
@@ -175,7 +175,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
       implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
 
       val isUKMode = journeyData.config.options.isUkMode
-      val bound = selectForm(isWelsh).bindFromRequest()
+      val bound = selectForm().bindFromRequest()
 
       bound.fold(
         errors => {
@@ -228,13 +228,13 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
         if (isUKMode) {
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(uk_mode_edit(id, journeyData, ukEditForm(isWelsh, isUKMode).fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh, isUKMode))
+            Ok(uk_mode_edit(id, journeyData, ukEditForm().fill(editAddress), allowedSeqCountries(Seq.empty), isWelsh, isUKMode))
           })
         }
         else {
           val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
           (None, requestWithWelshHeader(isWelsh) {
-            Ok(non_uk_mode_edit(id, journeyData, nonUkEditForm(isWelsh, isUKMode).fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
+            Ok(non_uk_mode_edit(id, journeyData, nonUkEditForm().fill(defaultAddress), allowedSeqCountries(countries(isWelsh)), isWelsh = isWelsh, isUKMode = isUKMode))
           })
         }
       }
@@ -258,7 +258,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
 
         val isUKMode = journeyData.config.options.isUkMode
         if (isUKMode) {
-          val validatedForm = isValidPostcode(ukEditForm(isWelsh, isUKMode).bindFromRequest(), isWelsh, isUKMode)
+          val validatedForm = isValidPostcode(ukEditForm().bindFromRequest())
 
           validatedForm.fold(
             errors => (None, requestWithWelshHeader(isWelsh) {
@@ -269,7 +269,7 @@ class AddressLookupController @Inject()(journeyRepository: JourneyRepository,
             })
           )
         } else {
-          val validatedForm = isValidPostcode(nonUkEditForm(isWelsh, isUKMode).bindFromRequest(), isWelsh, isUKMode)
+          val validatedForm = isValidPostcode(nonUkEditForm().bindFromRequest())
 
           validatedForm.fold(
             errors => (None, requestWithWelshHeader(isWelsh) {

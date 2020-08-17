@@ -112,7 +112,7 @@ class UKModeEditViewSpec extends ViewSpec {
       val testPage = uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyData.copy(config = configWithoutLabels),
-        editForm = ukEditForm(false),
+        editForm = ukEditForm(),
         countries = Seq("FR" -> "France"),
         isWelsh = false
       )
@@ -145,7 +145,7 @@ class UKModeEditViewSpec extends ViewSpec {
     val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData,
-      editForm = ukEditForm(false),
+      editForm = ukEditForm(),
       countries = Seq("FR" -> "France"),
       isWelsh = false
     )
@@ -177,7 +177,7 @@ class UKModeEditViewSpec extends ViewSpec {
     val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData.copy(config = configWithCustomLabels),
-      editForm = ukEditForm(false),
+      editForm = ukEditForm(),
       countries = Seq("FR" -> "France"),
       isWelsh = false
     )
@@ -209,7 +209,7 @@ class UKModeEditViewSpec extends ViewSpec {
     val testPage = uk_mode_edit(
       id = testId,
       journeyData = fullV2JourneyData,
-      editForm = ukEditForm(false),
+      editForm = ukEditForm(),
       countries = Seq("FR" -> "France"),
       isWelsh = true
     )

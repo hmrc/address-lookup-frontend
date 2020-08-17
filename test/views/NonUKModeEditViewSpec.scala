@@ -144,7 +144,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
       val testPage = non_uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = nonUkEditForm(false),
+        editForm = nonUkEditForm(),
         countries = Seq("FR" -> "France", "AL" -> "Albanian"),
         isWelsh = false
       )

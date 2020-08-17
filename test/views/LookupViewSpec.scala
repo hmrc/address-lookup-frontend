@@ -58,7 +58,6 @@ class LookupViewSpec extends ViewSpec {
   val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
   val testHtml = Html("")
-  val testForm = lookupForm()
   val EnglishMessagesUKMode = EnglishMessageConstants(true)
   val EnglishMessagesNonUKMode = EnglishMessageConstants(false)
   val WelshMessagesUKMode = WelshMessageConstants(true)

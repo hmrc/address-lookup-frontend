@@ -65,7 +65,7 @@ class SelectPageViewSpec extends ViewSpec {
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
     implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
 
-    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(welshEnabled), proposals, lookup, firstSearch, welshEnabled)
+    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 

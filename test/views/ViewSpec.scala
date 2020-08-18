@@ -49,7 +49,7 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
     val getButtonContentAsText: String = doc.select("button[type=submit]").text()
 
-    def getHintAsText(hintClass: String = "govuk-hint"): String = doc.select(s"""span[class=$hintClass]""").text()
+    def getHintAsText(hintClass: String = "govuk-hint"): String = doc.select(s"""div[class=$hintClass]""").text()
 
     val getFieldErrorMessageHeading: String = doc.select("#error-summary-title").text()
 

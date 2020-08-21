@@ -158,42 +158,42 @@ constants.notFoundErrorTitle = Page not found
 constants.notFoundErrorHeading = This page cannot be found
 constants.notFoundErrorBody = Please check that you have entered the correct web address.
 
-defaults.confirmPage.title = Confirm address
-defaults.confirmPage.heading = Review and confirm
-defaults.confirmPage.infoSubheading = Your selected address
-defaults.confirmPage.infoMessage = This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.
-defaults.confirmPage.submitLabel = Confirm address
-defaults.confirmPage.changeLinkText = Change address
-defaults.confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
-defaults.confirmPage.searchAgainLinkText = Search again
+confirmPage.title = Confirm address
+confirmPage.heading = Review and confirm
+confirmPage.infoSubheading = Your selected address
+confirmPage.infoMessage = This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.
+confirmPage.submitLabel = Confirm address
+confirmPage.changeLinkText = Change address
+confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
+confirmPage.searchAgainLinkText = Search again
 
-defaults.editPage.title = Enter address
-defaults.editPage.heading = Enter address
-defaults.editPage.line1Label = Address line 1
-defaults.editPage.line2Label = Address line 2 (optional)
-defaults.editPage.line3Label = Address line 3 (optional)
-defaults.editPage.townLabel = Town/city
-defaults.editPage.postcodeLabel = Postcode (optional)
-defaults.editPage.postcodeLabel.ukMode = UK postcode (optional)
-defaults.editPage.countryLabel = Country
-defaults.editPage.submitLabel = Continue
+editPage.title = Enter address
+editPage.heading = Enter address
+editPage.line1Label = Address line 1
+editPage.line2Label = Address line 2 (optional)
+editPage.line3Label = Address line 3 (optional)
+editPage.townLabel = Town/city
+editPage.postcodeLabel = Postcode (optional)
+editPage.postcodeLabel.ukMode = UK postcode (optional)
+editPage.countryLabel = Country
+editPage.submitLabel = Continue
 
-defaults.lookupPage.title = Find address
-defaults.lookupPage.title.ukMode = Find UK address
-defaults.lookupPage.heading = Find address
-defaults.lookupPage.heading.ukMode = Find UK address
-defaults.lookupPage.filterLabel = Property name or number (optional)
-defaults.lookupPage.postcodeLabel = Postcode
-defaults.lookupPage.postcodeLabel.ukMode = UK postcode
-defaults.lookupPage.submitLabel = Continue
-defaults.lookupPage.manualAddressLinkText = Enter the address manually
+lookupPage.title = Find address
+lookupPage.title.ukMode = Find UK address
+lookupPage.heading = Find address
+lookupPage.heading.ukMode = Find UK address
+lookupPage.filterLabel = Property name or number (optional)
+lookupPage.postcodeLabel = Postcode
+lookupPage.postcodeLabel.ukMode = UK postcode
+lookupPage.submitLabel = Continue
+lookupPage.manualAddressLinkText = Enter the address manually
 
-defaults.selectPage.title = Choose address
-defaults.selectPage.heading = Choose address
-defaults.selectPage.headingWithPostcode = Showing all results for 
-defaults.selectPage.proposalListLabel = Please select one of the following addresses
-defaults.selectPage.submitLabel = Continue
-defaults.selectPage.editAddressLinkText = Enter the address manually
-defaults.selectPage.searchAgainLinkText = Search again
+selectPage.title = Choose address
+selectPage.heading = Choose address
+selectPage.headingWithPostcode = Showing all results for
+selectPage.proposalListLabel = Please select one of the following addresses
+selectPage.submitLabel = Continue
+selectPage.editAddressLinkText = Enter the address manually
+selectPage.searchAgainLinkText = Search again
 
-defaults.phaseBannerHtml = This is a new service – your <a href='$link' class='govuk-link'>feedback</a> will help us to improve it.
+phaseBannerHtml = This is a new service – your <a href='$link' class='govuk-link'>feedback</a> will help us to improve it.

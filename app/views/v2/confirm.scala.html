@@ -26,19 +26,19 @@
     journeyData.resolveConfigV2(isWelsh, appConfig)
 }
 
-@page(resolvedConf.labels.confirmPageLabels.title, None, journeyData, isWelsh, isUKMode) {
+@page(messages("confirmPage.title"), None, journeyData, isWelsh, isUKMode) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
-        @{journeyData.resolveConfigV2(isWelsh, appConfig).labels.confirmPageLabels.heading}
+        @{messages("confirmPage.heading")}
     </h1>
 
     @if(selectedAddress.isDefined) {
         @form(controllers.routes.AddressLookupController.handleConfirm(id)) {
             @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
                 <h2 class="govuk-heading-m">@{
-                    resolvedConf.labels.confirmPageLabels.infoSubheading
+                    messages("confirmPage.infoSubheading")
                 }</h2>
-                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(resolvedConf.labels.confirmPageLabels.infoMessage)</p>
+                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("confirmPage.infoMessage"))</p>
             }
             @address_confirmation_display(selectedAddress.get.address)
 
@@ -46,7 +46,7 @@
                 <p><a class="govuk-link" href="@{
                     routes.AddressLookupController.lookup(id)
                 }" id="searchAgainLink">@{
-                    resolvedConf.labels.confirmPageLabels.searchAgainLinkText
+                    messages("confirmPage.searchAgainLinkText")
                 }</a></p>
             }
 
@@ -54,15 +54,15 @@
                 <p class="govuk-!-margin-bottom-7"><a class="govuk-link" href="@{
                     routes.AddressLookupController.edit(id, None)
                 }" id="changeLink">@{
-                    resolvedConf.labels.confirmPageLabels.changeLinkText
+                    messages("confirmPage.changeLinkText")
                 }</a></p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
-                <p class="govuk-body" id="confirmChangeText">@resolvedConf.labels.confirmPageLabels.confirmChangeText</p>
+                <p class="govuk-body" id="confirmChangeText">@messages("confirmPage.confirmChangeText")</p>
             }
 
-            @button(Button(content = HtmlContent(resolvedConf.labels.confirmPageLabels.submitLabel),
+            @button(Button(content = HtmlContent(messages("confirmPage.submitLabel")),
                 name = Some("continue"),
                 inputType = Some("submit"), attributes = Map("id" → "continue")))
         }

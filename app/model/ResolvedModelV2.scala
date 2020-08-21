@@ -17,62 +17,70 @@
 package model
 
 import config.FrontendAppConfig
-import model.JourneyConfigDefaults.{EnglishConstants, JourneyConfigDefaults, WelshConstants}
+import play.api.i18n.Messages
 
-case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, isWelsh: Boolean, appConfig: FrontendAppConfig) {
+case class ResolvedJourneyConfigV2(
+  journeyConfig: JourneyConfigV2,
+  isWelsh: Boolean,
+  appConfig: FrontendAppConfig
+)(implicit messages: Messages) {
   val version: Int = journeyConfig.version
-  val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options, appConfig)
-  val journeyConfigDefaults : JourneyConfigDefaults = if (isWelsh)  WelshConstants(options.isUkMode) else  EnglishConstants(options.isUkMode)
-
-  val labels: ResolvedLanguageLabels = journeyConfig.labels match {
-    case Some(JourneyLabels(_, Some(welshLanguageLabels))) if isWelsh => ResolvedLanguageLabels(welshLanguageLabels, options.phaseFeedbackLink, journeyConfigDefaults)
-    case Some(JourneyLabels(Some(englishLanguageLabels), _)) if !isWelsh => ResolvedLanguageLabels(englishLanguageLabels, options.phaseFeedbackLink, journeyConfigDefaults)
-    case _ => ResolvedLanguageLabels(LanguageLabels(), options.phaseFeedbackLink, journeyConfigDefaults)
-  }
+  val options: ResolvedJourneyOptions =
+    ResolvedJourneyOptions(journeyConfig.options, appConfig)
+  val labels = journeyConfig.labels
 }
 
-case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: FrontendAppConfig) {
+case class ResolvedJourneyOptions(
+  journeyOptions: JourneyOptions,
+  appConfig: FrontendAppConfig
+)(implicit messages: Messages) {
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val serviceHref: Option[String] = journeyOptions.serviceHref
-  val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
-  val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
+  val accessibilityFooterUrl: Option[String] =
+    journeyOptions.accessibilityFooterUrl
+  val additionalStylesheetUrl: Option[String] =
+    journeyOptions.additionalStylesheetUrl
   // This should never resolve to None here
-  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
-  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.orElse(Some(appConfig.contactFormServiceIdentifier))
+  val phaseFeedbackLink: String =
+    journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
+  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName
+    .orElse(Some(appConfig.contactFormServiceIdentifier))
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)
   val alphaPhase: Boolean = journeyOptions.alphaPhase.getOrElse(false)
   val phase: String = if (showPhaseBanner) {
     if (alphaPhase) "alpha" else "beta"
   } else ""
-  val disableTranslations: Boolean = journeyOptions.disableTranslations.getOrElse(false)
+  val disableTranslations: Boolean =
+    journeyOptions.disableTranslations.getOrElse(false)
   val showBackButtons: Boolean = journeyOptions.showBackButtons.getOrElse(true)
-  val includeHMRCBranding: Boolean = journeyOptions.includeHMRCBranding.getOrElse(true)
+  val includeHMRCBranding: Boolean =
+    journeyOptions.includeHMRCBranding.getOrElse(true)
   val isUkMode: Boolean = journeyOptions.ukMode.contains(true)
-  val allowedCountryCodes: Option[Set[String]] = journeyOptions.allowedCountryCodes
-  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig()))
-  val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig()))
+  val allowedCountryCodes: Option[Set[String]] =
+    journeyOptions.allowedCountryCodes
+  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(
+    journeyOptions.selectPageConfig.getOrElse(SelectPageConfig())
+  )
+  val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(
+    journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig())
+  )
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
 }
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {
   val proposalListLimit: Option[Int] = selectPageConfig.proposalListLimit
-  val showSearchAgainLink: Boolean = selectPageConfig.showSearchAgainLink.getOrElse(false)
+  val showSearchAgainLink: Boolean =
+    selectPageConfig.showSearchAgainLink.getOrElse(false)
 }
 
 case class ResolvedConfirmPageConfig(confirmPageConfig: ConfirmPageConfig) {
   val showChangeLink: Boolean = confirmPageConfig.showChangeLink.getOrElse(true)
-  val showSubHeadingAndInfo: Boolean = confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
-  val showSearchAgainLink: Boolean = confirmPageConfig.showSearchAgainLink.getOrElse(false)
-  val showConfirmChangeText: Boolean = confirmPageConfig.showConfirmChangeText.getOrElse(false)
-}
-
-case class ResolvedLanguageLabels(languageLabels: LanguageLabels, phaseFeedbackLink: String, journeyConfigDefaults: JourneyConfigDefaults) {
-  val appLevelLabels: ResolvedAppLevelLabels = ResolvedAppLevelLabels(languageLabels.appLevelLabels.getOrElse(AppLevelLabels()), phaseFeedbackLink)
-
-  case class ResolvedAppLevelLabels(appLevelLabels: AppLevelLabels, phaseFeedbackLink: String) {
-    val navTitle: Option[String] = appLevelLabels.navTitle
-    val phaseBannerHtml: String = appLevelLabels.phaseBannerHtml.getOrElse(journeyConfigDefaults.defaultPhaseBannerHtml(phaseFeedbackLink))
-  }
+  val showSubHeadingAndInfo: Boolean =
+    confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
+  val showSearchAgainLink: Boolean =
+    confirmPageConfig.showSearchAgainLink.getOrElse(false)
+  val showConfirmChangeText: Boolean =
+    confirmPageConfig.showConfirmChangeText.getOrElse(false)
 }

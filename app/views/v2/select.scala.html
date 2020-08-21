@@ -26,22 +26,20 @@ page: page_template)
 
 @titleWithError = @{
     if(selectForm.errors) {
-        errorPrefix + journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.title
-    } else {
-        journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.title
-    }
+        errorPrefix + messages("selectPage.title")} else {
+        messages("selectPage.title")}
 }
 
 @page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
     @if(lookup.filter.isDefined) {
         @if(!firstSearch){
-            <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.headingWithPostcode} @{lookup.postcode}</h1>
+            <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
         } else {
-            <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+            <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>
         }
     } else {
-        <h1 class="govuk-heading-xl" id="pageHeading">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.heading}</h1>
+        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>
     }
 
     @if(lookup.filter.isDefined) {
@@ -57,7 +55,7 @@ page: page_template)
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.editAddressLinkText}</a>
+            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(
@@ -66,7 +64,7 @@ page: page_template)
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.proposalListLabel),
+                    content = HtmlContent(messages("selectPage.proposalListLabel")),
                     classes = "govuk-visually-hidden"
                 ))
             )),
@@ -81,7 +79,7 @@ page: page_template)
             case None ⇒ Seq.empty
         }))
 
-        @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.selectPageLabels.submitLabel),
+        @button(Button(content = HtmlContent(messages("selectPage.submitLabel")),
             name=Some("continue"),
             inputType=Some("submit"), attributes = Map("id" → "continue")))
     }

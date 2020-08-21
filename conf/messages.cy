@@ -86,42 +86,42 @@ constants.errorRequired = Dewiswch yr eiddo ar gyfer y cyfeiriad
 constants.errorMin = $min yw’r isafswm hyd
 constants.errorMax = $max yw’r uchafswm hyd
 
-defaults.confirmPage.title = Cadarnhewch cyfeiriad
-defaults.confirmPage.heading = Adolygu a chadarnhau
-defaults.confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
-defaults.confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm <kbd>Cadarnhau</kbd>.
-defaults.confirmPage.submitLabel = Cadarnhewch gyfeiriad
-defaults.confirmPage.changeLinkText = Newidiwch gyfeiriad
-defaults.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
-defaults.confirmPage.searchAgainLinkText = Chwilio eto
+confirmPage.title = Cadarnhewch cyfeiriad
+confirmPage.heading = Adolygu a chadarnhau
+confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
+confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm <kbd>Cadarnhau</kbd>.
+confirmPage.submitLabel = Cadarnhewch gyfeiriad
+confirmPage.changeLinkText = Newidiwch gyfeiriad
+confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
+confirmPage.searchAgainLinkText = Chwilio eto
 
-defaults.editPage.title = Nodwch cyfeiriad
-defaults.editPage.heading = Nodwch cyfeiriad
-defaults.editPage.line1Label = Llinell cyfeiriad 1
-defaults.editPage.line2Label = Llinell cyfeiriad 2 (dewisol)
-defaults.editPage.line3Label = Llinell cyfeiriad 3 (dewisol)
-defaults.editPage.townLabel = Tref/dinas
-defaults.editPage.postcodeLabel = Cod post (dewisol)
-defaults.editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
-defaults.editPage.countryLabel = Gwlad
-defaults.editPage.submitLabel = Yn eich blaen
+editPage.title = Nodwch cyfeiriad
+editPage.heading = Nodwch cyfeiriad
+editPage.line1Label = Llinell cyfeiriad 1
+editPage.line2Label = Llinell cyfeiriad 2 (dewisol)
+editPage.line3Label = Llinell cyfeiriad 3 (dewisol)
+editPage.townLabel = Tref/dinas
+editPage.postcodeLabel = Cod post (dewisol)
+editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
+editPage.countryLabel = Gwlad
+editPage.submitLabel = Yn eich blaen
 
-defaults.lookupPage.title = Dod o hyd i gyfeiriad
-defaults.lookupPage.title.ukMode = Dod o hyd i gyfeiriad yn y DU
-defaults.lookupPage.heading = Dod o hyd i gyfeiriad
-defaults.lookupPage.heading.ukMode = Dod o hyd i gyfeiriad yn y DU
-defaults.lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
-defaults.lookupPage.postcodeLabel = Cod post
-defaults.lookupPage.postcodeLabel.ukMode = Cod post yn y DU
-defaults.lookupPage.submitLabel = Chwilio eto
-defaults.lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
+lookupPage.title = Dod o hyd i gyfeiriad
+lookupPage.title.ukMode = Dod o hyd i gyfeiriad yn y DU
+lookupPage.heading = Dod o hyd i gyfeiriad
+lookupPage.heading.ukMode = Dod o hyd i gyfeiriad yn y DU
+lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
+lookupPage.postcodeLabel = Cod post
+lookupPage.postcodeLabel.ukMode = Cod post yn y DU
+lookupPage.submitLabel = Chwilio eto
+lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
 
-defaults.selectPage.title = Dewiswch cyfeiriad
-defaults.selectPage.heading = Dewiswch cyfeiriad
-defaults.selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer 
-defaults.selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
-defaults.selectPage.submitLabel = Yn eich blaen
-defaults.selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
-defaults.selectPage.searchAgainLinkText = Chwilio eto
+selectPage.title = Dewiswch cyfeiriad
+selectPage.heading = Dewiswch cyfeiriad
+selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer
+selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
+selectPage.submitLabel = Yn eich blaen
+selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
+selectPage.searchAgainLinkText = Chwilio eto
 
-defaults.phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href='$link' class='govuk-link'>adborth</a> yn ein helpu i’w wella.
+phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href='$link' class='govuk-link'>adborth</a> yn ein helpu i’w wella.

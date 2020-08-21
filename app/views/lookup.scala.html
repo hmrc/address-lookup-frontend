@@ -23,9 +23,9 @@
 
 @titleWithError = @{
   if(lookupForm.errors) {
-    "Error: " + journeyData.resolvedConfig.lookupPage.title
+    "Error: " + messages("lookupPage.title")
   } else {
-    journeyData.resolvedConfig.lookupPage.title
+      messages("lookupPage.title")
   }
 }
 
@@ -53,24 +53,24 @@
       <div class="form-field">
         @alfInput(
         lookupForm("postcode"),
-        '_label -> journeyData.resolvedConfig.lookupPage.postcodeLabel,
+        '_label -> messages("lookupPage.postcodeLabel"),
         '_inputClass -> "form-control form-control--block input--small"
         )
       </div>
       <div class="form-field spaced-below">
-        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolvedConfig.lookupPage.manualAddressLinkText}</a></p>
+        <p><a href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a></p>
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         lookupForm("filter"),
-        '_label -> journeyData.resolvedConfig.lookupPage.filterLabel,
+        '_label -> messages("lookupPage.filterLabel"),
         '_inputHint -> messages("lookup.input.hint.text"),
         '_inputClass -> "form-control form-control--block"
         )
       </div>
 
       <div class="form-field spaced-below">
-        <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.lookupPage.submitLabel}</button>
+        <button class="button" type="submit" id="continue">@{messages("lookupPage.submitLabel")}</button>
       </div>
     </fieldset>
  }

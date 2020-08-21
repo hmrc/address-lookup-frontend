@@ -31,9 +31,9 @@ message: Option[String] = None
 
 @titleWithError = @{
   if(lookupForm.errors) {
-    errorPrefix + journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.title
+    errorPrefix + messages("lookupPage.title")
   } else {
-    journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.title
+      messages("lookupPage.title")
   }
 }
 
@@ -41,7 +41,7 @@ message: Option[String] = None
 
   @form(routes.AddressLookupController.select(id)) {
       <h1 class="govuk-heading-xl" id="pageHeading">
-        @{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.heading}
+        @{messages("lookupPage.heading")}
       </h1>
 
       @if(message.isDefined) {
@@ -51,7 +51,7 @@ message: Option[String] = None
       }
 
       @textInput(Input(
-          label = Label(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.postcodeLabel)),
+          label = Label(content = HtmlContent(messages("lookupPage.postcodeLabel"))),
           name = lookupForm("postcode").name,
           value = lookupForm("postcode").value,
           classes = "govuk-input--width-10",
@@ -59,11 +59,11 @@ message: Option[String] = None
           errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.manualAddressLinkText}</a>
+            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
         </p>
 
       @textInput(Input(
-          label = Label(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.filterLabel)),
+          label = Label(content = HtmlContent(messages("lookupPage.filterLabel"))),
           name = lookupForm("filter").name,
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
@@ -71,7 +71,7 @@ message: Option[String] = None
           errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
           hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
-      @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.submitLabel),
+      @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),
           name=Some("continue"),
           inputType=Some("submit"), attributes = Map("id" → "continue")))
   }

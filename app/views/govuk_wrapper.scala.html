@@ -96,7 +96,7 @@
             <div class="@{jData.resolvedConfig.phase}-banner" id="phase-banner">
                 <p>
                     <strong class="phase-tag" id="phase-tag">@{jData.resolvedConfig.phase.toUpperCase}</strong>
-                    <span id="phase-banner-content">@Html(jData.resolvedConfig.phaseBannerHtml)</span>
+                    <span id="phase-banner-content">@Html(messages("phaseBannerHtml").replace("$link", jData.resolvedConfig.phaseFeedbackLink))</span>
                 </p>
             </div>
         }

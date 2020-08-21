@@ -74,7 +74,9 @@ header: HmrcHeader)
                 tag = Some(Tag(
                     content = HtmlContent(resolvedJourneyConfig.options.phase)
                 )),
-                content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+                content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(
+                    messages("phaseBannerHtml").replace("$link", resolvedJourneyConfig.options.phaseFeedbackLink)
+                )
             ))
         }
 
@@ -96,20 +98,13 @@ header: HmrcHeader)
         }
     }
 
-    @fullTitle = @{
-        resolvedJourneyConfig.labels.appLevelLabels.navTitle match {
-            case Some(navTitle) => s"$title - $navTitle - GOV.UK"
-            case _ => title
-        }
-    }
-
     @govukLayout(
-        pageTitle = Some(fullTitle),
+        pageTitle = Some(messages("navTitle")),
         headBlock = Some(head),
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,
             homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse("https://www.gov.uk/"),
-            serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle,
+            serviceName = Some(messages("navTitle")),
             serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse(""),
             language = if (messages.lang.code == "cy") Cy else En
         ))),

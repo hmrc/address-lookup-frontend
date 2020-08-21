@@ -33,41 +33,41 @@
 
 @titleWithError = @{
     if(editForm.errors) {
-        errorPrefix + resolvedConf.labels.editPageLabels.title
+        errorPrefix + messages("editPage.title")
     } else {
-        resolvedConf.labels.editPageLabels.title
+        messages("editPage.title")
     }
 }
 
 @page(titleWithError, Some(editForm), journeyData, isWelsh, isUKMode) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
-        @{resolvedConf.labels.editPageLabels.heading}
+        @{messages("editPage.heading")}
     </h1>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
             @textInput(Input(value = editForm("line1").value,
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line1Label)),
+                label = Label(content = HtmlContent(messages("editPage.line1Label"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
                 name = editForm("line1").name, id = editForm("line1").name, classes = "govuk-input--width-20",
                 errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line2").value,
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line2Label)),
+                label = Label(content = HtmlContent(messages("editPage.line2Label"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
                 name = editForm("line2").name, id = editForm("line2").name, classes = "govuk-input--width-20",
                 errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line3").value,
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.line3Label)),
+                label = Label(content = HtmlContent(messages("editPage.line3Label"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
                 name = editForm("line3").name, id = editForm("line3").name, classes = "govuk-input--width-20",
                 errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("town").value,
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.townLabel)),
+                label = Label(content = HtmlContent(messages("editPage.townLabel"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
                 name = editForm("town").name, id = editForm("town").name, classes = "govuk-input--width-20",
                 errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("postcode").value,
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.postcodeLabel)),
+                label = Label(content = HtmlContent(messages("editPage.postcodeLabel"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
                 name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
                 errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
@@ -75,7 +75,7 @@
             @select(components.Select(
                 id = "countryCode",
                 name = "countryCode",
-                label = Label(content = HtmlContent(resolvedConf.labels.editPageLabels.countryLabel)),
+                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
                 errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
                 items = Seq(SelectItem(value = Some(""), text="Select a country")) ++ countries.map {
                     case (k,v) ⇒ SelectItem(
@@ -107,7 +107,7 @@
                 })
             </script>
 
-            @button(Button(content = HtmlContent(resolvedConf.labels.editPageLabels.submitLabel),
+            @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
                 name = Some("continue"),
                 inputType = Some("submit"), attributes = Map("id" → "continue")))
     }

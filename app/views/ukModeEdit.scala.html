@@ -23,9 +23,9 @@
 
 @titleWithError = @{
   if(editForm.errors) {
-    "Error: " + journeyData.resolvedConfig.editPage.title
+    "Error: " + messages("editPage.title")
   } else {
-    journeyData.resolvedConfig.editPage.title
+      messages("editPage.title")
   }
 }
 
@@ -41,45 +41,45 @@
     messages("common.error.text"), editForm
   )
 
-  <h1 class="form-title heading-large" id="pageHeading">@{journeyData.resolvedConfig.editPage.heading}</h1>
+  <h1 class="form-title heading-large" id="pageHeading">@{messages("editPage.heading")}</h1>
   @uk.gov.hmrc.play.views.html.helpers.form(routes.AddressLookupController.handleEdit(id)) {
     <fieldset class="form-field-group">
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line1"),
-          '_label -> journeyData.resolvedConfig.editPage.line1Label,
+          '_label -> messages("editPage.line1Label"),
           '_inputClass -> "form-control form-control--block input--medium")
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("line2"),
-          '_label -> journeyData.resolvedConfig.editPage.line2Label,
+          '_label -> messages("editPage.line2Label"),
           '_inputClass -> "form-control form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         editForm("line3"),
-        '_label -> journeyData.resolvedConfig.editPage.line3Label,
+        '_label -> messages("editPage.line3Label"),
         '_inputClass -> "form-control form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
           editForm("town"),
-          '_label -> journeyData.resolvedConfig.editPage.townLabel,
+          '_label -> messages("editPage.townLabel"),
           '_inputClass -> "form-control form-control--block input--medium"
         )
       </div>
       <div class="form-field spaced-below">
         @alfInput(
         editForm("postcode"),
-        '_label -> journeyData.resolvedConfig.editPage.postcodeLabel,
+        '_label -> messages("editPage.postcodeLabel"),
         '_inputClass -> "form-control form-control--block input--small"
         )
       </div>
       <div class="form-field">
-        <button class="button" type="submit" id="continue">@{journeyData.resolvedConfig.editPage.submitLabel}</button>
+        <button class="button" type="submit" id="continue">@{messages("editPage.submitLabel")}</button>
       </div>
     </fieldset>
   }

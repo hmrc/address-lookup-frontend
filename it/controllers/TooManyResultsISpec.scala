@@ -78,7 +78,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(EDIT_LINK_TEXT)
+              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
             )
           }
         }
@@ -109,7 +109,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(EDIT_LINK_TEXT)
+              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
             )
           }
         }
@@ -140,7 +140,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(EDIT_LINK_TEXT)
+              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
             )
           }
         }
@@ -171,7 +171,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(EDIT_LINK_TEXT)
+              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
             )
           }
         }
@@ -207,7 +207,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual") should have(
             href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text(JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT)
+            text(JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
           )
         }
       }
@@ -243,7 +243,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual") should have(
             href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text(JourneyConfigDefaults.WelshConstants(true).EDIT_LINK_TEXT)
+            text(JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
           )
         }
       }

@@ -190,7 +190,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode)).url
       }
       "the edit address link text is not provided" in new Setup(testSelectPageConfigNoLabel, testProposal, testLookup, firstSearch = true) {
-        doc.getALinkText(id = "editAddress") shouldBe EnglishDefaultConstants.EDIT_LINK_TEXT
+        doc.getALinkText(id = "editAddress") shouldBe EnglishDefaultConstants.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
         doc.getLinkHrefAsText(id = "editAddress") shouldBe routes.AddressLookupController.edit("testId", Some(testLookup.postcode)).url
       }
     }
@@ -236,7 +236,7 @@ class SelectPageViewSpec extends ViewSpec {
         doc.getBackLinkText shouldBe WelshContent.backLink
         doc.title shouldBe WelshDefaultConstants.SELECT_PAGE_TITLE
         doc.getH1ElementAsText shouldBe WelshDefaultConstants.SELECT_PAGE_HEADING
-        doc.getALinkText(id = "editAddress") shouldBe WelshDefaultConstants.EDIT_LINK_TEXT
+        doc.getALinkText(id = "editAddress") shouldBe WelshDefaultConstants.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
         doc.select("button").text shouldBe WelshDefaultConstants.SELECT_PAGE_SUBMIT_LABEL
       }
     }

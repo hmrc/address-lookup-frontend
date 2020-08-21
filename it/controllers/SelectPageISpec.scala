@@ -40,7 +40,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         doc.submitButton.text() shouldBe SELECT_PAGE_SUBMIT_LABEL
         doc.link("editAddress") should have(
           href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
-          text(EDIT_LINK_TEXT)
+          text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
         )
 
         val testIds = (testResultsList \\ "id").map {

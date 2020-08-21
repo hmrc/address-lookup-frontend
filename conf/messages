@@ -157,3 +157,43 @@ constants.intServerErrorTryAgain = Try again later.
 constants.notFoundErrorTitle = Page not found
 constants.notFoundErrorHeading = This page cannot be found
 constants.notFoundErrorBody = Please check that you have entered the correct web address.
+
+defaults.confirmPage.title = Confirm address
+defaults.confirmPage.heading = Review and confirm
+defaults.confirmPage.infoSubheading = Your selected address
+defaults.confirmPage.infoMessage = This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button.
+defaults.confirmPage.submitLabel = Confirm address
+defaults.confirmPage.changeLinkText = Change address
+defaults.confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
+defaults.confirmPage.searchAgainLinkText = Search again
+
+defaults.editPage.title = Enter address
+defaults.editPage.heading = Enter address
+defaults.editPage.line1Label = Address line 1
+defaults.editPage.line2Label = Address line 2 (optional)
+defaults.editPage.line3Label = Address line 3 (optional)
+defaults.editPage.townLabel = Town/city
+defaults.editPage.postcodeLabel = Postcode (optional)
+defaults.editPage.postcodeLabel.ukMode = UK postcode (optional)
+defaults.editPage.countryLabel = Country
+defaults.editPage.submitLabel = Continue
+
+defaults.lookupPage.title = Find address
+defaults.lookupPage.title.ukMode = Find UK address
+defaults.lookupPage.heading = Find address
+defaults.lookupPage.heading.ukMode = Find UK address
+defaults.lookupPage.filterLabel = Property name or number (optional)
+defaults.lookupPage.postcodeLabel = Postcode
+defaults.lookupPage.postcodeLabel.ukMode = UK postcode
+defaults.lookupPage.submitLabel = Continue
+defaults.lookupPage.manualAddressLinkText = Enter the address manually
+
+defaults.selectPage.title = Choose address
+defaults.selectPage.heading = Choose address
+defaults.selectPage.headingWithPostcode = Showing all results for 
+defaults.selectPage.proposalListLabel = Please select one of the following addresses
+defaults.selectPage.submitLabel = Continue
+defaults.selectPage.editAddressLinkText = Enter the address manually
+defaults.selectPage.searchAgainLinkText = Search again
+
+defaults.phaseBannerHtml = This is a new service – your <a href='$link' class='govuk-link'>feedback</a> will help us to improve it.

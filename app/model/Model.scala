@@ -77,7 +77,7 @@ case class ResolvedConfirmPage(p: ConfirmPage, journeyConfigDefaults: JourneyCon
   val showChangeLink: Boolean = p.showChangeLink.getOrElse(true)
   val changeLinkText: String = p.changeLinkText.getOrElse(journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT)
   val showConfirmChangeText: Boolean = p.showConfirmChangeText.getOrElse(false)
-  val confirmChangeText: String = p.confirmChangeText.getOrElse(journeyConfigDefaults.CONFIRM_CHANGE_TEXT)
+  val confirmChangeText: String = p.confirmChangeText.getOrElse(journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT)
 }
 
 case class ConfirmPage(title: Option[String] = None,
@@ -123,7 +123,7 @@ case class ResolvedSelectPage(p: SelectPage, journeyConfigDefaults: JourneyConfi
   val submitLabel: String = p.submitLabel.getOrElse(journeyConfigDefaults.SELECT_PAGE_SUBMIT_LABEL)
   val showSearchAgainLink: Boolean = p.showSearchAgainLink.getOrElse(false)
   val searchAgainLinkText: String = p.searchAgainLinkText.getOrElse(journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT)
-  val editAddressLinkText: String = p.editAddressLinkText.getOrElse(journeyConfigDefaults.EDIT_LINK_TEXT)
+  val editAddressLinkText: String = p.editAddressLinkText.getOrElse(journeyConfigDefaults.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
 }
 
 case class SelectPage(title: Option[String] = None,

@@ -106,7 +106,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -130,7 +130,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -154,7 +154,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -180,7 +180,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -204,7 +204,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe tooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -237,7 +237,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -262,7 +262,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -289,7 +289,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2NoFilter
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -314,7 +314,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -339,7 +339,7 @@ class TooManyResultsViewSpec extends ViewSpec {
             doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.getALinkText("anotherSearch") shouldBe welshTooManyResultsMessages.button
-            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe WelshConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }

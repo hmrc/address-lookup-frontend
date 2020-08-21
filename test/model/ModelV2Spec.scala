@@ -286,7 +286,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
       resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe EnglishConstantsNonUkMode.EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe EnglishConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
 
       resolvedJourneyConfig.labels.lookupPageLabels.title mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_TITLE
       resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_HEADING
@@ -314,7 +314,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
       resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe EnglishConstantsNonUkMode.CONFIRM_CHANGE_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
     }
 
     "return a full model with all possible default values including English and Welsh content" in {
@@ -358,7 +358,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
       resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe WelshConstantsNonUkMode.EDIT_LINK_TEXT
+      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe WelshConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
 
       resolvedJourneyConfig.labels.lookupPageLabels.title mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_TITLE
       resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_HEADING
@@ -386,7 +386,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
       resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
       resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
-      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsNonUkMode.CONFIRM_CHANGE_TEXT
+      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
     }
   }
 

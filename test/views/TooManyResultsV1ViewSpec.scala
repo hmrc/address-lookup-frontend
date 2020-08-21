@@ -77,7 +77,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             System.out.println(doc)
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -101,7 +101,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(2).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }
@@ -125,7 +125,7 @@ class TooManyResultsV1ViewSpec extends ViewSpec {
             doc.paras.not(".language-select").get(2).text shouldBe tooManyResultsMessages.line1
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.EDIT_LINK_TEXT
+            doc.getALinkText("enterManual") shouldBe EnglishConstantsUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
             doc.getLinkHrefAsText("enterManual") shouldBe routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url
           }
         }

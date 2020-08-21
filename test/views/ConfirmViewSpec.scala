@@ -68,7 +68,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -99,7 +99,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -113,7 +113,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -142,7 +142,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -178,7 +178,7 @@ class ConfirmViewSpec extends ViewSpec {
           Option(doc.getElementById("infoMessage")) shouldBe None
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -192,7 +192,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -228,7 +228,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           Option(doc.getElementById("searchAgainLink")) shouldBe None
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -242,7 +242,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -278,7 +278,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -292,7 +292,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -371,7 +371,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -404,7 +404,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -418,7 +418,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -447,7 +447,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -485,7 +485,7 @@ class ConfirmViewSpec extends ViewSpec {
           Option(doc.getElementById("infoMessage")) shouldBe None
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -499,7 +499,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -537,7 +537,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           Option(doc.getElementById("searchAgainLink")) shouldBe None
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -551,7 +551,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -589,7 +589,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 
@@ -603,7 +603,7 @@ class ConfirmViewSpec extends ViewSpec {
           doc.getElementById("infoMessage").text shouldBe infoText
           doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
           doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
+          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
           doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
         }
 

@@ -16,14 +16,11 @@
 
 package model
 
-import java.time.ZonedDateTime
-
 import config.FrontendAppConfig
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
-import play.api.libs.json.{Format, JsObject, JsPath, Json, OWrites, __}
-import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
+import play.api.libs.json._
 
 case class JourneyDataV2(config: JourneyConfigV2,
                          proposals: Option[Seq[ProposedAddress]] = None,
@@ -35,7 +32,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
   ) = ResolvedJourneyConfigV2(config, isWelsh, appConfig)
 
   val welshEnabled
-    : Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config.options.disableTranslations exists (_ != false)))
+  : Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config.options.disableTranslations exists (_ != false)))
 }
 
 case class JourneyConfigV2(version: Int,
@@ -86,98 +83,86 @@ case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
                           lookupPageLabels: Option[LookupPageLabels] = None,
                           editPageLabels: Option[EditPageLabels] = None,
                           confirmPageLabels: Option[ConfirmPageLabels] = None)
-object LanguageLabels {
-  implicit val selectPageLablesWrites: OWrites[SelectPageLabels] = Json.writes[SelectPageLabels]
-  implicit val lookupPageLablesWrites: OWrites[LookupPageLabels] = Json.writes[LookupPageLabels]
 
-  implicit val languageLabelsWrites: OWrites[LanguageLabels] = Json.writes[LanguageLabels]
+object JourneyLabels {
+  implicit def appLevelLabelsWrites: Writes[AppLevelLabels] = {
+    (__ \ "applevel.navTitle").writeNullable[String]
+      .and((__ \ "applevel.phaseBannerHtml").writeNullable[String])(
+        unlift(AppLevelLabels.unapply)
+      )
+  }
 
-  implicit val languageLabelsWrites: OWrites[LanguageLabels] = {
-    (__ \ "selectPage.title")
-      .writeNullable[String]
+  implicit def selectPageLabelsWrites: Writes[SelectPageLabels] = {
+    (__ \ "selectPage.title").writeNullable[String]
       .and((__ \ "selectPage.heading").writeNullable[String])
       .and((__ \ "selectPage.headingWithPostcode").writeNullable[String])
       .and((__ \ "selectPage.proposalListLabel").writeNullable[String])
       .and((__ \ "selectPage.submitLabel").writeNullable[String])
-      .and((__ \ "selectPage.searchAgainLable").writeNullable[String])
-      .and((__ \ "selectPage.editAddressLinkText").writeNullable[String])
-      .and((__ \ "lookupPage.title").writeNullable[String])
+      .and((__ \ "selectPage.searchAgainLinkText").writeNullable[String])
+      .and((__ \ "selectPage.editAddressLinkText").writeNullable[String])(
+        unlift(SelectPageLabels.unapply)
+      )
+  }
+
+  implicit def lookupPageLabelsWrites = {
+    (__ \ "lookupPage.title").writeNullable[String]
       .and((__ \ "lookupPage.heading").writeNullable[String])
       .and((__ \ "lookupPage.filterLabel").writeNullable[String])
       .and((__ \ "lookupPage.postcodeLabel").writeNullable[String])
       .and((__ \ "lookupPage.submitLabel").writeNullable[String])
       .and((__ \ "lookupPage.noResultsFoundMessage").writeNullable[String])
       .and((__ \ "lookupPage.resultLimitExceededMessage").writeNullable[String])
-      .and((__ \ "lookupPage.manualAddressLinkText").writeNullable[String])
-//      .and((__ \ "editPage.title").writeNullable[String])
-//      .and((__ \ "editPage.heading").writeNullable[String])
-//      .and((__ \ "editPage.line1Label").writeNullable[String])
-//      .and((__ \ "editPage.line2Label").writeNullable[String])
-//      .and((__ \ "editPage.line3Label").writeNullable[String])
-//      .and((__ \ "editPage.townLabel").writeNullable[String])
-//      .and((__ \ "editPage.postcodeLabel").writeNullable[String])
-//      .and((__ \ "editPage.countryLabel").writeNullable[String])
-//      .and((__ \ "editPage.submitLabel").writeNullable[String])
-         (
+      .and((__ \ "lookupPage.manualAddressLinkText").writeNullable[String])(
+        unlift(LookupPageLabels.unapply)
+      )
+  }
+
+  implicit def editPageLabelsWrites = {
+    (__ \ "editPage.title").writeNullable[String]
+      .and((__ \ "editPage.heading").writeNullable[String])
+      .and((__ \ "editPage.line1Label").writeNullable[String])
+      .and((__ \ "editPage.line2Label").writeNullable[String])
+      .and((__ \ "editPage.line3Label").writeNullable[String])
+      .and((__ \ "editPage.townLabel").writeNullable[String])
+      .and((__ \ "editPage.postcodeLabel").writeNullable[String])
+      .and((__ \ "editPage.countryLabel").writeNullable[String])
+      .and((__ \ "editPage.submitLabel").writeNullable[String])(
+        unlift(EditPageLabels.unapply)
+      )
+  }
+
+  implicit def confirmPageLabelsWrites: OWrites[ConfirmPageLabels] = {
+    (__ \ "confirmPage.title").writeNullable[String]
+      .and((__ \ "confirmPage.heading").writeNullable[String])
+      .and((__ \ "confirmPage.infoSubheading").writeNullable[String])
+      .and((__ \ "confirmPage.infoMessage").writeNullable[String])
+      .and((__ \ "confirmPage.submitLabel").writeNullable[String])
+      .and((__ \ "confirmPage.searchAgainLinkText").writeNullable[String])
+      .and((__ \ "confirmPage.changeLinkText").writeNullable[String])
+      .and((__ \ "confirmPage.confirmChangeText").writeNullable[String])(
+        unlift(ConfirmPageLabels.unapply)
+      )
+  }
+
+  implicit def languageLabelsWrites: OWrites[LanguageLabels] = {
+    (__).writeNullable[AppLevelLabels]
+      .and((__).writeNullable[SelectPageLabels])
+      .and((__).writeNullable[LookupPageLabels])
+      .and((__).writeNullable[EditPageLabels])
+      .and((__).writeNullable[ConfirmPageLabels])(
         unlift(LanguageLabels.unapply)
       )
   }
 
-//  def unapplyFlat(languageLabels: LanguageLabels): Option[
-//    (Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String],
-//     Option[String])
-//  ] = {
-//    Some(
-//      (
-//        languageLabels.selectPageLabels.flatMap(_.title),
-//        languageLabels.selectPageLabels.flatMap(_.heading),
-//        languageLabels.selectPageLabels.flatMap(_.headingWithPostcode),
-//        languageLabels.selectPageLabels.flatMap(_.proposalListLabel),
-//        languageLabels.selectPageLabels.flatMap(_.submitLabel),
-//        languageLabels.selectPageLabels.flatMap(_.searchAgainLinkText),
-//        languageLabels.selectPageLabels.flatMap(_.editAddressLinkText),
-//        languageLabels.lookupPageLabels.flatMap(_.title),
-//        languageLabels.lookupPageLabels.flatMap(_.heading),
-//        languageLabels.lookupPageLabels.flatMap(_.filterLabel),
-//        languageLabels.lookupPageLabels.flatMap(_.postcodeLabel),
-//        languageLabels.lookupPageLabels.flatMap(_.submitLabel),
-//        languageLabels.lookupPageLabels.flatMap(_.noResultsFoundMessage),
-//        languageLabels.lookupPageLabels.flatMap(_.resultLimitExceededMessage),
-//        languageLabels.lookupPageLabels.flatMap(_.manualAddressLinkText),
-//        languageLabels.editPageLabels.flatMap(_.title),
-//        languageLabels.editPageLabels.flatMap(_.heading),
-//        languageLabels.editPageLabels.flatMap(_.line1Label),
-//        languageLabels.editPageLabels.flatMap(_.line2Label),
-//        languageLabels.editPageLabels.flatMap(_.line3Label),
-//        languageLabels.editPageLabels.flatMap(_.townLabel),
-//        languageLabels.editPageLabels.flatMap(_.postcodeLabel),
-//        languageLabels.editPageLabels.flatMap(_.countryLabel),
-//        languageLabels.editPageLabels.flatMap(_.submitLabel)
-//      )
-//    )
-  }
+  implicit val writes: OWrites[JourneyLabels] = Json.writes[JourneyLabels]
+
+  implicit val appLevelReads: Reads[AppLevelLabels] = Json.reads[AppLevelLabels]
+  implicit val selectPageReads: Reads[SelectPageLabels] = Json.reads[SelectPageLabels]
+  implicit val lookupPageReads: Reads[LookupPageLabels] = Json.reads[LookupPageLabels]
+  implicit val editPageReads: Reads[EditPageLabels] = Json.reads[EditPageLabels]
+  implicit val confirmPageReads: Reads[ConfirmPageLabels] = Json.reads[ConfirmPageLabels]
+  implicit val languageLabelsReads: Reads[LanguageLabels] = Json.reads[LanguageLabels]
+  implicit val reads: Reads[JourneyLabels] = Json.reads[JourneyLabels]
 }
 
 case class AppLevelLabels(navTitle: Option[String] = None,
@@ -225,6 +210,8 @@ object JourneyDataV2 {
 }
 
 object JourneyConfigV2 {
+  implicit val labelsFormat: Format[JourneyLabels] = OFormat(JourneyLabels.reads, JourneyLabels.writes)
+
   implicit val format: Format[JourneyConfigV2] = Json.format[JourneyConfigV2]
 }
 
@@ -246,15 +233,7 @@ object TimeoutConfig {
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
       (JsPath \ "timeoutUrl").format[String] and
       (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
-  )(TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
-}
-
-object JourneyLabels {
-  implicit val format: Format[JourneyLabels] = Json.format[JourneyLabels]
-}
-
-object LanguageLabels {
-  implicit val format: Format[LanguageLabels] = Json.format[LanguageLabels]
+    ) (TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
 }
 
 object AppLevelLabels {

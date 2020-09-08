@@ -53,7 +53,6 @@ class RemoteMessagesApiProvider @Inject()(environment: Environment,
       langCookieName = langCookieName,
       langCookieSecure = langCookieSecure,
       langCookieHttpOnly = langCookieHttpOnly,
-      langCookieSameSite = langCookieSameSite,
       httpConfiguration = httpConfiguration
     )
   }

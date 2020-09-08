@@ -102,12 +102,14 @@ class AddressLookupController @Inject()(
              filter: Option[String] = None): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
+        import JourneyLabels._
+
         val remoteMessagesApi =
           remoteMessagesApiProvider.getRemoteMessagesApi(
             journeyData.config.labels
               .map(ls => Json.toJsObject(ls))
-              .getOrElse(Json.obj())
-          )
+              .orElse(Some(Json.obj())))
+
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
@@ -115,14 +117,14 @@ class AddressLookupController @Inject()(
           if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val isUKMode = journeyData.config.options.isUkMode
-        val formPrePopped = lookupForm(isWelsh).fill(
+        val formPrePopped = lookupForm(isWelsh)(messages).fill(
           Lookup(filter, PostcodeHelper.displayPostcode(postcode))
         )
 
         (
           Some(journeyData.copy(selectedAddress = None)),
           requestWithWelshHeader(isWelsh) {
-            Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode))
+            Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode)(req, messages, frontendAppConfig))
           }
         )
       }

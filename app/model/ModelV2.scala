@@ -16,11 +16,14 @@
 
 package model
 
+import java.time.ZonedDateTime
+
 import config.FrontendAppConfig
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.{Format, JsObject, JsPath, Json, OWrites, __}
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 case class JourneyDataV2(config: JourneyConfigV2,
                          proposals: Option[Seq[ProposedAddress]] = None,
@@ -37,7 +40,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
 
 case class JourneyConfigV2(version: Int,
                            options: JourneyOptions,
-                           labels: Option[JourneyLabels] = None,
+                           labels: Option[JourneyLabels] = None, //messages
                            requestedVersion: Option[Int] = None)
 
 case class JourneyOptions(continueUrl: String,
@@ -83,6 +86,99 @@ case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
                           lookupPageLabels: Option[LookupPageLabels] = None,
                           editPageLabels: Option[EditPageLabels] = None,
                           confirmPageLabels: Option[ConfirmPageLabels] = None)
+object LanguageLabels {
+  implicit val selectPageLablesWrites: OWrites[SelectPageLabels] = Json.writes[SelectPageLabels]
+  implicit val lookupPageLablesWrites: OWrites[LookupPageLabels] = Json.writes[LookupPageLabels]
+
+  implicit val languageLabelsWrites: OWrites[LanguageLabels] = Json.writes[LanguageLabels]
+
+  implicit val languageLabelsWrites: OWrites[LanguageLabels] = {
+    (__ \ "selectPage.title")
+      .writeNullable[String]
+      .and((__ \ "selectPage.heading").writeNullable[String])
+      .and((__ \ "selectPage.headingWithPostcode").writeNullable[String])
+      .and((__ \ "selectPage.proposalListLabel").writeNullable[String])
+      .and((__ \ "selectPage.submitLabel").writeNullable[String])
+      .and((__ \ "selectPage.searchAgainLable").writeNullable[String])
+      .and((__ \ "selectPage.editAddressLinkText").writeNullable[String])
+      .and((__ \ "lookupPage.title").writeNullable[String])
+      .and((__ \ "lookupPage.heading").writeNullable[String])
+      .and((__ \ "lookupPage.filterLabel").writeNullable[String])
+      .and((__ \ "lookupPage.postcodeLabel").writeNullable[String])
+      .and((__ \ "lookupPage.submitLabel").writeNullable[String])
+      .and((__ \ "lookupPage.noResultsFoundMessage").writeNullable[String])
+      .and((__ \ "lookupPage.resultLimitExceededMessage").writeNullable[String])
+      .and((__ \ "lookupPage.manualAddressLinkText").writeNullable[String])
+//      .and((__ \ "editPage.title").writeNullable[String])
+//      .and((__ \ "editPage.heading").writeNullable[String])
+//      .and((__ \ "editPage.line1Label").writeNullable[String])
+//      .and((__ \ "editPage.line2Label").writeNullable[String])
+//      .and((__ \ "editPage.line3Label").writeNullable[String])
+//      .and((__ \ "editPage.townLabel").writeNullable[String])
+//      .and((__ \ "editPage.postcodeLabel").writeNullable[String])
+//      .and((__ \ "editPage.countryLabel").writeNullable[String])
+//      .and((__ \ "editPage.submitLabel").writeNullable[String])
+         (
+        unlift(LanguageLabels.unapply)
+      )
+  }
+
+//  def unapplyFlat(languageLabels: LanguageLabels): Option[
+//    (Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String],
+//     Option[String])
+//  ] = {
+//    Some(
+//      (
+//        languageLabels.selectPageLabels.flatMap(_.title),
+//        languageLabels.selectPageLabels.flatMap(_.heading),
+//        languageLabels.selectPageLabels.flatMap(_.headingWithPostcode),
+//        languageLabels.selectPageLabels.flatMap(_.proposalListLabel),
+//        languageLabels.selectPageLabels.flatMap(_.submitLabel),
+//        languageLabels.selectPageLabels.flatMap(_.searchAgainLinkText),
+//        languageLabels.selectPageLabels.flatMap(_.editAddressLinkText),
+//        languageLabels.lookupPageLabels.flatMap(_.title),
+//        languageLabels.lookupPageLabels.flatMap(_.heading),
+//        languageLabels.lookupPageLabels.flatMap(_.filterLabel),
+//        languageLabels.lookupPageLabels.flatMap(_.postcodeLabel),
+//        languageLabels.lookupPageLabels.flatMap(_.submitLabel),
+//        languageLabels.lookupPageLabels.flatMap(_.noResultsFoundMessage),
+//        languageLabels.lookupPageLabels.flatMap(_.resultLimitExceededMessage),
+//        languageLabels.lookupPageLabels.flatMap(_.manualAddressLinkText),
+//        languageLabels.editPageLabels.flatMap(_.title),
+//        languageLabels.editPageLabels.flatMap(_.heading),
+//        languageLabels.editPageLabels.flatMap(_.line1Label),
+//        languageLabels.editPageLabels.flatMap(_.line2Label),
+//        languageLabels.editPageLabels.flatMap(_.line3Label),
+//        languageLabels.editPageLabels.flatMap(_.townLabel),
+//        languageLabels.editPageLabels.flatMap(_.postcodeLabel),
+//        languageLabels.editPageLabels.flatMap(_.countryLabel),
+//        languageLabels.editPageLabels.flatMap(_.submitLabel)
+//      )
+//    )
+  }
+}
 
 case class AppLevelLabels(navTitle: Option[String] = None,
                           phaseBannerHtml: Option[String] = None)
@@ -94,6 +190,7 @@ case class SelectPageLabels(title: Option[String] = None,
                             submitLabel: Option[String] = None,
                             searchAgainLinkText: Option[String] = None,
                             editAddressLinkText: Option[String] = None)
+
 
 case class LookupPageLabels(title: Option[String] = None,
                             heading: Option[String] = None,

@@ -17,13 +17,12 @@
 package model
 
 import config.FrontendAppConfig
-import play.api.i18n.Messages
 
 case class ResolvedJourneyConfigV2(
   journeyConfig: JourneyConfigV2,
   isWelsh: Boolean,
   appConfig: FrontendAppConfig
-)(implicit messages: Messages) {
+) {
   val version: Int = journeyConfig.version
   val options: ResolvedJourneyOptions =
     ResolvedJourneyOptions(journeyConfig.options, appConfig)
@@ -33,7 +32,7 @@ case class ResolvedJourneyConfigV2(
 case class ResolvedJourneyOptions(
   journeyOptions: JourneyOptions,
   appConfig: FrontendAppConfig
-)(implicit messages: Messages) {
+) {
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
   val signOutHref: Option[String] = journeyOptions.signOutHref

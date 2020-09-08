@@ -3,7 +3,7 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.{EditPage, _}
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import model.{EditPage => _, LookupPage => _, _}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
@@ -13,8 +13,8 @@ import uk.gov.hmrc.address.v2.Country
 
 class EditPageISpec extends IntegrationSpecBase {
 
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
+//  val EnglishMessageConstants = EnglishMessages(true)
+//  val WelshMessageConstants = WelshMessages(true)
 
   "The edit page" should {
     "when provided with no page config for english and welsh" should {
@@ -647,9 +647,9 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have (text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have (elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
 
@@ -669,9 +669,9 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have (text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have (elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
 
@@ -692,9 +692,9 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have (text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have (elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
 
@@ -715,9 +715,9 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have (text(WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have (elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? WelshMessageConstants.intServerErrorTitle"
+        doc.h1 should have (text("??? WelshMessageConstants.intServerErrorTitle"))
+        doc.paras should have (elementWithValue("??? WelshMessageConstants.intServerErrorTryAgain"))
       }
     }
   }

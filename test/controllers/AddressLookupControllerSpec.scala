@@ -23,9 +23,9 @@ import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
-import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
+//import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
+//import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import model._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -131,9 +131,9 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, ???, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, ???, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
@@ -545,8 +545,8 @@ class AddressLookupControllerSpec
   }
 
   "handle select" should {
-    val EnglishConstantsUkMode = EnglishConstants(true)
-    val EnglishMessageConstants = EnglishMessages(true)
+//    val EnglishConstantsUkMode = EnglishConstants(true)
+//    val EnglishMessageConstants = EnglishMessages(true)
 
     "redirect to confirm page when a proposal is selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
@@ -581,8 +581,8 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorRequired)
+          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorRequired")
         }
         "nothing was selected and the language is changed" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(None))
@@ -590,8 +590,8 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorRequired)
+          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorRequired")
         }
         "something was selected which was more than the maximum length allowed" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(None))
@@ -599,8 +599,8 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorMax(255))
+          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorMax(255)")
         }
       }
       "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
@@ -609,13 +609,13 @@ class AddressLookupControllerSpec
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
+        html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
       }
     }
 
     "display the select page in welsh" when {
-      val WelshConstantsUkMode = WelshConstants(true)
-      val WelshMessageConstants = WelshMessages(true)
+//      val WelshConstantsUkMode = WelshConstants(true)
+//      val WelshMessageConstants = WelshMessages(true)
 
       val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
       "the form had an error and welsh is enabled" when {
@@ -625,8 +625,8 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(WelshMessageConstants.errorRequired)
+          html should include element withName("h1").withValue("??? WelshConstantsUkMode.SELECT_PAGE_HEADING")
+          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? WelshMessageConstants.errorRequired")
         }
         "something was selected which was more than the maximum length allowed" in new Scenario(
           journeyDataV2 = Map("foo" -> basicWelshJourney)
@@ -634,8 +634,8 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "A" * 256))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(WelshMessageConstants.errorMax(255))
+          html should include element withName("h1").withValue("??? WelshConstantsUkMode.SELECT_PAGE_HEADING")
+          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? WelshMessageConstants.errorMax(255)")
         }
       }
       "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
@@ -644,7 +644,7 @@ class AddressLookupControllerSpec
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
+        html should include element withName("h1").withValue("??? WelshConstantsUkMode.SELECT_PAGE_HEADING")
       }
     }
 

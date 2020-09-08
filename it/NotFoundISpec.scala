@@ -1,14 +1,14 @@
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 
 class NotFoundISpec extends IntegrationSpecBase {
 
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
+//  val EnglishMessageConstants = EnglishMessages(true)
+//  val WelshMessageConstants = WelshMessages(true)
 
   "Not Found" when {
     "the welsh content header isn't set and welsh object isn't provided in config" should {
@@ -24,9 +24,9 @@ class NotFoundISpec extends IntegrationSpecBase {
         res.status shouldBe NOT_FOUND
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.notFoundErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.notFoundErrorHeading))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.notFoundErrorBody))
+        doc.title shouldBe "??? EnglishMessageConstants.notFoundErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.notFoundErrorHeading"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.notFoundErrorBody"))
       }
     }
     "the welsh content header is set and welsh object isn't provided in config" should {
@@ -45,9 +45,9 @@ class NotFoundISpec extends IntegrationSpecBase {
         res.status shouldBe NOT_FOUND
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.notFoundErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.notFoundErrorHeading))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.notFoundErrorBody))
+        doc.title shouldBe "??? EnglishMessageConstants.notFoundErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.notFoundErrorHeading"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.notFoundErrorBody"))
       }
     }
     "the welsh content header is set and welsh object is provided in config" should {
@@ -68,9 +68,9 @@ class NotFoundISpec extends IntegrationSpecBase {
 
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.notFoundErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.notFoundErrorHeading))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.notFoundErrorBody))
+        doc.title shouldBe "??? EnglishMessageConstants.notFoundErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.notFoundErrorHeading"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.notFoundErrorBody"))
       }
     }
     "the welsh content header is set and welsh object provided in config" should {
@@ -90,9 +90,9 @@ class NotFoundISpec extends IntegrationSpecBase {
         res.status shouldBe NOT_FOUND
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.notFoundErrorTitle
-        doc.h1 should have(text(WelshMessageConstants.notFoundErrorHeading))
-        doc.paras should have(elementWithValue(WelshMessageConstants.notFoundErrorBody))
+        doc.title shouldBe "??? WelshMessageConstants.notFoundErrorTitle"
+        doc.h1 should have(text("??? WelshMessageConstants.notFoundErrorHeading"))
+        doc.paras should have(elementWithValue("??? WelshMessageConstants.notFoundErrorBody"))
       }
     }
   }

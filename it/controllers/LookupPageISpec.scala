@@ -3,8 +3,8 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
-import model.JourneyConfigDefaults.EnglishConstants
-import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
+//import model.JourneyConfigDefaults.EnglishConstants
+//import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import play.api.Application
 import play.api.Mode.Test
 import play.api.http.HeaderNames
@@ -16,11 +16,11 @@ import scala.util.Random
 
 class LookupPageISpec extends IntegrationSpecBase {
 
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
-  val EnglishConstantsNonUkMode = EnglishConstants(false)
+//  val EnglishMessageConstants = EnglishMessages(true)
+//  val WelshMessageConstants = WelshMessages(true)
+//  val EnglishConstantsNonUkMode = EnglishConstants(false)
 
-  import EnglishConstantsNonUkMode._
+//  import EnglishConstantsNonUkMode._
 
   def longFilterValue = (1 to 257) map (_ => Random.alphanumeric.head) mkString
 
@@ -49,26 +49,26 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe LOOKUP_PAGE_TITLE
-        doc.h1.text() shouldBe LOOKUP_PAGE_HEADING
+        doc.title shouldBe "??? LOOKUP_PAGE_TITLE"
+        doc.h1.text() shouldBe "??? LOOKUP_PAGE_HEADING"
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
         doc.input(LookupPage.postcodeId) should have(
-          label(LOOKUP_PAGE_POSTCODE_LABEL),
+          label("??? LOOKUP_PAGE_POSTCODE_LABEL"),
           value(testPostCode)
         )
 
         doc.input(LookupPage.filterId) should have(
-          label(LOOKUP_PAGE_FILTER_LABEL + hardCodedFormHint),
+          label("??? LOOKUP_PAGE_FILTER_LABEL" + hardCodedFormHint),
           value(testFilterValue)
         )
 
         doc.link(LookupPage.manualAddressLink) should have(
           href(routes.AddressLookupController.edit(testJourneyId).url),
-          text(LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT)
+          text("??? LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT")
         )
 
         doc.submitButton.text() shouldBe "Continue"
@@ -304,9 +304,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -325,9 +325,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to false and welsh object is provided in config" should {
@@ -347,9 +347,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to true and welsh object provided in config" should {
@@ -369,9 +369,9 @@ class LookupPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? WelshMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? WelshMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? WelshMessageConstants.intServerErrorTryAgain"))
       }
     }
   }

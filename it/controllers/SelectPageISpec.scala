@@ -4,19 +4,19 @@ import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
-import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+//import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
+//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 
 class SelectPageISpec extends IntegrationSpecBase {
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
-  val EnglishConstantsUkMode = EnglishConstants(true)
-  val WelshConstantsUkMode = WelshConstants(true)
+//  val EnglishMessageConstants = EnglishMessages(true)
+//  val WelshMessageConstants = WelshMessages(true)
+//  val EnglishConstantsUkMode = EnglishConstants(true)
+//  val WelshConstantsUkMode = WelshConstants(true)
 
-  import EnglishConstantsUkMode._
+//  import EnglishConstantsUkMode._
 
   "The select page GET" should {
     "be shown with default text" when {
@@ -35,12 +35,12 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe SELECT_PAGE_TITLE
-        doc.h1.text() shouldBe SELECT_PAGE_HEADING
-        doc.submitButton.text() shouldBe SELECT_PAGE_SUBMIT_LABEL
+        doc.title shouldBe "??? SELECT_PAGE_TITLE"
+        doc.h1.text() shouldBe "??? SELECT_PAGE_HEADING"
+        doc.submitButton.text() shouldBe "??? SELECT_PAGE_SUBMIT_LABEL"
         doc.link("editAddress") should have(
           href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
-          text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+          text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
         )
 
         val testIds = (testResultsList \\ "id").map {
@@ -160,8 +160,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
         await(res).status shouldBe OK
 
-        doc.title() shouldBe WelshConstantsUkMode.SELECT_PAGE_TITLE
-        doc.h1.text() shouldBe WelshConstantsUkMode.SELECT_PAGE_HEADING
+        doc.title() shouldBe "??? WelshConstantsUkMode.SELECT_PAGE_TITLE"
+        doc.h1.text() shouldBe "??? WelshConstantsUkMode.SELECT_PAGE_HEADING"
       }
     }
   }
@@ -184,7 +184,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe "Gwall: " + WelshConstantsUkMode.SELECT_PAGE_TITLE
+        doc.title shouldBe "Gwall: ??? WelshConstantsUkMode.SELECT_PAGE_TITLE"
       }
     }
     "Redirects to Confirm page if option is selected" in {
@@ -262,9 +262,9 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -283,9 +283,9 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to false and welsh object is provided in config" should {
@@ -305,9 +305,9 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
       }
     }
     "the welsh content header is set to true and welsh object provided in config" should {
@@ -327,9 +327,9 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe "??? WelshMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? WelshMessageConstants.intServerErrorTitle"))
+        doc.paras should have(elementWithValue("??? WelshMessageConstants.intServerErrorTryAgain"))
       }
     }
   }

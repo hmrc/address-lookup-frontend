@@ -3,7 +3,7 @@ package controllers
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
-import model.JourneyConfigDefaults.EnglishConstants
+//import model.JourneyConfigDefaults.EnglishConstants
 import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -47,9 +47,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     val noResultsPageTitle = "We cannot find any addresses"
   }
 
-  val EnglishConstantsUkMode = EnglishConstants(true)
+//  val EnglishConstantsUkMode = EnglishConstants(true)
 
-  import EnglishConstantsUkMode._
+//  import EnglishConstantsUkMode._
 
   "The 'Too Many Results' page" should {
     "be rendered" when {
@@ -78,7 +78,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
             )
           }
         }
@@ -109,7 +109,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
             )
           }
         }
@@ -140,7 +140,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
             )
           }
         }
@@ -171,7 +171,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text(SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
             )
           }
         }
@@ -207,7 +207,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual") should have(
             href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text(JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+            text("??? JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
           )
         }
       }
@@ -243,7 +243,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
           doc.link("enterManual") should have(
             href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text(JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT)
+            text("??? JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
           )
         }
       }
@@ -265,7 +265,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe SELECT_PAGE_TITLE
+        doc.title shouldBe "??? SELECT_PAGE_TITLE"
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {

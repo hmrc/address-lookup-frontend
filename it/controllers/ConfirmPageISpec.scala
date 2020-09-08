@@ -3,23 +3,23 @@ package controllers
 import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import model.JourneyConfigDefaults.EnglishConstants
+//import model.JourneyConfigDefaults.EnglishConstants
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-import model.MessageConstants.{
-  EnglishMessageConstants => EnglishMessages,
-  WelshMessageConstants => WelshMessages
-}
+//import model.MessageConstants.{
+//  EnglishMessageConstants => EnglishMessages,
+//  WelshMessageConstants => WelshMessages
+//}
 
 class ConfirmPageISpec extends IntegrationSpecBase {
 
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
-  val EnglishConstantsUkMode = EnglishConstants(true)
+//  val EnglishMessageConstants = EnglishMessages(true)
+//  val WelshMessageConstants = WelshMessages(true)
+//  val EnglishConstantsUkMode = EnglishConstants(true)
 
-  import EnglishConstantsUkMode._
+//  import EnglishConstantsUkMode._
 
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
@@ -39,10 +39,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe CONFIRM_PAGE_TITLE
-      doc.h1.text() shouldBe CONFIRM_PAGE_HEADING
+      doc.title shouldBe "??? CONFIRM_PAGE_TITLE"
+      doc.h1.text() shouldBe "??? CONFIRM_PAGE_HEADING"
       doc.submitButton.text() shouldBe "Confirm address"
-      doc.link("changeLink") should have(text(CONFIRM_PAGE_EDIT_LINK_TEXT))
+      doc.link("changeLink") should have(text("??? CONFIRM_PAGE_EDIT_LINK_TEXT"))
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -208,7 +208,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for a minimal Welsh journey config model" in {
-      val WelshConstantsUkMode = JourneyConfigDefaults.WelshConstants(true)
+      val WelshConstantsUkMode = "??? JourneyConfigDefaults.WelshConstants(true)"
 
       val json = journeyDataV2WithSelectedAddressJson(
         JourneyConfigV2(
@@ -229,14 +229,14 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(
-        text(WelshMessageConstants.back)
+        text("??? WelshMessageConstants.back")
       )
-      doc.title shouldBe WelshConstantsUkMode.CONFIRM_PAGE_TITLE
-      doc.h1.text() shouldBe WelshConstantsUkMode.CONFIRM_PAGE_HEADING
+      doc.title shouldBe "??? WelshConstantsUkMode.CONFIRM_PAGE_TITLE"
+      doc.h1.text() shouldBe "??? WelshConstantsUkMode.CONFIRM_PAGE_HEADING"
       doc.submitButton
-        .text() shouldBe WelshConstantsUkMode.CONFIRM_PAGE_SUBMIT_LABEL
+        .text() shouldBe "??? WelshConstantsUkMode.CONFIRM_PAGE_SUBMIT_LABEL"
       doc.link("changeLink") should have(
-        text(WelshConstantsUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT)
+        text("??? WelshConstantsUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT")
       )
       doc.address should have(
         addressLine("line1", "1 High Street"),
@@ -275,7 +275,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(
-        text(WelshMessageConstants.back)
+        text("??? WelshMessageConstants.back")
       )
       doc.title shouldBe "cy-confirm-title"
       doc.h1.text() shouldBe "cy-confirm-heading"
@@ -369,10 +369,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.cookie(ALFCookieNames.useWelsh) shouldBe None
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
         doc.paras should have(
-          elementWithValue(EnglishMessageConstants.intServerErrorTryAgain)
+          elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain")
         )
       }
     }
@@ -403,10 +403,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.cookie(ALFCookieNames.useWelsh) shouldBe None
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
         doc.paras should have(
-          elementWithValue(EnglishMessageConstants.intServerErrorTryAgain)
+          elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain")
         )
       }
     }
@@ -434,10 +434,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
+        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
         doc.paras should have(
-          elementWithValue(EnglishMessageConstants.intServerErrorTryAgain)
+          elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain")
         )
       }
     }
@@ -463,11 +463,11 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
-        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
+        doc.title shouldBe "??? WelshMessageConstants.intServerErrorTitle"
+        doc.h1 should have(text("??? WelshMessageConstants.intServerErrorTitle"))
+        doc.h1 should have(text("??? WelshMessageConstants.intServerErrorTitle"))
         doc.paras should have(
-          elementWithValue(WelshMessageConstants.intServerErrorTryAgain)
+          elementWithValue("??? WelshMessageConstants.intServerErrorTryAgain")
         )
       }
     }

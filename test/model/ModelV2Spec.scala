@@ -16,13 +16,21 @@
 
 package model
 
+import com.codahale.metrics.SharedMetricRegistries
 import config.FrontendAppConfig
 import org.scalatest.{MustMatchers, WordSpecLike}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import utils.TestConstants._
 
 class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuite {
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder().build()
+  }
+
   val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "JourneyDataV2" should {
@@ -210,44 +218,44 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       originalJourneyConfig.options.timeoutConfig mustBe resolvedJourneyConfig.options.timeoutConfig
 
       // TODO: Add tests for message resolution
-//      originalJourneyConfig.labels.get.cy.get.appLevelLabels.get.navTitle mustBe resolvedJourneyConfig.labels.appLevelLabels.navTitle
-//      originalJourneyConfig.labels.get.cy.get.appLevelLabels.get.phaseBannerHtml must contain(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
-//
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.title must contain(resolvedJourneyConfig.labels.selectPageLabels.title)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.heading must contain(resolvedJourneyConfig.labels.selectPageLabels.heading)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.headingWithPostcode must contain(resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.proposalListLabel must contain(resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.selectPageLabels.submitLabel)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText)
-//      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.editAddressLinkText must contain(resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText)
-//
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.title must contain(resolvedJourneyConfig.labels.lookupPageLabels.title)
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.heading must contain(resolvedJourneyConfig.labels.lookupPageLabels.heading)
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.filterLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.filterLabel)
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel)
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.submitLabel)
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.noResultsFoundMessage mustBe resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.resultLimitExceededMessage mustBe resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage
-//      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.manualAddressLinkText must contain(resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText)
-//
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.title must contain(resolvedJourneyConfig.labels.editPageLabels.title)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.heading must contain(resolvedJourneyConfig.labels.editPageLabels.heading)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line1Label must contain(resolvedJourneyConfig.labels.editPageLabels.line1Label)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line2Label must contain(resolvedJourneyConfig.labels.editPageLabels.line2Label)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line3Label must contain(resolvedJourneyConfig.labels.editPageLabels.line3Label)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.townLabel must contain(resolvedJourneyConfig.labels.editPageLabels.townLabel)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.editPageLabels.postcodeLabel)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.countryLabel must contain(resolvedJourneyConfig.labels.editPageLabels.countryLabel)
-//      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.editPageLabels.submitLabel)
-//
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.title must contain(resolvedJourneyConfig.labels.confirmPageLabels.title)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.heading must contain(resolvedJourneyConfig.labels.confirmPageLabels.heading)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.infoSubheading must contain(resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.infoMessage must contain(resolvedJourneyConfig.labels.confirmPageLabels.infoMessage)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.confirmPageLabels.submitLabel)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.changeLinkText must contain(resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText)
-//      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.confirmChangeText must contain(resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText)
+      //      originalJourneyConfig.labels.get.cy.get.appLevelLabels.get.navTitle mustBe resolvedJourneyConfig.labels.appLevelLabels.navTitle
+      //      originalJourneyConfig.labels.get.cy.get.appLevelLabels.get.phaseBannerHtml must contain(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+      //
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.title must contain(resolvedJourneyConfig.labels.selectPageLabels.title)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.heading must contain(resolvedJourneyConfig.labels.selectPageLabels.heading)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.headingWithPostcode must contain(resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.proposalListLabel must contain(resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.selectPageLabels.submitLabel)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText)
+      //      originalJourneyConfig.labels.get.cy.get.selectPageLabels.get.editAddressLinkText must contain(resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText)
+      //
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.title must contain(resolvedJourneyConfig.labels.lookupPageLabels.title)
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.heading must contain(resolvedJourneyConfig.labels.lookupPageLabels.heading)
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.filterLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.filterLabel)
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel)
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.lookupPageLabels.submitLabel)
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.noResultsFoundMessage mustBe resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.resultLimitExceededMessage mustBe resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage
+      //      originalJourneyConfig.labels.get.cy.get.lookupPageLabels.get.manualAddressLinkText must contain(resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText)
+      //
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.title must contain(resolvedJourneyConfig.labels.editPageLabels.title)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.heading must contain(resolvedJourneyConfig.labels.editPageLabels.heading)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line1Label must contain(resolvedJourneyConfig.labels.editPageLabels.line1Label)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line2Label must contain(resolvedJourneyConfig.labels.editPageLabels.line2Label)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.line3Label must contain(resolvedJourneyConfig.labels.editPageLabels.line3Label)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.townLabel must contain(resolvedJourneyConfig.labels.editPageLabels.townLabel)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.postcodeLabel must contain(resolvedJourneyConfig.labels.editPageLabels.postcodeLabel)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.countryLabel must contain(resolvedJourneyConfig.labels.editPageLabels.countryLabel)
+      //      originalJourneyConfig.labels.get.cy.get.editPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.editPageLabels.submitLabel)
+      //
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.title must contain(resolvedJourneyConfig.labels.confirmPageLabels.title)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.heading must contain(resolvedJourneyConfig.labels.confirmPageLabels.heading)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.infoSubheading must contain(resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.infoMessage must contain(resolvedJourneyConfig.labels.confirmPageLabels.infoMessage)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.submitLabel must contain(resolvedJourneyConfig.labels.confirmPageLabels.submitLabel)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.searchAgainLinkText must contain(resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.changeLinkText must contain(resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText)
+      //      originalJourneyConfig.labels.get.cy.get.confirmPageLabels.get.confirmChangeText must contain(resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText)
     }
 
     "return a full model with all possible English default values" in {
@@ -279,44 +287,44 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
-//      resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-//      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
-//
-//      resolvedJourneyConfig.labels.selectPageLabels.title mustBe EnglishConstantsNonUkMode.SELECT_PAGE_TITLE
-//      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING
-//      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
-//      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
-//      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-//      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe EnglishConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
-//
-//      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_TITLE
-//      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_HEADING
-//      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_FILTER_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_POSTCODE_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
-//      resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
-//      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
-//
-//      resolvedJourneyConfig.labels.editPageLabels.title mustBe EnglishConstantsNonUkMode.EDIT_PAGE_TITLE
-//      resolvedJourneyConfig.labels.editPageLabels.heading mustBe EnglishConstantsNonUkMode.EDIT_PAGE_HEADING
-//      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE1_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE2_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE3_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_TOWN_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_POSTCODE_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_COUNTRY_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_SUBMIT_LABEL
-//
-//      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_TITLE
-//      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_HEADING
-//      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_INFO_SUBHEADING
-//      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
-//      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-//      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
-//      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
+      //      resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
+      //      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe EnglishConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      //
+      //      resolvedJourneyConfig.labels.selectPageLabels.title mustBe EnglishConstantsNonUkMode.SELECT_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe EnglishConstantsNonUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
+      //      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
+      //      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
+      //      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe EnglishConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
+      //
+      //      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_FILTER_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_POSTCODE_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
+      //      resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
+      //      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe EnglishConstantsNonUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+      //
+      //      resolvedJourneyConfig.labels.editPageLabels.title mustBe EnglishConstantsNonUkMode.EDIT_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.editPageLabels.heading mustBe EnglishConstantsNonUkMode.EDIT_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE1_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE2_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe EnglishConstantsNonUkMode.EDIT_PAGE_LINE3_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_TOWN_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_POSTCODE_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_COUNTRY_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.EDIT_PAGE_SUBMIT_LABEL
+      //
+      //      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_INFO_SUBHEADING
+      //      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
+      //      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe EnglishConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
+      //      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
+      //      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe EnglishConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
     }
 
     "return a full model with all possible default values including English and Welsh content" in {
@@ -350,44 +358,44 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
       resolvedJourneyConfig.options.timeoutConfig mustBe None
 
-//      resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
-//      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
-//
-//      resolvedJourneyConfig.labels.selectPageLabels.title mustBe WelshConstantsNonUkMode.SELECT_PAGE_TITLE
-//      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING
-//      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
-//      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
-//      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-//      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe WelshConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
-//
-//      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_TITLE
-//      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_HEADING
-//      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_FILTER_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_POSTCODE_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
-//      resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
-//      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
-//
-//      resolvedJourneyConfig.labels.editPageLabels.title mustBe WelshConstantsNonUkMode.EDIT_PAGE_TITLE
-//      resolvedJourneyConfig.labels.editPageLabels.heading mustBe WelshConstantsNonUkMode.EDIT_PAGE_HEADING
-//      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE1_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE2_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE3_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_TOWN_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_POSTCODE_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_COUNTRY_LABEL
-//      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_SUBMIT_LABEL
-//
-//      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_TITLE
-//      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_HEADING
-//      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_INFO_SUBHEADING
-//      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
-//      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
-//      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
-//      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
-//      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
+      //      resolvedJourneyConfig.labels.appLevelLabels.navTitle mustBe None
+      //      resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml mustBe WelshConstantsNonUkMode.defaultPhaseBannerHtml("https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF")
+      //
+      //      resolvedJourneyConfig.labels.selectPageLabels.title mustBe WelshConstantsNonUkMode.SELECT_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.selectPageLabels.heading mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.selectPageLabels.headingWithPostcode mustBe WelshConstantsNonUkMode.SELECT_PAGE_HEADING_WITH_POSTCODE
+      //      resolvedJourneyConfig.labels.selectPageLabels.proposalListLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_PROPOSAL_LIST_LABEL
+      //      resolvedJourneyConfig.labels.selectPageLabels.submitLabel mustBe WelshConstantsNonUkMode.SELECT_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.selectPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
+      //      resolvedJourneyConfig.labels.selectPageLabels.editAddressLinkText mustBe WelshConstantsNonUkMode.SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT
+      //
+      //      resolvedJourneyConfig.labels.lookupPageLabels.title mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.lookupPageLabels.heading mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.lookupPageLabels.filterLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_FILTER_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.postcodeLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_POSTCODE_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.submitLabel mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.lookupPageLabels.noResultsFoundMessage mustBe None
+      //      resolvedJourneyConfig.labels.lookupPageLabels.resultLimitExceededMessage mustBe None
+      //      resolvedJourneyConfig.labels.lookupPageLabels.manualAddressLinkText mustBe WelshConstantsNonUkMode.LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT
+      //
+      //      resolvedJourneyConfig.labels.editPageLabels.title mustBe WelshConstantsNonUkMode.EDIT_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.editPageLabels.heading mustBe WelshConstantsNonUkMode.EDIT_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.editPageLabels.line1Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE1_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.line2Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE2_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.line3Label mustBe WelshConstantsNonUkMode.EDIT_PAGE_LINE3_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.townLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_TOWN_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.postcodeLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_POSTCODE_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.countryLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_COUNTRY_LABEL
+      //      resolvedJourneyConfig.labels.editPageLabels.submitLabel mustBe WelshConstantsNonUkMode.EDIT_PAGE_SUBMIT_LABEL
+      //
+      //      resolvedJourneyConfig.labels.confirmPageLabels.title mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_TITLE
+      //      resolvedJourneyConfig.labels.confirmPageLabels.heading mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_HEADING
+      //      resolvedJourneyConfig.labels.confirmPageLabels.infoSubheading mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_INFO_SUBHEADING
+      //      resolvedJourneyConfig.labels.confirmPageLabels.infoMessage mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_INFO_MESSAGE_HTML
+      //      resolvedJourneyConfig.labels.confirmPageLabels.submitLabel mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_SUBMIT_LABEL
+      //      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
+      //      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
+      //      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
     }
   }
 
@@ -417,13 +425,13 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
     }
 
     "set the phase value to alpha" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true),showPhaseBanner = Some(true)), appConfig).phase mustBe "alpha"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true), showPhaseBanner = Some(true)), appConfig).phase mustBe "alpha"
     }
     "set the phase value to beta" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(true)), appConfig).phase mustBe "beta"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false), showPhaseBanner = Some(true)), appConfig).phase mustBe "beta"
     }
     "set the phase value to empty string" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false),showPhaseBanner = Some(false)), appConfig).phase mustBe ""
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false), showPhaseBanner = Some(false)), appConfig).phase mustBe ""
     }
   }
 }

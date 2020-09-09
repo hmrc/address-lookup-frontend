@@ -35,27 +35,21 @@
     @if(selectedAddress.isDefined) {
         @form(controllers.routes.AddressLookupController.handleConfirm(id)) {
             @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
-                <h2 class="govuk-heading-m">@{
-                    messages("confirmPage.infoSubheading")
-                }</h2>
+                <h2 class="govuk-heading-m" id="infoSubheading">@{messages("confirmPage.infoSubheading")}</h2>
                 <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("confirmPage.infoMessage"))</p>
             }
             @address_confirmation_display(selectedAddress.get.address)
 
             @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
-                <p><a class="govuk-link" href="@{
-                    routes.AddressLookupController.lookup(id)
-                }" id="searchAgainLink">@{
-                    messages("confirmPage.searchAgainLinkText")
-                }</a></p>
+                <p>
+                    <a class="govuk-link" href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
+                </p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
-                <p class="govuk-!-margin-bottom-7"><a class="govuk-link" href="@{
-                    routes.AddressLookupController.edit(id, None)
-                }" id="changeLink">@{
-                    messages("confirmPage.changeLinkText")
-                }</a></p>
+                <p class="govuk-!-margin-bottom-7">
+                    <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, None)}" id="changeLink">@{messages("confirmPage.changeLinkText")}</a>
+                </p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {

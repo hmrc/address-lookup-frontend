@@ -15,6 +15,7 @@
  */
 package itutil
 
+import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
@@ -43,10 +44,13 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
   val mockHost = WireMockHelper.wiremockHost
   val mockPort = WireMockHelper.wiremockPort
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .in(Test)
-    .build()
+  implicit override lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder()
+      .configure(fakeConfig())
+      .in(Test)
+      .build()
+  }
 
   val cookieSigner = app.injector.instanceOf[CookieSigner]
 

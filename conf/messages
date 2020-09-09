@@ -144,7 +144,7 @@ constants.noResultsPageDifferentPostcode = Try a different postcode
 
 constants.tooManyResultsText = There are too many results
 constants.noResultsFoundTitle = No results found
-constants.cannotFindText = We couldn't find any results for that property name or number
+constants.cannotFindText = We couldn''t find any results for that property name or number
 constants.anotherSearchText = Try a new search
 constants.nothingText = nothing for property name or number
 constants.nameNumberText = for name or number

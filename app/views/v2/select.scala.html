@@ -32,25 +32,16 @@ page: page_template)
 
 @page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
-    @if(lookup.filter.isDefined) {
-        @if(!firstSearch){
-            <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
-        } else {
-            <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>
-        }
+    @if(lookup.filter.isDefined && !firstSearch) {
+        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
+        <div class="form-field">
+            <p id="no-results">@{messages("constants.noResults")} '@{lookup.filter.get}'.</p>
+        </div>
+        <div>
+            <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a></p>
+        </div>
     } else {
         <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>
-    }
-
-    @if(lookup.filter.isDefined) {
-        @if(!firstSearch) {
-            <div class="form-field">
-                <p id="no-results">@{messages("constants.noResults")} '@{lookup.filter.get}'.</p>
-            </div>
-            <div>
-                <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a></p>
-            </div>
-        }
     }
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
@@ -80,7 +71,6 @@ page: page_template)
         }))
 
         @button(Button(content = HtmlContent(messages("selectPage.submitLabel")),
-            name=Some("continue"),
-            inputType=Some("submit"), attributes = Map("id" → "continue")))
+            name=Some("continue"), inputType=Some("submit"), attributes = Map("id" → "continue")))
     }
 }

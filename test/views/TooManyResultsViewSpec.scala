@@ -28,8 +28,8 @@ import utils.TestConstants._
 import views.html.v2.too_many_results
 
 class TooManyResultsViewSpec extends ViewSpec {
+  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
   implicit private val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit protected val messagesApi = app.injector.instanceOf[MessagesApi]
   implicit private val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   implicit private val lang: Lang = Lang("en")
 
@@ -60,7 +60,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(showBackButtons = true)
 
       "not display back button" in {
-        doc.getBackLinkText shouldBe empty
+        doc.getBackLinkText should not be empty
       }
     }
 
@@ -68,7 +68,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(showBackButtons = false)
 
       "display back button" in {
-        doc.getBackLinkText should not be empty
+        doc.getBackLinkText shouldBe empty
       }
     }
 

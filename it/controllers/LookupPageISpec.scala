@@ -1,5 +1,6 @@
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
@@ -27,11 +28,14 @@ class LookupPageISpec extends IntegrationSpecBase {
   // TODO: Make hint configurable as part of welsh translation
   val hardCodedFormHint = " For example, The Mill, 116 or Flat 37a"
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .configure("error.required" → "Postcode is required")
-    .in(Test)
-    .build()
+  override lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder()
+      .configure(fakeConfig())
+      .configure("error.required" → "Postcode is required")
+      .in(Test)
+      .build()
+  }
 
   "The lookup page" when {
     "when provided with no page config" should {

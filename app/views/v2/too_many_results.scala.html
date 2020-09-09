@@ -18,7 +18,7 @@
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
-@this(form: FormWithCSRF, button: govukButton, page: page_template)
+@this(button: govukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
@@ -38,7 +38,8 @@
     <p>@messages("constants.youEntered")</p>
     <ul class="govuk-list govuk-list-bullet">
         <li>@{lookup.postcode} @messages("constants.forPostcode")</li>
-        <li>@{lookup.filter.fold(messages("constants.nothingText"))(filter => s"'$filter' ${messages("constants.nameNumberText")}")}</li>
+        <li>@{lookup.filter.fold(messages("constants.nothingText"))(
+            filter => s"'$filter' ${messages("constants.nameNumberText")}")}</li>
 
     </ul>
     <br />

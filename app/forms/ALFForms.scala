@@ -49,6 +49,8 @@ object ALFForms extends EmptyStringValidator {
 
   def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
 
+  //TODO: TESTS_REQUIRED
+  //Need to cover uk and non-uk mode
   def postcodeConstraint(isUkMode: Boolean)(implicit messages: Messages): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
     case empty if empty.isEmpty =>
       Invalid(Seq(ValidationError(messages(s"constants.lookupPostcodeEmptyError${if (isUkMode) ".ukMode" else ""}"))))
@@ -60,7 +62,7 @@ object ALFForms extends EmptyStringValidator {
       Valid
   })
 
-
+  //TODO: TESTS_REQUIRED
   def lookupForm(isUkMode: Boolean = false)(implicit messages: Messages) = Form(
     mapping(
       "filter" -> optional(text.verifying(messages(s"constants.lookupFilterError"), txt => txt.length < 256)),

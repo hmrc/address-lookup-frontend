@@ -571,11 +571,11 @@ class AddressLookupController @Inject()(
       }
   }
 
-  // GET /renewSession
-  def renewSession: Action[AnyContent] = ???
-//    Action { implicit req =>
-//    Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
-//  }
+//   GET /renewSession
+  def renewSession: Action[AnyContent] =
+    Action { implicit req =>
+    Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
+  }
 
   // GET /destroySession
   def destroySession(timeoutUrl: String): Action[AnyContent] = Action {

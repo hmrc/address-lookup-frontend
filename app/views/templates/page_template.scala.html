@@ -98,7 +98,7 @@ header: HmrcHeader)
     }
 
     @govukLayout(
-        pageTitle = Some(messages("navTitle")),
+        pageTitle = Some(title),
         headBlock = Some(head),
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,

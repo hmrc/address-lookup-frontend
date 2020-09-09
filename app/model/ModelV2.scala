@@ -86,8 +86,8 @@ case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
 
 object JourneyLabels {
   implicit def appLevelLabelsWrites: Writes[AppLevelLabels] = {
-    (__ \ "applevel.navTitle").writeNullable[String]
-      .and((__ \ "applevel.phaseBannerHtml").writeNullable[String])(
+    (__ \ "navTitle").writeNullable[String]
+      .and((__ \ "phaseBannerHtml").writeNullable[String])(
         unlift(AppLevelLabels.unapply)
       )
   }

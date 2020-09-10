@@ -125,9 +125,12 @@ object JourneyLabelsForMessages {
 
   implicit def lookupPageLabelsWrites = {
     (__ \ "lookupPage.title").writeNullable[String]
+      .and((__ \ "lookupPage.title.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.heading").writeNullable[String])
+      .and((__ \ "lookupPage.heading.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.filterLabel").writeNullable[String])
       .and((__ \ "lookupPage.postcodeLabel").writeNullable[String])
+      .and((__ \ "lookupPage.postcodeLabel.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.submitLabel").writeNullable[String])
       .and((__ \ "lookupPage.noResultsFoundMessage").writeNullable[String])
       .and((__ \ "lookupPage.resultLimitExceededMessage").writeNullable[String])
@@ -144,6 +147,7 @@ object JourneyLabelsForMessages {
       .and((__ \ "editPage.line3Label").writeNullable[String])
       .and((__ \ "editPage.townLabel").writeNullable[String])
       .and((__ \ "editPage.postcodeLabel").writeNullable[String])
+      .and((__ \ "editPage.postcodeLabel.ukMode").writeNullable[String])
       .and((__ \ "editPage.countryLabel").writeNullable[String])
       .and((__ \ "editPage.submitLabel").writeNullable[String])(
         unlift(EditPageLabels.unapply)
@@ -190,13 +194,20 @@ case class SelectPageLabels(title: Option[String] = None,
 
 
 case class LookupPageLabels(title: Option[String] = None,
+                            private val _titleUkMode: Option[String] = None,
                             heading: Option[String] = None,
+                            private val _headingUkMode: Option[String] = None,
                             filterLabel: Option[String] = None,
                             postcodeLabel: Option[String] = None,
+                            private val _postcodeLabelUkMode: Option[String] = None,
                             submitLabel: Option[String] = None,
                             noResultsFoundMessage: Option[String] = None,
                             resultLimitExceededMessage: Option[String] = None,
-                            manualAddressLinkText: Option[String] = None)
+                            manualAddressLinkText: Option[String] = None) {
+  val titleUkMode = _titleUkMode.orElse(title)
+  val headingUkMode = _headingUkMode.orElse(heading)
+  val postcodeLabelUkMode = _postcodeLabelUkMode.orElse(postcodeLabel)
+}
 
 case class EditPageLabels(title: Option[String] = None,
                           heading: Option[String] = None,
@@ -205,8 +216,11 @@ case class EditPageLabels(title: Option[String] = None,
                           line3Label: Option[String] = None,
                           townLabel: Option[String] = None,
                           postcodeLabel: Option[String] = None,
+                          private val _postcodeLabelUkMode: Option[String] = None,
                           countryLabel: Option[String] = None,
-                          submitLabel: Option[String] = None)
+                          submitLabel: Option[String] = None) {
+  val postcodeLabelUkMode = _postcodeLabelUkMode.orElse(postcodeLabel)
+}
 
 case class ConfirmPageLabels(title: Option[String] = None,
                              heading: Option[String] = None,

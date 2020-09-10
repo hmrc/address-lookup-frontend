@@ -56,7 +56,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
         doc.title shouldBe messages("lookupPage.title")
-        doc.h1.text() shouldBe messages("lookupPage.title")
+        doc.h1.text() shouldBe messages("lookupPage.heading")
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")

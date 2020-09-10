@@ -21,6 +21,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.Application
 import play.api.Mode.Test
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 
@@ -53,6 +54,10 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
   }
 
   val cookieSigner = app.injector.instanceOf[CookieSigner]
+  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+
+  def messages(message: String) = messagesApi.preferred(Seq(Lang("en")))(message)
+  def messages(lang: Lang, message: String) = messagesApi.preferred(Seq(lang))(message)
 
   override def beforeEach(): Unit = {
     resetWiremock()

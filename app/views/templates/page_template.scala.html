@@ -97,8 +97,13 @@ header: HmrcHeader)
         }
     }
 
+    @fullTitle = @{
+        if (messages.isDefinedAt("navTitle")) s"$title - ${messages("navTitle")} - GOV.UK"
+        else title
+    }
+
     @govukLayout(
-        pageTitle = Some(title),
+        pageTitle = Some(fullTitle),
         headBlock = Some(head),
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,

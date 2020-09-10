@@ -31,11 +31,11 @@ message: Option[String] = None
 
 @titleWithError = @{
     val baseTitle = if(isUKMode) messages("lookupPage.title.ukMode") else messages("lookupPage.title")
-  if(lookupForm.errors) {
-    errorPrefix + baseTitle
-  } else {
-      baseTitle
-  }
+    if(lookupForm.errors) {
+        errorPrefix + baseTitle
+    } else {
+        baseTitle
+    }
 }
 
 @page(titleWithError, Some(lookupForm), journeyData, isWelsh, isUKMode) {

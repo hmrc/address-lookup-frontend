@@ -28,17 +28,17 @@
 @page(messages("constants.noResultsPageTitle"), None, journeyData, isWelsh, isUKMode) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
-        @{s"${messages("results.heading.text")} $postcode"}
+        @{s"${messages("constants.noResultsPageHeading")} $postcode"}
     </h1>
 
     @form(controllers.routes.AddressLookupController.lookup(id)) {
         <p><a class="govuk-link" href="@{
             routes.AddressLookupController.edit(id, None)
         }" id="enterManual">@{
-            messages("results.manual.entry.text")
+            messages("constants.noResultsPageEnterManually")
         }</a></p>
 
-        @button(Button(content = HtmlContent(messages("results.diff.postcode.text")),
+        @button(Button(content = HtmlContent(messages("constants.noResultsPageDifferentPostcode")),
             name = Some("continue"),
             inputType = Some("submit"), attributes = Map("id" → "continue")))
     }

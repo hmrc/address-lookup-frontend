@@ -23,8 +23,8 @@ import controllers.countOfResults._
 import forms.ALFForms._
 import javax.inject.{Inject, Singleton}
 import model._
-import play.api.i18n.{I18nSupport, Lang, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{Lang, Messages}
+import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
 import spray.http.Uri
@@ -45,10 +45,10 @@ object countOfResults {
   case class OneResult(res: ProposedAddress) extends ResultsCount
 
   case class ResultsList(res: Seq[ProposedAddress], firstLookup: Boolean)
-      extends ResultsCount
+    extends ResultsCount
 
   case class TooManyResults(res: Seq[ProposedAddress], firstLookup: Boolean)
-      extends ResultsCount
+    extends ResultsCount
 
   case object NoResults extends ResultsCount
 
@@ -56,22 +56,22 @@ object countOfResults {
 
 @Singleton
 class AddressLookupController @Inject()(
-  journeyRepository: JourneyRepository,
-  addressService: AddressService,
-  countryService: CountryService,
-  auditConnector: AuditConnector,
-  implicit val frontendAppConfig: FrontendAppConfig,
-  messagesControllerComponents: MessagesControllerComponents,
-  remoteMessagesApiProvider: RemoteMessagesApiProvider,
-  lookup: views.html.v2.lookup,
-  select: views.html.v2.select,
-  uk_mode_edit: views.html.v2.uk_mode_edit,
-  non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
-  confirm: views.html.v2.confirm,
-  no_results: views.html.v2.no_results,
-  too_many_results: views.html.v2.too_many_results
-)(override implicit val ec: ExecutionContext)
-    extends AlfController(journeyRepository, messagesControllerComponents) {
+                                         journeyRepository: JourneyRepository,
+                                         addressService: AddressService,
+                                         countryService: CountryService,
+                                         auditConnector: AuditConnector,
+                                         implicit val frontendAppConfig: FrontendAppConfig,
+                                         messagesControllerComponents: MessagesControllerComponents,
+                                         remoteMessagesApiProvider: RemoteMessagesApiProvider,
+                                         lookup: views.html.v2.lookup,
+                                         select: views.html.v2.select,
+                                         uk_mode_edit: views.html.v2.uk_mode_edit,
+                                         non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
+                                         confirm: views.html.v2.confirm,
+                                         no_results: views.html.v2.no_results,
+                                         too_many_results: views.html.v2.too_many_results
+                                       )(override implicit val ec: ExecutionContext)
+  extends AlfController(journeyRepository, messagesControllerComponents) {
 
   def countries(welshFlag: Boolean = false): Seq[(String, String)] =
     countryService.findAll(welshFlag).map { c =>
@@ -79,8 +79,8 @@ class AddressLookupController @Inject()(
     }
 
   def getWelshContent(
-    journeyData: JourneyDataV2
-  )(implicit request: Request[_]): Boolean = {
+                       journeyData: JourneyDataV2
+                     )(implicit request: Request[_]): Boolean = {
     journeyData.welshEnabled && request.cookies.exists(
       kv => kv.name == "PLAY_LANG" && kv.value == "cy"
     )
@@ -97,18 +97,13 @@ class AddressLookupController @Inject()(
   }
 
   // GET  /:id/lookup
-  def lookup(id: String,
-             postcode: Option[String] = None,
-             filter: Option[String] = None): Action[AnyContent] = Action.async {
+  def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
         import JourneyLabelsForMessages._
 
-        val remoteMessagesApi =
-          remoteMessagesApiProvider.getRemoteMessagesApi(
-            journeyData.config.labels
-              .map(ls => Json.toJsObject(ls))
-              .orElse(Some(Json.obj())))
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
@@ -133,20 +128,23 @@ class AddressLookupController @Inject()(
   // GET  /:id/select
   def select(id: String): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
+      import JourneyLabelsForMessages._
+
+      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+      implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
       val isWelsh = getWelshContent(journeyData)
-      implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
-      implicit val permittedLangs: Seq[Lang] =
-        if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
       val isUKMode = journeyData.config.options.isUkMode
 
       lookupForm(journeyData.config.options.isUkMode)
         .bindFromRequest()
         .fold(
-          errors =>
-            Future.successful((None -> requestWithWelshHeader(isWelsh) {
-              BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
-            })),
+          errors => Future.successful((None -> requestWithWelshHeader(isWelsh) {
+            BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
+          })),
           lookup => {
             val lookupWithFormattedPostcode = lookup
               .copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
@@ -157,55 +155,23 @@ class AddressLookupController @Inject()(
                   selectedAddress = Some(address.toConfirmableAddress(id))
                 )
 
-                Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(
-                  isWelsh
-                ) {
+                Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
                   Redirect(routes.AddressLookupController.confirm(id))
                 }
               case ResultsList(addresses, firstLookup) =>
-                val journeyDataWithProposals =
-                  journeyData.copy(proposals = Some(addresses))
+                val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
 
-                Some(journeyDataWithProposals) -> requestWithWelshHeader(
-                  isWelsh
-                ) {
-                  Ok(
-                    select(
-                      id,
-                      journeyData,
-                      selectForm(),
-                      Proposals(Some(addresses)),
-                      lookupWithFormattedPostcode,
-                      firstLookup,
-                      isWelsh,
-                      isUKMode
-                    )
-                  )
+                Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
+                  Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), lookupWithFormattedPostcode,
+                    firstLookup, isWelsh, isUKMode))
                 }
               case TooManyResults(_, firstLookup) =>
                 None -> requestWithWelshHeader(isWelsh) {
-                  Ok(
-                    too_many_results(
-                      id,
-                      journeyData,
-                      lookupWithFormattedPostcode,
-                      firstLookup,
-                      isWelsh,
-                      isUKMode
-                    )
-                  )
+                  Ok(too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
                 }
               case NoResults =>
                 None -> requestWithWelshHeader(isWelsh) {
-                  Ok(
-                    no_results(
-                      id,
-                      journeyData,
-                      lookupWithFormattedPostcode.postcode,
-                      isWelsh,
-                      isUKMode
-                    )
-                  )
+                  Ok(no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
                 }
             }
           }
@@ -214,11 +180,11 @@ class AddressLookupController @Inject()(
   }
 
   private[controllers] def handleLookup(
-    id: String,
-    journeyData: JourneyDataV2,
-    lookup: Lookup,
-    firstLookup: Boolean = true
-  )(implicit hc: HeaderCarrier): Future[ResultsCount] = {
+                                         id: String,
+                                         journeyData: JourneyDataV2,
+                                         lookup: Lookup,
+                                         firstLookup: Boolean = true
+                                       )(implicit hc: HeaderCarrier): Future[ResultsCount] = {
 
     val addressLimit = journeyData.config.options.selectPageConfig
       .getOrElse(SelectPageConfig())
@@ -241,7 +207,7 @@ class AddressLookupController @Inject()(
         case oneFound if oneFound.size == 1 =>
           Future.successful(OneResult(oneFound.head))
         case tooManyFound
-            if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) =>
+          if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) =>
           Future.successful(
             TooManyResults(tooManyFound.take(addressLimit.get), firstLookup)
           )
@@ -257,6 +223,12 @@ class AddressLookupController @Inject()(
                    postcode: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
+        import JourneyLabelsForMessages._
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+        implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
         val isWelsh = getWelshContent(journeyData)
         implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
 
@@ -320,9 +292,9 @@ class AddressLookupController @Inject()(
   }
 
   private[controllers] def allowedCountries(
-    countries: Seq[(String, String)],
-    countryCodesOpt: Option[Set[String]]
-  ): Seq[(String, String)] = {
+                                             countries: Seq[(String, String)],
+                                             countryCodesOpt: Option[Set[String]]
+                                           ): Seq[(String, String)] = {
     countryCodesOpt match {
       case None => countries
       case Some(countryCodes) =>
@@ -335,55 +307,61 @@ class AddressLookupController @Inject()(
   // GET  /:id/edit
   def edit(id: String, lookUpPostCode: Option[String]): Action[AnyContent] =
     Action.async { implicit req =>
-      withJourneyV2(id) { journeyData =>
-        {
-          val editAddress =
-            addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
-          val allowedSeqCountries = (s: Seq[(String, String)]) =>
-            allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+      withJourneyV2(id) { journeyData => {
+        val editAddress =
+          addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
+        val allowedSeqCountries = (s: Seq[(String, String)]) =>
+          allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
-          val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+        import JourneyLabelsForMessages._
 
-          val isUKMode = journeyData.config.options.isUkMode
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
-          if (isUKMode) {
-            (None, requestWithWelshHeader(isWelsh) {
-              Ok(
-                uk_mode_edit(
-                  id,
-                  journeyData,
-                  ukEditForm().fill(editAddress),
-                  allowedSeqCountries(Seq.empty),
-                  isWelsh,
-                  isUKMode
-                )
+        implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+        val isWelsh = getWelshContent(journeyData)
+        implicit val permittedLangs: Seq[Lang] =
+          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+        val isUKMode = journeyData.config.options.isUkMode
+
+        if (isUKMode) {
+          (None, requestWithWelshHeader(isWelsh) {
+            Ok(
+              uk_mode_edit(
+                id,
+                journeyData,
+                ukEditForm().fill(editAddress),
+                allowedSeqCountries(Seq.empty),
+                isWelsh,
+                isUKMode
               )
-            })
-          } else {
-            val defaultAddress =
-              addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
-            (None, requestWithWelshHeader(isWelsh) {
-              Ok(
-                non_uk_mode_edit(
-                  id,
-                  journeyData,
-                  nonUkEditForm().fill(defaultAddress),
-                  allowedSeqCountries(countries(isWelsh)),
-                  isWelsh = isWelsh,
-                  isUKMode = isUKMode
-                )
+            )
+          })
+        } else {
+          val defaultAddress =
+            addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
+          (None, requestWithWelshHeader(isWelsh) {
+            Ok(
+              non_uk_mode_edit(
+                id,
+                journeyData,
+                nonUkEditForm().fill(defaultAddress),
+                allowedSeqCountries(countries(isWelsh)),
+                isWelsh = isWelsh,
+                isUKMode = isUKMode
               )
-            })
-          }
+            )
+          })
         }
+      }
       }
     }
 
   private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress],
                                             lookUpPostCode: Option[String] =
-                                              None): Edit = {
+                                            None): Edit = {
     oAddr
       .map(_.toEdit)
       .getOrElse(
@@ -399,9 +377,9 @@ class AddressLookupController @Inject()(
   }
 
   private[controllers] def addressOrEmpty(
-    oAddr: Option[ConfirmableAddress],
-    lookUpPostCode: Option[String] = None
-  ): Edit = {
+                                           oAddr: Option[ConfirmableAddress],
+                                           lookUpPostCode: Option[String] = None
+                                         ): Edit = {
     oAddr
       .map(_.toEdit)
       .getOrElse(
@@ -419,163 +397,181 @@ class AddressLookupController @Inject()(
   // POST /:id/edit
   def handleEdit(id: String): Action[AnyContent] = Action.async {
     implicit req =>
-      withJourneyV2(id) { journeyData =>
-        {
-          val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+      withJourneyV2(id) { journeyData => {
+        import JourneyLabelsForMessages._
 
-          val isUKMode = journeyData.config.options.isUkMode
-          if (isUKMode) {
-            val validatedForm = isValidPostcode(ukEditForm().bindFromRequest())
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
-            validatedForm.fold(
-              errors =>
-                (None, requestWithWelshHeader(isWelsh) {
-                  BadRequest(
-                    uk_mode_edit(
-                      id,
-                      journeyData,
-                      errors,
-                      allowedCountries(
-                        countries(isWelsh),
-                        journeyData.config.options.allowedCountryCodes
-                      ),
-                      isWelsh,
-                      isUKMode
-                    )
-                  )
-                }),
-              edit =>
-                (
-                  Some(
-                    journeyData.copy(
-                      selectedAddress = Some(edit.toConfirmableAddress(id))
-                    )
-                  ),
-                  requestWithWelshHeader(isWelsh) {
-                    Redirect(routes.AddressLookupController.confirm(id))
-                  }
-              )
-            )
-          } else {
-            val validatedForm =
-              isValidPostcode(nonUkEditForm().bindFromRequest())
+        implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
-            validatedForm.fold(
-              errors =>
-                (None, requestWithWelshHeader(isWelsh) {
-                  BadRequest(
-                    non_uk_mode_edit(
-                      id,
-                      journeyData,
-                      errors,
-                      allowedCountries(
-                        countries(isWelsh),
-                        journeyData.config.options.allowedCountryCodes
-                      ),
-                      isWelsh = isWelsh,
-                      isUKMode = isUKMode
-                    )
-                  )
-                }),
-              edit =>
-                (
-                  Some(
-                    journeyData.copy(
-                      selectedAddress = Some(edit.toConfirmableAddress(id))
-                    )
-                  ),
-                  requestWithWelshHeader(isWelsh) {
-                    Redirect(routes.AddressLookupController.confirm(id))
-                  }
-              )
-            )
-          }
-        }
-      }
-  }
-
-  // GET  /:id/confirm
-  def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
-    withJourneyV2(id) { journeyData =>
-      {
         val isWelsh = getWelshContent(journeyData)
         implicit val permittedLangs: Seq[Lang] =
           if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val isUKMode = journeyData.config.options.isUkMode
+        if (isUKMode) {
+          val validatedForm = isValidPostcode(ukEditForm().bindFromRequest())
 
-        journeyData.selectedAddress
-          .map(
-            _ =>
+          validatedForm.fold(
+            errors =>
               (None, requestWithWelshHeader(isWelsh) {
-                Ok(
-                  confirm(
+                BadRequest(
+                  uk_mode_edit(
                     id,
                     journeyData,
-                    journeyData.selectedAddress,
+                    errors,
+                    allowedCountries(
+                      countries(isWelsh),
+                      journeyData.config.options.allowedCountryCodes
+                    ),
                     isWelsh,
                     isUKMode
                   )
                 )
-              })
+              }),
+            edit =>
+              (
+                Some(
+                  journeyData.copy(
+                    selectedAddress = Some(edit.toConfirmableAddress(id))
+                  )
+                ),
+                requestWithWelshHeader(isWelsh) {
+                  Redirect(routes.AddressLookupController.confirm(id))
+                }
+              )
           )
-          .getOrElse((None, requestWithWelshHeader(isWelsh) {
-            Redirect(routes.AddressLookupController.lookup(id))
-          }))
+        } else {
+          val validatedForm =
+            isValidPostcode(nonUkEditForm().bindFromRequest())
+
+          validatedForm.fold(
+            errors =>
+              (None, requestWithWelshHeader(isWelsh) {
+                BadRequest(
+                  non_uk_mode_edit(
+                    id,
+                    journeyData,
+                    errors,
+                    allowedCountries(
+                      countries(isWelsh),
+                      journeyData.config.options.allowedCountryCodes
+                    ),
+                    isWelsh = isWelsh,
+                    isUKMode = isUKMode
+                  )
+                )
+              }),
+            edit =>
+              (
+                Some(
+                  journeyData.copy(
+                    selectedAddress = Some(edit.toConfirmableAddress(id))
+                  )
+                ),
+                requestWithWelshHeader(isWelsh) {
+                  Redirect(routes.AddressLookupController.confirm(id))
+                }
+              )
+          )
+        }
       }
+      }
+  }
+
+  // GET  /:id/confirm
+  def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
+    withJourneyV2(id) { journeyData => {
+      import JourneyLabelsForMessages._
+
+      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+      implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+      val isWelsh = getWelshContent(journeyData)
+      implicit val permittedLangs: Seq[Lang] =
+        if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+      val isUKMode = journeyData.config.options.isUkMode
+
+      journeyData.selectedAddress
+        .map(
+          _ =>
+            (None, requestWithWelshHeader(isWelsh) {
+              Ok(
+                confirm(
+                  id,
+                  journeyData,
+                  journeyData.selectedAddress,
+                  isWelsh,
+                  isUKMode
+                )
+              )
+            })
+        )
+        .getOrElse((None, requestWithWelshHeader(isWelsh) {
+          Redirect(routes.AddressLookupController.lookup(id))
+        }))
+    }
     }
   }
 
   // POST /:id/confirm
   def handleConfirm(id: String): Action[AnyContent] = Action.async {
     implicit req =>
-      withJourneyV2(id) { journeyData =>
-        {
-          val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+      withJourneyV2(id) { journeyData => {
+        import JourneyLabelsForMessages._
 
-          if (journeyData.selectedAddress.isDefined) {
-            val jd =
-              journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
-            auditConnector.sendEvent(
-              new DataEvent(
-                "address-lookup-frontend",
-                EventTypes.Succeeded,
-                tags = hc.toAuditTags("ConfirmAddress", req.uri),
-                detail = Map(
-                  "auditRef" -> id,
-                  "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
-                  "confirmedAddressId" -> jd.confirmedAddress.get.id
-                    .getOrElse("-")
-                )
+        implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+        val isWelsh = getWelshContent(journeyData)
+        implicit val permittedLangs: Seq[Lang] =
+          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+        if (journeyData.selectedAddress.isDefined) {
+          val jd =
+            journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+
+          auditConnector.sendEvent(
+            new DataEvent(
+              "address-lookup-frontend",
+              EventTypes.Succeeded,
+              tags = hc.toAuditTags("ConfirmAddress", req.uri),
+              detail = Map(
+                "auditRef" -> id,
+                "confirmedAddress" -> jd.confirmedAddress.get.toDescription,
+                "confirmedAddressId" -> jd.confirmedAddress.get.id
+                  .getOrElse("-")
               )
             )
+          )
 
-            (Some(jd), requestWithWelshHeader(isWelsh) {
-              Redirect(
-                Uri(journeyData.config.options.continueUrl)
-                  .withQuery("id" -> id)
-                  .toString()
-              )
-            })
-          } else {
-            (None, requestWithWelshHeader(isWelsh) {
-              Redirect(routes.AddressLookupController.confirm(id))
-            })
-          }
+          (Some(jd), requestWithWelshHeader(isWelsh) {
+            Redirect(
+              Uri(journeyData.config.options.continueUrl)
+                .withQuery("id" -> id)
+                .toString()
+            )
+          })
+        } else {
+          (None, requestWithWelshHeader(isWelsh) {
+            Redirect(routes.AddressLookupController.confirm(id))
+          })
         }
+      }
       }
   }
 
-//   GET /renewSession
+  //   GET /renewSession
   def renewSession: Action[AnyContent] =
     Action { implicit req =>
-    Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
-  }
+      Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
+    }
 
   // GET /destroySession
   def destroySession(timeoutUrl: String): Action[AnyContent] = Action {
@@ -584,23 +580,16 @@ class AddressLookupController @Inject()(
   }
 }
 
-abstract class AlfController @Inject()(
-  journeyRepository: JourneyRepository,
-  messagesControllerComponents: MessagesControllerComponents
-)(implicit val ec: ExecutionContext)
-    extends FrontendController(messagesControllerComponents)
-    with AlfI18nSupport {
+abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
+                                       messagesControllerComponents: MessagesControllerComponents
+                                      )(implicit val ec: ExecutionContext)
+  extends FrontendController(messagesControllerComponents) {
 
-  protected def withJourney(id: String,
-                            noJourney: Result = Redirect(
-                              routes.AddressLookupController.noJourney()
-                            ))(
-    action: JourneyData => (Option[JourneyData], Result)
-  )(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(
-      request.headers,
-      Some(request.session)
-    )
+  protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))
+                           (action: JourneyData => (Option[JourneyData], Result))
+                           (implicit request: Request[AnyContent]): Future[Result] = {
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
     journeyRepository.get(id).flatMap {
       case Some(journeyData) => {
         val outcome = action(journeyData)
@@ -619,8 +608,8 @@ abstract class AlfController @Inject()(
                               noJourney: Result = Redirect(
                                 routes.AddressLookupController.noJourney()
                               ))(
-    action: JourneyDataV2 => (Option[JourneyDataV2], Result)
-  )(implicit request: Request[AnyContent]): Future[Result] = {
+                               action: JourneyDataV2 => (Option[JourneyDataV2], Result)
+                             )(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter
       .fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.getV2(id).flatMap {
@@ -640,8 +629,8 @@ abstract class AlfController @Inject()(
                                   noJourney: Result = Redirect(
                                     routes.AddressLookupController.noJourney()
                                   ))(
-    action: JourneyData => Future[(Option[JourneyData], Result)]
-  )(implicit request: Request[AnyContent]): Future[Result] = {
+                                   action: JourneyData => Future[(Option[JourneyData], Result)]
+                                 )(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(
       request.headers,
       Some(request.session)
@@ -666,8 +655,8 @@ abstract class AlfController @Inject()(
                                     noJourney: Result = Redirect(
                                       routes.AddressLookupController.noJourney()
                                     ))(
-    action: JourneyDataV2 => Future[(Option[JourneyDataV2], Result)]
-  )(implicit request: Request[AnyContent]): Future[Result] = {
+                                     action: JourneyDataV2 => Future[(Option[JourneyDataV2], Result)]
+                                   )(implicit request: Request[AnyContent]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter
       .fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.getV2(id).flatMap {
@@ -691,10 +680,9 @@ case class Proposals(proposals: Option[Seq[ProposedAddress]]) {
   def toHtmlOptions: Seq[(String, String)] = {
     proposals
       .map { props =>
-        props.map { addr =>
-          {
-            (addr.addressId, addr.toDescription)
-          }
+        props.map { addr => {
+          (addr.addressId, addr.toDescription)
+        }
         }.sorted
       }
       .getOrElse(Seq.empty)

@@ -4,6 +4,7 @@ import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
+import play.api.i18n.Lang
 //import model.JourneyConfigDefaults.EnglishConstants
 //import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import play.api.Application
@@ -46,6 +47,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
@@ -53,26 +55,26 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe "??? LOOKUP_PAGE_TITLE"
-        doc.h1.text() shouldBe "??? LOOKUP_PAGE_HEADING"
+        doc.title shouldBe messages("lookupPage.title")
+        doc.h1.text() shouldBe messages("lookupPage.title")
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
 
         doc.input(LookupPage.postcodeId) should have(
-          label("??? LOOKUP_PAGE_POSTCODE_LABEL"),
+          label(messages("lookupPage.postcodeLabel")),
           value(testPostCode)
         )
 
         doc.input(LookupPage.filterId) should have(
-          label("??? LOOKUP_PAGE_FILTER_LABEL" + hardCodedFormHint),
+          label(messages("lookupPage.filterLabel") + hardCodedFormHint),
           value(testFilterValue)
         )
 
         doc.link(LookupPage.manualAddressLink) should have(
           href(routes.AddressLookupController.edit(testJourneyId).url),
-          text("??? LOOKUP_PAGE_MANUAL_ADDRESS_LINK_TEXT")
+          text(messages("lookupPage.manualAddressLinkText"))
         )
 
         doc.submitButton.text() shouldBe "Continue"
@@ -160,6 +162,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
@@ -257,6 +260,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
@@ -266,21 +270,9 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         doc.title shouldBe fullLookupPageConfig.title.get
         doc.h1.text() shouldBe fullLookupPageConfig.heading.get
-
-        doc.select("a[class=govuk-back-link]") should have(
-          text("Back")
-        )
-
-        doc.input(LookupPage.postcodeId) should have(
-          label(fullLookupPageConfig.postcodeLabel.get),
-          value(testPostCode)
-        )
-
-        doc.input(LookupPage.filterId) should have(
-          label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint),
-          value(testFilterValue)
-        )
-
+        doc.select("a[class=govuk-back-link]") should have(text("Back"))
+        doc.input(LookupPage.postcodeId) should have(label(fullLookupPageConfig.postcodeLabel.get), value(testPostCode))
+        doc.input(LookupPage.filterId) should have(label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint), value(testFilterValue))
         doc.link(LookupPage.manualAddressLink) should have(
           href(routes.AddressLookupController.edit(testJourneyId).url),
           text(fullLookupPageConfig.manualAddressLinkText.get)
@@ -298,19 +290,16 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck"
-          )
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
-        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
-        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
     "the welsh content header is set to false and welsh object isn't provided in config" should {
@@ -319,21 +308,19 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-            "Csrf-Token" -> "nocheck"
-          )
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
-        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
-        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
+
     "the welsh content header is set to false and welsh object is provided in config" should {
       "render in English" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
@@ -341,21 +328,19 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-            "Csrf-Token" -> "nocheck"
-          )
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe "??? EnglishMessageConstants.intServerErrorTitle"
-        doc.h1 should have(text("??? EnglishMessageConstants.intServerErrorTitle"))
-        doc.paras should have(elementWithValue("??? EnglishMessageConstants.intServerErrorTryAgain"))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
+
     "the welsh content header is set to true and welsh object provided in config" should {
       "render in Welsh" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
@@ -363,19 +348,16 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = true),
-            "Csrf-Token" -> "nocheck"
-          )
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe "??? WelshMessageConstants.intServerErrorTitle"
-        doc.h1 should have(text("??? WelshMessageConstants.intServerErrorTitle"))
-        doc.paras should have(elementWithValue("??? WelshMessageConstants.intServerErrorTryAgain"))
+        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
+        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
       }
     }
   }

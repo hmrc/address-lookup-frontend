@@ -33,7 +33,7 @@ page: page_template)
 @page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
 
     @if(lookup.filter.isDefined && !firstSearch) {
-        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("results.heading.text")} @{lookup.postcode}</h1>
+        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
         <div class="form-field">
             <p id="no-results">@{messages("constants.noResults")} '@{lookup.filter.get}'.</p>
         </div>

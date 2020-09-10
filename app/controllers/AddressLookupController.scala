@@ -102,7 +102,7 @@ class AddressLookupController @Inject()(
              filter: Option[String] = None): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
-        import JourneyLabels._
+        import JourneyLabelsForMessages._
 
         val remoteMessagesApi =
           remoteMessagesApiProvider.getRemoteMessagesApi(

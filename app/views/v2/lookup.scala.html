@@ -30,10 +30,11 @@ message: Option[String] = None
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
 @titleWithError = @{
+    val baseTitle = if(isUKMode) messages("lookupPage.title.ukMode") else messages("lookupPage.title")
   if(lookupForm.errors) {
-    errorPrefix + messages("lookupPage.title")
+    errorPrefix + baseTitle
   } else {
-      messages("lookupPage.title")
+      baseTitle
   }
 }
 
@@ -41,7 +42,7 @@ message: Option[String] = None
 
   @form(routes.AddressLookupController.select(id)) {
       <h1 class="govuk-heading-xl" id="pageHeading">
-        @{messages("lookupPage.heading")}
+        @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
 
       @if(message.isDefined) {
@@ -51,7 +52,9 @@ message: Option[String] = None
       }
 
       @textInput(Input(
-          label = Label(content = HtmlContent(messages("lookupPage.postcodeLabel"))),
+          label = Label(content = HtmlContent(
+              if(isUKMode) messages("lookupPage.postcodeLabel.ukMode") else messages("lookupPage.postcodeLabel")
+          )),
           name = lookupForm("postcode").name,
           value = lookupForm("postcode").value,
           classes = "govuk-input--width-10",

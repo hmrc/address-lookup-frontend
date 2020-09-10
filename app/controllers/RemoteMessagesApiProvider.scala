@@ -27,24 +27,23 @@ class RemoteMessagesApiProvider @Inject()(environment: Environment,
                                           config: Configuration,
                                           langs: Langs,
                                           httpConfiguration: HttpConfiguration)
-    extends DefaultMessagesApiProvider(
-      environment,
-      config,
-      langs,
-      httpConfiguration
-    ) {
+  extends DefaultMessagesApiProvider(
+    environment,
+    config,
+    langs,
+    httpConfiguration
+  ) {
 
   def getRemoteMessagesApi(remoteMessages: Option[JsObject]) = {
-    val english =
-      remoteMessages.map(_("en").as[Map[String, String]]).getOrElse(Map())
+    val english = remoteMessages
+      .flatMap(js => (js \ "en").asOpt[Map[String, String]]).getOrElse(Map())
     val welsh = remoteMessages
-      .flatMap(js => (js \ "cy").asOpt[Map[String, String]])
-      .getOrElse(Map())
+      .flatMap(js => (js \ "cy").asOpt[Map[String, String]]).getOrElse(Map())
 
     val allMessages = loadAllMessages.map {
       case (s, m) if s == "en" => s -> (m ++ english)
       case (s, m) if s == "cy" => s -> (m ++ welsh)
-      case (s, m)              => s -> m
+      case (s, m) => s -> m
     }
 
     new DefaultMessagesApi(

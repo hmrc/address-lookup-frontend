@@ -23,6 +23,7 @@ import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
+import play.api.i18n.{Lang, Messages}
 //import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 import model.JourneyData._
 //import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
@@ -73,6 +74,7 @@ class AddressLookupControllerSpec
                  id: Option[String] = None) {
 
     val req = FakeRequest()
+    // TODO: Do we need this and the tests that depend on it?
     val reqWelsh = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
 
     val endpoint = "http://localhost:9000"
@@ -92,6 +94,8 @@ class AddressLookupControllerSpec
     val no_results = app.injector.instanceOf[no_results]
     val too_many_results = app.injector.instanceOf[too_many_results]
     val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
+    implicit val lang = Lang("en")
+    implicit val messages = implicitly[Messages]
 
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
 
@@ -489,7 +493,7 @@ class AddressLookupControllerSpec
       redirectLocation(res) mustBe Some(routes.AddressLookupController.lookup("foo").url)
     }
 
-    "display the select page in english" when {
+    "display the select page" when {
       "the form had an error" when {
         "nothing was selected" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(None))
@@ -497,35 +501,29 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
-          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorRequired")
+          html should include element withName("h1").withValue(messages("selectPage.heading"))
+          html should include element withAttrValue("class", "govuk-error-summary").withValue(messages("constants.errorRequired"))
         }
-        "nothing was selected and the language is changed" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
-          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorRequired")
-        }
-        "something was selected which was more than the maximum length allowed" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
-          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorMax(255)")
-        }
+
+        // TODO: Test at the form level rather than here
+//        "something was selected which was more than the maximum length allowed" in new Scenario(
+//          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
+//        ) {
+//          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
+//          status(res) mustBe 400
+//          val html: Element = contentAsString(res).asBodyFragment
+//          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+//          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorMax(255)")
+//        }
       }
       "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+        journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(
+          proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
       ) {
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+        html should include element withName("h1").withValue(messages("selectPage.heading"))
       }
     }
   }

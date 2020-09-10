@@ -1,5 +1,6 @@
 package controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.testJourneyId
 import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
@@ -17,11 +18,14 @@ class  StubControllerISpec extends IntegrationSpecBase {
     override def uuid: String = testJourneyId
   }
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .in(Environment.simple(mode = Mode.Dev))
-    .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
-    .configure(fakeConfig("application.router" -> "testOnlyDoNotUseInAppConf.Routes"))
-    .build
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder()
+      .in(Environment.simple(mode = Mode.Dev))
+      .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
+      .configure(fakeConfig("application.router" -> "testOnlyDoNotUseInAppConf.Routes"))
+      .build
+  }
 
   s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2().url}" should {
     "return 200" in {

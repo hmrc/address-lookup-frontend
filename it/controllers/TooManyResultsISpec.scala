@@ -78,7 +78,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
+              text("Enter the address manually")
             )
           }
         }
@@ -109,7 +109,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
+              text("Enter the address manually")
             )
           }
         }
@@ -140,7 +140,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
+              text("Enter the address manually")
             )
           }
         }
@@ -171,80 +171,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
               href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-              text("??? SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
+              text("Enter the address manually")
             )
           }
-        }
-      }
-
-      "with default Welsh content and heading 1" when {
-        "first lookup and the journey data contains an empty CY object" in {
-          val v2Model = journeyDataV2ResultLimit.copy(
-            config = journeyDataV2ResultLimit.config.copy(
-              labels = Some(JourneyLabels(
-                cy = Some(LanguageLabels())
-              ))
-            )
-          )
-
-          stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
-          stubKeystoreSave(testJourneyId, Json.toJson(v2Model.copy(proposals = Some(addressResultsModelListBySize(51)))), OK)
-          stubGetAddressFromBEWithFilter(addressJson = addressResultsListBySize(51))
-
-          val res = buildClientLookupAddress(s"select?postcode=$testPostCode&filter=$testFilterValue")
-            .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
-            .get()
-
-          await(res).status shouldBe OK
-
-          val doc = getDocFromResponse(res)
-
-          doc.title shouldBe welshTooManyResultsMessages.title
-          doc.h1.text() shouldBe welshTooManyResultsMessages.heading1
-          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
-          doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
-          doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-          doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual") should have(
-            href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text("??? JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
-          )
-        }
-      }
-
-      "with default Welsh content and heading 2" when {
-        "not first lookup and the journey data contains an empty CY object" in {
-          val v2Model = journeyDataV2ResultLimit.copy(
-            config = journeyDataV2ResultLimit.config.copy(
-              labels = Some(JourneyLabels(
-                cy = Some(LanguageLabels())
-              ))
-            )
-          )
-
-          stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
-          stubKeystoreSave(testJourneyId, Json.toJson(v2Model), OK)
-          stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
-          stubGetAddressFromBEWithFilter(addressJson = Json.arr())
-
-          val res = buildClientLookupAddress(s"select?postcode=$testPostCode&filter=$testFilterValue")
-            .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
-            .get()
-
-          await(res).status shouldBe OK
-
-          val doc = getDocFromResponse(res)
-
-          doc.title shouldBe welshTooManyResultsMessages.title
-          doc.h1.text() shouldBe welshTooManyResultsMessages.heading2
-          doc.paras.get(1).text shouldBe welshTooManyResultsMessages.line1
-          doc.bulletPointList.select("li").first.text shouldBe welshTooManyResultsMessages.bullet1(testPostCode)
-          doc.bulletPointList.select("li").last.text shouldBe welshTooManyResultsMessages.bullet2WithFilter(testFilterValue)
-          doc.link("anotherSearch").text() shouldBe welshTooManyResultsMessages.button
-          doc.link("enterManual") should have(
-            href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
-            text("??? JourneyConfigDefaults.WelshConstants(true).SELECT_PAGE_EDIT_ADDRESS_LINK_TEXT")
-          )
         }
       }
     }
@@ -265,7 +194,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe "??? SELECT_PAGE_TITLE"
+        doc.title shouldBe "Choose address"
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {

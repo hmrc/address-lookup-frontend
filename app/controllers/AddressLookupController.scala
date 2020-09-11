@@ -585,33 +585,11 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
                                       )(implicit val ec: ExecutionContext)
   extends FrontendController(messagesControllerComponents) {
 
-  protected def withJourney(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))
-                           (action: JourneyData => (Option[JourneyData], Result))
-                           (implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+  protected def withJourneyV2(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))
+                             (action: JourneyDataV2 => (Option[JourneyDataV2], Result))
+                             (implicit request: Request[AnyContent]): Future[Result] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    journeyRepository.get(id).flatMap {
-      case Some(journeyData) => {
-        val outcome = action(journeyData)
-        outcome._1.fold(Future.successful(outcome._2))(
-          modifiedJourneyData =>
-            journeyRepository
-              .put(id, modifiedJourneyData)
-              .map(success => outcome._2)
-        )
-      }
-      case None => Future.successful(noJourney)
-    }
-  }
-
-  protected def withJourneyV2(id: String,
-                              noJourney: Result = Redirect(
-                                routes.AddressLookupController.noJourney()
-                              ))(
-                               action: JourneyDataV2 => (Option[JourneyDataV2], Result)
-                             )(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter
-      .fromHeadersAndSession(request.headers, Some(request.session))
     journeyRepository.getV2(id).flatMap {
       case Some(journeyData) =>
         val outcome = action(journeyData)
@@ -621,32 +599,6 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
               .putV2(id, modifiedJourneyData)
               .map(_ => outcome._2)
         )
-      case None => Future.successful(noJourney)
-    }
-  }
-
-  protected def withFutureJourney(id: String,
-                                  noJourney: Result = Redirect(
-                                    routes.AddressLookupController.noJourney()
-                                  ))(
-                                   action: JourneyData => Future[(Option[JourneyData], Result)]
-                                 )(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(
-      request.headers,
-      Some(request.session)
-    )
-    journeyRepository.get(id).flatMap {
-      case Some(journeyData) => {
-        action(journeyData).flatMap { outcome =>
-          outcome._1 match {
-            case Some(modifiedJourneyData) =>
-              journeyRepository
-                .put(id, modifiedJourneyData)
-                .map(success => outcome._2)
-            case None => Future.successful(outcome._2)
-          }
-        }
-      }
       case None => Future.successful(noJourney)
     }
   }

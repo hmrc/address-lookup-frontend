@@ -236,9 +236,12 @@ object IntegrationTestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"enLookupPageTitle",
+      |               "titleUkMode":"enLookupPageTitle",
       |               "heading":"enLookupPageHeading",
+      |               "headingUkMode":"enLookupPageHeading",
       |               "filterLabel":"enFilterLabel",
       |               "postcodeLabel":"enPostcodeLabel",
+      |               "postcodeLabelUkMode":"enPostcodeLabel",
       |               "submitLabel":"enSubmitLabel",
       |               "noResultsFoundMessage":"enNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"enResultLimitExceededMessage",
@@ -252,6 +255,7 @@ object IntegrationTestConstants {
       |               "line3Label":"enEditPageLine3Label",
       |               "townLabel":"enEditPageTownLabel",
       |               "postcodeLabel":"enEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"enEditPagePostcodeLabel",
       |               "countryLabel":"enEditPageCountryLabel",
       |               "submitLabel":"enEditPageSubmitLabel"
       |            },
@@ -282,9 +286,12 @@ object IntegrationTestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"cyLookupPageTitle",
+      |               "titleUkMode":"cyLookupPageTitle",
       |               "heading":"cyLookupPageHeading",
+      |               "headingUkMode":"cyLookupPageHeading",
       |               "filterLabel":"cyFilterLabel",
       |               "postcodeLabel":"cyPostcodeLabel",
+      |               "postcodeLabelUkMode":"cyPostcodeLabel",
       |               "submitLabel":"cySubmitLabel",
       |               "noResultsFoundMessage":"cyNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"cyResultLimitExceededMessage",
@@ -298,6 +305,7 @@ object IntegrationTestConstants {
       |               "line3Label":"cyEditPageLine3Label",
       |               "townLabel":"cyEditPageTownLabel",
       |               "postcodeLabel":"cyEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"cyEditPagePostcodeLabel",
       |               "countryLabel":"cyEditPageCountryLabel",
       |               "submitLabel":"cyEditPageSubmitLabel"
       |            },
@@ -321,36 +329,13 @@ object IntegrationTestConstants {
   val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
   val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
   val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl))
-  val testJourneyDataWithMinimalJourneyConfig = JourneyData(JourneyConfig(continueUrl = testContinueUrl))
-
-  val testConfigWithNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testNonUKAddress)))
-  val testConfigWithFullNonUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
-  val testConfigWithUKAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)))
-  val testConfigWithoutAddress = testJourneyDataWithMinimalJourneyConfig.copy(selectedAddress = None)
-  val testConfigDefaultAsJson = Json.toJson(testJourneyDataWithMinimalJourneyConfig).as[JsObject]
-  val testConfigWithoutAddressAsJson = Json.toJson(testConfigWithoutAddress).as[JsObject]
-  val testConfigNotUkMode = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false))
-  val testConfigNotUkModeCustomEditConfig = testJourneyDataWithMinimalJourneyConfig.config.copy(ukMode = Some(false),
-    editPage = Some(EditPage(Some("Custom Title"),
-      Some("Custom Heading"),
-      Some("Custom Line1"),
-      Some("Custom Line2"),
-      Some("Custom Line3"),
-      Some("Custom Town"),
-      Some("Custom Postcode"),
-      Some("Custom Country"),
-      Some("Custom Continue")
-    )))
 
   val testConfigWithAddressNotUkModeV2 = testConfigWithFullNonUKAddressV2.copy(config = testConfigNotUkModeV2)
-  val testConfigWithAddressNotUkMode = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkMode)
-  val testConfigWithAddressNotUkModeCustomEditConfig = testConfigWithFullNonUKAddress.copy(config = testConfigNotUkModeCustomEditConfig)
 
   val testConfigwithAddressNotUkModeAsJsonV2 = Json.toJson(testConfigWithAddressNotUkModeV2)
-  val testConfigWithAddressNotUkModeAsJson = Json.toJson(testConfigWithAddressNotUkMode)
   val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50))))))
   val testConfigDefaultWithResultsLimit = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50)))))
-  val testConfigWithAddressNotUkModeCustomEditConfigAsJson = Json.toJson(testConfigWithAddressNotUkModeCustomEditConfig).as[JsObject]
+  val testConfigDefaultAsJsonV2 = Json.toJson(testJourneyDataWithMinimalJourneyConfigV2).as[JsObject]
 
   val fullLookupPageConfig = LookupPage(
     title = Some("lookup-title"),
@@ -473,7 +458,10 @@ object IntegrationTestConstants {
     )
   )).as[JsValue]
 
-  val testCustomLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+  def testCustomLookupPageJourneyConfigV2 = {
+    Json.toJson(x).as[JsValue]
+  }
+  val x = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
@@ -527,7 +515,7 @@ object IntegrationTestConstants {
         cy = None
       ))
     )
-  )).as[JsValue]
+  )
 
   val testOtherCustomLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
     config = JourneyConfigV2(

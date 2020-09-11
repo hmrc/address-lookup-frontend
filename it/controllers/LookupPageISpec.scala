@@ -5,8 +5,6 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
 import play.api.i18n.Lang
-//import model.JourneyConfigDefaults.EnglishConstants
-//import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
 import play.api.Application
 import play.api.Mode.Test
 import play.api.http.HeaderNames
@@ -17,12 +15,6 @@ import play.api.libs.json.Json
 import scala.util.Random
 
 class LookupPageISpec extends IntegrationSpecBase {
-
-//  val EnglishMessageConstants = EnglishMessages(true)
-//  val WelshMessageConstants = WelshMessages(true)
-//  val EnglishConstantsNonUkMode = EnglishConstants(false)
-
-//  import EnglishConstantsNonUkMode._
 
   def longFilterValue = (1 to 257) map (_ => Random.alphanumeric.head) mkString
 

@@ -495,9 +495,12 @@ object TestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"enLookupPageTitle",
+      |               "titleUkMode":"enLookupPageTitle",
       |               "heading":"enLookupPageHeading",
+      |               "headingUkMode":"enLookupPageHeading",
       |               "filterLabel":"enFilterLabel",
       |               "postcodeLabel":"enPostcodeLabel",
+      |               "postcodeLabelUkMode":"enPostcodeLabel",
       |               "submitLabel":"enSubmitLabel",
       |               "noResultsFoundMessage":"enNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"enResultLimitExceededMessage",
@@ -511,6 +514,7 @@ object TestConstants {
       |               "line3Label":"enEditPageLine3Label",
       |               "townLabel":"enEditPageTownLabel",
       |               "postcodeLabel":"enEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"enEditPagePostcodeLabel",
       |               "countryLabel":"enEditPageCountryLabel",
       |               "submitLabel":"enEditPageSubmitLabel"
       |            },

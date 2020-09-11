@@ -194,19 +194,20 @@ case class SelectPageLabels(title: Option[String] = None,
 
 
 case class LookupPageLabels(title: Option[String] = None,
-                            private val _titleUkMode: Option[String] = None,
+                            var titleUkMode: Option[String] = None,
                             heading: Option[String] = None,
-                            private val _headingUkMode: Option[String] = None,
+                            var headingUkMode: Option[String] = None,
                             filterLabel: Option[String] = None,
                             postcodeLabel: Option[String] = None,
-                            private val _postcodeLabelUkMode: Option[String] = None,
+                            var postcodeLabelUkMode: Option[String] = None,
                             submitLabel: Option[String] = None,
                             noResultsFoundMessage: Option[String] = None,
                             resultLimitExceededMessage: Option[String] = None,
                             manualAddressLinkText: Option[String] = None) {
-  val titleUkMode = _titleUkMode.orElse(title)
-  val headingUkMode = _headingUkMode.orElse(heading)
-  val postcodeLabelUkMode = _postcodeLabelUkMode.orElse(postcodeLabel)
+
+  titleUkMode = titleUkMode.orElse(title)
+  headingUkMode = headingUkMode.orElse(heading)
+  postcodeLabelUkMode = postcodeLabelUkMode.orElse(postcodeLabel)
 }
 
 case class EditPageLabels(title: Option[String] = None,
@@ -216,10 +217,10 @@ case class EditPageLabels(title: Option[String] = None,
                           line3Label: Option[String] = None,
                           townLabel: Option[String] = None,
                           postcodeLabel: Option[String] = None,
-                          private val _postcodeLabelUkMode: Option[String] = None,
+                          var postcodeLabelUkMode: Option[String] = None,
                           countryLabel: Option[String] = None,
                           submitLabel: Option[String] = None) {
-  val postcodeLabelUkMode = _postcodeLabelUkMode.orElse(postcodeLabel)
+  postcodeLabelUkMode = postcodeLabelUkMode.orElse(postcodeLabel)
 }
 
 case class ConfirmPageLabels(title: Option[String] = None,

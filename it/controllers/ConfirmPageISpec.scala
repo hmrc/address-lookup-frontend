@@ -4,38 +4,25 @@ import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import play.api.i18n.Lang
-//import model.JourneyConfigDefaults.EnglishConstants
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
-//import model.MessageConstants.{
-//  EnglishMessageConstants => EnglishMessages,
-//  WelshMessageConstants => WelshMessages
-//}
 
 class ConfirmPageISpec extends IntegrationSpecBase {
-
-//  val EnglishMessageConstants = EnglishMessages(true)
-//  val WelshMessageConstants = WelshMessages(true)
-//  val EnglishConstantsUkMode = EnglishConstants(true)
-
-//  import EnglishConstantsUkMode._
 
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
 
       val json = journeyDataV2WithSelectedAddressJson(
-        JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl))
-      )
+        JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
+
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(
-          HeaderNames.COOKIE -> sessionCookieWithCSRF,
-          "Csrf-Token" -> "nocheck"
-        )
+        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
+
       val res = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
@@ -63,19 +50,15 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "redirect to the lookup page if no selected address exists in keystore" in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
+      stubKeystore(testJourneyId, testConfigDefaultAsJsonV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(
-          HeaderNames.COOKIE -> sessionCookieWithCSRF,
-          "Csrf-Token" -> "nocheck"
-        )
+        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
+
       val res = await(fResponse)
       res.status shouldBe SEE_OTHER
-      res
-        .header(HeaderNames.LOCATION)
-        .get shouldBe "/lookup-address/Jid123/lookup"
+      res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/lookup"
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as TRUE for page" in {
@@ -289,7 +272,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "should redirect to the confirm page if incorrect data in keystore" in {
-      stubKeystore(testJourneyId, testConfigDefaultAsJson, OK)
+      stubKeystore(testJourneyId, testConfigDefaultAsJsonV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

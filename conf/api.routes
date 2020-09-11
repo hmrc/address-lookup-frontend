@@ -1,7 +1,3 @@
-POST /init                       @controllers.api.ApiController.initWithConfig
-POST /init/:journeyName          @controllers.api.ApiController.init(journeyName: String)
-GET  /confirmed                  @controllers.api.ApiController.confirmedV2
-
 # V2 model API
 POST /v2/init                    @controllers.api.ApiController.initWithConfigV2
 GET  /v2/confirmed               @controllers.api.ApiController.confirmedV2

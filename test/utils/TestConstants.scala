@@ -361,9 +361,12 @@ object TestConstants {
           )),
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("enLookupPageTitle"),
+            titleUkMode = Some("enLookupPageTitle"),
             heading = Some("enLookupPageHeading"),
+            headingUkMode = Some("enLookupPageHeading"),
             filterLabel = Some("enFilterLabel"),
             postcodeLabel = Some("enPostcodeLabel"),
+            postcodeLabelUkMode = Some("enPostcodeLabel"),
             submitLabel = Some("enSubmitLabel"),
             noResultsFoundMessage = Some("enNoResultsFoundMessage"),
             resultLimitExceededMessage = Some("enResultLimitExceededMessage"),
@@ -377,6 +380,7 @@ object TestConstants {
             line3Label = Some("enEditPageLine3Label"),
             townLabel = Some("enEditPageTownLabel"),
             postcodeLabel = Some("enEditPagePostcodeLabel"),
+            postcodeLabelUkMode = Some("enEditPagePostcodeLabel"),
             countryLabel = Some("enEditPageCountryLabel"),
             submitLabel = Some("enEditPageSubmitLabel")
           )),
@@ -407,9 +411,12 @@ object TestConstants {
           )),
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("cyLookupPageTitle"),
+            titleUkMode = Some("cyLookupPageTitle"),
             heading = Some("cyLookupPageHeading"),
+            headingUkMode = Some("cyLookupPageHeading"),
             filterLabel = Some("cyFilterLabel"),
             postcodeLabel = Some("cyPostcodeLabel"),
+            postcodeLabelUkMode = Some("cyPostcodeLabel"),
             submitLabel = Some("cySubmitLabel"),
             noResultsFoundMessage = Some("cyNoResultsFoundMessage"),
             resultLimitExceededMessage = Some("cyResultLimitExceededMessage"),
@@ -423,6 +430,7 @@ object TestConstants {
             line3Label = Some("cyEditPageLine3Label"),
             townLabel = Some("cyEditPageTownLabel"),
             postcodeLabel = Some("cyEditPagePostcodeLabel"),
+            postcodeLabelUkMode = Some("cyEditPagePostcodeLabel"),
             countryLabel = Some("cyEditPageCountryLabel"),
             submitLabel = Some("cyEditPageSubmitLabel")
           )),
@@ -545,9 +553,12 @@ object TestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"cyLookupPageTitle",
+      |               "titleUkMode":"cyLookupPageTitle",
       |               "heading":"cyLookupPageHeading",
+      |               "headingUkMode":"cyLookupPageHeading",
       |               "filterLabel":"cyFilterLabel",
       |               "postcodeLabel":"cyPostcodeLabel",
+      |               "postcodeLabelUkMode":"cyPostcodeLabel",
       |               "submitLabel":"cySubmitLabel",
       |               "noResultsFoundMessage":"cyNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"cyResultLimitExceededMessage",
@@ -561,6 +572,7 @@ object TestConstants {
       |               "line3Label":"cyEditPageLine3Label",
       |               "townLabel":"cyEditPageTownLabel",
       |               "postcodeLabel":"cyEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"cyEditPagePostcodeLabel",
       |               "countryLabel":"cyEditPageCountryLabel",
       |               "submitLabel":"cyEditPageSubmitLabel"
       |            },

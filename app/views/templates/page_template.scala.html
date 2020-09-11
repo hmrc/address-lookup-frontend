@@ -108,7 +108,7 @@ header: HmrcHeader)
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,
             homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse("https://www.gov.uk/"),
-            serviceName = Some(messages("navTitle")),
+            serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
             serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse(""),
             language = if (messages.lang.code == "cy") Cy else En
         ))),

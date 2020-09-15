@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 
 case class ResolvedJourneyConfigV2(
   journeyConfig: JourneyConfigV2,
-  isWelsh: Boolean,
   appConfig: FrontendAppConfig
 ) {
   val version: Int = journeyConfig.version

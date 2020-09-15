@@ -3,9 +3,8 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.{EditPage, _}
+import model.{ConfirmableAddress, ConfirmableAddressDetails, EditPageLabels, JourneyLabels, LanguageLabels}
 import play.api.i18n.Lang
-//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
-import model.{EditPage => _, LookupPage => _, _}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -13,9 +12,6 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.address.v2.Country
 
 class EditPageISpec extends IntegrationSpecBase {
-
-//  val EnglishMessageConstants = EnglishMessages(true)
-//  val WelshMessageConstants = WelshMessages(true)
 
   "The edit page" should {
     "when provided with no page config for english and welsh" should {
@@ -54,19 +50,16 @@ class EditPageISpec extends IntegrationSpecBase {
       "return Non Uk edit page with default values where the 'PLAY_LANG' is set to cy but welsh config is not provided" in {
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
-          Some(jc.labels.get.copy(cy =
-            Some(LanguageLabels(
-            ))
-          ))))
+          Some(jc.labels.get.copy(cy = Some(LanguageLabels())))))
 
         stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
           .withHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
-            "Csrf-Token" -> "nocheck"
-            )
+            "Csrf-Token" -> "nocheck")
           .get()
+
         val res = await(fResponse)
 
         res.status shouldBe OK
@@ -415,7 +408,6 @@ class EditPageISpec extends IntegrationSpecBase {
         "town" -> "Town/city",
         "postcode" -> "Postcode (optional)",
         "countryCode" -> "Country"))
-      //testElementExists(res, EditPage.nonUkEditId)
     }
 
     "return 400 if all fields are missing and return nonUkEdit page with welsh text" in {
@@ -431,6 +423,7 @@ class EditPageISpec extends IntegrationSpecBase {
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
+
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 

@@ -182,8 +182,6 @@ object IntegrationTestConstants {
       |}
     """.stripMargin)
 
-  lazy val journeyDataV1Full: JourneyData = journeyDataV1FullJson.as[JourneyData]
-
   val journeyDataV2FullJson: JsValue = Json.parse(
     """{
       |   "config":{
@@ -333,68 +331,11 @@ object IntegrationTestConstants {
   val testConfigWithAddressNotUkModeV2 = testConfigWithFullNonUKAddressV2.copy(config = testConfigNotUkModeV2)
 
   val testConfigwithAddressNotUkModeAsJsonV2 = Json.toJson(testConfigWithAddressNotUkModeV2)
-  val testConfigDefaultWithResultsLimitAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50))))))
-  val testConfigDefaultWithResultsLimit = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(SelectPage(proposalListLimit = Some(50)))))
   val testConfigDefaultAsJsonV2 = Json.toJson(testJourneyDataWithMinimalJourneyConfigV2).as[JsObject]
-
-  val fullLookupPageConfig = LookupPage(
-    title = Some("lookup-title"),
-    heading = Some("lookup-heading"),
-    filterLabel = Some("lookup-filterLabel"),
-    postcodeLabel = Some("lookup-postcodeLabel"),
-    submitLabel = Some("lookup-submitLabel"),
-    resultLimitExceededMessage = Some("lookup-resultLimitExceededMessage"),
-    noResultsFoundMessage = Some("lookup-noResultsFoundMessage"),
-    manualAddressLinkText = Some("lookup-manualAddressLinkText")
-  )
-
-  val testLookupConfig = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, lookupPage = Some(fullLookupPageConfig)))).as[JsObject]
-
-  val testLookupConfigNoBackButtons = Json.toJson(
-    JourneyData(
-      JourneyConfig(continueUrl = "A url", lookupPage = Some(fullLookupPageConfig), showBackButtons = Some(false))
-    )
-  ).as[JsObject]
-
-  val fullSelectPageConfig = SelectPage(
-    title = Some("select-title"),
-    heading = Some("select-heading"),
-    headingWithPostcode = Some("select-headingWithPostcode"),
-    proposalListLabel = Some("select-proposalListLabel"),
-    submitLabel = Some("select-submitLabel"),
-    proposalListLimit = Some(50),
-    showSearchAgainLink = Some(true),
-    searchAgainLinkText = Some("select-searchAgainLinkText"),
-    editAddressLinkText = Some("select-editAddressLinkText")
-  )
 
   val fullSelectPageConfigV2 = SelectPageConfig(
     proposalListLimit = Some(50),
     showSearchAgainLink = Some(true)
-  )
-
-  val testConfigSelectPageAsJson = Json.toJson(JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig))))
-  val testConfigSelectPage = JourneyData(JourneyConfig(continueUrl = testContinueUrl, selectPage = Some(fullSelectPageConfig)))
-
-  val testSelectConfigNoBackButtons = Json.toJson(
-    JourneyData(
-      JourneyConfig(continueUrl = "A url", selectPage = Some(fullSelectPageConfig), showBackButtons = Some(false))
-    )
-  ).as[JsObject]
-
-  val fullConfirmPageConfig = ConfirmPage(
-    title = Some("confirm-title"),
-    heading = Some("confirm-heading"),
-    showSubHeadingAndInfo = Some(true),
-    infoSubheading = Some("confirm-infoSubheading"),
-    infoMessage = Some("confirm-infoMessage"),
-    submitLabel = Some("confirm-submitLabel"),
-    showSearchAgainLink = Some(true),
-    showConfirmChangeText = Some(true),
-    searchAgainLinkText = Some("confirm-searchAgainLinkText"),
-    showChangeLink = Some(true),
-    changeLinkText = Some("confirm-changeLinkText"),
-    confirmChangeText = Some("confirm-confirmChangeText")
   )
 
   val fullConfirmPageConfigV2 = ConfirmPageConfig(
@@ -402,18 +343,6 @@ object IntegrationTestConstants {
     showSearchAgainLink = Some(true),
     showConfirmChangeText = Some(true),
     showChangeLink = Some(true)
-  )
-
-  val fullEditPageConfig = EditPage(
-    title = Some("edit-title"),
-    heading = Some("edit-heading"),
-    line1Label = Some("edit-line1Label"),
-    line2Label = Some("edit-line2Label"),
-    line3Label = Some("edit-line3Label"),
-    townLabel = Some("edit-townLabel"),
-    postcodeLabel = Some("edit-postcodeLabel"),
-    countryLabel = Some("edit-countryLabel"),
-    submitLabel = Some("edit-submitLabel")
   )
 
   val testMinimalLevelJourneyConfigV2 = Json.toJson(JourneyDataV2(
@@ -458,10 +387,9 @@ object IntegrationTestConstants {
     )
   )).as[JsValue]
 
-  def testCustomLookupPageJourneyConfigV2 = {
-    Json.toJson(x).as[JsValue]
-  }
-  val x = JourneyDataV2(
+  def testCustomLookupPageJourneyConfigV2Json = Json.toJson(testCustomLookupPageJourneyConfigV2).as[JsValue]
+
+  def testCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
@@ -517,7 +445,9 @@ object IntegrationTestConstants {
     )
   )
 
-  val testOtherCustomLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+  def testOtherCustomLookupPageJourneyConfigV2Json = Json.toJson(testOtherCustomLookupPageJourneyConfigV2).as[JsValue]
+
+  def testOtherCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(
@@ -558,38 +488,7 @@ object IntegrationTestConstants {
         )),
         cy = None
       ))
-    )
-  )).as[JsValue]
-
-  def fullDefaultJourneyConfigModelWithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true) = {
-
-    def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
-
-    JourneyConfig(
-      continueUrl = "continueUrl",
-      lookupPage = Some(fullLookupPageConfig),
-      selectPage = Some(fullSelectPageConfig.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
-      confirmPage = Some(fullConfirmPageConfig.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
-      editPage = Some(fullEditPageConfig),
-      homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
-      navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
-      additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
-      showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
-      alphaPhase = Some(allBooleanSetAndAppropriateOptions),
-      phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
-      phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML")),
-      showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
-      includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
-      deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
-      allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
-      timeout = returnNoneOrConfig(Some(Timeout(
-        timeoutAmount = 120,
-        timeoutUrl = "TIMEOUT_URL",
-        timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
-      ))),
-      ukMode = Some(allBooleanSetAndAppropriateOptions)
-    )
-  }
+    ))
 
   def journeyV2Labels(heading: Option[String] = Some("confirm-heading")): Option[JourneyLabels] = {
     Some(JourneyLabels(
@@ -671,17 +570,6 @@ object IntegrationTestConstants {
     )
   }
 
-
-  def journeyDataWithSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true),
-                                         selectedAddress: ConfirmableAddressDetails = testNonUKAddress) =
-    Json.toJson(
-      JourneyData(
-        journeyConfig,
-        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
-      )
-    )
-
-
   def journeyDataV2WithNoSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true)) =
     Json.toJson(
       JourneyDataV2(
@@ -694,15 +582,7 @@ object IntegrationTestConstants {
       JourneyDataV2(
         journeyConfigV2,
         selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
-      )
-    )
-
-  def journeyDataWithNoSelectedAddressJson(journeyConfig: JourneyConfig = fullDefaultJourneyConfigModelWithAllBooleansSet(true)) =
-    Json.toJson(
-      JourneyData(
-        journeyConfig
-      )
-    )
+      ))
 
   val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), ukMode = Some(true))))
   val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true))))
@@ -729,9 +609,7 @@ object IntegrationTestConstants {
         ))
       ))
     ))
-  )
-  )
-
+  ))
 
   val journeyDataV2SelectLabels: JourneyDataV2 = JourneyDataV2(
     JourneyConfigV2(

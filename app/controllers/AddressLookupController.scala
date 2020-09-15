@@ -69,7 +69,8 @@ class AddressLookupController @Inject()(
                                          non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
                                          confirm: views.html.v2.confirm,
                                          no_results: views.html.v2.no_results,
-                                         too_many_results: views.html.v2.too_many_results
+                                         too_many_results: views.html.v2.too_many_results,
+                                         error_template: views.html.error_template
                                        )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -93,7 +94,8 @@ class AddressLookupController @Inject()(
   // GET  /no-journey
   // display an error page when a required journey is not available
   def noJourney() = Action { implicit req =>
-    Ok(views.html.no_journey(frontendAppConfig))
+    implicit val messages = messagesApi.preferred(req)
+    Ok(error_template(messages("no.journey.title.text"), messages("no.journey.heading.text"), ""))
   }
 
   // GET  /:id/lookup

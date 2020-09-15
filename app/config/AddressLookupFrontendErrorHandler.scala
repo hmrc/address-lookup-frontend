@@ -24,14 +24,14 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 @Singleton
 class AddressLookupFrontendErrorHandler @Inject()(val messagesApi: MessagesApi,
-                                                  frontendAppConfig: FrontendAppConfig) extends FrontendErrorHandler {
+                                                  implicit val frontendAppConfig: FrontendAppConfig,
+                                                  error_template: views.html.error_template) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
     val messages = implicitly[Messages]
 
-    views.html.error_template(
-      appConfig = frontendAppConfig,
-      pageTitle = messages("constants.intServerErrorTitle"),
+    error_template(
+      title = messages("constants.intServerErrorTitle"),
       heading = messages("constants.intServerErrorTitle"),
       message = messages("constants.intServerErrorTryAgain")
     )
@@ -40,9 +40,8 @@ class AddressLookupFrontendErrorHandler @Inject()(val messagesApi: MessagesApi,
   override def notFoundTemplate(implicit request: Request[_]): Html = {
     val messages = implicitly[Messages]
 
-    views.html.error_template(
-      appConfig = frontendAppConfig,
-      pageTitle = messages("constants.notFoundErrorTitle"),
+    error_template(
+      title = messages("constants.notFoundErrorTitle"),
       heading = messages("constants.notFoundErrorHeading"),
       message = messages("constants.notFoundErrorBody")
     )

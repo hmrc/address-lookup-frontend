@@ -30,7 +30,7 @@ page: page_template)
         messages("selectPage.title")}
 }
 
-@page(titleWithError, Some(selectForm), journeyData, isWelsh, isUKMode) {
+@page(titleWithError, Some(selectForm), journeyData) {
 
     @if(lookup.filter.isDefined && !firstSearch) {
         <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>

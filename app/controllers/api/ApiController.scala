@@ -20,11 +20,9 @@ import config.FrontendAppConfig
 import controllers.AlfController
 import forms.ALFForms
 import javax.inject.{Inject, Singleton}
-import model.JourneyData._
 import model._
-import play.api.i18n.{Langs, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, MessagesControllerComponents}
+import play.api.mvc.MessagesControllerComponents
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
 
@@ -39,9 +37,8 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
   extends AlfController(journeyRepository, controllerComponents) {
 
   val addressLookupEndpoint = config.addressLookupEndpoint
-  protected def uuid: String = idGenerationService.uuid
 
-  private implicit val initFormat = Json.format[Init]
+  protected def uuid: String = idGenerationService.uuid
 
   def initWithConfigV2 = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
     val id = uuid

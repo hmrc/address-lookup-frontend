@@ -148,8 +148,8 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with custom content" should {
       "Render the page with custom content" in {
-        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
-        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
+        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
+        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -160,29 +160,38 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.title shouldBe fullLookupPageConfig.title.get + " - NAV_TITLE - GOV.UK"
-        doc.h1.text() shouldBe fullLookupPageConfig.heading.get
+        for {
+          l <- testCustomLookupPageJourneyConfigV2.config.labels
+          en <- l.en
+          lookupPage <- en.lookupPageLabels
+        } yield {
 
-        doc.select("a[class=govuk-back-link]") should have(
-          text("Back")
-        )
+          doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
+          doc.h1.text() shouldBe lookupPage.heading.get
 
-        doc.input(LookupPage.postcodeId) should have(
-          label(fullLookupPageConfig.postcodeLabel.get),
-          value(testPostCode)
-        )
+          doc.select("a[class=govuk-back-link]") should have(
+            text("Back")
+          )
 
-        doc.input(LookupPage.filterId) should have(
-          label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint),
-          value(testFilterValue)
-        )
+          doc.input(LookupPage.postcodeId) should have(
+            label(lookupPage.postcodeLabel.get),
+            value(testPostCode)
+          )
 
-        doc.link(LookupPage.manualAddressLink) should have(
-          href(routes.AddressLookupController.edit(testJourneyId).url),
-          text(fullLookupPageConfig.manualAddressLinkText.get)
-        )
+          doc.input(LookupPage.filterId) should have(
+            label(lookupPage.filterLabel.get + hardCodedFormHint),
+            value(testFilterValue)
+          )
 
-        doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
+          doc.link(LookupPage.manualAddressLink) should have(
+            href(routes.AddressLookupController.edit(testJourneyId).url),
+            text(lookupPage.manualAddressLinkText.get)
+          )
+
+          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+
+        }
+
       }
 
       "not display the back button if disabled" in {
@@ -205,8 +214,8 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config with all booleans set to true" should {
       "Render the page correctly with custom elements" in {
-        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
-        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2, OK)
+        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
+        stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -218,36 +227,42 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe fullLookupPageConfig.title.get + " - NAV_TITLE - GOV.UK"
-        doc.h1.text() shouldBe fullLookupPageConfig.heading.get
+        for {
+          l <- testCustomLookupPageJourneyConfigV2.config.labels
+          en <- l.en
+          lookupPage <- en.lookupPageLabels
+        } yield {
+          doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
+          doc.h1.text() shouldBe lookupPage.heading.get
 
-        doc.select("a[class=govuk-back-link]") should have(
-          text("Back")
-        )
+          doc.select("a[class=govuk-back-link]") should have(
+            text("Back")
+          )
 
-        doc.input(LookupPage.postcodeId) should have(
-          label(fullLookupPageConfig.postcodeLabel.get),
-          value(testPostCode)
-        )
+          doc.input(LookupPage.postcodeId) should have(
+            label(lookupPage.postcodeLabel.get),
+            value(testPostCode)
+          )
 
-        doc.input(LookupPage.filterId) should have(
-          label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint),
-          value(testFilterValue)
-        )
+          doc.input(LookupPage.filterId) should have(
+            label(lookupPage.filterLabel.get + hardCodedFormHint),
+            value(testFilterValue)
+          )
 
-        doc.link(LookupPage.manualAddressLink) should have(
-          href(routes.AddressLookupController.edit(testJourneyId).url),
-          text(fullLookupPageConfig.manualAddressLinkText.get)
-        )
+          doc.link(LookupPage.manualAddressLink) should have(
+            href(routes.AddressLookupController.edit(testJourneyId).url),
+            text(lookupPage.manualAddressLinkText.get)
+          )
 
-        doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
+          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+        }
       }
     }
 
     "Provided with config where all the default values are overriden with the default values" should {
       "Render " in {
-        stubKeystore(testJourneyId, testOtherCustomLookupPageJourneyConfigV2, OK)
-        stubKeystoreSave(testJourneyId, testOtherCustomLookupPageJourneyConfigV2, OK)
+        stubKeystore(testJourneyId, testOtherCustomLookupPageJourneyConfigV2Json, OK)
+        stubKeystoreSave(testJourneyId, testOtherCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
           .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -260,17 +275,23 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe fullLookupPageConfig.title.get
-        doc.h1.text() shouldBe fullLookupPageConfig.heading.get
-        doc.select("a[class=govuk-back-link]") should have(text("Back"))
-        doc.input(LookupPage.postcodeId) should have(label(fullLookupPageConfig.postcodeLabel.get), value(testPostCode))
-        doc.input(LookupPage.filterId) should have(label(fullLookupPageConfig.filterLabel.get + hardCodedFormHint), value(testFilterValue))
-        doc.link(LookupPage.manualAddressLink) should have(
-          href(routes.AddressLookupController.edit(testJourneyId).url),
-          text(fullLookupPageConfig.manualAddressLinkText.get)
-        )
+        for {
+          l <- testOtherCustomLookupPageJourneyConfigV2.config.labels
+          en <- l.en
+          lookupPage <- en.lookupPageLabels
+        } yield {
+          doc.title shouldBe lookupPage.title.get
+          doc.h1.text() shouldBe lookupPage.heading.get
+          doc.select("a[class=govuk-back-link]") should have(text("Back"))
+          doc.input(LookupPage.postcodeId) should have(label(lookupPage.postcodeLabel.get), value(testPostCode))
+          doc.input(LookupPage.filterId) should have(label(lookupPage.filterLabel.get + hardCodedFormHint), value(testFilterValue))
+          doc.link(LookupPage.manualAddressLink) should have(
+            href(routes.AddressLookupController.edit(testJourneyId).url),
+            text(lookupPage.manualAddressLinkText.get)
+          )
 
-        doc.submitButton.text() shouldBe fullLookupPageConfig.submitLabel.get
+          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+        }
       }
     }
   }

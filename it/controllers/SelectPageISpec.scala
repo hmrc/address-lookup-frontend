@@ -70,14 +70,19 @@ class SelectPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
 
         await(res).status shouldBe OK
-
-        doc.title shouldBe fullSelectPageConfig.title.get
-        doc.h1.text() shouldBe fullSelectPageConfig.heading.get
-        doc.submitButton.text() shouldBe fullSelectPageConfig.submitLabel.get
-        doc.link("editAddress") should have(
-          href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
-          text(fullSelectPageConfig.editAddressLinkText.get)
-        )
+        for {
+          l <- journeyDataV2SelectLabels.config.labels
+          en <- l.en
+          selectPage <- en.selectPageLabels
+        } yield {
+          doc.title shouldBe selectPage.title.get
+          doc.h1.text() shouldBe selectPage.heading.get
+          doc.submitButton.text() shouldBe selectPage.submitLabel.get
+          doc.link("editAddress") should have(
+            href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
+            text(selectPage.editAddressLinkText.get)
+          )
+        }
 
         val testIds = (testResultsList \\ "id").map {
           testId => testId.as[String]

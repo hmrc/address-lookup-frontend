@@ -19,7 +19,6 @@ package controllers.testonly
 import config.FrontendAppConfig
 import controllers.api.ApiController
 import javax.inject.{Inject, Singleton}
-import model.JourneyData._
 import model._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -79,16 +78,6 @@ class StubController @Inject()(
       journeyRepository.getV2(id).map { j =>
         Ok(Json.prettyPrint(Json.toJson(j.get)))
       }
-  }
-
-  def resolvedFormWithJourneyConfig = {
-    val jConfigDefaults = JourneyConfig(continueUrl = "will be ignored")
-
-    TestSetupForm.form.fill(
-      Json
-        .prettyPrint(Json.toJson(ResolvedJourneyConfig(jConfigDefaults).cfg))
-        .toString
-    )
   }
 
   def showStubPageForJourneyInitV2: Action[AnyContent] = Action {

@@ -23,7 +23,7 @@
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
 HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog,
 header: HmrcHeader)
-@(title: String, form: Option[Form[_]], journeyData: JourneyDataV2, isWelsh: Boolean, isUKMode: Boolean)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(title: String, form: Option[Form[_]], journeyData: JourneyDataV2)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
     @userAction = @{
         new URI(request.uri).getPath().split("/").lastOption.getOrElse("")
@@ -36,7 +36,7 @@ header: HmrcHeader)
     }
 
     @resolvedJourneyConfig = @{
-        journeyData.resolveConfigV2(isWelsh, appConfig)
+        journeyData.resolveConfigV2(appConfig)
     }
 
     @scriptElem = {

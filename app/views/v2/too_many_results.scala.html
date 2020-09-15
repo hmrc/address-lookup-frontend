@@ -22,10 +22,10 @@
 @(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
-    journeyData.resolveConfigV2(isWelsh, appConfig)
+    journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("constants.noResultsFoundTitle"), None, journeyData, isWelsh, isUKMode) {
+@page(messages("constants.noResultsFoundTitle"), None, journeyData) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
         @{if(firstLookup) {

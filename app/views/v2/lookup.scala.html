@@ -38,7 +38,7 @@ message: Option[String] = None
     }
 }
 
-@page(titleWithError, Some(lookupForm), journeyData, isWelsh, isUKMode) {
+@page(titleWithError, Some(lookupForm), journeyData) {
 
   @form(routes.AddressLookupController.select(id)) {
       <h1 class="govuk-heading-xl" id="pageHeading">

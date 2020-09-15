@@ -18,6 +18,7 @@
 @import views.html.templates.page_template
 @import model.JourneyDataV2
 @import model.JourneyOptions
+@import model.JourneyConfigV2
 
 @this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, page: page_template)
 @(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
@@ -26,7 +27,7 @@
     JourneyDataV2(JourneyConfigV2(2, JourneyOptions("")))
 }
 
-@page("Stub For starting new journey in ALF with V2 config", Some(stubForm), dummyJourney, false, false) {
+@page("Stub For starting new journey in ALF with V2 config", Some(stubForm), dummyJourney) {
 
     @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
         <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
@@ -36,4 +37,4 @@
         @button(Button(name = Some("continue"), inputType = Some("submit"), content = HtmlContent("Start New Journey")))
     }
 
-}@import model.JourneyConfigV2
+}

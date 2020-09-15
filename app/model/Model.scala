@@ -54,112 +54,113 @@ case class Edit(line1: String,
       )
     )
 }
-// decorator providing default config values; genuinely optional options are not decorated, only those that are required
-// but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
-case class ResolvedJourneyConfig(cfg: JourneyConfig) {
-  val continueUrl: String = cfg.continueUrl
-  val lookupPage = cfg.lookupPage.getOrElse(LookupPage())
-  val selectPage = cfg.selectPage.getOrElse(SelectPage())
-  val confirmPage = cfg.confirmPage.getOrElse(ConfirmPage())
-  val editPage = cfg.editPage.getOrElse(EditPage())
-  val isUKMode = cfg.ukMode.contains(true)
 
-  val homeNavHref: String = cfg.homeNavHref.getOrElse("http://www.hmrc.gov.uk")
-  val showPhaseBanner: Boolean = cfg.showPhaseBanner.getOrElse(false)
-  val alphaPhase: Boolean = cfg.alphaPhase.getOrElse(false)
-  val phase: String = cfg.showPhaseBanner match {
-    case Some(true) => if (alphaPhase) "alpha" else "beta"
-    case _          => ""
-  }
-  val phaseFeedbackLink: String = cfg.phaseFeedbackLink.getOrElse(
-    s"https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
-  )
-  val phaseBannerHtml: Option[String] = cfg.phaseBannerHtml
-  val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
-  val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
-  val allowedCountryCodes: Option[Set[String]] = cfg.allowedCountryCodes
-}
-
-case class ConfirmPage(title: Option[String] = None,
-                       heading: Option[String] = None,
-                       showSubHeadingAndInfo: Option[Boolean] = Some(false),
-                       infoSubheading: Option[String] = None,
-                       infoMessage: Option[String] = None,
-                       submitLabel: Option[String] = None,
-                       showSearchAgainLink: Option[Boolean] = Some(false),
-                       searchAgainLinkText: Option[String] = None,
-                       showChangeLink: Option[Boolean] = Some(true),
-                       changeLinkText: Option[String] = None,
-                       showConfirmChangeText: Option[Boolean] = Some(false),
-                       confirmChangeText: Option[String] = None)
-
-case class LookupPage(title: Option[String] = None,
-                      heading: Option[String] = None,
-                      filterLabel: Option[String] = None,
-                      postcodeLabel: Option[String] = None,
-                      submitLabel: Option[String] = None,
-                      resultLimitExceededMessage: Option[String] = None,
-                      noResultsFoundMessage: Option[String] = None,
-                      manualAddressLinkText: Option[String] = None)
-
-case class SelectPage(title: Option[String] = None,
-                      heading: Option[String] = None,
-                      headingWithPostcode: Option[String] = None,
-                      proposalListLabel: Option[String] = None,
-                      submitLabel: Option[String] = None,
-                      proposalListLimit: Option[Int] = None,
-                      showSearchAgainLink: Option[Boolean] = Some(false),
-                      searchAgainLinkText: Option[String] = None,
-                      editAddressLinkText: Option[String] = None)
-
-case class EditPage(title: Option[String] = None,
-                    heading: Option[String] = None,
-                    line1Label: Option[String] = None,
-                    line2Label: Option[String] = None,
-                    line3Label: Option[String] = None,
-                    townLabel: Option[String] = None,
-                    postcodeLabel: Option[String] = None,
-                    countryLabel: Option[String] = None,
-                    submitLabel: Option[String] = None)
-
-case class JourneyData(config: JourneyConfig,
-                       proposals: Option[Seq[ProposedAddress]] = None,
-                       selectedAddress: Option[ConfirmableAddress] = None,
-                       confirmedAddress: Option[ConfirmableAddress] = None) {
-
-  def resolvedConfig = ResolvedJourneyConfig(config)
-
-}
-
-case class Init(continueUrl: Option[String])
-
-case class JourneyConfig(
-  continueUrl: String,
-  lookupPage: Option[LookupPage] = Some(LookupPage()),
-  selectPage: Option[SelectPage] = Some(SelectPage()),
-  confirmPage: Option[ConfirmPage] = Some(ConfirmPage()),
-  editPage: Option[EditPage] = Some(EditPage()),
-  homeNavHref: Option[String] = None,
-  signOutHref: Option[String] = None,
-  serviceHref: Option[String] = None,
-  navTitle: Option[String] = None,
-  accessibilityFooterUrl: Option[String] = None,
-  additionalStylesheetUrl: Option[String] = None,
-  showPhaseBanner: Option[Boolean] = Some(false), // if phase banner is shown, it will default to "beta" unless ...
-  alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
-  phaseFeedbackLink: Option[String] = None,
-  phaseBannerHtml: Option[String] = None,
-  showBackButtons: Option[Boolean] = Some(true),
-  includeHMRCBranding: Option[Boolean] = Some(true),
-  deskProServiceName: Option[String] = None,
-  allowedCountryCodes: Option[Set[String]] = None,
-  timeout: Option[Timeout] = None,
-  ukMode: Option[Boolean] = None
-) {
-
-  def isukMode: Boolean = ukMode.contains(true)
-
-}
+//// decorator providing default config values; genuinely optional options are not decorated, only those that are required
+//// but which have fallbacks so that client apps do not need to specify a value except to override the default are decorated
+//case class ResolvedJourneyConfig(cfg: JourneyConfig) {
+//  val continueUrl: String = cfg.continueUrl
+//  val lookupPage = cfg.lookupPage.getOrElse(LookupPage())
+//  val selectPage = cfg.selectPage.getOrElse(SelectPage())
+//  val confirmPage = cfg.confirmPage.getOrElse(ConfirmPage())
+//  val editPage = cfg.editPage.getOrElse(EditPage())
+//  val isUKMode = cfg.ukMode.contains(true)
+//
+//  val homeNavHref: String = cfg.homeNavHref.getOrElse("http://www.hmrc.gov.uk")
+//  val showPhaseBanner: Boolean = cfg.showPhaseBanner.getOrElse(false)
+//  val alphaPhase: Boolean = cfg.alphaPhase.getOrElse(false)
+//  val phase: String = cfg.showPhaseBanner match {
+//    case Some(true) => if (alphaPhase) "alpha" else "beta"
+//    case _          => ""
+//  }
+//  val phaseFeedbackLink: String = cfg.phaseFeedbackLink.getOrElse(
+//    s"https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+//  )
+//  val phaseBannerHtml: Option[String] = cfg.phaseBannerHtml
+//  val showBackButtons: Boolean = cfg.showBackButtons.getOrElse(true)
+//  val includeHMRCBranding: Boolean = cfg.includeHMRCBranding.getOrElse(true)
+//  val allowedCountryCodes: Option[Set[String]] = cfg.allowedCountryCodes
+//}
+//
+//case class ConfirmPage(title: Option[String] = None,
+//                       heading: Option[String] = None,
+//                       showSubHeadingAndInfo: Option[Boolean] = Some(false),
+//                       infoSubheading: Option[String] = None,
+//                       infoMessage: Option[String] = None,
+//                       submitLabel: Option[String] = None,
+//                       showSearchAgainLink: Option[Boolean] = Some(false),
+//                       searchAgainLinkText: Option[String] = None,
+//                       showChangeLink: Option[Boolean] = Some(true),
+//                       changeLinkText: Option[String] = None,
+//                       showConfirmChangeText: Option[Boolean] = Some(false),
+//                       confirmChangeText: Option[String] = None)
+//
+//case class LookupPage(title: Option[String] = None,
+//                      heading: Option[String] = None,
+//                      filterLabel: Option[String] = None,
+//                      postcodeLabel: Option[String] = None,
+//                      submitLabel: Option[String] = None,
+//                      resultLimitExceededMessage: Option[String] = None,
+//                      noResultsFoundMessage: Option[String] = None,
+//                      manualAddressLinkText: Option[String] = None)
+//
+//case class SelectPage(title: Option[String] = None,
+//                      heading: Option[String] = None,
+//                      headingWithPostcode: Option[String] = None,
+//                      proposalListLabel: Option[String] = None,
+//                      submitLabel: Option[String] = None,
+//                      proposalListLimit: Option[Int] = None,
+//                      showSearchAgainLink: Option[Boolean] = Some(false),
+//                      searchAgainLinkText: Option[String] = None,
+//                      editAddressLinkText: Option[String] = None)
+//
+//case class EditPage(title: Option[String] = None,
+//                    heading: Option[String] = None,
+//                    line1Label: Option[String] = None,
+//                    line2Label: Option[String] = None,
+//                    line3Label: Option[String] = None,
+//                    townLabel: Option[String] = None,
+//                    postcodeLabel: Option[String] = None,
+//                    countryLabel: Option[String] = None,
+//                    submitLabel: Option[String] = None)
+//
+//case class JourneyData(config: JourneyConfig,
+//                       proposals: Option[Seq[ProposedAddress]] = None,
+//                       selectedAddress: Option[ConfirmableAddress] = None,
+//                       confirmedAddress: Option[ConfirmableAddress] = None) {
+//
+//  def resolvedConfig = ResolvedJourneyConfig(config)
+//
+//}
+//
+//case class Init(continueUrl: Option[String])
+//
+//case class JourneyConfig(
+//  continueUrl: String,
+//  lookupPage: Option[LookupPage] = Some(LookupPage()),
+//  selectPage: Option[SelectPage] = Some(SelectPage()),
+//  confirmPage: Option[ConfirmPage] = Some(ConfirmPage()),
+//  editPage: Option[EditPage] = Some(EditPage()),
+//  homeNavHref: Option[String] = None,
+//  signOutHref: Option[String] = None,
+//  serviceHref: Option[String] = None,
+//  navTitle: Option[String] = None,
+//  accessibilityFooterUrl: Option[String] = None,
+//  additionalStylesheetUrl: Option[String] = None,
+//  showPhaseBanner: Option[Boolean] = Some(false), // if phase banner is shown, it will default to "beta" unless ...
+//  alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
+//  phaseFeedbackLink: Option[String] = None,
+//  phaseBannerHtml: Option[String] = None,
+//  showBackButtons: Option[Boolean] = Some(true),
+//  includeHMRCBranding: Option[Boolean] = Some(true),
+//  deskProServiceName: Option[String] = None,
+//  allowedCountryCodes: Option[Set[String]] = None,
+//  timeout: Option[Timeout] = None,
+//  ukMode: Option[Boolean] = None
+//) {
+//
+//  def isukMode: Boolean = ukMode.contains(true)
+//
+//}
 
 case class ProposedAddress(addressId: String,
                            postcode: String,
@@ -273,21 +274,21 @@ object ProposedAddress {
   import CountryFormat._
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
 }
-
-// JSON serialization companions
-object JourneyData {
-
-  implicit val confirmPageFormat = Json.format[ConfirmPage]
-  implicit val selectPageFormat = Json.format[SelectPage]
-  implicit val lookupPageFormat = Json.format[LookupPage]
-  implicit val editPageFormat = Json.format[EditPage]
-
-  implicit val timeoutFormat: Format[Timeout] = (
-    (JsPath \ "timeoutAmount").format[Int](min(120)) and
-      (JsPath \ "timeoutUrl").format[String] and
-      (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
-  )(Timeout.apply, unlift(Timeout.unapply))
-  implicit val journeyConfigFormat = Json.format[JourneyConfig]
-  implicit val journeyDataFormat = Json.format[JourneyData]
-
-}
+//
+//// JSON serialization companions
+//object JourneyData {
+//
+//  implicit val confirmPageFormat = Json.format[ConfirmPage]
+//  implicit val selectPageFormat = Json.format[SelectPage]
+//  implicit val lookupPageFormat = Json.format[LookupPage]
+//  implicit val editPageFormat = Json.format[EditPage]
+//
+//  implicit val timeoutFormat: Format[Timeout] = (
+//    (JsPath \ "timeoutAmount").format[Int](min(120)) and
+//      (JsPath \ "timeoutUrl").format[String] and
+//      (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
+//  )(Timeout.apply, unlift(Timeout.unapply))
+//  implicit val journeyConfigFormat = Json.format[JourneyConfig]
+//  implicit val journeyDataFormat = Json.format[JourneyData]
+//
+//}

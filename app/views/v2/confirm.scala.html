@@ -23,10 +23,10 @@
 @(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
-    journeyData.resolveConfigV2(isWelsh, appConfig)
+    journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("confirmPage.title"), None, journeyData, isWelsh, isUKMode) {
+@page(messages("confirmPage.title"), None, journeyData) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
         @{messages("confirmPage.heading")}

@@ -1,3 +1,11 @@
+# UK only mode
+service.name =
+service.homePageUrl =
+
+# No Journey
+no.journey.title.text       = No Journey
+no.journey.heading.text     = No Journey
+
 # Footer links
 footer.links.help_page.text             = Help using GOV.UK
 footer.links.help_page.url              = https://www.gov.uk/help

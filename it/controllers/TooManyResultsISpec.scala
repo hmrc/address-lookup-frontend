@@ -4,7 +4,7 @@ import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
 //import model.JourneyConfigDefaults.EnglishConstants
-import model.{JourneyConfigDefaults, JourneyLabels, LanguageLabels}
+import model.{JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json

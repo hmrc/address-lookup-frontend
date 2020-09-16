@@ -18,67 +18,45 @@ package model
 
 import config.FrontendAppConfig
 
-case class ResolvedJourneyConfigV2(
-  journeyConfig: JourneyConfigV2,
-  appConfig: FrontendAppConfig
-) {
+case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, appConfig: FrontendAppConfig) {
   val version: Int = journeyConfig.version
-  val options: ResolvedJourneyOptions =
-    ResolvedJourneyOptions(journeyConfig.options, appConfig)
+  val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options, appConfig)
   val labels = journeyConfig.labels
 }
 
-case class ResolvedJourneyOptions(
-  journeyOptions: JourneyOptions,
-  appConfig: FrontendAppConfig
-) {
+case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: FrontendAppConfig) {
   val continueUrl: String = journeyOptions.continueUrl
   val homeNavHref: Option[String] = journeyOptions.homeNavHref
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val serviceHref: Option[String] = journeyOptions.serviceHref
-  val accessibilityFooterUrl: Option[String] =
-    journeyOptions.accessibilityFooterUrl
-  val additionalStylesheetUrl: Option[String] =
-    journeyOptions.additionalStylesheetUrl
+  val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
+  val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
+
   // This should never resolve to None here
-  val phaseFeedbackLink: String =
-    journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
-  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName
-    .orElse(Some(appConfig.contactFormServiceIdentifier))
+  val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
+  val deskProServiceName: Option[String] = journeyOptions.deskProServiceName.orElse(Some(appConfig.contactFormServiceIdentifier))
+
   val showPhaseBanner: Boolean = journeyOptions.showPhaseBanner.getOrElse(false)
   val alphaPhase: Boolean = journeyOptions.alphaPhase.getOrElse(false)
-  val phase: String = if (showPhaseBanner) {
-    if (alphaPhase) "alpha" else "beta"
-  } else ""
-  val disableTranslations: Boolean =
-    journeyOptions.disableTranslations.getOrElse(false)
+  val phase: String = if (showPhaseBanner) {if (alphaPhase) "alpha" else "beta"} else ""
+  val disableTranslations: Boolean = journeyOptions.disableTranslations.getOrElse(false)
   val showBackButtons: Boolean = journeyOptions.showBackButtons.getOrElse(true)
-  val includeHMRCBranding: Boolean =
-    journeyOptions.includeHMRCBranding.getOrElse(true)
+  val includeHMRCBranding: Boolean = journeyOptions.includeHMRCBranding.getOrElse(true)
   val isUkMode: Boolean = journeyOptions.ukMode.contains(true)
-  val allowedCountryCodes: Option[Set[String]] =
-    journeyOptions.allowedCountryCodes
-  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(
-    journeyOptions.selectPageConfig.getOrElse(SelectPageConfig())
-  )
-  val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(
-    journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig())
-  )
+  val allowedCountryCodes: Option[Set[String]] = journeyOptions.allowedCountryCodes
+  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig()))
+  val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig()))
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
 }
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {
   val proposalListLimit: Option[Int] = selectPageConfig.proposalListLimit
-  val showSearchAgainLink: Boolean =
-    selectPageConfig.showSearchAgainLink.getOrElse(false)
+  val showSearchAgainLink: Boolean = selectPageConfig.showSearchAgainLink.getOrElse(false)
 }
 
 case class ResolvedConfirmPageConfig(confirmPageConfig: ConfirmPageConfig) {
   val showChangeLink: Boolean = confirmPageConfig.showChangeLink.getOrElse(true)
-  val showSubHeadingAndInfo: Boolean =
-    confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
-  val showSearchAgainLink: Boolean =
-    confirmPageConfig.showSearchAgainLink.getOrElse(false)
-  val showConfirmChangeText: Boolean =
-    confirmPageConfig.showConfirmChangeText.getOrElse(false)
+  val showSubHeadingAndInfo: Boolean = confirmPageConfig.showSubHeadingAndInfo.getOrElse(false)
+  val showSearchAgainLink: Boolean = confirmPageConfig.showSearchAgainLink.getOrElse(false)
+  val showConfirmChangeText: Boolean = confirmPageConfig.showConfirmChangeText.getOrElse(false)
 }

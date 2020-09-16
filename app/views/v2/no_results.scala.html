@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import model._
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
@@ -22,28 +21,24 @@
 @this(form: FormWithCSRF, button: govukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@messageConstants = @{
-    if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)
-}
-
 @resolvedConf = @{
-    journeyData.resolveConfigV2(isWelsh, appConfig)
+    journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messageConstants.noResultsPageTitle, None, journeyData, isWelsh, isUKMode) {
+@page(messages("constants.noResultsPageTitle"), None, journeyData) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">
-        @{s"${messageConstants.noResultsPageHeading} $postcode"}
+        @{s"${messages("constants.noResultsPageHeading")} $postcode"}
     </h1>
 
     @form(controllers.routes.AddressLookupController.lookup(id)) {
         <p><a class="govuk-link" href="@{
             routes.AddressLookupController.edit(id, None)
         }" id="enterManual">@{
-            messageConstants.noResultsPageEnterManually
+            messages("constants.noResultsPageEnterManually")
         }</a></p>
 
-        @button(Button(content = HtmlContent(messageConstants.noResultsPageDifferentPostcode),
+        @button(Button(content = HtmlContent(messages("constants.noResultsPageDifferentPostcode")),
             name = Some("continue"),
             inputType = Some("submit"), attributes = Map("id" → "continue")))
     }

@@ -16,16 +16,28 @@
 
 package forms
 
+import com.codahale.metrics.SharedMetricRegistries
 import model.Edit
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.data.validation.{Invalid, Valid}
+import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.inject.guice.GuiceApplicationBuilder
 
-class ALFFormsSpec extends WordSpec with MustMatchers{
+class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder().build()
+  }
+
+  val messagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages = messagesApi.preferred(Seq(Lang("en")))
 
   val editFormNonuk = ALFForms.nonUkEditForm()
-  val editFormNonukWelsh = ALFForms.nonUkEditForm(true)
+  val editFormNonukWelsh = ALFForms.nonUkEditForm()
   val editFormUk = ALFForms.ukEditForm()
-  val editFormUkWelsh = ALFForms.ukEditForm(true)
+  val editFormUkWelsh = ALFForms.ukEditForm()
 
   val chars257 = List.fill(257)("A").reduce(_ + _)
   val chars256 = List.fill(256)("A").reduce(_ + _)

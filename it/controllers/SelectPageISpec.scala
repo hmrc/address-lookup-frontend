@@ -4,19 +4,14 @@ import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
-import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
-import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
+import play.api.i18n.Lang
+//import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
+//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 
 class SelectPageISpec extends IntegrationSpecBase {
-  val EnglishMessageConstants = EnglishMessages(true)
-  val WelshMessageConstants = WelshMessages(true)
-  val EnglishConstantsUkMode = EnglishConstants(true)
-  val WelshConstantsUkMode = WelshConstants(true)
-
-  import EnglishConstantsUkMode._
 
   "The select page GET" should {
     "be shown with default text" when {
@@ -35,12 +30,12 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe SELECT_PAGE_TITLE
-        doc.h1.text() shouldBe SELECT_PAGE_HEADING
-        doc.submitButton.text() shouldBe SELECT_PAGE_SUBMIT_LABEL
+        doc.title shouldBe messages("selectPage.title")
+        doc.h1.text() shouldBe messages("selectPage.heading")
+        doc.submitButton.text() shouldBe messages("selectPage.submitLabel")
         doc.link("editAddress") should have(
           href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
-          text(EDIT_LINK_TEXT)
+          text(messages("selectPage.editAddressLinkText"))
         )
 
         val testIds = (testResultsList \\ "id").map {
@@ -58,6 +53,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
       }
     }
+
     "be shown with configured text" when {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 30
@@ -74,14 +70,19 @@ class SelectPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
 
         await(res).status shouldBe OK
-
-        doc.title shouldBe fullSelectPageConfig.title.get
-        doc.h1.text() shouldBe fullSelectPageConfig.heading.get
-        doc.submitButton.text() shouldBe fullSelectPageConfig.submitLabel.get
-        doc.link("editAddress") should have(
-          href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
-          text(fullSelectPageConfig.editAddressLinkText.get)
-        )
+        for {
+          l <- journeyDataV2SelectLabels.config.labels
+          en <- l.en
+          selectPage <- en.selectPageLabels
+        } yield {
+          doc.title shouldBe selectPage.title.get
+          doc.h1.text() shouldBe selectPage.heading.get
+          doc.submitButton.text() shouldBe selectPage.submitLabel.get
+          doc.link("editAddress") should have(
+            href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
+            text(selectPage.editAddressLinkText.get)
+          )
+        }
 
         val testIds = (testResultsList \\ "id").map {
           testId => testId.as[String]
@@ -160,8 +161,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
         await(res).status shouldBe OK
 
-        doc.title() shouldBe WelshConstantsUkMode.SELECT_PAGE_TITLE
-        doc.h1.text() shouldBe WelshConstantsUkMode.SELECT_PAGE_HEADING
+        doc.title() shouldBe messages(Lang("cy"), "selectPage.title")
+        doc.h1.text() shouldBe messages(Lang("cy"), "selectPage.heading")
       }
     }
   }
@@ -184,7 +185,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe "Gwall: " + WelshConstantsUkMode.SELECT_PAGE_TITLE
+        doc.title shouldBe s"Gwall: ${messages(Lang("cy"), "selectPage.title")}"
       }
     }
     "Redirects to Confirm page if option is selected" in {
@@ -262,11 +263,12 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
+
     "the welsh content header is set to false and welsh object isn't provided in config" should {
       "render in English" in {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
@@ -283,11 +285,12 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
+
     "the welsh content header is set to false and welsh object is provided in config" should {
       "render in English" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
@@ -305,31 +308,29 @@ class SelectPageISpec extends IntegrationSpecBase {
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe EnglishMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(EnglishMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(EnglishMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
     }
-    "the welsh content header is set to true and welsh object provided in config" should {
+
+   "the welsh content header is set to true and welsh object provided in config" should {
       "render in Welsh" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
-          .withHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = true),
-            "Csrf-Token" -> "nocheck"
-          )
+          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
         res.status shouldBe INTERNAL_SERVER_ERROR
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe WelshMessageConstants.intServerErrorTitle
-        doc.h1 should have(text(WelshMessageConstants.intServerErrorTitle))
-        doc.paras should have(elementWithValue(WelshMessageConstants.intServerErrorTryAgain))
+        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
+        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
+        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
       }
     }
   }

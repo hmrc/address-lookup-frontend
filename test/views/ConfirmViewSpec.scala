@@ -17,10 +17,10 @@
 package views
 
 import config.FrontendAppConfig
-import model.{JourneyConfigDefaults, _}
+import model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
@@ -32,690 +32,106 @@ class ConfirmViewSpec extends ViewSpec {
   val messagesApi = app.injector.instanceOf[MessagesApi]
   val confirm = app.injector.instanceOf[confirm]
 
-  "ConfirmView" should {
-    "render English default content" when {
-      val journeyConfigDefaults = JourneyConfigDefaults.EnglishConstants(false)
-      val infoText: String = journeyConfigDefaults.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
+  "ConfirmView" when {
+   implicit val lang: Lang = Lang("en")
+    val messages = implicitly[Messages]
+
+    "show back button is true" should {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
+
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      "show the back button" in {
+        doc.getBackLinkText shouldBe messages("constants.back")
+      }
+    }
+
+    "show back button is false" in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl, testShowBackButtons = Some(false))
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.getBackLinkText shouldBe empty
+    }
+
+    "show subheading and info is true" in {
+      val infoText: String = messages("confirmPage.infoMessage").replace("<kbd>", "").replace("</kbd>", "")
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
+
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.getElementById("infoSubheading").text shouldBe messages("confirmPage.infoSubheading")
+      doc.getElementById("infoMessage").text shouldBe infoText
+    }
+
+    "show subheading and info is false" in {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(
-        testContinueUrl = testContinueUrl,
-        testHomeNavHref = None,
-        testAdditionalStylesheetUrl = None,
-        testPhaseFeedbackLink = None,
-        testDeskProServiceName = None,
-        testShowPhaseBanner = None,
-        testAlphaPhase = None,
-        testShowBackButtons = None,
-        testIncludeHMRCBranding = None,
-        testUkMode = None,
-        testAllowedCountryCodes = None,
-        testSelectPage = None,
-        testTimeoutConfig = None,
-        testLabels = None
-      )
+        testConfirmPageConfig = Some(ConfirmPageConfig(showSubHeadingAndInfo = Some(false))))
 
-      val messages = MessageConstants.EnglishMessageConstants(true)
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
 
-      "isWelsh is false" when {
-        implicit val lang: Lang = Lang("en")
-
-        "show back button is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show back button is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testDisableTranslations = Some(false),
-            testShowBackButtons = Some(false),
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testLabels = None
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe ""
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "a confirmed address has been defined" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "a confirmed address has not been defined" in {
-          val testPage = confirm("", testJourneyConfig, None, isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-          val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-//          doc.getFirstH2ElementAsText shouldBe ""
-          Option(doc.getElementById("infoMessage")) shouldBe None
-          Option(doc.getElementById("searchAgainLink")) shouldBe None
-          Option(doc.getElementById("changeLink")) shouldBe None
-          Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getElementById("lookupLink").parent().text() shouldBe errorText
-        }
-
-        "show subheading and info is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show subheading and info is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(false),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = None
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-//          doc.getFirstH2ElementAsText shouldBe ""
-          Option(doc.getElementById("infoMessage")) shouldBe None
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show search again link is true " in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show search again link is false " in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(false),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = None
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          Option(doc.getElementById("searchAgainLink")) shouldBe None
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show change link is true " in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show change link is false " in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(false),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = None
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show confirm change options is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show confirm change options is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(false)
-            )),
-            testLabels = None
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-      }
+      Option(doc.getElementById("infoSubheading")) shouldBe None
+      Option(doc.getElementById("infoMessage")) shouldBe None
     }
 
-    "render Welsh default content" when {
-      val journeyConfigDefaults = JourneyConfigDefaults.WelshConstants(false)
-      val infoText: String = journeyConfigDefaults.CONFIRM_PAGE_INFO_MESSAGE_HTML.replace("<kbd>", "").replace("</kbd>", "")
-      val testJourneyConfig = fullV2JourneyDataCustomConfig(
-        testContinueUrl = testContinueUrl,
-        testHomeNavHref = None,
-        testAdditionalStylesheetUrl = None,
-        testPhaseFeedbackLink = None,
-        testDeskProServiceName = None,
-        testShowPhaseBanner = None,
-        testAlphaPhase = None,
-        testDisableTranslations = None,
-        testShowBackButtons = None,
-        testIncludeHMRCBranding = None,
-        testUkMode = None,
-        testAllowedCountryCodes = None,
-        testSelectPage = None,
-        testTimeoutConfig = None,
-        testLabels = Some(JourneyLabels(
-          cy = Some(LanguageLabels())
-        ))
-      )
-      val messages = MessageConstants.WelshMessageConstants(true)
+    "show search again link is true " in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      "isWelsh is true" when {
-        implicit val lang: Lang = Lang("cy")
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
 
-        "show back button is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show back button is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testDisableTranslations = Some(false),
-            testShowBackButtons = Some(false),
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testLabels = Some(JourneyLabels(
-              cy = Some(LanguageLabels())
-            ))
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe ""
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "a confirmed address has been defined" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "a confirmed address has not been defined" in {
-          val testPage = confirm("", testJourneyConfig, None, isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-          val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-//          doc.getFirstH2ElementAsText shouldBe ""
-          Option(doc.getElementById("infoMessage")) shouldBe None
-          Option(doc.getElementById("searchAgainLink")) shouldBe None
-          Option(doc.getElementById("changeLink")) shouldBe None
-          Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getElementById("lookupLink").parent().text() shouldBe errorText
-        }
-
-        "show subheading and info is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show subheading and info is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(false),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = Some(JourneyLabels(
-              cy = Some(LanguageLabels())
-            ))
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-//          doc.getFirstH2ElementAsText shouldBe ""
-          Option(doc.getElementById("infoMessage")) shouldBe None
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show search again link is true " in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show search again link is false " in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(false),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = Some(JourneyLabels(
-              cy = Some(LanguageLabels())
-            ))
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          Option(doc.getElementById("searchAgainLink")) shouldBe None
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show change link is true " in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show change link is false " in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(false),
-              showConfirmChangeText = Some(true)
-            )),
-            testLabels = Some(JourneyLabels(
-              cy = Some(LanguageLabels())
-            ))
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          Option(doc.getElementById("changeLink")) shouldBe None
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show confirm change options is true" in {
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          doc.getElementById("confirmChangeText").text shouldBe journeyConfigDefaults.CONFIRM_CHANGE_TEXT
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-
-        "show confirm change options is false" in {
-          val testJourneyConfig = fullV2JourneyDataCustomConfig(
-            testContinueUrl = testContinueUrl,
-            testHomeNavHref = None,
-            testAdditionalStylesheetUrl = None,
-            testPhaseFeedbackLink = None,
-            testDeskProServiceName = None,
-            testShowPhaseBanner = None,
-            testAlphaPhase = None,
-            testShowBackButtons = None,
-            testIncludeHMRCBranding = None,
-            testUkMode = None,
-            testAllowedCountryCodes = None,
-            testSelectPage = None,
-            testTimeoutConfig = None,
-            testConfirmPageConfig = Some(ConfirmPageConfig(
-              showSearchAgainLink = Some(true),
-              showSubHeadingAndInfo = Some(true),
-              showChangeLink = Some(true),
-              showConfirmChangeText = Some(false)
-            )),
-            testLabels = Some(JourneyLabels(
-              cy = Some(LanguageLabels())
-            ))
-          )
-          val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = true)
-          val doc: Document = Jsoup.parse(testPage.body)
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_HEADING
-          doc.getFirstH2ElementAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_INFO_SUBHEADING
-          doc.getElementById("infoMessage").text shouldBe infoText
-          doc.getElementById("searchAgainLink").text shouldBe journeyConfigDefaults.SEARCH_AGAIN_LINK_TEXT
-          doc.getElementById("changeLink").text shouldBe journeyConfigDefaults.CONFIRM_PAGE_EDIT_LINK_TEXT
-          Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getButtonContentAsText shouldBe journeyConfigDefaults.CONFIRM_PAGE_SUBMIT_LABEL
-        }
-      }
+      doc.getElementById("searchAgainLink").text shouldBe messages("confirmPage.searchAgainLinkText")
     }
-    "render configured content" when {
-      implicit val lang: Lang = Lang("en")
 
-      "English content is provided" when {
-        val messages = MessageConstants.EnglishMessageConstants(true)
+    "show search again link is false " in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
+        testConfirmPageConfig = Some(ConfirmPageConfig(showSearchAgainLink = Some(false))))
 
-        "a confirmed address has been defined" in {
-          val testPage = confirm("", journeyDataV2Full, Some(testAddress), isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
 
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe testEnglishConfirmPageLabels.heading
-          doc.getFirstH2ElementAsText shouldBe testEnglishConfirmPageLabels.infoSubheading
-          doc.getElementById("infoMessage").text shouldBe testEnglishConfirmPageLabels.infoMessage
-          doc.getElementById("searchAgainLink").text shouldBe testEnglishConfirmPageLabels.searchAgainLinkText
-          doc.getElementById("changeLink").text shouldBe testEnglishConfirmPageLabels.changeLinkText
-          doc.getElementById("confirmChangeText").text shouldBe testEnglishConfirmPageLabels.confirmChangeText
-          doc.getButtonContentAsText shouldBe testEnglishConfirmPageLabels.submitLabel
-        }
-
-        "a confirmed address has not been defined" in {
-          val testPage = confirm("", journeyDataV2Full, None, isWelsh = false)
-          val doc: Document = Jsoup.parse(testPage.body)
-          val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
-
-          doc.getBackLinkText shouldBe messages.back
-          doc.getH1ElementAsText shouldBe testEnglishConfirmPageLabels.heading
-//          doc.getFirstH2ElementAsText shouldBe ""
-          Option(doc.getElementById("infoMessage")) shouldBe None
-          Option(doc.getElementById("searchAgainLink")) shouldBe None
-          Option(doc.getElementById("changeLink")) shouldBe None
-          Option(doc.getElementById("confirmChangeText")) shouldBe None
-          doc.getElementById("lookupLink").parent().text() shouldBe errorText
-        }
-      }
+      Option(doc.getElementById("searchAgainLink")) shouldBe None
     }
-    "Welsh content is provided" when {
-      implicit val lang: Lang = Lang("cy")
 
-      val messages = MessageConstants.WelshMessageConstants(true)
+    "show change link is true " in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      "a confirmed address has been defined" in {
-        val testPage = confirm("", journeyDataV2Full, Some(testAddress), isWelsh = true)
-        val doc: Document = Jsoup.parse(testPage.body)
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
 
-        doc.getBackLinkText shouldBe messages.back
-        doc.getH1ElementAsText shouldBe testWelshConfirmPageLabels.heading
-        doc.getFirstH2ElementAsText shouldBe testWelshConfirmPageLabels.infoSubheading
-        doc.getElementById("infoMessage").text shouldBe testWelshConfirmPageLabels.infoMessage
-        doc.getElementById("searchAgainLink").text shouldBe testWelshConfirmPageLabels.searchAgainLinkText
-        doc.getElementById("changeLink").text shouldBe testWelshConfirmPageLabels.changeLinkText
-        doc.getElementById("confirmChangeText").text shouldBe testWelshConfirmPageLabels.confirmChangeText
-        doc.getButtonContentAsText shouldBe testWelshConfirmPageLabels.submitLabel
-      }
+      doc.getElementById("changeLink").text shouldBe messages("confirmPage.changeLinkText")
+    }
 
-      "a confirmed address has not been defined" in {
-        val testPage = confirm("", journeyDataV2Full, None, isWelsh = true)
-        val doc: Document = Jsoup.parse(testPage.body)
-        val errorText = s"${messages.confirmSelectedAddressError1} ${messages.confirmSelectedAddressError2}."
+    "show change link is false " in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
+        testConfirmPageConfig = Some(ConfirmPageConfig(showChangeLink = Some(false))))
 
-        doc.getBackLinkText shouldBe messages.back
-        doc.getH1ElementAsText shouldBe testWelshConfirmPageLabels.heading
-//        doc.getFirstH2ElementAsText shouldBe ""
-        Option(doc.getElementById("infoMessage")) shouldBe None
-        Option(doc.getElementById("searchAgainLink")) shouldBe None
-        Option(doc.getElementById("changeLink")) shouldBe None
-        Option(doc.getElementById("confirmChangeText")) shouldBe None
-        doc.getElementById("lookupLink").parent().text() shouldBe errorText
-      }
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      Option(doc.getElementById("changeLink")) shouldBe None
+    }
+
+    "show confirm change options is true" in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
+
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.getElementById("confirmChangeText").text shouldBe messages("confirmPage.confirmChangeText")
+    }
+
+    "show confirm change options is false" in {
+      val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
+        testConfirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(false))))
+
+      val testPage = confirm("", testJourneyConfig, Some(testAddress), isWelsh = false)
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      Option(doc.getElementById("confirmChangeText")) shouldBe None
     }
   }
-
 }

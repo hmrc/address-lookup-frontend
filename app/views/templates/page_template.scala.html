@@ -16,7 +16,6 @@
 
 @import config.{FooterLinks, FrontendAppConfig}
 @import model.JourneyDataV2
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants}
 @import java.net.URI
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
 
@@ -24,9 +23,7 @@
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
 HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog,
 header: HmrcHeader)
-@(title: String, form: Option[Form[_]], journeyData: JourneyDataV2, isWelsh: Boolean, isUKMode: Boolean)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
-
-    @messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
+@(title: String, form: Option[Form[_]], journeyData: JourneyDataV2)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
     @userAction = @{
         new URI(request.uri).getPath().split("/").lastOption.getOrElse("")
@@ -39,15 +36,15 @@ header: HmrcHeader)
     }
 
     @resolvedJourneyConfig = @{
-        journeyData.resolveConfigV2(isWelsh, appConfig)
+        journeyData.resolveConfigV2(appConfig)
     }
 
     @scriptElem = {
         @resolvedJourneyConfig.options.timeoutConfig.map(t =>
             timeoutDialog(TimeoutDialog(
-                name = messageConstants.timeoutSignedOut,
+                name = messages("constants.timeoutSignedOut"),
                 countdown = Some(120),
-                title = Some(messageConstants.timeoutSignedOut),
+                title = Some(messages("constants.timeoutSignedOut")),
                 keepAliveUrl = t.timeoutKeepAliveUrl.orElse(Some("/lookup-address/renewSession")),
                 timeout = Some(t.timeoutAmount),
                 signOutUrl = Some(s"/lookup-address/destroySession?timeoutUrl=${t.timeoutUrl}")
@@ -76,7 +73,9 @@ header: HmrcHeader)
                 tag = Some(Tag(
                     content = HtmlContent(resolvedJourneyConfig.options.phase)
                 )),
-                content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(resolvedJourneyConfig.labels.appLevelLabels.phaseBannerHtml)
+                content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(
+                    messages("phaseBannerHtml").replace("$link", resolvedJourneyConfig.options.phaseFeedbackLink)
+                )
             ))
         }
 
@@ -85,7 +84,7 @@ header: HmrcHeader)
         }
 
         @if(resolvedJourneyConfig.options.showBackButtons) {
-            @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messageConstants.back)))
+            @govukBackLink(BackLink(href="javascript:history.back()", content = HtmlContent(messages("constants.back"))))
         }
 
         @if(!resolvedJourneyConfig.options.disableTranslations) {
@@ -99,10 +98,8 @@ header: HmrcHeader)
     }
 
     @fullTitle = @{
-        resolvedJourneyConfig.labels.appLevelLabels.navTitle match {
-            case Some(navTitle) => s"$title - $navTitle - GOV.UK"
-            case _ => title
-        }
+        if (messages.isDefinedAt("navTitle")) s"$title - ${messages("navTitle")} - GOV.UK"
+        else title
     }
 
     @govukLayout(
@@ -111,7 +108,7 @@ header: HmrcHeader)
         headerBlock = Some(header(Header(
             signOutHref = resolvedJourneyConfig.options.signOutHref,
             homepageUrl = resolvedJourneyConfig.options.homeNavHref.getOrElse("https://www.gov.uk/"),
-            serviceName = resolvedJourneyConfig.labels.appLevelLabels.navTitle,
+            serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
             serviceUrl = resolvedJourneyConfig.options.serviceHref.getOrElse(""),
             language = if (messages.lang.code == "cy") Cy else En
         ))),
@@ -126,7 +123,7 @@ header: HmrcHeader)
     ) {
         @form.map { f =>
             @if(f.hasErrors) {
-                @errorSummary(ErrorSummary(title = HtmlContent(messageConstants.errorText),
+                @errorSummary(ErrorSummary(title = HtmlContent(messages("constants.errorText")),
                     errorList = f.errors.map{error ⇒ ErrorLink(href=Some(s"#${error.key}"),
                         content = HtmlContent(messages(error.message)))}))
             }

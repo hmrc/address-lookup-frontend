@@ -23,39 +23,36 @@ import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
-import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
-import model.JourneyData._
-import model.MessageConstants.{EnglishMessageConstants ⇒ EnglishMessages, WelshMessageConstants ⇒ WelshMessages}
+import play.api.i18n.{Lang, Messages}
 import model._
 import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.http.HeaderNames
+import play.api.http.Status.BAD_REQUEST
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
-import play.api.http.Status.BAD_REQUEST
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.TestConstants.{Lookup ⇒ _, _}
-import utils.V2ModelConverter
-import views.html.v2.{confirm, lookup, no_results, non_uk_mode_edit, select, too_many_results, uk_mode_edit}
+import utils.TestConstants.{Lookup => _, _}
+import views.html.error_template
+import views.html.v2._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupControllerSpec
-    extends PlaySpec
-      with GuiceOneAppPerSuite
-      with JsoupShouldMatchers
-      with ScalaFutures with ALFEFixtures {
+  extends PlaySpec
+    with GuiceOneAppPerSuite
+    with JsoupShouldMatchers
+    with ScalaFutures with ALFEFixtures {
 
   SharedMetricRegistries.clear()
 
@@ -63,23 +60,19 @@ class AddressLookupControllerSpec
 
   implicit val hc = HeaderCarrier()
 
-  implicit val f = Json.format[Init]
-
-  class Scenario(journeyConfig: Map[String, JourneyData] = Map.empty,
-                 var journeyData: Map[String, JourneyData] = Map.empty,
-                 journeyConfigV2: Map[String, JourneyDataV2] = Map.empty,
+  class Scenario(journeyConfigV2: Map[String, JourneyDataV2] = Map.empty,
                  var journeyDataV2: Map[String, JourneyDataV2] = Map.empty,
                  proposals: Seq[ProposedAddress] = Seq.empty,
                  id: Option[String] = None) {
 
     val req = FakeRequest()
+    // TODO: Do we need this and the tests that depend on it?
     val reqWelsh = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
 
     val endpoint = "http://localhost:9000"
 
     val cache = app.injector.instanceOf[AddressLookupFrontendSessionCache]
     val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-    val converter = app.injector.instanceOf[V2ModelConverter]
     val auditConnector = app.injector.instanceOf[AuditConnector]
 
     val components = app.injector.instanceOf[MessagesControllerComponents]
@@ -91,26 +84,15 @@ class AddressLookupControllerSpec
     val confirm = app.injector.instanceOf[confirm]
     val no_results = app.injector.instanceOf[no_results]
     val too_many_results = app.injector.instanceOf[too_many_results]
+    val error_template = app.injector.instanceOf[error_template]
+    val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
 
-    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig, converter) {
+    implicit val lang = Lang("en")
+    implicit val messages = implicitly[Messages]
 
-      override def init(journeyName: String): JourneyData = {
-        journeyConfig
-          .get(journeyName)
-          .getOrElse(throw new IllegalArgumentException(s"Invalid journey name: $journeyName"))
-      }
-
-      override def get(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyData]] = {
-        Future.successful(journeyData.get(id))
-      }
-
+    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig) {
       override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
         Future.successful(journeyDataV2.get(id))
-      }
-
-      override def put(id: String, data: JourneyData)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-        journeyData = journeyData ++ Map((id -> data))
-        Future.successful(true)
       }
 
       override def putV2(id: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
@@ -131,9 +113,14 @@ class AddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results)
+    val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector,
+      frontendAppConfig, components, remoteMessagesApiProvider, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm,
+      no_results, too_many_results, error_template)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig, components, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results, too_many_results) {
+    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) =
+      new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig,
+        components, remoteMessagesApiProvider, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
+        too_many_results, error_template) {
       override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
     }
 
@@ -141,83 +128,41 @@ class AddressLookupControllerSpec
       override def uuid = id.getOrElse(testJourneyId)
     }
 
-    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, converter, components) {
+    val api = new ApiController(journeyRepository, MockIdGenerationService, frontendAppConfig, components) {
       override val addressLookupEndpoint = endpoint
     }
 
   }
 
-  "init journey with config" should {
+  // TODO: Do we need to move this to ApiControllerSpec and update to v2?
 
-    "create journey and return the 'on-ramp' URL" in new Scenario(id = Some("quix")) {
-      import converter.V2ModelConverter
-
-      val v1Data = JourneyData(
-        config = JourneyConfig(
-          continueUrl = testContinueUrl,
-          showPhaseBanner = Some(true)
-        )
-      )
-
-      val v2Data = v1Data.toV2Model
-
-      val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(v1Data.config)))
-      status(res) must be(ACCEPTED)
-      header(HeaderNames.LOCATION, res) must be(Some(s"$endpoint/lookup-address/quix/lookup"))
-      journeyRepository.getV2("quix").futureValue.get must be(v2Data)
-    }
-
-    "handle a call to init without confirm change fields" in new Scenario(id = Some("quix")) {
-      import converter.V2ModelConverter
-
-      //the optional confirm change fields were not in the original release
-      val v1Data = JourneyData(
-        JourneyConfig(
-          continueUrl = testContinueUrl,
-          confirmPage = Some(ConfirmPage(
-            showConfirmChangeText = None,
-            confirmChangeText = None))
-        )
-      )
-      val v2Data = v1Data.toV2Model
-
-      val res = call(api.initWithConfig, req.withJsonBody(Json.toJson(v1Data.config)))
-      status(res) must be(ACCEPTED)
-      journeyRepository.getV2("quix").futureValue.get must be(v2Data)
-    }
-  }
-
-  "initializing a journey" should {
-
-    "fail given an invalid journey name" in new Scenario {
-      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
-      status(res) must be(404)
-    }
-
-    "return the 'on-ramp' URL given a legit journey name" in new Scenario(
-      journeyConfig = Map("foo" -> basicJourney()),
-      id = Some("bar")
-    ) {
-      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
-      status(res) must be(ACCEPTED)
-      header(HeaderNames.LOCATION, res) must be(Some(s"$endpoint/lookup-address/bar/lookup"))
-    }
-
-    "permit user to supply custom continueUrl" in new Scenario(
-      journeyConfig = Map("foo" -> basicJourney()),
-      id = Some("bar")
-    ) {
-      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(Some("http://google.com")))))
-      status(res) must be(ACCEPTED)
-      header(HeaderNames.LOCATION, res) must be(Some(s"$endpoint/lookup-address/bar/lookup"))
-      journeyRepository.get("bar").futureValue.get.config.continueUrl must be("http://google.com")
-
-    }
-
-  }
+  //  "initializing a journey" should {
+  //    "fail given an invalid journey name" in new Scenario {
+  //      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
+  //      status(res) must be(404)
+  //    }
+  //
+  //    "return the 'on-ramp' URL given a legit journey name" in new Scenario(
+  //      journeyConfig = Map("foo" -> basicJourney()),
+  //      id = Some("bar")
+  //    ) {
+  //      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(None))))
+  //      status(res) must be(ACCEPTED)
+  //      header(HeaderNames.LOCATION, res) must be(Some(s"$endpoint/lookup-address/bar/lookup"))
+  //    }
+  //
+  //    "permit user to supply custom continueUrl" in new Scenario(
+  //      journeyConfig = Map("foo" -> basicJourney()),
+  //      id = Some("bar")
+  //    ) {
+  //      val res = call(api.init("foo"), req.withJsonBody(Json.toJson(Init(Some("http://google.com")))))
+  //      status(res) must be(ACCEPTED)
+  //      header(HeaderNames.LOCATION, res) must be(Some(s"$endpoint/lookup-address/bar/lookup"))
+  //      journeyRepository.get("bar").futureValue.get.config.continueUrl must be("http://google.com")
+  //    }
+  //  }
 
   "no journey" should {
-
     "return a 'no journey' view" in new Scenario {
       val res = call(controller.noJourney(), req)
       contentAsString(res).asBodyFragment should include element withName("title").withValue("No Journey")
@@ -310,94 +255,6 @@ class AddressLookupControllerSpec
         html should include element withName("button").withAttrValue("type", "submit").withValue("enSubmitLabel")
       }
     }
-    "isWelsh is true" should {
-      "Welsh default content is available" should {
-        "return Welsh default content" in new Scenario(
-          journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2)
-        ) {
-          val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), reqWelsh)
-          val html = contentAsString(res).asBodyFragment
-          html should include element withName("title").withValue("Dod o hyd i gyfeiriad")
-          html should include element withName("h1").withValue("Dod o hyd i gyfeiriad")
-          html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-          html should include element withName("label").withAttrValue("for", "filter").withValue("Enw neu rif yr eiddo")
-          html should include element withName("input").withAttrValue("name", "filter")
-          html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post")
-          html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwilio eto")
-          html should include element withAttrValue("id", "manualAddress").withValue("Nodwch y cyfeiriad â llaw")
-          html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
-          html.getElementById("filter").`val` mustBe "The House"
-        }
-      }
-      "Welsh default content is not provided" should {
-        "return default Welsh content" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool = Some(true)))
-        ) {
-          val res = call(controller.lookup("foo"), reqWelsh)
-          val html = contentAsString(res).asBodyFragment
-          html should include element withName("title").withValue("Dod o hyd i gyfeiriad yn y DU")
-          html should include element withName("h1").withValue("Dod o hyd i gyfeiriad yn y DU")
-          html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
-          html should include element withName("label").withAttrValue("for", "filter").withValue("Enw neu rif yr eiddo (dewisol)")
-          html should include element withName("input").withAttrValue("name", "filter")
-          html should include element withName("label").withAttrValue("for", "postcode").withValue("Cod post yn y DU")
-          html should include element withName("input").withAttrValue("name", "postcode")
-          html should include element withName("button").withAttrValue("type", "submit").withValue("Chwilio eto")
-          html should include element withAttrValue("id", "manualAddress").withValue("Nodwch y cyfeiriad â llaw")
-          html.getElementById("postcode").`val` mustBe ""
-          html.getElementById("filter").`val` mustBe ""
-        }
-      }
-      "return a form that pre pops just post code" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2())
-      ) {
-        val res = call(controller.lookup("foo", postcode = Some("AB11 1AB")), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html.getElementById("postcode").`val` mustBe "AB11 1AB"
-        html.getElementById("filter").`val` mustBe ""
-      }
-
-      "allow page title to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("cyLookupPageTitle")
-      }
-
-      "allow page heading to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue("cyLookupPageHeading")
-      }
-
-      "allow filter label to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("label").withAttrValue("for", "filter").withValue("cyFilterLabel")
-      }
-
-      "allow postcode label to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("label").withAttrValue("for", "postcode").withValue("cyPostcodeLabel")
-      }
-
-      "allow submit label to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelCYJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), reqWelsh)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("button").withAttrValue("type", "submit").withValue("cySubmitLabel")
-      }
-    }
   }
 
   "configuring phase banner should" should {
@@ -410,7 +267,7 @@ class AddressLookupControllerSpec
       val html = contentAsString(res).asBodyFragment
       private val maybeBannerTextElement = html.getElementsByClass("govuk-phase-banner__text")
 
-      maybeBannerTextElement.size().toInt mustBe(0)
+      maybeBannerTextElement.size().toInt mustBe (0)
     }
 
     val betaBannerJourneyV2 =
@@ -421,6 +278,9 @@ class AddressLookupControllerSpec
             continueUrl = "testContinueUrl",
             showPhaseBanner = Some(true)
 
+          ),
+          labels = Some(
+            JourneyLabels(en = Some(LanguageLabels()), cy = None)
           )
         )
       )
@@ -545,8 +405,6 @@ class AddressLookupControllerSpec
   }
 
   "handle select" should {
-    val EnglishConstantsUkMode = EnglishConstants(true)
-    val EnglishMessageConstants = EnglishMessages(true)
 
     "redirect to confirm page when a proposal is selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
@@ -573,7 +431,7 @@ class AddressLookupControllerSpec
       redirectLocation(res) mustBe Some(routes.AddressLookupController.lookup("foo").url)
     }
 
-    "display the select page in english" when {
+    "display the select page" when {
       "the form had an error" when {
         "nothing was selected" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(None))
@@ -581,73 +439,31 @@ class AddressLookupControllerSpec
           val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorRequired)
+          html should include element withName("h1").withValue(messages("selectPage.heading"))
+          html should include element withAttrValue("class", "govuk-error-summary").withValue(messages("constants.errorRequired"))
         }
-        "nothing was selected and the language is changed" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorRequired)
-        }
-        "something was selected which was more than the maximum length allowed" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(EnglishMessageConstants.errorMax(255))
-        }
+
+        // TODO: Test at the form level rather than here
+        //        "something was selected which was more than the maximum length allowed" in new Scenario(
+        //          journeyDataV2 = Map("foo" -> basicJourneyV2(None))
+        //        ) {
+        //          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "A" * 256))
+        //          status(res) mustBe 400
+        //          val html: Element = contentAsString(res).asBodyFragment
+        //          html should include element withName("h1").withValue("??? EnglishConstantsUkMode.SELECT_PAGE_HEADING")
+        //          html should include element withAttrValue("class", "govuk-error-summary").withValue("??? EnglishMessageConstants.errorMax(255)")
+        //        }
       }
       "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+        journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(
+          proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
       ) {
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(EnglishConstantsUkMode.SELECT_PAGE_HEADING)
+        html should include element withName("h1").withValue(messages("selectPage.heading"))
       }
     }
-
-    "display the select page in welsh" when {
-      val WelshConstantsUkMode = WelshConstants(true)
-      val WelshMessageConstants = WelshMessages(true)
-
-      val basicWelshJourney = basicJourneyV2(None).copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continueUrl"), labels = Some(JourneyLabels(None, Some(LanguageLabels())))))
-      "the form had an error and welsh is enabled" when {
-        "nothing was selected" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicWelshJourney)
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> ""))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(WelshMessageConstants.errorRequired)
-        }
-        "something was selected which was more than the maximum length allowed" in new Scenario(
-          journeyDataV2 = Map("foo" -> basicWelshJourney)
-        ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "A" * 256))
-          status(res) mustBe 400
-          val html: Element = contentAsString(res).asBodyFragment
-          html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
-          html should include element withAttrValue("class", "govuk-error-summary").withValue(WelshMessageConstants.errorMax(255))
-        }
-      }
-      "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicWelshJourney.copy(proposals = Some(Seq(ProposedAddress("GV1234567890", "AA1 BB2")))))
-      ) {
-        val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(reqWelsh.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
-        status(res) mustBe 400
-        val html: Element = contentAsString(res).asBodyFragment
-        html should include element withName("h1").withValue(WelshConstantsUkMode.SELECT_PAGE_HEADING)
-      }
-    }
-
   }
 
   "confirm" should {
@@ -697,11 +513,11 @@ class AddressLookupControllerSpec
               ))
             ),
             labels = Some(JourneyLabels(
-               cy = Some(LanguageLabels(
-                 confirmPageLabels = Some(ConfirmPageLabels(
-                   confirmChangeText = Some("Welsh Content")
-                 ))
-               ))
+              cy = Some(LanguageLabels(
+                confirmPageLabels = Some(ConfirmPageLabels(
+                  confirmChangeText = Some("Welsh Content")
+                ))
+              ))
             ))
           ),
           selectedAddress = Some(ConfirmableAddress(
@@ -760,7 +576,7 @@ class AddressLookupControllerSpec
   "Calling addressOrDefault" should {
 
     "return an address when called with a defined option removing postcode as its invalid" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit("", None, None, "", "", "GB")
@@ -768,7 +584,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address when called with a defined option - and long postcode" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit("", None, None, "", "", "GB")
@@ -776,7 +592,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a normalised postcode when called with no option and a long lookup postcode " in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val spacesInPostcode = Some("AA11     2BB")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
@@ -786,7 +602,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a normalised postcode when called with no option and no spaces in lookup postcode " in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val lookUpPostcode = Some("AA112BB")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
@@ -796,7 +612,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a lookup postcode with incorrect format" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val lookUpPostcode = Some("AA11     BB2")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
@@ -806,7 +622,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a lookup postcode with invalid characters" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
       val lookUpPostcode = Some("TF(3@r")
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
@@ -816,9 +632,8 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a no lookup postcode" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2")))))
     ) {
-
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
       val tstEdit = Edit("", None, None, "", "", "GB")
@@ -826,7 +641,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address when called with a defined option - postcode with no space, postcode confirmable gets removed" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11BB2")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit("", None, None, "", "", "GB")
@@ -834,7 +649,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address when called with an empty option" in new Scenario(
-      journeyData = Map("foo" -> basicJourney().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2")))))
     ) {
       val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None) must be(tstEdit)
@@ -843,7 +658,6 @@ class AddressLookupControllerSpec
 
   "edit" should {
     "show the uk edit page for english" in new Scenario(
-
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
@@ -852,10 +666,9 @@ class AddressLookupControllerSpec
       val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementsByClass("govuk-back-link").html mustBe "Back"
-
     }
-    "show the uk edit page for welsh" in new Scenario(
 
+    "show the uk edit page for welsh" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
@@ -878,7 +691,6 @@ class AddressLookupControllerSpec
       html should include element (withName("input").withAttrValue("name", "postcode"))
       html should include element (withName("select").withAttrValue("name", "countryCode"))
       html.getElementById("continue").html mustBe "Continue"
-
     }
 
     "show dropdown of countries given by allowedCountryCodes if allowedCountryCodes is configured with several codes" in new Scenario(
@@ -892,24 +704,24 @@ class AddressLookupControllerSpec
       html should include element withName("option").withAttrValue("value", "FR")
     }
 
-//    "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
-//      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
-//    ) {
-//      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
-//      val html = contentAsString(res).asBodyFragment
-//
-//      html should not include element(withName("option").withAttrValue("value", "GB"))
-//
-//      html should include element withName("input")
-//        .withAttrValue("type", "hidden")
-//        .withAttrValue("value", "GB")
-//        .withAttrValue("name", "countryCode")
-//      html should include element withName("input")
-//        .withAttrValue("type", "text")
-//        .withAttrValue("value", "United Kingdom")
-//        .withAttr("readonly")
-//        .withAttr("disabled")
-//    }
+    //    "show single country without dropdown if allowedCountryCodes is configured with a single country code" in new Scenario(
+    //      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("GB"))))))
+    //    ) {
+    //      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
+    //      val html = contentAsString(res).asBodyFragment
+    //
+    //      html should not include element(withName("option").withAttrValue("value", "GB"))
+    //
+    //      html should include element withName("input")
+    //        .withAttrValue("type", "hidden")
+    //        .withAttrValue("value", "GB")
+    //        .withAttrValue("name", "countryCode")
+    //      html should include element withName("input")
+    //        .withAttrValue("type", "text")
+    //        .withAttrValue("value", "United Kingdom")
+    //        .withAttr("readonly")
+    //        .withAttr("disabled")
+    //    }
 
     "editing an existing address with a country code that is not in the allowedCountryCodes config" when {
       "allowedCountryCodes contains multiple countries" in new Scenario(
@@ -919,34 +731,33 @@ class AddressLookupControllerSpec
         )) {
 
         val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
-
         val html = contentAsString(res).asBodyFragment
 
         html should not include element(withName("option").withAttrValue("value", "FR"))
         html should include element (withName("option").withAttrValue("value", "GB"))
         html should include element withName("option").withAttrValue("value", "DE")
       }
-//      "allowedCountryCodes contains a single country" in new Scenario(
-//        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
-//          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
-//          config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE")))))
-//        )
-//      ) {
-//        val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
-//        val html = contentAsString(res).asBodyFragment
-//
-//        html should include element withName("input")
-//          .withAttrValue("type", "hidden")
-//          .withAttrValue("value", "DE")
-//          .withAttrValue("name", "countryCode")
-//        html should include element withName("input")
-//          .withAttrValue("type", "text")
-//          .withAttrValue("value", "Germany")
-//          .withAttr("readonly")
-//          .withAttr("disabled")
-//
-//        html should not include element(withName("option").withAttrValue("value", "DE"))
-//      }
+      //      "allowedCountryCodes contains a single country" in new Scenario(
+      //        journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
+      //          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(None, None, Some(Country("FR", "France"))))),
+      //          config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE")))))
+      //        )
+      //      ) {
+      //        val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
+      //        val html = contentAsString(res).asBodyFragment
+      //
+      //        html should include element withName("input")
+      //          .withAttrValue("type", "hidden")
+      //          .withAttrValue("value", "DE")
+      //          .withAttrValue("name", "countryCode")
+      //        html should include element withName("input")
+      //          .withAttrValue("type", "text")
+      //          .withAttrValue("value", "Germany")
+      //          .withAttr("readonly")
+      //          .withAttr("disabled")
+      //
+      //        html should not include element(withName("option").withAttrValue("value", "DE"))
+      //      }
     }
 
     "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
@@ -968,12 +779,14 @@ class AddressLookupControllerSpec
       val res = controller.handleEdit("foo").apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
+
     "return 400 with empty request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo").apply(req)
       status(res) must be(400)
     }
+
     "return 303 with country code == GB and no postcode provided" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
@@ -982,6 +795,7 @@ class AddressLookupControllerSpec
       status(res) must be(303)
     }
   }
+
   "handleNonUkEdit" should {
     "return a 400 with empty request, uk mode == true" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
@@ -989,6 +803,7 @@ class AddressLookupControllerSpec
       val res = controller.handleEdit("foo").apply(req)
       status(res) must be(400)
     }
+
     "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
@@ -996,6 +811,7 @@ class AddressLookupControllerSpec
         .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
+
     "return a 400 with empty request when ukMode == false" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
@@ -1005,8 +821,9 @@ class AddressLookupControllerSpec
       html should include element (withName("input").withAttrValue("name", "postcode"))
       html should include element (withName("select").withAttrValue("name", "countryCode"))
     }
+
     "return 303 with country code == GB and no postcode provided" in new Scenario(
-      journeyData = Map("foo" -> basicJourney())
+      journeyDataV2 = Map("foo" -> basicJourneyV2())
     ) {
       val res = controller.handleEdit("foo").apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", Some("bar"), Some("wizz"), "bar", "", "GB")): _*))
@@ -1014,13 +831,14 @@ class AddressLookupControllerSpec
     }
 
     "return a 303 with request containing valid data but blank postcode and countryCode when ukMode == true" in new Scenario(
-      journeyData = Map("foo" -> basicJourney(Some(true)))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo")
         .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit("foo", None, None, "fooBar", "", "")): _*))
       status(res) must be(303)
     }
   }
+
   "renewSession" should {
     "return 200 when hit" in new Scenario {
       val result = controller.renewSession()(req)
@@ -1029,6 +847,7 @@ class AddressLookupControllerSpec
       headers(result).get("Content-Disposition").exists(_.contains("renewSession.jpg")) mustBe true
     }
   }
+
   "destroySession" should {
     "redirect to timeout url and get rid of headers" in new Scenario {
       val fakeRequest = req.withHeaders("testSession" -> "present")
@@ -1046,17 +865,21 @@ class AddressLookupControllerSpec
       "there is a welsh language cookie in the request and welsh is setup in the journey without labels" in new Scenario {
         controller.getWelshContent(testDefaultCYJourneyConfigV2)(reqWelsh) mustBe true
       }
+
       "there is a welsh language cookie in the request and welsh is setup in the journey with labels" in new Scenario {
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqWelsh) mustBe true
       }
+
       "there is a welsh language cookie in the request and welsh is not setup in the journey" in new Scenario {
         controller.getWelshContent(testLookupLevelJourneyConfigV2)(reqWelsh) mustBe true
       }
     }
+
     "return false" when {
       "there is a welsh language cookie but welsh translations are disabled" in new Scenario {
         controller.getWelshContent(testAppLevelJourneyConfigV2WithWelshDisabled)(reqWelsh) mustBe false
       }
+
       "there is no welsh language cookie but welsh labels are provided" in new Scenario {
         val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqOther) mustBe false

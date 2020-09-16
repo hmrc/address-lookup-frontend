@@ -131,47 +131,7 @@ object TestConstants {
     val useWelsh = "Use-Welsh"
   }
 
-  // V1 model constants
-  val fullV1LookupConfig = Some(LookupPage(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode, Lookup.submit,
-    Lookup.limitExceeded, Lookup.noResultsFound, Lookup.enterManually))
-
-  val fullV1SelectConfig = Some(SelectPage(Select.title, Select.heading, Select.headingWithPostcode,
-    Select.proposalListLabel, Select.submitLabel, Select.proposalListLimit, Select.showSearchagainLink,
-    Select.searchAgainLinkText, Select.editAddressLinkText))
-
-  val fullV1EditConfig = Some(EditPage(EditConst.title, EditConst.heading, EditConst.line1, EditConst.line2, EditConst.line3, EditConst.town,
-    EditConst.postcode, EditConst.country, EditConst.submit))
-
-  val fullV1ConfirmConfig = Some(ConfirmPage(Confirm.title, Confirm.heading, Confirm.showSubHeading, Confirm.infoSubheading,
-    Confirm.infoMessage, Confirm.submitLabel, Confirm.showSearchAgainLink, Confirm.searchAgainLinkText, Confirm.showChangeLink,
-    Confirm.changeLinkText, Confirm.showConfirmChangeLink, Confirm.confirmChangeText))
-
   val fullV1TimeoutConfig = Some(Timeout(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
-
-  val fullV1JourneyConfig = JourneyConfig(
-    continueUrl = testContinueUrl,
-    lookupPage = fullV1LookupConfig,
-    selectPage = fullV1SelectConfig,
-    confirmPage = fullV1ConfirmConfig,
-    editPage = fullV1EditConfig,
-    homeNavHref = testHomeNavRef,
-    signOutHref = testSignOutHref,
-    navTitle = testNavTitle,
-    accessibilityFooterUrl = testAccessibilityFooterUrl,
-    additionalStylesheetUrl = testAdditionalStylesheetUrl,
-    showPhaseBanner = testShowPhaseBanner,
-    alphaPhase = testAlphaPhase,
-    phaseFeedbackLink = testPhaseFeedbackLink,
-    phaseBannerHtml = testPhaseBannerHtml,
-    showBackButtons = testShowBackButtons,
-    includeHMRCBranding = testIncludeHmrcBranding,
-    deskProServiceName = testDeskproServiceName,
-    allowedCountryCodes = testAllowedCountryCodes,
-    timeout = fullV1TimeoutConfig,
-    ukMode = testUkMode
-  )
-
-  val fullV1JourneyData = JourneyData(fullV1JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
   // V2 model constants
   val fullV2AppLabels = Some(AppLevelLabels(testNavTitle, testPhaseBannerHtml))
@@ -288,8 +248,8 @@ object TestConstants {
       testDeskProServiceName,
       testShowPhaseBanner,
       testAlphaPhase,
-      testDisableTranslations,
       testShowBackButtons,
+      testDisableTranslations,
       testIncludeHMRCBranding,
       testUkMode,
       testAllowedCountryCodes,
@@ -361,9 +321,12 @@ object TestConstants {
           )),
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("enLookupPageTitle"),
+            titleUkMode = Some("enLookupPageTitle"),
             heading = Some("enLookupPageHeading"),
+            headingUkMode = Some("enLookupPageHeading"),
             filterLabel = Some("enFilterLabel"),
             postcodeLabel = Some("enPostcodeLabel"),
+            postcodeLabelUkMode = Some("enPostcodeLabel"),
             submitLabel = Some("enSubmitLabel"),
             noResultsFoundMessage = Some("enNoResultsFoundMessage"),
             resultLimitExceededMessage = Some("enResultLimitExceededMessage"),
@@ -377,6 +340,7 @@ object TestConstants {
             line3Label = Some("enEditPageLine3Label"),
             townLabel = Some("enEditPageTownLabel"),
             postcodeLabel = Some("enEditPagePostcodeLabel"),
+            postcodeLabelUkMode = Some("enEditPagePostcodeLabel"),
             countryLabel = Some("enEditPageCountryLabel"),
             submitLabel = Some("enEditPageSubmitLabel")
           )),
@@ -407,9 +371,12 @@ object TestConstants {
           )),
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("cyLookupPageTitle"),
+            titleUkMode = Some("cyLookupPageTitle"),
             heading = Some("cyLookupPageHeading"),
+            headingUkMode = Some("cyLookupPageHeading"),
             filterLabel = Some("cyFilterLabel"),
             postcodeLabel = Some("cyPostcodeLabel"),
+            postcodeLabelUkMode = Some("cyPostcodeLabel"),
             submitLabel = Some("cySubmitLabel"),
             noResultsFoundMessage = Some("cyNoResultsFoundMessage"),
             resultLimitExceededMessage = Some("cyResultLimitExceededMessage"),
@@ -423,6 +390,7 @@ object TestConstants {
             line3Label = Some("cyEditPageLine3Label"),
             townLabel = Some("cyEditPageTownLabel"),
             postcodeLabel = Some("cyEditPagePostcodeLabel"),
+            postcodeLabelUkMode = Some("cyEditPagePostcodeLabel"),
             countryLabel = Some("cyEditPageCountryLabel"),
             submitLabel = Some("cyEditPageSubmitLabel")
           )),
@@ -495,9 +463,12 @@ object TestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"enLookupPageTitle",
+      |               "titleUkMode":"enLookupPageTitle",
       |               "heading":"enLookupPageHeading",
+      |               "headingUkMode":"enLookupPageHeading",
       |               "filterLabel":"enFilterLabel",
       |               "postcodeLabel":"enPostcodeLabel",
+      |               "postcodeLabelUkMode":"enPostcodeLabel",
       |               "submitLabel":"enSubmitLabel",
       |               "noResultsFoundMessage":"enNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"enResultLimitExceededMessage",
@@ -511,6 +482,7 @@ object TestConstants {
       |               "line3Label":"enEditPageLine3Label",
       |               "townLabel":"enEditPageTownLabel",
       |               "postcodeLabel":"enEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"enEditPagePostcodeLabel",
       |               "countryLabel":"enEditPageCountryLabel",
       |               "submitLabel":"enEditPageSubmitLabel"
       |            },
@@ -541,9 +513,12 @@ object TestConstants {
       |            },
       |            "lookupPageLabels":{
       |               "title":"cyLookupPageTitle",
+      |               "titleUkMode":"cyLookupPageTitle",
       |               "heading":"cyLookupPageHeading",
+      |               "headingUkMode":"cyLookupPageHeading",
       |               "filterLabel":"cyFilterLabel",
       |               "postcodeLabel":"cyPostcodeLabel",
+      |               "postcodeLabelUkMode":"cyPostcodeLabel",
       |               "submitLabel":"cySubmitLabel",
       |               "noResultsFoundMessage":"cyNoResultsFoundMessage",
       |               "resultLimitExceededMessage":"cyResultLimitExceededMessage",
@@ -557,6 +532,7 @@ object TestConstants {
       |               "line3Label":"cyEditPageLine3Label",
       |               "townLabel":"cyEditPageTownLabel",
       |               "postcodeLabel":"cyEditPagePostcodeLabel",
+      |               "postcodeLabelUkMode":"cyEditPagePostcodeLabel",
       |               "countryLabel":"cyEditPageCountryLabel",
       |               "submitLabel":"cyEditPageSubmitLabel"
       |            },

@@ -72,100 +72,15 @@ class NonUKModeEditViewSpec extends ViewSpec {
   "Non UK Mode Page" should {
     implicit val lang: Lang = Lang("en")
 
-    "when provided with no page config" in {
-//      val testPage = non_uk_mode_edit(
-//        id = testId,
-//        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-//        editForm = nonUkEditForm(false),
-//        countries = Seq("FR" -> "France"),
-//        isWelsh = false
-//      )
-//      val doc: Document = Jsoup.parse(testPage.body)
-//
-//      doc.title shouldBe defaultContent.title
-//      doc.getH1ElementAsText shouldBe defaultContent.heading
-//      doc.getTextFieldLabel("line1") shouldBe defaultContent.addressLine1
-//      doc.getTextFieldInput("line1").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("line2") shouldBe defaultContent.addressLine2
-//      doc.getTextFieldInput("line2").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("line3") shouldBe defaultContent.addressLine3
-//      doc.getTextFieldInput("line3").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("town") shouldBe defaultContent.townCity
-//      doc.getTextFieldInput("town").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("postcode") shouldBe defaultContent.postcodeInternational
-//      doc.getTextFieldInput("postcode").`val`() shouldBe ""
-//
-//      doc.getSelectOptionLabel("France") shouldBe defaultContent.country
-//      doc.getSelectOptionValue("France") shouldBe "FR"
-//
-//      doc.getElementById("continue").text() shouldBe defaultContent.continue
-    }
-
-    "when provided with page config" in {
-//      implicit val lang: Lang = Lang("en")
-//
-//      val testPage = non_uk_mode_edit(
-//        id = testId,
-//        journeyData = fullV2JourneyDataNonUkMode,
-//        editForm = nonUkEditForm(false),
-//        countries = Seq("FR" -> "France"),
-//        isWelsh = false
-//      )
-//      val doc: Document = Jsoup.parse(testPage.body)
-//
-//      doc.title shouldBe configuredContent.title
-//      doc.getH1ElementAsText shouldBe configuredContent.heading
-//      doc.getTextFieldLabel("line1") shouldBe configuredContent.addressLine1
-//      doc.getTextFieldInput("line1").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("line2") shouldBe configuredContent.addressLine2
-//      doc.getTextFieldInput("line2").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("line3") shouldBe configuredContent.addressLine3
-//      doc.getTextFieldInput("line3").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("town") shouldBe configuredContent.townCity
-//      doc.getTextFieldInput("town").`val`() shouldBe ""
-//
-//      doc.getTextFieldLabel("postcode") shouldBe configuredContent.postcodeInternational
-//      doc.getTextFieldInput("postcode").`val`() shouldBe ""
-//
-//      doc.getSelectOptionLabel("France") shouldBe configuredContent.country
-//      doc.getSelectOptionValue("France") shouldBe "FR"
-//
-//      doc.getElementById("continue").text() shouldBe configuredContent.continue
-    }
-
-    "When there is > 1 country" in {
+    "map each country onto the autocomplete field" in {
       val testPage = non_uk_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = nonUkEditForm(false),
+        editForm = nonUkEditForm(),
         countries = Seq("FR" -> "France", "AL" -> "Albanian"),
         isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)
-
-      doc.title shouldBe defaultContent.title
-      doc.getH1ElementAsText shouldBe defaultContent.heading
-      doc.getTextFieldLabel("line1") shouldBe defaultContent.addressLine1
-      doc.getTextFieldInput("line1").`val`() shouldBe ""
-
-      doc.getTextFieldLabel("line2") shouldBe defaultContent.addressLine2
-      doc.getTextFieldInput("line2").`val`() shouldBe ""
-
-      doc.getTextFieldLabel("line3") shouldBe defaultContent.addressLine3
-      doc.getTextFieldInput("line3").`val`() shouldBe ""
-
-      doc.getTextFieldLabel("town") shouldBe defaultContent.townCity
-      doc.getTextFieldInput("town").`val`() shouldBe ""
-
-      doc.getTextFieldLabel("postcode") shouldBe defaultContent.postcodeInternational
-      doc.getTextFieldInput("postcode").`val`() shouldBe ""
 
       doc.testElementExists("countryCode")
       doc.getDropList("countryCode").select("option").size() shouldBe 3
@@ -173,10 +88,6 @@ class NonUKModeEditViewSpec extends ViewSpec {
         option("countryCode-FR", "France"),
         option("countryCode-AL", "Albanian")
       )
-
-      doc.getElementById("continue").text() shouldBe defaultContent.continue
     }
   }
-
-
 }

@@ -22,12 +22,17 @@ import org.jsoup.select.Elements
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.LangImplicits
+import play.api.inject.guice.GuiceApplicationBuilder
 
 trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with LangImplicits {
   unitSpec: WordSpec =>
-  SharedMetricRegistries.clear()
 
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder().build()
+  }
 
   implicit class DocumentTest(doc: Document) {
 

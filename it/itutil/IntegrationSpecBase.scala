@@ -15,11 +15,13 @@
  */
 package itutil
 
+import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.Application
 import play.api.Mode.Test
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 
@@ -31,7 +33,7 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}
 
-  implicit val defaultTimeout: FiniteDuration = 5 seconds
+  implicit val defaultTimeout: FiniteDuration = 10 seconds
 
   implicit def extractAwait[A](future: Future[A]): A = await[A](future)
 
@@ -43,12 +45,19 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
   val mockHost = WireMockHelper.wiremockHost
   val mockPort = WireMockHelper.wiremockPort
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .in(Test)
-    .build()
+  implicit override lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder()
+      .configure(fakeConfig())
+      .in(Test)
+      .build()
+  }
 
   val cookieSigner = app.injector.instanceOf[CookieSigner]
+  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+
+  def messages(message: String) = messagesApi.preferred(Seq(Lang("en")))(message)
+  def messages(lang: Lang, message: String) = messagesApi.preferred(Seq(lang))(message)
 
   override def beforeEach(): Unit = {
     resetWiremock()

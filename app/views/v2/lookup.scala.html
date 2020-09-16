@@ -15,7 +15,6 @@
  *@
 
 @import model._
-@import model.MessageConstants.{EnglishMessageConstants, WelshMessageConstants, MessageConstants}
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
@@ -28,23 +27,22 @@ isUKMode: Boolean = true,
 message: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@messageConstants = @{if(isWelsh) WelshMessageConstants(isUKMode) else EnglishMessageConstants(isUKMode)}
-
 @errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
 
 @titleWithError = @{
-  if(lookupForm.errors) {
-    errorPrefix + journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.title
-  } else {
-    journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.title
-  }
+    val baseTitle = if(isUKMode) messages("lookupPage.title.ukMode") else messages("lookupPage.title")
+    if(lookupForm.errors) {
+        errorPrefix + baseTitle
+    } else {
+        baseTitle
+    }
 }
 
-@page(titleWithError, Some(lookupForm), journeyData, isWelsh, isUKMode) {
+@page(titleWithError, Some(lookupForm), journeyData) {
 
   @form(routes.AddressLookupController.select(id)) {
       <h1 class="govuk-heading-xl" id="pageHeading">
-        @{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.heading}
+        @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
 
       @if(message.isDefined) {
@@ -54,7 +52,9 @@ message: Option[String] = None
       }
 
       @textInput(Input(
-          label = Label(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.postcodeLabel)),
+          label = Label(content = HtmlContent(
+              if(isUKMode) messages("lookupPage.postcodeLabel.ukMode") else messages("lookupPage.postcodeLabel")
+          )),
           name = lookupForm("postcode").name,
           value = lookupForm("postcode").value,
           classes = "govuk-input--width-10",
@@ -62,19 +62,19 @@ message: Option[String] = None
           errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.manualAddressLinkText}</a>
+            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
         </p>
 
       @textInput(Input(
-          label = Label(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.filterLabel)),
+          label = Label(content = HtmlContent(messages("lookupPage.filterLabel"))),
           name = lookupForm("filter").name,
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
           id = lookupForm("filter").id,
           errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
-          hint = Some(Hint(content = HtmlContent(messageConstants.lookupFilterHint)))))
+          hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
-      @button(Button(content = HtmlContent(journeyData.resolveConfigV2(isWelsh, appConfig).labels.lookupPageLabels.submitLabel),
+      @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),
           name=Some("continue"),
           inputType=Some("submit"), attributes = Map("id" → "continue")))
   }

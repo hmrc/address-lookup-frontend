@@ -14,7 +14,7 @@ lazy val root = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
   .settings(majorVersion := 2)
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.11.11")
+  .settings(scalaVersion := "2.11.12")
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(

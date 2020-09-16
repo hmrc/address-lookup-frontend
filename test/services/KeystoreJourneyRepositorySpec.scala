@@ -32,20 +32,9 @@ class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with Sc
 
   implicit val hc = HeaderCarrier()
 
-  val journeyData = JourneyData(JourneyConfig("continue"))
-  val someJourneyDataJson = Some(Json.toJson(journeyData))
-
   val journeyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue")))
   val someJourneyDataV2Json = Some(Json.toJson(journeyDataV2))
-
-  val journeyDataWithTimeout = JourneyData(JourneyConfig("continue", timeout = Some(Timeout(120, "testUrl", Some("keepAlive")))))
-  val someJourneyDataWithTimeoutJson = Some(Json.toJson(journeyDataWithTimeout))
-
-  val cached = CacheMap("id", Map("id" -> Json.toJson(journeyData)))
-
   val cachedV2 = CacheMap("id", Map("id" -> Json.toJson(journeyDataV2)))
-
-  val cachedWithTimeout = CacheMap("id", Map("id" -> Json.toJson(journeyDataWithTimeout)))
 
   class Scenario(cacheResponse: Option[CacheMap] = None, getResponse: Option[JsValue] = None, useNewCache: Boolean = true, useOldCache: Boolean = false) {
 

@@ -190,7 +190,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
   "ResolvedJourneyConfigV2" should {
     "return a full model without defaulting any values" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Full.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true, appConfig)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, appConfig)
 
       originalJourneyConfig.version mustBe resolvedJourneyConfig.version
 
@@ -261,7 +261,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
     "return a full model with all possible English default values" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2Minimal.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = false, appConfig)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, appConfig)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 
@@ -330,7 +330,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
     "return a full model with all possible default values including English and Welsh content" in {
       val originalJourneyConfig: JourneyConfigV2 = journeyDataV2EnglishAndWelshMinimal.config
-      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, isWelsh = true, appConfig)
+      val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(originalJourneyConfig, appConfig)
 
       resolvedJourneyConfig.version mustBe originalJourneyConfig.version
 

@@ -21,7 +21,6 @@ import model._
 
 trait ALFEFixtures {
 
-   def basicJourney(ukModeBool: Option[Boolean] = Some(false)): JourneyData = JourneyData(JourneyConfig("continue", ukMode = ukModeBool))
    def basicJourneyV2(ukModeBool: Option[Boolean] = Some(false)): JourneyDataV2 =
      JourneyDataV2(JourneyConfigV2(2, JourneyOptions("continue", ukMode = ukModeBool), labels = Some(JourneyLabels(
        en = Some(LanguageLabels()),

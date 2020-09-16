@@ -131,47 +131,7 @@ object TestConstants {
     val useWelsh = "Use-Welsh"
   }
 
-  // V1 model constants
-  val fullV1LookupConfig = Some(LookupPage(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode, Lookup.submit,
-    Lookup.limitExceeded, Lookup.noResultsFound, Lookup.enterManually))
-
-  val fullV1SelectConfig = Some(SelectPage(Select.title, Select.heading, Select.headingWithPostcode,
-    Select.proposalListLabel, Select.submitLabel, Select.proposalListLimit, Select.showSearchagainLink,
-    Select.searchAgainLinkText, Select.editAddressLinkText))
-
-  val fullV1EditConfig = Some(EditPage(EditConst.title, EditConst.heading, EditConst.line1, EditConst.line2, EditConst.line3, EditConst.town,
-    EditConst.postcode, EditConst.country, EditConst.submit))
-
-  val fullV1ConfirmConfig = Some(ConfirmPage(Confirm.title, Confirm.heading, Confirm.showSubHeading, Confirm.infoSubheading,
-    Confirm.infoMessage, Confirm.submitLabel, Confirm.showSearchAgainLink, Confirm.searchAgainLinkText, Confirm.showChangeLink,
-    Confirm.changeLinkText, Confirm.showConfirmChangeLink, Confirm.confirmChangeText))
-
   val fullV1TimeoutConfig = Some(Timeout(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
-
-  val fullV1JourneyConfig = JourneyConfig(
-    continueUrl = testContinueUrl,
-    lookupPage = fullV1LookupConfig,
-    selectPage = fullV1SelectConfig,
-    confirmPage = fullV1ConfirmConfig,
-    editPage = fullV1EditConfig,
-    homeNavHref = testHomeNavRef,
-    signOutHref = testSignOutHref,
-    navTitle = testNavTitle,
-    accessibilityFooterUrl = testAccessibilityFooterUrl,
-    additionalStylesheetUrl = testAdditionalStylesheetUrl,
-    showPhaseBanner = testShowPhaseBanner,
-    alphaPhase = testAlphaPhase,
-    phaseFeedbackLink = testPhaseFeedbackLink,
-    phaseBannerHtml = testPhaseBannerHtml,
-    showBackButtons = testShowBackButtons,
-    includeHMRCBranding = testIncludeHmrcBranding,
-    deskProServiceName = testDeskproServiceName,
-    allowedCountryCodes = testAllowedCountryCodes,
-    timeout = fullV1TimeoutConfig,
-    ukMode = testUkMode
-  )
-
-  val fullV1JourneyData = JourneyData(fullV1JourneyConfig, Some(testProposedAddressSeq), Some(testAddress), Some(testAddress))
 
   // V2 model constants
   val fullV2AppLabels = Some(AppLevelLabels(testNavTitle, testPhaseBannerHtml))

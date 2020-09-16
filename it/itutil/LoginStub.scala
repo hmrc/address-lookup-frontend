@@ -27,23 +27,18 @@ import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http.SessionKeys
 
 trait LoginStub extends SessionCookieBaker {
-  private val defaultUser = "/foo/bar"
-
   val SessionId         = s"stubbed-${UUID.randomUUID}"
   val invalidSessionId  = s"FAKE_PRF::NON-COMPSDOJ OMSDDf"
 
-  private def cookieData(additionalData: Map[String, String], userId: String = defaultUser, sessionId: String = SessionId): Map[String, String] = {
+  private def cookieData(additionalData: Map[String, String], sessionId: String = SessionId): Map[String, String] = {
     Map(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.userId -> userId,
-      SessionKeys.token -> "token",
-      SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> new java.util.Date().getTime.toString
     ) ++ additionalData
   }
 
-  def getSessionCookie(additionalData: Map[String, String] = Map(), userId: String = defaultUser, sessionId: String = SessionId): String =
-    cookieValue(cookieData(additionalData, userId, sessionId))
+  def getSessionCookie(additionalData: Map[String, String] = Map(), sessionId: String = SessionId): String =
+    cookieValue(cookieData(additionalData, sessionId))
 
   def sessionCookieWithCSRF: String = getSessionCookie(Map("csrfToken" -> testCsrfToken()))
 

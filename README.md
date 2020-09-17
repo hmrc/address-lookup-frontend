@@ -8,9 +8,6 @@ Initially, the use-case covers only UK addresses. BFPO addresses might be added 
 
 ## Functional Overview
 
-### Address Lookup Frontend has been updated, for version 1 of the API, see [the old README](DEPRECATED.md).
-The API has been updated to split out the configuration from the custom labels, and to allow Welsh content labels to be provided. The old API is still supported under the original endpoints.
-
 ### Summary
 
 During the utilization of `address-lookup-frontend`, four parties are involved:
@@ -22,7 +19,7 @@ During the utilization of `address-lookup-frontend`, four parties are involved:
 
 The integration process from the perspective of the **calling service** consists of the following steps:
 
-* _Initialize_ a **journey** by issuing a request to `POST /api/v2/init` where the message body is a **journey configuration** JSON message (see below). You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
+* _Initialize_ a **journey** by issuing a request to `POST /api/init` where the message body is a **journey configuration** JSON message (see below). You should receive a `202 Accepted` response with a `Location` header the value of which is the **"on ramp"** URL to which the **"user"** should be redirected.
 * _Redirect_ the **"user"** to the **"on ramp"** URL.
 * The **"user"** completes the journey, following which they will be redirected to the **"off ramp"** URL (which is configured as part of the journey) with an appended `id=:addressId` URL parameter.
 * Using the value of the `id` parameter, you can retrieve the user's confirmed address as JSON by issuing a request to `GET /api/confirmed?id=:addressId`. 
@@ -37,7 +34,8 @@ An endpoint is provided for initialization:
 
 URL:
 
-* `/api/v2/init`
+* `/api/init`
+* (`/api/v2/init` is also supported, but clients are encouraged to use the versionless endpoint.)
 
 Methods:
 
@@ -59,17 +57,17 @@ Response:
 
 ### Configuring a Journey
 
-The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. Journey configuration is supplied as a JSON object in the body of the request to `POST /api/v2/init` (see above).
+The `address-lookup-frontend` allows the **"calling service"** to customize many aspects of the **"user's"** journey and the appearance of the **"frontend"** user interface. Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init` (see above).
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
 #### Configuration JSON Format
 
-Journey configuration is supplied as a JSON object in the body of the request to `POST /api/v2/init`.
+Journey configuration is supplied as a JSON object in the body of the request to `POST /api/init`.
 
 It is **not** necessary to specify values for all configurable properties. _Only supply a value for properties where it is either required or you need to override the default_. Wherever possible, sensible defaults have been provided. The default values are indicated in the table detailing the options below.
 
-**Welsh translations are enabled by default in v2.**
+**Welsh translations are enabled by default.**
 
 You can provide custom labels for the Welsh journey by adding a `cy` block to the config. If no custom content is provided, the default labels are used. Welsh content is displayed for users when the `PLAY_LANG` cookie is set to `"cy"`. A language toggle to enable users to change their language will be displayed on all pages.
 

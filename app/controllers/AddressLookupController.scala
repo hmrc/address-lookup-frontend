@@ -101,7 +101,8 @@ class AddressLookupController @Inject()(
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None): Action[AnyContent] = Action.async {
     implicit req =>
-      withJourneyV2(id) { journeyData =>
+      journeyRepository.getV2(id).map {
+        case Some(journeyData) =>
         import JourneyLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
@@ -117,13 +118,12 @@ class AddressLookupController @Inject()(
         val formPrePopped = lookupForm(isWelsh)(messages).fill(
           Lookup(filter, PostcodeHelper.displayPostcode(postcode))
         )
-
-        (
-          Some(journeyData.copy(selectedAddress = None)),
           requestWithWelshHeader(isWelsh) {
-            Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode)(req, messages, frontendAppConfig))
+            Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode)
+            (req, messages, frontendAppConfig))
           }
-        )
+
+        case None => Redirect(routes.AddressLookupController.noJourney())
       }
   }
 

@@ -124,6 +124,7 @@ class SelectPageViewSpec extends ViewSpec {
       doc.select("input[id^=addressId]").size shouldBe 1
       doc.select("label[for^=addressId]").size shouldBe 1
       doc.select("label[for^=addressId]").text shouldBe testProposal.proposals.get.head.toDescription
+      doc.getElementById("searchAgainLink") should not be null
     }
   }
 

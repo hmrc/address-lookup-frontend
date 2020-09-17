@@ -35,7 +35,7 @@
         }}
     </h1>
 
-    <p>@messages("constants.youEntered")</p>
+    <p class="govuk-heading-m" >@messages("constants.youEntered")</p>
     <ul class="govuk-list govuk-list-bullet">
         <li>@{lookup.postcode} @messages("constants.forPostcode")</li>
         <li>@{lookup.filter.fold(messages("constants.nothingText"))(

@@ -27,9 +27,7 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@errorPrefix = @{
-    if(isWelsh) "Gwall: " else "Error: "
-}
+@errorPrefix = @{s"${messages("constants.error.prefix")} "}
 
 @titleWithError = @{
     if(editForm.errors) {

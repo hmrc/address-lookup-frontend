@@ -1,3 +1,4 @@
+# Footer links
 footer.links.cookies.text               = Cwcis
 footer.links.privacy_policy.text        = Polisi preifatrwydd
 footer.links.terms_and_conditions.text  = Telerau ac Amodau
@@ -85,6 +86,10 @@ constants.notFoundErrorBody = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywi
 constants.errorRequired = Dewiswch yr eiddo ar gyfer y cyfeiriad
 constants.errorMin = $min yw’r isafswm hyd
 constants.errorMax = $max yw’r uchafswm hyd
+
+constants.error.prefix = Gwall:
+
+constants.footer.visuallyHiddenText = Dolenni cymorth
 
 confirmPage.title = Cadarnhewch cyfeiriad
 confirmPage.heading = Adolygu a chadarnhau

@@ -116,7 +116,7 @@ header: HmrcHeader)
         scriptsBlock = Some(scriptElem),
         footerBlock = Some(footer(Footer(
             meta = Some(Meta(
-                visuallyHiddenTitle = Some("Support links"),
+                visuallyHiddenTitle = Some(messages("constants.footer.visuallyHiddenText")),
                 items = Some(FooterLinks(resolvedJourneyConfig.options.accessibilityFooterUrl, userAction))
             ))
         )))

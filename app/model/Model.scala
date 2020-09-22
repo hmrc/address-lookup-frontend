@@ -166,21 +166,3 @@ object ProposedAddress {
   import CountryFormat._
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
 }
-//
-//// JSON serialization companions
-//object JourneyData {
-//
-//  implicit val confirmPageFormat = Json.format[ConfirmPage]
-//  implicit val selectPageFormat = Json.format[SelectPage]
-//  implicit val lookupPageFormat = Json.format[LookupPage]
-//  implicit val editPageFormat = Json.format[EditPage]
-//
-//  implicit val timeoutFormat: Format[Timeout] = (
-//    (JsPath \ "timeoutAmount").format[Int](min(120)) and
-//      (JsPath \ "timeoutUrl").format[String] and
-//      (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
-//  )(Timeout.apply, unlift(Timeout.unapply))
-//  implicit val journeyConfigFormat = Json.format[JourneyConfig]
-//  implicit val journeyDataFormat = Json.format[JourneyData]
-//
-//}

@@ -95,6 +95,10 @@ constants.notFoundErrorTitle = Page not found
 constants.notFoundErrorHeading = This page cannot be found
 constants.notFoundErrorBody = Please check that you have entered the correct web address.
 
+constants.error.prefix = Error:
+
+constants.footer.visuallyHiddenText = Support links
+
 confirmPage.title = Confirm address
 confirmPage.heading = Review and confirm
 confirmPage.infoSubheading = Your selected address

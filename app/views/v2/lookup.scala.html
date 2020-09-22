@@ -27,7 +27,7 @@ isUKMode: Boolean = true,
 message: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@errorPrefix = @{if(isWelsh) "Gwall: " else "Error: "}
+@errorPrefix = @{s"${messages("constants.error.prefix")} "}
 
 @titleWithError = @{
     val baseTitle = if(isUKMode) messages("lookupPage.title.ukMode") else messages("lookupPage.title")

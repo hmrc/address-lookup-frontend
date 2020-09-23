@@ -1,3 +1,11 @@
+# UK only mode
+service.name =
+service.homePageUrl =
+
+# No Journey
+no.journey.title.text       = Dim Taith
+no.journey.heading.text     = Dim Taith
+
 # Footer links
 footer.links.cookies.text               = Cwcis
 footer.links.privacy_policy.text        = Polisi preifatrwydd

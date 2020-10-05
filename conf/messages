@@ -99,7 +99,7 @@ constants.error.prefix = Error:
 
 constants.footer.visuallyHiddenText = Support links
 
-confirmPage.title = Confirm address
+confirmPage.title = Review and confirm
 confirmPage.heading = Review and confirm
 confirmPage.infoSubheading = Your selected address
 confirmPage.infoMessage = This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.

@@ -57,6 +57,7 @@ message: Option[String] = None
           )),
           name = lookupForm("postcode").name,
           value = lookupForm("postcode").value,
+          autocomplete = Some("postal-code"),
           classes = "govuk-input--width-10",
           id = lookupForm("postcode").id,
           errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))

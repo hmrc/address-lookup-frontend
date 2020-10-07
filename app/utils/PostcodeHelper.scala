@@ -16,7 +16,7 @@
 
 package utils
 
-import uk.gov.hmrc.address.uk.Postcode
+import forms.Postcode
 
 object PostcodeHelper {
 

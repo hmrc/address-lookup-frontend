@@ -24,7 +24,6 @@ import play.api.data.Forms.{default, ignored, mapping, optional, text}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
-import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 object Helpers {

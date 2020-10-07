@@ -19,10 +19,10 @@ package services
 import javax.inject.{Inject, Singleton}
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
+import forms.Postcode
 import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
 import services.AddressReputationFormats._
-import uk.gov.hmrc.address.uk.Postcode
 import uk.gov.hmrc.address.v2._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
-
   def find(postcode: String, filter: Option[String] = None,isukMode:Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
-
 }
 
 @Singleton
@@ -62,8 +60,8 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
   }
 
   private def sortAddresses(proposedAddresses: Seq[ProposedAddress]) = proposedAddresses.sortWith((a, b) => {
-    val aString = a.lines.mkString(" ")
-    val bString = b.lines.mkString(" ")
+    val aString = a.lines.mkString(" ").toLowerCase()
+    val bString = b.lines.mkString(" ").toLowerCase()
 
     val Pattern = "([0-9]+)".r
 

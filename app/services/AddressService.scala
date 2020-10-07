@@ -45,7 +45,7 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
     http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
       Postcode.cleanupPostcode(postcode).get.toString,
       "filter" -> filter.getOrElse(""))).map { found =>
-      found.map { addr =>
+      val results = found.map { addr =>
         ProposedAddress(
           addr.id,
           addr.address.postcode,
@@ -56,8 +56,32 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
           else addr.address.country
         )
       }.filterNot( a => isukMode && a.country.code != "GB")
+
+      sortAddresses(results)
     }
   }
+
+  private def sortAddresses(proposedAddresses: Seq[ProposedAddress]) = proposedAddresses.sortWith((a, b) => {
+    val aString = a.lines.mkString(" ")
+    val bString = b.lines.mkString(" ")
+
+    val Pattern = "([0-9]+)".r
+
+    val d1 = Pattern.findFirstMatchIn(aString)
+    val d2 = Pattern.findFirstMatchIn(bString)
+
+    (d1, d2) match {
+      case (Some(aa), Some(bb)) =>
+        val aInt = aa.group(1).toInt
+        val bInt = bb.group(1).toInt
+
+        if (aInt == bInt) aString < bString
+        else aInt < bInt
+      case _ =>
+        aString < bString
+    }
+  })
+
 
 }
 

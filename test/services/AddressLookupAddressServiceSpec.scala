@@ -68,12 +68,26 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       manyAddresses(2)(Some("foobar"))) {
       service.find("ZZ11 1ZZ", isukMode = true).futureValue.headOption must be(None)
     }
+
     "return 2 addresses where ukMode == true and 2 out of 3 addresses are UK" in new Scenario(
       manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
 
       service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(a => a.country.code) mustBe Seq("GB", "GB")
     }
+
+    "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
+      val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+
+      listOfLines mustBe Seq(
+        "1 Malvern Court", "Flat 2a stuff 4 Malvern Court", "3b Malvern Court", "3c Malvern Court")
+    }
   }
+
+  private val cannedAddresses = List(
+    cannedAddress(List("3c", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat 2a stuff 4", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(List("3b", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(List("1", "Malvern Court"), "ZZ11 1ZZ"))
 
   private val manyAddresses = (numberOfAddresses: Int) =>
     (code: Option[String]) => someAddresses(numberOfAddresses, addr(code))
@@ -85,6 +99,10 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       addr
     }.toList
   }
+
+  private def cannedAddress(lines: List[String], postCode: String) =
+    AddressRecord("1234", Some(Random.nextLong()), Address(lines, None, None, postCode, Some(Countries.England),
+      Country("GB", rndstr(32))), "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
 
   private def addr(code: Option[String]): AddressRecord = {
     AddressRecord(

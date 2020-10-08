@@ -81,6 +81,20 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       listOfLines mustBe Seq(
         "1 Malvern Court", "Flat 2a stuff 4 Malvern Court", "3b Malvern Court", "3c Malvern Court")
     }
+
+    "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
+      val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+
+      listOfLines mustBe Seq(
+        "Flat 1 The Curtains Up Comeragh Road",
+        "Flat 2 The Curtains Up Comeragh Road",
+        "Flat 1 70 Comeragh Road",
+        "72a Comeragh Road",
+        "Flat 1 74 Comeragh Road",
+        "Flat 2 74 Comeragh Road",
+        "Flat B 78 Comeragh Road"
+      )
+    }
   }
 
   private val cannedAddresses = List(
@@ -88,6 +102,15 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     cannedAddress(List("Flat 2a stuff 4", "Malvern Court"), "ZZ11 1ZZ"),
     cannedAddress(List("3b", "Malvern Court"), "ZZ11 1ZZ"),
     cannedAddress(List("1", "Malvern Court"), "ZZ11 1ZZ"))
+
+  private val cannedComplexAddresses = List(
+    cannedAddress(List("Flat 1", "74 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat 2", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat 1", "70 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat 2", "74 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat B", "78 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("72a", "Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(List("Flat 1", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"))
 
   private val manyAddresses = (numberOfAddresses: Int) =>
     (code: Option[String]) => someAddresses(numberOfAddresses, addr(code))

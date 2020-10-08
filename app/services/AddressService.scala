@@ -63,24 +63,23 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
     val aString = a.lines.mkString(" ").toLowerCase()
     val bString = b.lines.mkString(" ").toLowerCase()
 
-    val Pattern = "([0-9]+)".r
+    val pattern = "([0-9]+)".r
 
-    val d1 = Pattern.findFirstMatchIn(aString)
-    val d2 = Pattern.findFirstMatchIn(bString)
+    val d1 = pattern.findAllIn(aString).toSeq.take(2)
+    val d2 = pattern.findAllIn(bString).toSeq.take(2)
 
     (d1, d2) match {
-      case (Some(aa), Some(bb)) =>
-        val aInt = aa.group(1).toInt
-        val bInt = bb.group(1).toInt
-
-        if (aInt == bInt) aString < bString
-        else aInt < bInt
+      case (Seq(a1, a2), Seq(b1, b2)) =>
+        if (a2.toInt != b2.toInt) a2 < b2
+        else if (a1.toInt != b1.toInt) a1 < b1
+        else aString < bString
+      case (sa, sb) if sa.nonEmpty && sb.nonEmpty =>
+        if (sa.last.toInt != sb.last.toInt) sa.last.toInt < sb.last.toInt
+        else aString < bString
       case _ =>
         aString < bString
     }
   })
-
-
 }
 
 object AddressReputationFormats {

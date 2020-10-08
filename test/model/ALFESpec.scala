@@ -24,6 +24,34 @@ import services.ForeignOfficeCountryService
 class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
   "an edit" should {
+    "transform to a confirmable address with a formatted postcode when countrycode is GB" in {
+      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "Z Z 1 1 Z Z", ForeignOfficeCountryService.find(code = "GB").get.code)
+      val conf = edit.toConfirmableAddress("audit ref")
+      val expected = ConfirmableAddress(
+        "audit ref",
+        None,
+        ConfirmableAddressDetails(
+          Some(List("line1", "line2", "line3", "town")),
+          Some("ZZ1 1ZZ"),
+          ForeignOfficeCountryService.find(code = "GB")))
+
+      conf must be (expected)
+    }
+
+    "transform to a confirmable address leaving postcode as is when countrycode is not GB" in {
+      val edit = Edit("line1", Some("line2"), Some("line3"), "town", "Z Z 1 1 Z Z", ForeignOfficeCountryService.find(code = "FR").get.code)
+      val conf = edit.toConfirmableAddress("audit ref")
+      val expected = ConfirmableAddress(
+        "audit ref",
+        None,
+        ConfirmableAddressDetails(
+          Some(List("line1", "line2", "line3", "town")),
+          Some("Z Z 1 1 Z Z"),
+          ForeignOfficeCountryService.find(code = "FR")))
+
+      conf must be (expected)
+    }
+
     "transform to a confirmable address and back again where isukMode == false" in {
       val edit = Edit("line1", Some("line2"), Some("line3"), "town", "ZZ1 1ZZ", ForeignOfficeCountryService.find(code = "GB").get.code)
       val conf = edit.toConfirmableAddress("audit ref")

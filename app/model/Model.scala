@@ -16,6 +16,7 @@
 
 package model
 
+import forms.Postcode
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -48,7 +49,9 @@ case class Edit(line1: String,
             .map(_.toString)
             .toList ++ List(town)
         ),
-        if (postcode.isEmpty) None else Some(postcode),
+        if (postcode.isEmpty) None
+        else if (countryCode == "GB") Postcode.cleanupPostcode(postcode).map(_.toString)
+        else Some(postcode),
         ForeignOfficeCountryService.find(code = countryCode)
       )
     )

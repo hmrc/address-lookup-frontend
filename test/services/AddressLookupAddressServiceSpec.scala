@@ -79,7 +79,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
 
       listOfLines mustBe Seq(
-        "1 Malvern Court", "Flat 2a stuff 4 Malvern Court", "3b Malvern Court", "3c Malvern Court")
+        "1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
     }
 
     "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {

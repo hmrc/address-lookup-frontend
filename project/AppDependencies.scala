@@ -35,10 +35,3 @@ object AppDependencies {
   Seq("com.github.tomakehurst" % "wiremock-jre8" % "2.26.1" % "it")
 
 }
-
-private object TestPhases {
-  def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
-    tests map {
-      test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
-    }
-}

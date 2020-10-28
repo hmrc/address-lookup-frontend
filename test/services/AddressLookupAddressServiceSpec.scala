@@ -24,6 +24,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.libs.json.Json
 import uk.gov.hmrc.address.v2._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -95,7 +96,15 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
         "Flat B 78 Comeragh Road"
       )
     }
+
+    "sort the dodgy addresses without failing" in new Scenario(dodgyAddressess) {
+      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+    }
   }
+
+  import services.AddressReputationFormats._
+  private val dodgyAddressess = Json.parse(getClass.getResourceAsStream("/dodgy.json")).as[List[AddressRecord]]
+
 
   private val cannedAddresses = List(
     cannedAddress(List("3c", "Malvern Court"), "ZZ11 1ZZ"),
@@ -158,5 +167,4 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       )
     }
   }
-
 }

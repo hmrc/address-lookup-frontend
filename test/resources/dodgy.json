@@ -1,0 +1,3240 @@
+[
+  {
+    "id":"GB100012836793",
+    "uprn":100012836793,
+    "address":{
+      "lines":[
+        "3 Bankwood Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB200004405639",
+    "uprn":200004405639,
+    "address":{
+      "lines":[
+        "7 Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4810583,
+      -2.0510422
+    ]
+  },
+  {
+    "id":"GB10014257833",
+    "uprn":10014257833,
+    "address":{
+      "lines":[
+        "A1 to A5 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257822",
+    "uprn":10014257822,
+    "address":{
+      "lines":[
+        "A12 to 13 Vg House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257821",
+    "uprn":10014257821,
+    "address":{
+      "lines":[
+        "A14 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500021
+    ]
+  },
+  {
+    "id":"GB10014257835",
+    "uprn":10014257835,
+    "address":{
+      "lines":[
+        "A15 to A16 V G House,Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807352,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257840",
+    "uprn":10014257840,
+    "address":{
+      "lines":[
+        "A21 to A22 V G House,Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257824",
+    "uprn":10014257824,
+    "address":{
+      "lines":[
+        "A24 to 25 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807082,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257839",
+    "uprn":10014257839,
+    "address":{
+      "lines":[
+        "A26 to A27 V G House,Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.050002
+    ]
+  },
+  {
+    "id":"GB10014257834",
+    "uprn":10014257834,
+    "address":{
+      "lines":[
+        "A6 to A7 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257841",
+    "uprn":10014257841,
+    "address":{
+      "lines":[
+        "A8 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257820",
+    "uprn":10014257820,
+    "address":{
+      "lines":[
+        "Alan Stewart T A Associated Industr",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500021
+    ]
+  },
+  {
+    "id":"GB10014257845",
+    "uprn":10014257845,
+    "address":{
+      "lines":[
+        "Ashworths Ornamental Iron Works the",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807081,
+      -2.0501075
+    ]
+  },
+  {
+    "id":"GB10014257836",
+    "uprn":10014257836,
+    "address":{
+      "lines":[
+        "B10 Vg House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB100012777604",
+    "uprn":100012777604,
+    "address":{
+      "lines":[
+        "Bank Wood Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807171,
+      -2.0502582
+    ]
+  },
+  {
+    "id":"GB10091890540",
+    "uprn":10091890540,
+    "address":{
+      "lines":[
+        "Bankwood Mills",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10014257827",
+    "uprn":10014257827,
+    "address":{
+      "lines":[
+        "Bankwood Mills",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807082,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10014257825",
+    "uprn":10014257825,
+    "address":{
+      "lines":[
+        "Building Design Partnership Cheetha",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0501075
+    ]
+  },
+  {
+    "id":"GB10091839698",
+    "uprn":10091839698,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839699",
+    "uprn":10091839699,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091914983",
+    "uprn":10091914983,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10003440435",
+    "uprn":10003440435,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806633,
+      -2.0498061
+    ]
+  },
+  {
+    "id":"GB10091839693",
+    "uprn":10091839693,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839695",
+    "uprn":10091839695,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839696",
+    "uprn":10091839696,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839697",
+    "uprn":10091839697,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091981356",
+    "uprn":10091981356,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091890538",
+    "uprn":10091890538,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091894683",
+    "uprn":10091894683,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091894684",
+    "uprn":10091894684,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839700",
+    "uprn":10091839700,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839701",
+    "uprn":10091839701,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839702",
+    "uprn":10091839702,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839703",
+    "uprn":10091839703,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839705",
+    "uprn":10091839705,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839707",
+    "uprn":10091839707,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839708",
+    "uprn":10091839708,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839709",
+    "uprn":10091839709,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839711",
+    "uprn":10091839711,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091839713",
+    "uprn":10091839713,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091916472",
+    "uprn":10091916472,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10091899160",
+    "uprn":10091899160,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10092019936",
+    "uprn":10092019936,
+    "address":{
+      "lines":[
+        "Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10014257304",
+    "uprn":10014257304,
+    "address":{
+      "lines":[
+        "Cheethams Mills",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807082,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB100012777350",
+    "uprn":100012777350,
+    "address":{
+      "lines":[
+        "Eastwood Lodge",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4809678,
+      -2.0524736
+    ]
+  },
+  {
+    "id":"GB100012777422",
+    "uprn":100012777422,
+    "address":{
+      "lines":[
+        "First Floor Cheethams Properties,Ch",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10014257831",
+    "uprn":10014257831,
+    "address":{
+      "lines":[
+        "First Mortgage Line Part Ground Flo",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB200004410475",
+    "uprn":200004410475,
+    "address":{
+      "lines":[
+        "Firth Transport Ltd",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4677092,
+      -2.0282949
+    ]
+  },
+  {
+    "id":"GB200004433351",
+    "uprn":200004433351,
+    "address":{
+      "lines":[
+        "Fourth Floor, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB10014257846",
+    "uprn":10014257846,
+    "address":{
+      "lines":[
+        "Hpe M C Ltd the Courtyard,Bankwood",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807081,
+      -2.0501075
+    ]
+  },
+  {
+    "id":"GB10014257302",
+    "uprn":10014257302,
+    "address":{
+      "lines":[
+        "Kimbermatics Ltd V G House,Cheetham",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500021
+    ]
+  },
+  {
+    "id":"GB10093144535",
+    "uprn":10093144535,
+    "address":{
+      "lines":[
+        "Landlords Office Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807361,
+      -2.0506245
+    ]
+  },
+  {
+    "id":"GB10014257829",
+    "uprn":10014257829,
+    "address":{
+      "lines":[
+        "Mda Valeting Services Ltd Part Grou",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0501075
+    ]
+  },
+  {
+    "id":"GB10003440436",
+    "uprn":10003440436,
+    "address":{
+      "lines":[
+        "Mr Caton-Greasley T A the Music Cor",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806453,
+      -2.0498965
+    ]
+  },
+  {
+    "id":"GB10003440437",
+    "uprn":10003440437,
+    "address":{
+      "lines":[
+        "Music Corner (ground Floor),Cheetha",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806993,
+      -2.0498815
+    ]
+  },
+  {
+    "id":"GB100012777351",
+    "uprn":100012777351,
+    "address":{
+      "lines":[
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4809678,
+      -2.0524736
+    ]
+  },
+  {
+    "id":"GB100012777606",
+    "uprn":100012777606,
+    "address":{
+      "lines":[
+        "Park View Works",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB10014257828",
+    "uprn":10014257828,
+    "address":{
+      "lines":[
+        "Park View Works",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB100012777218",
+    "uprn":100012777218,
+    "address":{
+      "lines":[
+        "Stamford Marketing Ltd",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807171,
+      -2.0502582
+    ]
+  },
+  {
+    "id":"GB100012777219",
+    "uprn":100012777219,
+    "address":{
+      "lines":[
+        "Stamford Murals",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807171,
+      -2.0502582
+    ]
+  },
+  {
+    "id":"GB10014257823",
+    "uprn":10014257823,
+    "address":{
+      "lines":[
+        "T and M Motors, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807082,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257832",
+    "uprn":10014257832,
+    "address":{
+      "lines":[
+        "Tameside Ink Company Part Ground Fl",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10014257842",
+    "uprn":10014257842,
+    "address":{
+      "lines":[
+        "Unit 1 the Courtyard Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB200004404048",
+    "uprn":200004404048,
+    "address":{
+      "lines":[
+        "Unit 15 A V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB10014257843",
+    "uprn":10014257843,
+    "address":{
+      "lines":[
+        "Unit 2 the Courtyard Cheethams Indu",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB200004404044",
+    "uprn":200004404044,
+    "address":{
+      "lines":[
+        "Unit 23a V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB10014257844",
+    "uprn":10014257844,
+    "address":{
+      "lines":[
+        "Unit 3 the Courtyard Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500021
+    ]
+  },
+  {
+    "id":"GB200004404047",
+    "uprn":200004404047,
+    "address":{
+      "lines":[
+        "Unit 4 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004404045",
+    "uprn":200004404045,
+    "address":{
+      "lines":[
+        "Unit A10 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004404046",
+    "uprn":200004404046,
+    "address":{
+      "lines":[
+        "Unit A12 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004404654",
+    "uprn":200004404654,
+    "address":{
+      "lines":[
+        "Unit A25 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004404657",
+    "uprn":200004404657,
+    "address":{
+      "lines":[
+        "Unit A26 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004404655",
+    "uprn":200004404655,
+    "address":{
+      "lines":[
+        "Unit A27 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4805914,
+      -2.0498211
+    ]
+  },
+  {
+    "id":"GB200004410467",
+    "uprn":200004410467,
+    "address":{
+      "lines":[
+        "Unit B1 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500322
+    ]
+  },
+  {
+    "id":"GB200004410468",
+    "uprn":200004410468,
+    "address":{
+      "lines":[
+        "Unit B2 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807082,
+      -2.049987
+    ]
+  },
+  {
+    "id":"GB200004410469",
+    "uprn":200004410469,
+    "address":{
+      "lines":[
+        "Unit B3 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.050002
+    ]
+  },
+  {
+    "id":"GB200004423807",
+    "uprn":200004423807,
+    "address":{
+      "lines":[
+        "Unit B4 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4677092,
+      -2.0282949
+    ]
+  },
+  {
+    "id":"GB200004410470",
+    "uprn":200004410470,
+    "address":{
+      "lines":[
+        "Unit B5 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB200004410471",
+    "uprn":200004410471,
+    "address":{
+      "lines":[
+        "Unit B6 V G House, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500021
+    ]
+  },
+  {
+    "id":"GB10014257851",
+    "uprn":10014257851,
+    "address":{
+      "lines":[
+        "Unit Ch10030 First Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257852",
+    "uprn":10014257852,
+    "address":{
+      "lines":[
+        "Unit Ch10040 First Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257856",
+    "uprn":10014257856,
+    "address":{
+      "lines":[
+        "Unit Ch10060 First Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257874",
+    "uprn":10014257874,
+    "address":{
+      "lines":[
+        "Unit Ch20020 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257873",
+    "uprn":10014257873,
+    "address":{
+      "lines":[
+        "Unit Ch20030 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500773
+    ]
+  },
+  {
+    "id":"GB10014257861",
+    "uprn":10014257861,
+    "address":{
+      "lines":[
+        "Unit Ch20040 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257867",
+    "uprn":10014257867,
+    "address":{
+      "lines":[
+        "Unit Ch20050, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257847",
+    "uprn":10014257847,
+    "address":{
+      "lines":[
+        "Unit Ch20060 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807262,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257893",
+    "uprn":10014257893,
+    "address":{
+      "lines":[
+        "Unit Ch20080 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257894",
+    "uprn":10014257894,
+    "address":{
+      "lines":[
+        "Unit Ch20100, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257802",
+    "uprn":10014257802,
+    "address":{
+      "lines":[
+        "Unit Ch20110 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807172,
+      -2.0500171
+    ]
+  },
+  {
+    "id":"GB10014257857",
+    "uprn":10014257857,
+    "address":{
+      "lines":[
+        "Unit Ch20130 Second Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257865",
+    "uprn":10014257865,
+    "address":{
+      "lines":[
+        "Unit Ch30010, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257858",
+    "uprn":10014257858,
+    "address":{
+      "lines":[
+        "Unit Ch30020 Third Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257860",
+    "uprn":10014257860,
+    "address":{
+      "lines":[
+        "Unit Ch30030 Third Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500622
+    ]
+  },
+  {
+    "id":"GB10014257859",
+    "uprn":10014257859,
+    "address":{
+      "lines":[
+        "Unit Ch30040, Cheethams Mill",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257866",
+    "uprn":10014257866,
+    "address":{
+      "lines":[
+        "Unit Ch30050 Third Floor,Cheethams",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257870",
+    "uprn":10014257870,
+    "address":{
+      "lines":[
+        "Unit Vc 30010 Part First Floor,Chee",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257869",
+    "uprn":10014257869,
+    "address":{
+      "lines":[
+        "Unit Vc 30020 Part First Floor,Chee",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500773
+    ]
+  },
+  {
+    "id":"GB10014257871",
+    "uprn":10014257871,
+    "address":{
+      "lines":[
+        "Unit Vc 30030 Part First Floor,Chee",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806542,
+      -2.0500773
+    ]
+  },
+  {
+    "id":"GB10014257868",
+    "uprn":10014257868,
+    "address":{
+      "lines":[
+        "Unit Vc 30040 Part First Floor,Chee",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500623
+    ]
+  },
+  {
+    "id":"GB10014257872",
+    "uprn":10014257872,
+    "address":{
+      "lines":[
+        "Unit Vc 30050 Part First Floor,Chee",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806632,
+      -2.0500773
+    ]
+  },
+  {
+    "id":"GB100012777418",
+    "uprn":100012777418,
+    "address":{
+      "lines":[
+        "V G House",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10091839691",
+    "uprn":10091839691,
+    "address":{
+      "lines":[
+        "V G House",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10091839692",
+    "uprn":10091839692,
+    "address":{
+      "lines":[
+        "V G House",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10091987008",
+    "uprn":10091987008,
+    "address":{
+      "lines":[
+        "V G House",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10093145076",
+    "uprn":10093145076,
+    "address":{
+      "lines":[
+        "V G House",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4807987,
+      -2.0503006
+    ]
+  },
+  {
+    "id":"GB10014257826",
+    "uprn":10014257826,
+    "address":{
+      "lines":[
+        "V G Properties Office First Floor",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  },
+  {
+    "id":"GB10014257830",
+    "uprn":10014257830,
+    "address":{
+      "lines":[
+        "Vg Properties Part Ground Floor Vc",
+        "Park Street"
+      ],
+      "town":"Stalybridge",
+      "county":"Greater Manchester",
+      "postcode":"SK15 2BT",
+      "subdivision":{
+        "code":"GB-ENG",
+        "name":"England"
+      },
+      "country":{
+        "code":"UK",
+        "name":"United Kingdom"
+      }
+    },
+    "language":"en",
+    "localCustodian":{
+      "code":4240,
+      "name":"Tameside"
+    },
+    "location":[
+      53.4806992,
+      -2.0500924
+    ]
+  }
+]

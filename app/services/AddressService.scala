@@ -74,7 +74,16 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
         else if (a1.toInt != b1.toInt) a1 < b1
         else aString < bString
       case (sa, sb) if sa.nonEmpty && sb.nonEmpty =>
-        if (sa.last.toInt != sb.last.toInt) sa.last.toInt < sb.last.toInt
+        val a1 = sa.last
+        val b1 = sb.last
+
+        if (a1.toInt.toString != a1 || b1.toInt.toString != b1) {
+          println(s"a: $a1, ${a1.toInt.toString} b: $b1, ${b1.toInt.toString}")
+          aString < bString
+        }
+        else if (a1.toInt != b1.toInt) {
+          a1.toInt < b1.toInt
+        }
         else aString < bString
       case _ =>
         aString < bString

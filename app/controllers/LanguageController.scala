@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.net.URI
+
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Lang}
@@ -25,15 +27,33 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.play.language.LanguageUtils
 
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 @Singleton
 class LanguageController @Inject()(config: FrontendAppConfig, controllerComponents: MessagesControllerComponents, languageUtils: LanguageUtils)(implicit val ec: ExecutionContext)
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
-    val lang: Lang = config.languageMap.getOrElse(language, languageUtils.getCurrentLang)
-    val redirectURL = request.headers.get(REFERER).getOrElse(throw new InternalServerException(s"[LanguageController][switchToLanguage] Header: $REFERER did not have a value"))
-    Redirect(redirectURL).withLang(Lang.apply(lang.code)).flashing(Flash(Map("switching-language" -> "true")))
+    val enabled: Boolean = config.languageMap.get(language).exists(languageUtils.isLangAvailable)
+    val lang: Lang =
+      if (enabled) config.languageMap.getOrElse(language, languageUtils.getCurrentLang)
+      else languageUtils.getCurrentLang
+
+    val redirectURL: String = request.headers.get(REFERER)
+      .flatMap(asRelativeUrl)
+      .getOrElse(throw new InternalServerException(s"[LanguageController][switchToLanguage] Header: $REFERER did not have a value"))
+
+    Redirect(redirectURL).withLang(Lang.apply(lang.code)).flashing(FlashWithSwitchIndicator)
   }
 
+  private def asRelativeUrl(url:String): Option[String] =
+    for {
+      uri      <- Try(new URI(url)).toOption
+      path     <- Option(uri.getPath)
+      query    <- Option(uri.getQuery).map("?" + _).orElse(Some(""))
+      fragment <- Option(uri.getRawFragment).map("#" + _).orElse(Some(""))
+    } yield  s"$path$query$fragment"
+
+  private val SwitchIndicatorKey = "switching-language"
+  private val FlashWithSwitchIndicator = Flash(Map(SwitchIndicatorKey -> "true"))
 }

@@ -55,53 +55,26 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
         )
       }.filterNot(a => isukMode && a.country.code != "GB")
 
-      results.sortWith(superCleverAlgorithm)
+      results.sortWith((a, b) => {
+        def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
+          case (Some(nA), Some(nB)) :: tail =>
+            if (nA == nB) sort(tail) else nA < nB
+          case (Some(_), None) :: _ => true
+          case (None, Some(_)) :: _ => false
+          case Seq((None, None)) => mkString(a) < mkString(b)
+        }
+
+        sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
+      })
     }
   }
 
-  private def superCleverAlgorithm(addressA: ProposedAddress, addressB: ProposedAddress) =
-    chooseComparisonMethod(addressA, addressB) match {
-      case CompareAddressesAsStrings(a, b) => a < b
-      case CompareAddressesWithOneNumber(a, b, a1, b1) =>
-        if (a1 != b1) a1 < b1 else a < b
-      case CompareAddressesWithTwoNumbers(a, b, a1, a2, b1, b2) =>
-        if (a2 != b2) a2 < b2
-        else if (a1 != b1) a1 < b1
-        else a < b
-      case CompareWhenOnlyOneAddressContainsANumber(aSortsBeforeB) => aSortsBeforeB
-    }
+  def mkString(p: ProposedAddress) = p.lines.mkString(" ").toLowerCase()
 
-  private def chooseComparisonMethod(a: ProposedAddress, b: ProposedAddress): AddressComparisonMethod = {
-    val pattern = "([0-9]+)".r
-    val aString = a.lines.mkString(" ").toLowerCase()
-    val bString = b.lines.mkString(" ").toLowerCase()
-
-    val numbersInA = pattern.findAllIn(aString).toSeq.take(2)
-    val numbersInB = pattern.findAllIn(bString).toSeq.take(2)
-
-    (numbersInA, numbersInB) match {
-      case (Seq(), Seq()) =>
-        CompareAddressesAsStrings(aString, bString)
-      case (Seq(a1, a2), Seq(b1, b2)) =>
-        CompareAddressesWithTwoNumbers(aString, bString, a1.toInt, a2.toInt, b1.toInt, b2.toInt)
-      case (sa, sb) if sa.nonEmpty && sb.nonEmpty =>
-        CompareAddressesWithOneNumber(aString, bString, sa.last.toInt, sb.last.toInt)
-      case (sa, _) =>
-        // We only reach this case when either one side or the other contains one number, but not both
-        // We want the address containing a number to sort first, so if sa is nonempty we consider this a < b
-        CompareWhenOnlyOneAddressContainsANumber(sa.nonEmpty)
-    }
-  }
-
-  trait AddressComparisonMethod
-
-  case class CompareAddressesWithTwoNumbers(a: String, b: String, a1: Int, a2: Int, b1: Int, b2: Int) extends AddressComparisonMethod
-
-  case class CompareAddressesWithOneNumber(a: String, b: String, a1: Int, b1: Int) extends AddressComparisonMethod
-
-  case class CompareAddressesAsStrings(a: String, b: String) extends AddressComparisonMethod
-
-  case class CompareWhenOnlyOneAddressContainsANumber(aSortsBeforeB: Boolean) extends AddressComparisonMethod
+  // Find numbers in proposed address in order of significance, from rightmost to leftmost.
+  // Pad with None to ensure we never return an empty sequence
+  def numbersIn(p: ProposedAddress): Seq[Option[Int]] =
+    "([0-9]+)".r.findAllIn(mkString(p)).map(n => Some(n.toInt)).toSeq.reverse :+ None
 }
 
 object AddressReputationFormats {

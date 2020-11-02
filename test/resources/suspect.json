@@ -1,0 +1,1000 @@
+[
+  {
+    "id": "GB10008333568",
+    "uprn": 10008333568,
+    "address": {
+      "lines": [
+        "3 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5456857,
+      -0.0660633
+    ]
+  },
+  {
+    "id": "GB10008333569",
+    "uprn": 10008333569,
+    "address": {
+      "lines": [
+        "4 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5456204,
+      -0.0660766
+    ]
+  },
+  {
+    "id": "GB100021058118",
+    "uprn": 100021058118,
+    "address": {
+      "lines": [
+        "Flat 1",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058127",
+    "uprn": 100021058127,
+    "address": {
+      "lines": [
+        "Flat 10",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058128",
+    "uprn": 100021058128,
+    "address": {
+      "lines": [
+        "Flat 11",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058129",
+    "uprn": 100021058129,
+    "address": {
+      "lines": [
+        "Flat 12",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058130",
+    "uprn": 100021058130,
+    "address": {
+      "lines": [
+        "Flat 13",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304185",
+    "uprn": 10008304185,
+    "address": {
+      "lines": [
+        "Flat 13",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058131",
+    "uprn": 100021058131,
+    "address": {
+      "lines": [
+        "Flat 14",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304190",
+    "uprn": 10008304190,
+    "address": {
+      "lines": [
+        "Flat 14",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058132",
+    "uprn": 100021058132,
+    "address": {
+      "lines": [
+        "Flat 15",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304191",
+    "uprn": 10008304191,
+    "address": {
+      "lines": [
+        "Flat 15",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058133",
+    "uprn": 100021058133,
+    "address": {
+      "lines": [
+        "Flat 16",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304186",
+    "uprn": 10008304186,
+    "address": {
+      "lines": [
+        "Flat 16",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058134",
+    "uprn": 100021058134,
+    "address": {
+      "lines": [
+        "Flat 17",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304189",
+    "uprn": 10008304189,
+    "address": {
+      "lines": [
+        "Flat 17",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058135",
+    "uprn": 100021058135,
+    "address": {
+      "lines": [
+        "Flat 18",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304188",
+    "uprn": 10008304188,
+    "address": {
+      "lines": [
+        "Flat 18",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058136",
+    "uprn": 100021058136,
+    "address": {
+      "lines": [
+        "Flat 19",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB10008304187",
+    "uprn": 10008304187,
+    "address": {
+      "lines": [
+        "Flat 19",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058119",
+    "uprn": 100021058119,
+    "address": {
+      "lines": [
+        "Flat 2",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058120",
+    "uprn": 100021058120,
+    "address": {
+      "lines": [
+        "Flat 3",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058121",
+    "uprn": 100021058121,
+    "address": {
+      "lines": [
+        "Flat 4",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058122",
+    "uprn": 100021058122,
+    "address": {
+      "lines": [
+        "Flat 5",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058123",
+    "uprn": 100021058123,
+    "address": {
+      "lines": [
+        "Flat 6",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058124",
+    "uprn": 100021058124,
+    "address": {
+      "lines": [
+        "Flat 7",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058125",
+    "uprn": 100021058125,
+    "address": {
+      "lines": [
+        "Flat 8",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058126",
+    "uprn": 100021058126,
+    "address": {
+      "lines": [
+        "Flat 9",
+        "1 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5457628,
+      -0.0657077
+    ]
+  },
+  {
+    "id": "GB100021058137",
+    "uprn": 100021058137,
+    "address": {
+      "lines": [
+        "Flat A, The Limes",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100023650649",
+    "uprn": 100023650649,
+    "address": {
+      "lines": [
+        "Flat A-E",
+        "5 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058138",
+    "uprn": 100021058138,
+    "address": {
+      "lines": [
+        "Flat B, The Limes",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058140",
+    "uprn": 100021058140,
+    "address": {
+      "lines": [
+        "Flat D, The Limes",
+        "5 Massie Road",
+        "Hackney"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  },
+  {
+    "id": "GB100021058141",
+    "uprn": 100021058141,
+    "address": {
+      "lines": [
+        "Garden Flat 1",
+        "5 Massie Road"
+      ],
+      "town": "London",
+      "county": "Greater London",
+      "postcode": "E8 1BY",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 5360,
+      "name": "Hackney"
+    },
+    "location": [
+      51.5455382,
+      -0.0662653
+    ]
+  }
+]

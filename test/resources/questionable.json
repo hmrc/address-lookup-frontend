@@ -1,0 +1,122 @@
+[
+  {
+    "id": "GB200002314385",
+    "uprn": 200002314385,
+    "address": {
+      "lines": [
+        "Llc Only Use 100091249891,1 Upper",
+        "Daws Hill"
+      ],
+      "town": "Waltham Abbey",
+      "county": "Essex",
+      "postcode": "E4 7QU",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6535958,
+      0.0016652
+    ]
+  },
+  {
+    "id": "GB10012155353",
+    "uprn": 10012155353,
+    "address": {
+      "lines": [
+        "Lower Cottage",
+        "Daws Hill"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7QU",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6535617,
+      0.0010276
+    ]
+  },
+  {
+    "id": "GB100091249887",
+    "uprn": 100091249887,
+    "address": {
+      "lines": [
+        "Olivers",
+        "Daws Hill"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7QU",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6539349,
+      0.0028801
+    ]
+  },
+  {
+    "id": "GB100091249891",
+    "uprn": 100091249891,
+    "address": {
+      "lines": [
+        "Upper Cottage",
+        "Daws Hill"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7QU",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6535958,
+      0.0016652
+    ]
+  }
+]

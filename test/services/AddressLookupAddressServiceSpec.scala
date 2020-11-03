@@ -104,12 +104,16 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     "sort the suspect addresses without failing" in new Scenario(suspectAddresses) {
       val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
+
+    "sort the questionable addresses without failing" in new Scenario(questionableAddresses) {
+      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+    }
   }
 
   import services.AddressReputationFormats._
   private val dodgyAddressess = Json.parse(getClass.getResourceAsStream("/dodgy.json")).as[List[AddressRecord]]
   private val suspectAddresses = Json.parse(getClass.getResourceAsStream("/suspect.json")).as[List[AddressRecord]]
-
+  private val questionableAddresses = Json.parse(getClass.getResourceAsStream("/questionable.json")).as[List[AddressRecord]]
 
   private val cannedAddresses = List(
     cannedAddress(List("3c", "Malvern Court"), "ZZ11 1ZZ"),

@@ -28,6 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
@@ -74,7 +75,7 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
   // Find numbers in proposed address in order of significance, from rightmost to leftmost.
   // Pad with None to ensure we never return an empty sequence
   def numbersIn(p: ProposedAddress): Seq[Option[Int]] =
-    "([0-9]+)".r.findAllIn(mkString(p)).map(n => Some(n.toInt)).toSeq.reverse :+ None
+    "([0-9]+)".r.findAllIn(mkString(p)).map(n => Try(n.toInt).toOption).toSeq.reverse :+ None
 }
 
 object AddressReputationFormats {

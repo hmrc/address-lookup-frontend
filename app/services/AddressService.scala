@@ -62,7 +62,7 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
             if (nA == nB) sort(tail) else nA < nB
           case (Some(_), None) :: _ => true
           case (None, Some(_)) :: _ => false
-          case Seq((None, None)) => mkString(a) < mkString(b)
+          case _ => mkString(a) < mkString(b)
         }
 
         sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)

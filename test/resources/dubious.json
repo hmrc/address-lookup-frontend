@@ -1,0 +1,2236 @@
+[
+  {
+    "id": "GB10012156598",
+    "uprn": 10012156598,
+    "address": {
+      "lines": [
+        "1 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633579,
+      -0.0023149
+    ]
+  },
+  {
+    "id": "GB100091478231",
+    "uprn": 100091478231,
+    "address": {
+      "lines": [
+        "10 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632488,
+      -0.0022474
+    ]
+  },
+  {
+    "id": "GB100091478232",
+    "uprn": 100091478232,
+    "address": {
+      "lines": [
+        "11 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663142,
+      -0.0023099
+    ]
+  },
+  {
+    "id": "GB100091478233",
+    "uprn": 100091478233,
+    "address": {
+      "lines": [
+        "12 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663142,
+      -0.0023099
+    ]
+  },
+  {
+    "id": "GB100091478234",
+    "uprn": 100091478234,
+    "address": {
+      "lines": [
+        "13 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663142,
+      -0.0023099
+    ]
+  },
+  {
+    "id": "GB100091478235",
+    "uprn": 100091478235,
+    "address": {
+      "lines": [
+        "14 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663142,
+      -0.0023099
+    ]
+  },
+  {
+    "id": "GB100091478236",
+    "uprn": 100091478236,
+    "address": {
+      "lines": [
+        "15 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6630546,
+      -0.002552
+    ]
+  },
+  {
+    "id": "GB100091478237",
+    "uprn": 100091478237,
+    "address": {
+      "lines": [
+        "16 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6630842,
+      -0.0026161
+    ]
+  },
+  {
+    "id": "GB100091478238",
+    "uprn": 100091478238,
+    "address": {
+      "lines": [
+        "17 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6631034,
+      -0.0026875
+    ]
+  },
+  {
+    "id": "GB100091478239",
+    "uprn": 100091478239,
+    "address": {
+      "lines": [
+        "18 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6631314,
+      -0.0027442
+    ]
+  },
+  {
+    "id": "GB100091478240",
+    "uprn": 100091478240,
+    "address": {
+      "lines": [
+        "19 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6631506,
+      -0.0028156
+    ]
+  },
+  {
+    "id": "GB10012156609",
+    "uprn": 10012156609,
+    "address": {
+      "lines": [
+        "2 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633579,
+      -0.0023149
+    ]
+  },
+  {
+    "id": "GB100091478242",
+    "uprn": 100091478242,
+    "address": {
+      "lines": [
+        "20 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6631608,
+      -0.0028875
+    ]
+  },
+  {
+    "id": "GB100091478243",
+    "uprn": 100091478243,
+    "address": {
+      "lines": [
+        "21 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633293,
+      -0.0027499
+    ]
+  },
+  {
+    "id": "GB100091478244",
+    "uprn": 100091478244,
+    "address": {
+      "lines": [
+        "22 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663374,
+      -0.0027335
+    ]
+  },
+  {
+    "id": "GB100091478245",
+    "uprn": 100091478245,
+    "address": {
+      "lines": [
+        "23 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.66341,
+      -0.0027319
+    ]
+  },
+  {
+    "id": "GB100091478246",
+    "uprn": 100091478246,
+    "address": {
+      "lines": [
+        "24 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634544,
+      -0.002701
+    ]
+  },
+  {
+    "id": "GB100091478247",
+    "uprn": 100091478247,
+    "address": {
+      "lines": [
+        "25 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634979,
+      -0.0026124
+    ]
+  },
+  {
+    "id": "GB100091478248",
+    "uprn": 100091478248,
+    "address": {
+      "lines": [
+        "26 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634863,
+      -0.0029888
+    ]
+  },
+  {
+    "id": "GB100091478249",
+    "uprn": 100091478249,
+    "address": {
+      "lines": [
+        "27 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635057,
+      -0.0030747
+    ]
+  },
+  {
+    "id": "GB100091478250",
+    "uprn": 100091478250,
+    "address": {
+      "lines": [
+        "28 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635336,
+      -0.0031314
+    ]
+  },
+  {
+    "id": "GB100091478251",
+    "uprn": 100091478251,
+    "address": {
+      "lines": [
+        "29 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635793,
+      -0.0031727
+    ]
+  },
+  {
+    "id": "GB100091478252",
+    "uprn": 100091478252,
+    "address": {
+      "lines": [
+        "3 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633287,
+      -0.002186
+    ]
+  },
+  {
+    "id": "GB100091478384",
+    "uprn": 100091478384,
+    "address": {
+      "lines": [
+        "30 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633736,
+      -0.0032396
+    ]
+  },
+  {
+    "id": "GB100091478378",
+    "uprn": 100091478378,
+    "address": {
+      "lines": [
+        "31 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633195,
+      -0.0032275
+    ]
+  },
+  {
+    "id": "GB100091478253",
+    "uprn": 100091478253,
+    "address": {
+      "lines": [
+        "32 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632838,
+      -0.0032436
+    ]
+  },
+  {
+    "id": "GB100091478254",
+    "uprn": 100091478254,
+    "address": {
+      "lines": [
+        "33 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632485,
+      -0.0032885
+    ]
+  },
+  {
+    "id": "GB100091478255",
+    "uprn": 100091478255,
+    "address": {
+      "lines": [
+        "34 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663261,
+      -0.0034904
+    ]
+  },
+  {
+    "id": "GB100091478256",
+    "uprn": 100091478256,
+    "address": {
+      "lines": [
+        "35 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632804,
+      -0.0035763
+    ]
+  },
+  {
+    "id": "GB100091478257",
+    "uprn": 100091478257,
+    "address": {
+      "lines": [
+        "36 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632906,
+      -0.0036481
+    ]
+  },
+  {
+    "id": "GB100091478258",
+    "uprn": 100091478258,
+    "address": {
+      "lines": [
+        "37 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632919,
+      -0.0037204
+    ]
+  },
+  {
+    "id": "GB100091478259",
+    "uprn": 100091478259,
+    "address": {
+      "lines": [
+        "38 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.663374,
+      -0.0037891
+    ]
+  },
+  {
+    "id": "GB10022861291",
+    "uprn": 10022861291,
+    "address": {
+      "lines": [
+        "39 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634266,
+      -0.0037145
+    ]
+  },
+  {
+    "id": "GB100091478261",
+    "uprn": 100091478261,
+    "address": {
+      "lines": [
+        "4 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633287,
+      -0.002186
+    ]
+  },
+  {
+    "id": "GB100091478262",
+    "uprn": 100091478262,
+    "address": {
+      "lines": [
+        "40 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634526,
+      -0.0036555
+    ]
+  },
+  {
+    "id": "GB100091478263",
+    "uprn": 100091478263,
+    "address": {
+      "lines": [
+        "41 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634963,
+      -0.0035813
+    ]
+  },
+  {
+    "id": "GB100091478264",
+    "uprn": 100091478264,
+    "address": {
+      "lines": [
+        "42 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635774,
+      -0.0035922
+    ]
+  },
+  {
+    "id": "GB100091478265",
+    "uprn": 100091478265,
+    "address": {
+      "lines": [
+        "43 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636221,
+      -0.0035757
+    ]
+  },
+  {
+    "id": "GB100091478266",
+    "uprn": 100091478266,
+    "address": {
+      "lines": [
+        "44 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636753,
+      -0.00353
+    ]
+  },
+  {
+    "id": "GB100091478267",
+    "uprn": 100091478267,
+    "address": {
+      "lines": [
+        "45 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637008,
+      -0.0034421
+    ]
+  },
+  {
+    "id": "GB100091478268",
+    "uprn": 100091478268,
+    "address": {
+      "lines": [
+        "46 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637429,
+      -0.0038018
+    ]
+  },
+  {
+    "id": "GB100091478269",
+    "uprn": 100091478269,
+    "address": {
+      "lines": [
+        "47 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637528,
+      -0.0038592
+    ]
+  },
+  {
+    "id": "GB100091478270",
+    "uprn": 100091478270,
+    "address": {
+      "lines": [
+        "48 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637633,
+      -0.0039455
+    ]
+  },
+  {
+    "id": "GB100091478271",
+    "uprn": 100091478271,
+    "address": {
+      "lines": [
+        "49 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636115,
+      -0.00401
+    ]
+  },
+  {
+    "id": "GB100091478272",
+    "uprn": 100091478272,
+    "address": {
+      "lines": [
+        "5 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633287,
+      -0.002186
+    ]
+  },
+  {
+    "id": "GB100091478273",
+    "uprn": 100091478273,
+    "address": {
+      "lines": [
+        "50 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635671,
+      -0.0040409
+    ]
+  },
+  {
+    "id": "GB100091478274",
+    "uprn": 100091478274,
+    "address": {
+      "lines": [
+        "51 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6635321,
+      -0.0041002
+    ]
+  },
+  {
+    "id": "GB100091478275",
+    "uprn": 100091478275,
+    "address": {
+      "lines": [
+        "52 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634265,
+      -0.004235
+    ]
+  },
+  {
+    "id": "GB100091478276",
+    "uprn": 100091478276,
+    "address": {
+      "lines": [
+        "53 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634547,
+      -0.0043061
+    ]
+  },
+  {
+    "id": "GB100091478277",
+    "uprn": 100091478277,
+    "address": {
+      "lines": [
+        "54 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634649,
+      -0.0043779
+    ]
+  },
+  {
+    "id": "GB100091478278",
+    "uprn": 100091478278,
+    "address": {
+      "lines": [
+        "55 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634656,
+      -0.0044213
+    ]
+  },
+  {
+    "id": "GB100091478279",
+    "uprn": 100091478279,
+    "address": {
+      "lines": [
+        "56 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634669,
+      -0.0044935
+    ]
+  },
+  {
+    "id": "GB100091478280",
+    "uprn": 100091478280,
+    "address": {
+      "lines": [
+        "57 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636373,
+      -0.0044716
+    ]
+  },
+  {
+    "id": "GB100091478281",
+    "uprn": 100091478281,
+    "address": {
+      "lines": [
+        "58 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636373,
+      -0.0044716
+    ]
+  },
+  {
+    "id": "GB100091478282",
+    "uprn": 100091478282,
+    "address": {
+      "lines": [
+        "59 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636373,
+      -0.0044716
+    ]
+  },
+  {
+    "id": "GB100091478283",
+    "uprn": 100091478283,
+    "address": {
+      "lines": [
+        "6 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6633287,
+      -0.002186
+    ]
+  },
+  {
+    "id": "GB100091478284",
+    "uprn": 100091478284,
+    "address": {
+      "lines": [
+        "60 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6636373,
+      -0.0044716
+    ]
+  },
+  {
+    "id": "GB100091478285",
+    "uprn": 100091478285,
+    "address": {
+      "lines": [
+        "61 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637177,
+      -0.0044391
+    ]
+  },
+  {
+    "id": "GB100091478286",
+    "uprn": 100091478286,
+    "address": {
+      "lines": [
+        "62 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637177,
+      -0.0044391
+    ]
+  },
+  {
+    "id": "GB100091478287",
+    "uprn": 100091478287,
+    "address": {
+      "lines": [
+        "63 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637177,
+      -0.0044391
+    ]
+  },
+  {
+    "id": "GB100091478288",
+    "uprn": 100091478288,
+    "address": {
+      "lines": [
+        "64 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6637177,
+      -0.0044391
+    ]
+  },
+  {
+    "id": "GB100091478289",
+    "uprn": 100091478289,
+    "address": {
+      "lines": [
+        "65 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478290",
+    "uprn": 100091478290,
+    "address": {
+      "lines": [
+        "66 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478291",
+    "uprn": 100091478291,
+    "address": {
+      "lines": [
+        "67 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478292",
+    "uprn": 100091478292,
+    "address": {
+      "lines": [
+        "68 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478293",
+    "uprn": 100091478293,
+    "address": {
+      "lines": [
+        "69 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478294",
+    "uprn": 100091478294,
+    "address": {
+      "lines": [
+        "7 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632488,
+      -0.0022474
+    ]
+  },
+  {
+    "id": "GB100091478295",
+    "uprn": 100091478295,
+    "address": {
+      "lines": [
+        "70 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638338,
+      -0.0043907
+    ]
+  },
+  {
+    "id": "GB100091478296",
+    "uprn": 100091478296,
+    "address": {
+      "lines": [
+        "71 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478297",
+    "uprn": 100091478297,
+    "address": {
+      "lines": [
+        "72 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478298",
+    "uprn": 100091478298,
+    "address": {
+      "lines": [
+        "73 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478299",
+    "uprn": 100091478299,
+    "address": {
+      "lines": [
+        "74 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478300",
+    "uprn": 100091478300,
+    "address": {
+      "lines": [
+        "75 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478301",
+    "uprn": 100091478301,
+    "address": {
+      "lines": [
+        "76 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6638221,
+      -0.0042321
+    ]
+  },
+  {
+    "id": "GB100091478302",
+    "uprn": 100091478302,
+    "address": {
+      "lines": [
+        "8 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632488,
+      -0.0022474
+    ]
+  },
+  {
+    "id": "GB100091478303",
+    "uprn": 100091478303,
+    "address": {
+      "lines": [
+        "9 Godwin Close Sewardstone Road"
+      ],
+      "town": "London",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6632488,
+      -0.0022474
+    ]
+  },
+  {
+    "id": "GB100091478260",
+    "uprn": 100091478260,
+    "address": {
+      "lines": [
+        "Llc Only Use 10022861291",
+        "39 Godwin Close"
+      ],
+      "town": "Waltham Abbey",
+      "county": "Essex",
+      "postcode": "E4 7RQ",
+      "subdivision": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "country": {
+        "code": "UK",
+        "name": "United Kingdom"
+      }
+    },
+    "language": "en",
+    "localCustodian": {
+      "code": 1535,
+      "name": "Epping Forest"
+    },
+    "location": [
+      51.6634177,
+      -0.0037149
+    ]
+  }
+]

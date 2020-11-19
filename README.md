@@ -378,6 +378,7 @@ Response:
     }
 }
 ```
+**Note** that the `id` attribute will not be present if the selected address was entered manually, or was an edited search result.
 
 ### Running the Application
 

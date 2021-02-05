@@ -9,10 +9,9 @@ POST /:id/edit                   @controllers.AddressLookupController.handleEdit
 GET  /:id/confirm                @controllers.AddressLookupController.confirm(id: String)
 POST /:id/confirm                @controllers.AddressLookupController.handleConfirm(id: String)
 GET  /renewSession               @controllers.AddressLookupController.renewSession()
-GET  /destroySession             @controllers.AddressLookupController.destroySession(timeoutUrl: String)
+GET  /destroySession             @controllers.AddressLookupController.destroySession(timeoutUrl: uk.gov.hmrc.play.bootstrap.binders.RedirectUrl)
 
 # Other
-
 GET  /language/:lang        @controllers.LanguageController.switchToLanguage(lang: String)
 
 ->         /govuk-frontend           govuk.Routes

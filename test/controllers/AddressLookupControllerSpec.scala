@@ -41,6 +41,7 @@ import services.{AddressService, CountryService, IdGenerationService, KeystoreJo
 import uk.gov.hmrc.address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import utils.TestConstants.{Lookup => _, _}
 import views.html.error_template
 import views.html.v2._
@@ -852,11 +853,11 @@ class AddressLookupControllerSpec
     "redirect to timeout url and get rid of headers" in new Scenario {
       val fakeRequest = req.withHeaders("testSession" -> "present")
 
-      val result = controller.destroySession("timeoutUrl")(fakeRequest)
+      val result = controller.destroySession(RedirectUrl("/timeoutUrl"))(fakeRequest)
 
       status(result) mustBe 303
       headers(result) contains "testSession" mustBe false
-      redirectLocation(result) mustBe Some("timeoutUrl")
+      redirectLocation(result) mustBe Some("/timeoutUrl")
     }
   }
 

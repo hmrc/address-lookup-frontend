@@ -17,10 +17,10 @@
 package controllers
 
 import java.io.File
-
 import config.{ALFCookieNames, FrontendAppConfig}
 import controllers.countOfResults._
 import forms.ALFForms._
+
 import javax.inject.{Inject, Singleton}
 import model._
 import play.api.i18n.{Lang, Messages}
@@ -33,6 +33,9 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl, RedirectUrlPolicy}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.PostcodeHelper
 
@@ -576,9 +579,10 @@ class AddressLookupController @Inject()(
     }
 
   // GET /destroySession
-  def destroySession(timeoutUrl: String): Action[AnyContent] = Action {
+  val policy: RedirectUrlPolicy[Id] = OnlyRelative
+  def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
     implicit req =>
-      Redirect(timeoutUrl).withNewSession
+      Redirect(timeoutUrl.get(policy).url).withNewSession
   }
 }
 

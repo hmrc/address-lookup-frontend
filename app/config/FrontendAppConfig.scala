@@ -22,6 +22,8 @@ import play.api.i18n.Lang
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
+import scala.collection.JavaConverters.asScalaBufferConverter
+
 trait AppConfig {
   val analyticsToken: String
   val analyticsHost: String
@@ -46,6 +48,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, runMode: 
   val apiVersion2 = 2
   val addressLookupEndpoint = baseUrl("address-lookup-frontend")
   val addressReputationEndpoint = baseUrl("address-reputation")
+  val allowedHosts = runModeConfiguration.underlying.getStringList("microservice.hosts.allowList").asScala.toSet
 
   val languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

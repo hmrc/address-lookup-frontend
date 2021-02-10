@@ -37,7 +37,7 @@ import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
 import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromWhitelist, OnlyRelative, RedirectUrl, RedirectUrlPolicy}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.PostcodeHelper
+import utils.{PostcodeHelper, RelativeOrAbsoluteWithHostnameFromWhitelist}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -579,10 +579,10 @@ class AddressLookupController @Inject()(
     }
 
   // GET /destroySession
-  val policy: RedirectUrlPolicy[Id] = AbsoluteWithHostnameFromWhitelist(frontendAppConfig.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromWhitelist(frontendAppConfig.allowedHosts)
   def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
     implicit req =>
-      Redirect(timeoutUrl.get(policy).url).withNewSession
+      Redirect(policy.url(timeoutUrl)).withNewSession
   }
 }
 

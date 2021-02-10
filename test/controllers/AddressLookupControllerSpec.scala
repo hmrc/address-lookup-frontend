@@ -853,11 +853,11 @@ class AddressLookupControllerSpec
     "redirect to timeout url and get rid of headers" in new Scenario {
       val fakeRequest = req.withHeaders("testSession" -> "present")
 
-      val result = controller.destroySession(RedirectUrl("/timeoutUrl"))(fakeRequest)
+      val result = controller.destroySession(RedirectUrl("https://www.tax.service.gov.uk/timeoutUrl"))(fakeRequest)
 
       status(result) mustBe 303
       headers(result) contains "testSession" mustBe false
-      redirectLocation(result) mustBe Some("/timeoutUrl")
+      redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/timeoutUrl")
     }
   }
 

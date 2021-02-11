@@ -32,13 +32,6 @@ constants.back = Yn ôl
 constants.signOut = Allgofnodi
 constants.forPostcode = ar gyfer cod post
 
-constants.timeoutSeconds = eiliad
-constants.timeoutMinutes = munud
-constants.timeoutMinute = munud
-constants.timeoutSignedOut = Rydych ar fin cael eich allgofnodi
-constants.timeoutSignYouOut = Er eich diogelwch, byddwn yn eich allgofnodi cyn pen
-constants.timeoutResumeSession = Ailgydio yn eich sesiwn
-constants.timeoutInactive = Rydych wedi bod yn anweithredol am sbel.
 constants.postcodeLabel.ukMode = Cod post y DU (dewisol)
 constants.postcodeLabel = Cod post (dewisol)
 

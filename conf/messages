@@ -32,13 +32,6 @@ constants.back = Back
 constants.signOut = Sign out
 constants.forPostcode = for postcode
 
-constants.timeoutSeconds = seconds
-constants.timeoutMinutes = minutes
-constants.timeoutMinute = minute
-constants.timeoutSignedOut = You're about to be signed out
-constants.timeoutSignYouOut = For your security, we'll sign you out in
-constants.timeoutResumeSession = Resume your session
-constants.timeoutInactive = You've been inactive for a while.
 constants.postcodeLabel.ukMode = UK postcode (optional)
 constants.postcodeLabel = Postcode (optional)
 

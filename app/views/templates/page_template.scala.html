@@ -42,9 +42,9 @@ header: HmrcHeader)
     @scriptElem = {
         @resolvedJourneyConfig.options.timeoutConfig.map(t =>
             timeoutDialog(TimeoutDialog(
-                name = messages("constants.timeoutSignedOut"),
+                language = Some(messages.lang.code),
                 countdown = Some(120),
-                title = Some(messages("constants.timeoutSignedOut")),
+                title = None,
                 keepAliveUrl = t.timeoutKeepAliveUrl.orElse(Some("/lookup-address/renewSession")),
                 timeout = Some(t.timeoutAmount),
                 signOutUrl = Some(s"/lookup-address/destroySession?timeoutUrl=${t.timeoutUrl}")

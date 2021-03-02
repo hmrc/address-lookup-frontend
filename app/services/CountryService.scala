@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 import com.google.inject.ImplementedBy
 import play.api.libs.json.Json
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {

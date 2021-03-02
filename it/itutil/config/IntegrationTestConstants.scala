@@ -5,7 +5,7 @@ import java.util.UUID
 import itutil.config.IntegrationTestConstants._
 import model._
 import play.api.libs.json._
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 
 object IntegrationTestConstants {
   val testApiVersion = 2

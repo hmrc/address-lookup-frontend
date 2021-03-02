@@ -21,7 +21,7 @@ import java.util.UUID
 import controllers.Proposals
 import model._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 
 object TestConstants {
   val testJourneyId: String = UUID.randomUUID().toString

@@ -21,7 +21,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import services.ForeignOfficeCountryService
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 import utils.PostcodeHelper
 
 case class Lookup(filter: Option[String], postcode: String)

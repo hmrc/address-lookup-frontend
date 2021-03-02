@@ -15,8 +15,6 @@ object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % "5.55.0-play-26",
     "uk.gov.hmrc" %% "play-frontend-govuk" % "0.50.0-play-26",
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.18.0-play-26",
-  //    "uk.gov.hmrc" %% "frontend-bootstrap" % "12.8.0",
-    "uk.gov.hmrc" %% "address-reputation-store" % "2.40.0",
     "uk.gov.hmrc" %% "http-caching-client" % "9.1.0-play-26",
     "io.spray" %% "spray-http" % "1.3.4",
     "uk.gov.hmrc" %% "play-language" % "4.3.0-play-26"

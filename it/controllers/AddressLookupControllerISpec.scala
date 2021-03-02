@@ -7,7 +7,7 @@ import model.{ConfirmableAddress, ConfirmableAddressDetails}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 
 class AddressLookupControllerISpec extends IntegrationSpecBase {
 

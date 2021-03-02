@@ -38,7 +38,7 @@ import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
-import uk.gov.hmrc.address.v2.Country
+import address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl

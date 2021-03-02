@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
 import services.AddressReputationFormats._
-import uk.gov.hmrc.address.v2._
+import address.v2._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

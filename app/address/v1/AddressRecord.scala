@@ -29,11 +29,4 @@ case class AddressRecord(
                           localCustodian: Option[LocalCustodian],
                           // ISO639-1 code, e.g. 'en' for English
                           // see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-                          language: String) {
-
-  def isValid = address.isValid && language.length == 2
-
-  def truncatedAddress(maxLen: Int = Address.maxLineLength) =
-    if (address.longestLineLength <= maxLen) this
-    else AddressRecord(id, uprn, address.truncatedAddress(maxLen), localCustodian, language)
-}
+                          language: String)

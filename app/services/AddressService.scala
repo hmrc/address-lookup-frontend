@@ -50,7 +50,6 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
           addr.address.postcode,
           addr.address.lines,
           addr.address.town,
-          addr.address.county,
           if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
           else addr.address.country
         )

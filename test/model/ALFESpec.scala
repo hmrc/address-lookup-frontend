@@ -123,39 +123,24 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
   "a proposal" should {
 
-    "transform to a confirmable address where county is ignored AND LINE 4 if town exists" in {
+    "transform to a confirmable address where town is ignored" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), Some("town"), Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), None, ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
         Some(prop.addressId),
         address = ConfirmableAddressDetails(
-          Some(prop.lines.take(3) ++ List(prop.town.get)),
+          Some(prop.lines.take(3)),
           Some(prop.postcode),
           Some(prop.country)))
 
       conf must be (expected)
     }
 
-    "transform to a confirmable address where town is ignored AND LINE 4 if county exists" in {
+    "transform to a confirmable address With all 4 address lines as town is None" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
-      val conf = prop.toConfirmableAddress(auditRef)
-      val expected = ConfirmableAddress(
-        auditRef,
-        Some(prop.addressId),
-        address = ConfirmableAddressDetails(
-          Some(prop.lines.take(3) ++ List(prop.county.get)),
-          Some(prop.postcode),
-          Some(prop.country)))
-
-      conf must be (expected)
-    }
-
-    "transform to a confirmable address With all 4 address lines as county and town are None" in {
-      val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3", "line4"), None, None, ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), None, ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
@@ -169,9 +154,9 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "be able to describe itself" in {
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"), Some("county"), ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"),  ForeignOfficeCountryService.find(code = "GB").get)
       val desc = prop.toDescription
-      desc must be ("line1, line2, line3, town, county, postcode")
+      desc must be ("line1, line2, line3, town, postcode")
     }
   }
 

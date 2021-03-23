@@ -147,7 +147,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   }
 
   private def cannedAddress(lines: List[String], postCode: String) =
-    AddressRecord("1234", Some(Random.nextLong()), Address(lines, None, None, postCode, Some(Countries.England),
+    AddressRecord("1234", Some(Random.nextLong()), Address(lines, None, postCode, Some(Countries.England),
       Country("GB", rndstr(32))), "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
 
   private def addr(code: Option[String]): AddressRecord = {
@@ -157,7 +157,6 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       Address(
         List(rndstr(16), rndstr(16), rndstr(8)),
         Some(rndstr(16)),
-        Some(rndstr(8)),
         rndstr(8),
         Some(Countries.England),
         Country(code.get, rndstr(32))
@@ -176,7 +175,6 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
         addr.address.postcode,
         addr.address.lines,
         addr.address.town,
-        addr.address.county,
         addr.address.country
       )
     }

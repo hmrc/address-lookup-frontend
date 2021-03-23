@@ -372,7 +372,7 @@ class AddressLookupControllerSpec
 
     "display a single address on confirmation page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
-      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", lines = List("line1", "line2"), town = Some("town"), county = Some("county")))
+      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", lines = List("line1", "line2"), town = Some("town")))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
 

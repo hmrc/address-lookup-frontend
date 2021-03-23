@@ -38,7 +38,6 @@ object IntegrationTestConstants {
       postcode = testPostCode,
       lines = List(testAddressLine1, testAddressLine2),
       town = Some(testAddressTown),
-      county = None,
       country = testCountry
     )
   }

@@ -125,13 +125,13 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
     "transform to a confirmable address where town is ignored" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), None, ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", "some-town", List("line1", "line2", "line3"), ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
         Some(prop.addressId),
         address = ConfirmableAddressDetails(
-          Some(prop.lines.take(3)),
+          Some(prop.lines.take(3) ++ List("some-town")),
           Some(prop.postcode),
           Some(prop.country)))
 
@@ -140,13 +140,13 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
 
     "transform to a confirmable address With all 4 address lines as town is None" in {
       val auditRef = "audit ref"
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), None, ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", "some-town", List("line1", "line2", "line3"), ForeignOfficeCountryService.find(code = "GB").get)
       val conf = prop.toConfirmableAddress(auditRef)
       val expected = ConfirmableAddress(
         auditRef,
         Some(prop.addressId),
         address = ConfirmableAddressDetails(
-          Some(prop.lines.take(4)),
+          Some(prop.lines.take(3) ++ List("some-town")),
           Some(prop.postcode),
           Some(prop.country)))
 
@@ -154,9 +154,9 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
     }
 
     "be able to describe itself" in {
-      val prop = ProposedAddress("GB1234567890", "postcode", List("line1", "line2", "line3"), Some("town"),  ForeignOfficeCountryService.find(code = "GB").get)
+      val prop = ProposedAddress("GB1234567890", "postcode", "some-town", List("line1", "line2", "line3"),  ForeignOfficeCountryService.find(code = "GB").get)
       val desc = prop.toDescription
-      desc must be ("line1, line2, line3, town, postcode")
+      desc must be ("line1, line2, line3, some-town, postcode")
     }
   }
 

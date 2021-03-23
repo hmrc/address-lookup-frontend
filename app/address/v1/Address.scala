@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
   * For non-UK addresses, 'town' may be absent and there may be an extra line instead.
   */
 case class Address(lines: List[String],
-                   town: Option[String],
+                   town: String,
                    postcode: String,
                    subdivision: Option[String],
                    country: Country) {
@@ -34,7 +34,7 @@ case class Address(lines: List[String],
   @JsonIgnore // needed because the name starts 'is...'
   def isValid: Boolean = lines.nonEmpty && lines.size <= (if (town.isEmpty) 4 else 3)
 
-  def nonEmptyFields: List[String] = lines ::: town.toList ::: List(postcode)
+  def nonEmptyFields: List[String] = lines ::: List(town) ::: List(postcode)
 
   /** Gets a conjoined representation, excluding the country. */
   def printable(separator: String): String = nonEmptyFields.mkString(separator)
@@ -69,7 +69,7 @@ case class Address(lines: List[String],
   }
 
   def truncatedAddress(maxLen: Int = Address.maxLineLength): Address =
-    Address(lines.map(limit(_, maxLen)), town.map(limit(_, maxLen)), postcode, subdivision, country)
+    Address(lines.map(limit(_, maxLen)), limit(town, maxLen), postcode, subdivision, country)
 }
 
 

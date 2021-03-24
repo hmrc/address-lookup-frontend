@@ -23,15 +23,17 @@ class ProposalsSpec extends WordSpec with Matchers {
 
   "proposals" should {
     "naturally sort proposed addresses by addressId" in {
-      val unsortedProposals = Seq(ProposedAddress(addressId = "GB990091234525", lines = List("1 main road"), postcode = "ZZ11 1ZZ"),
-                                  ProposedAddress(addressId = "GB990091234530", lines = List("10 main road"), postcode = "ZZ11 1ZZ"),
-                                  ProposedAddress(addressId = "GB990091234526", lines = List("2 main road"), postcode = "ZZ11 1ZZ"))
+      val unsortedProposals = Seq(
+        ProposedAddress(addressId = "GB990091234525", postcode = "ZZ11 1ZZ", town = "some-town", lines = List("1 main road")),
+        ProposedAddress(addressId = "GB990091234530", postcode = "ZZ11 1ZZ", town = "some-town", lines = List("10 main road")),
+        ProposedAddress(addressId = "GB990091234526", postcode = "ZZ11 1ZZ", town = "some-town", lines = List("2 main road"))
+      )
 
       val proposals = Proposals(Some(unsortedProposals)).toHtmlOptions
 
-      val expectedProposals = Seq(("GB990091234525", "1 main road, ZZ11 1ZZ"),
-                                  ("GB990091234526", "2 main road, ZZ11 1ZZ"),
-                                  ("GB990091234530", "10 main road, ZZ11 1ZZ"))
+      val expectedProposals = Seq(("GB990091234525", "1 main road, some-town, ZZ11 1ZZ"),
+                                  ("GB990091234526", "2 main road, some-town, ZZ11 1ZZ"),
+                                  ("GB990091234530", "10 main road, some-town, ZZ11 1ZZ"))
 
       proposals shouldBe expectedProposals
     }

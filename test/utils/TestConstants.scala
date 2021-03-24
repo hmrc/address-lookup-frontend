@@ -51,8 +51,8 @@ object TestConstants {
   val testAddressDetails = ConfirmableAddressDetails(Some(List("1 High Street", "Line 2", "Line 3")), Some("TF1 1NT"), Some(Country("UK", "United Kingdom")))
   val testAddress = ConfirmableAddress(testAuditRef, Some("1"), testAddressDetails)
   val testProposedAddressSeq = Seq(
-    ProposedAddress("1", "TF1 1NT", List("1 High Street", "Line 2", "Line 3"), Some("Telford"), Some("United Kingdom")),
-    ProposedAddress("2", "TF2 2NT", List("2 High Street", "Line2", "Line3"), Some("Shrewsbury"), Some("United Kingdom"))
+    ProposedAddress("1", "TF1 1NT", "Telford", List("1 High Street", "Line 2", "Line 3"), Country("UK", "United Kingdom")),
+    ProposedAddress("2", "TF2 2NT", "Shrewsbury", List("2 High Street", "Line2", "Line3"), Country("UK", "United Kingdom"))
   )
 
   object Lookup {
@@ -625,11 +625,10 @@ object TestConstants {
   val testProposal =
     Proposals(
       proposals = Some(Seq(ProposedAddress(
-        town = Some("Telford"),
+        town = "Telford",
         addressId = "testAddressId",
         postcode = "TF3 4NT",
-        lines = List("1 High Street", "Line 2", "Line 3"),
-        county = Some("Shropshire")
+        lines = List("1 High Street", "Line 2", "Line 3")
       )))
     )
 
@@ -637,27 +636,24 @@ object TestConstants {
     Proposals(
       proposals = Some(Seq(
         ProposedAddress(
-          town = Some("Telford"),
+          town = "Telford",
           addressId = "testAddressId0",
           postcode = "TF3 4NT",
-          lines = List("1 High Street", "Line 2", "Line 3"),
-          county = Some("Shropshire")
+          lines = List("1 High Street", "Line 2", "Line 3")
         ),
 
         ProposedAddress(
-          town = Some("Telford"),
+          town = "Telford",
           addressId = "testAddressId1",
           postcode = "TF3 4NT",
-          lines = List("2 High Street", "Line 2", "Line 3"),
-          county = Some("Shropshire")
+          lines = List("2 High Street", "Line 2", "Line 3")
         ),
 
         ProposedAddress(
-          town = Some("Telford"),
+          town = "Telford",
           addressId = "testAddressId2",
           postcode = "TF3 4NT",
-          lines = List("3 High Street", "Line 2", "Line 3"),
-          county = Some("Shropshire")
+          lines = List("3 High Street", "Line 2", "Line 3")
         )
       ))
     )

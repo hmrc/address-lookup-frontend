@@ -37,8 +37,7 @@ object IntegrationTestConstants {
       addressId = testAddressIdRaw,
       postcode = testPostCode,
       lines = List(testAddressLine1, testAddressLine2),
-      town = Some(testAddressTown),
-      county = None,
+      town = testAddressTown,
       country = testCountry
     )
   }
@@ -681,7 +680,7 @@ object AddressRecordConstants {
         addressId = testAddressIdRaw,
         postcode = testPostCode,
         lines = List(testAddressLine1, testAddressLine2),
-        town = Some(testAddressTown),
+        town = testAddressTown,
         country = testCountry
       ))
       .toList

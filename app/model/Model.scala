@@ -59,9 +59,8 @@ case class Edit(line1: String,
 
 case class ProposedAddress(addressId: String,
                            postcode: String,
+                           town: String,
                            lines: List[String] = List.empty,
-                           town: Option[String] = None,
-                           county: Option[String] = None,
                            country: Country = ForeignOfficeCountryService
                              .find(code = "GB")
                              .getOrElse(Country("GB", "United Kingdom"))) {
@@ -74,22 +73,12 @@ case class ProposedAddress(addressId: String,
     )
 
   private def toLines: List[String] = {
-    town match {
-      case Some(town) => lines.take(3) ++ List(town)
-      case None =>
-        county match {
-          case Some(county) => lines.take(3) ++ List(county)
-          case None         => lines.take(4)
-        }
-    }
+      lines.take(3) ++ List(town)
   }
 
   // TODO verify description format
   def toDescription: String = {
-    lines.take(3).mkString(", ") + ", " +
-      town.map(_ + ", ").getOrElse("") +
-      county.map(_ + ", ").getOrElse("") +
-      postcode
+    lines.take(3).mkString(", ") + ", " + town + ", " + postcode
   }
 
 }

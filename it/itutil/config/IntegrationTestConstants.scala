@@ -124,7 +124,6 @@ object IntegrationTestConstants {
       |            "Line 3"
       |         ],
       |         "town":"Telford",
-      |         "county":"United Kingdom",
       |         "country":{
       |            "code":"GB",
       |            "name":"United Kingdom"
@@ -139,7 +138,6 @@ object IntegrationTestConstants {
       |            "Line3"
       |         ],
       |         "town":"Shrewsbury",
-      |         "county":"United Kingdom",
       |         "country":{
       |            "code":"GB",
       |            "name":"United Kingdom"

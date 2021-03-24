@@ -55,8 +55,8 @@ constants.confirmSelectedAddressError2 = search for and select your address
 constants.lookupErrorHeading = There is a problem
 constants.lookupPostcodeEmptyError.ukMode = Enter UK postcode
 constants.lookupPostcodeEmptyError = Enter postcode
-constants.lookupPostcodeInvalidError.ukMode = UK Postcode must only contains letters A - Z, and 0 - 9
-constants.lookupPostcodeInvalidError = Postcode must only contains letters A - Z, and 0 - 9
+constants.lookupPostcodeInvalidError.ukMode = UK Postcode must only contain letters A - Z, and 0 - 9
+constants.lookupPostcodeInvalidError = Postcode must only contain letters A - Z, and 0 - 9
 constants.lookupPostcodeError.ukMode = Enter a real UK Postcode e.g. AA1 1AA
 constants.lookupPostcodeError = Enter a real Postcode e.g. AA1 1AA
 

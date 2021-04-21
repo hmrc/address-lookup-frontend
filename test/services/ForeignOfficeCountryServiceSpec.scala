@@ -34,6 +34,10 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with OneAppPerSuite {
       found.last.name must be ("Zimbabwe")
     }
 
+    "return list of countries ordered by name but not containing non-existent countries" in new Scenario {
+      val found = service.findAll()
+      found.find(c => c.code == "DD") must not be defined
+    }
   }
 
   "UK in English" should {
@@ -50,6 +54,11 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with OneAppPerSuite {
       val found = service.findAll(welshFlag = true)
       found.head.name must be ("Affganistan")
       found.last.name must be ("Zimbabwe")
+    }
+
+    "return list of countries ordered by name but not containing non-existent countries" in new Scenario {
+      val found = service.findAll()
+      found.find(c => c.code == "DD") must not be defined
     }
   }
 

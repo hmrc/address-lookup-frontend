@@ -493,16 +493,6 @@
     "start-date": "1975-07-12",
     "citizen-names": "Citizen of Sao Tome and Principe"
   },
-  "SU": {
-    "entry-number": "1",
-    "entry-timestamp": "2016-04-05T13:23:05Z",
-    "item-hash": "sha-256:e94c4a9ab00d951dadde848ee2c9fe51628b22ff2e0a88bff4cca6e4e6086d7a",
-    "end-date": "1991-12-25",
-    "country": "SU",
-    "official-name": "Union of Soviet Socialist Republics",
-    "name": "Undeb y Gweriniaethau Sofiet Sosialaidd",
-    "citizen-names": "Soviet citizen"
-  },
   "CF": {
     "entry-number": "40",
     "entry-timestamp": "2016-04-05T13:23:05Z",
@@ -610,16 +600,6 @@
     "official-name": "The Republic of Costa Rica",
     "name": "Costa Rica",
     "citizen-names": "Costa Rican"
-  },
-  "CS": {
-    "entry-number": "5",
-    "entry-timestamp": "2016-04-05T13:23:05Z",
-    "item-hash": "sha-256:0031f311f87260b07f4c7b25748cfdd8c2d2efa3c15fc98c33dd8563fafb6476",
-    "end-date": "1992-12-31",
-    "country": "CS",
-    "official-name": "Czechoslovak Republic",
-    "name": "Tsiecoslofacia",
-    "citizen-names": "Czechoslovak"
   },
   "TD": {
     "entry-number": "41",
@@ -741,16 +721,6 @@
     "official-name": "The Republic of Turkey",
     "name": "Twrci",
     "citizen-names": "Turk"
-  },
-  "DD": {
-    "entry-number": "3",
-    "entry-timestamp": "2016-04-05T13:23:05Z",
-    "item-hash": "sha-256:e1357671d0da24668952373d0cdf9f7659a1b155e45c8fb3c2f24331e46edc26",
-    "end-date": "1990-10-02",
-    "country": "DD",
-    "official-name": "Germany Democratic Republic",
-    "name": "Dwyrain yr Almaen",
-    "citizen-names": "East German"
   },
   "TT": {
     "entry-number": "183",
@@ -1207,16 +1177,6 @@
     "official-name": "The Republic of Indonesia",
     "name": "Indonesia",
     "citizen-names": "Indonesian"
-  },
-  "YU": {
-    "entry-number": "4",
-    "entry-timestamp": "2016-04-05T13:23:05Z",
-    "item-hash": "sha-256:a074752a77011b18447401652029a9129c53b4ee35e1d99e6dec8b42ff4a0103",
-    "end-date": "1992-04-28",
-    "country": "YU",
-    "official-name": "Socialist Federal Republic of Yugoslavia",
-    "name": "Iwgoslafia",
-    "citizen-names": "Yugoslavian"
   },
   "IE": {
     "entry-number": "87",

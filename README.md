@@ -165,7 +165,6 @@ If your service doesn't have Welsh translations you can disable them setting the
       "selectPageLabels": {
         "title": "Choose address welsh",
         "heading": "Choose address welsh",
-        "afterHeadingText": "foo",
         "headingWithPostcode": "foo",
         "proposalListLabel": "Please select one of the following addresses welsh",
         "submitLabel": "Continue welsh",
@@ -175,6 +174,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "lookupPageLabels": {
         "title": "Find address welsh",
         "heading": "Find address welsh",
+        "afterHeadingText": "foo",
         "filterLabel": "Property name or number welsh (optional)",
         "postcodeLabel": "Postcode welsh",
         "submitLabel": "Find address welsh",

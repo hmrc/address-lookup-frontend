@@ -126,6 +126,7 @@ object JourneyLabelsForMessages {
       .and((__ \ "lookupPage.title.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.heading").writeNullable[String])
       .and((__ \ "lookupPage.heading.ukMode").writeNullable[String])
+      .and((__ \ "lookupPage.afterHeadingText").writeNullable[String])
       .and((__ \ "lookupPage.filterLabel").writeNullable[String])
       .and((__ \ "lookupPage.postcodeLabel").writeNullable[String])
       .and((__ \ "lookupPage.postcodeLabel.ukMode").writeNullable[String])
@@ -195,6 +196,7 @@ case class LookupPageLabels(title: Option[String] = None,
                             var titleUkMode: Option[String] = None,
                             heading: Option[String] = None,
                             var headingUkMode: Option[String] = None,
+                            afterHeadingText: Option[String] = None,
                             filterLabel: Option[String] = None,
                             postcodeLabel: Option[String] = None,
                             var postcodeLabelUkMode: Option[String] = None,

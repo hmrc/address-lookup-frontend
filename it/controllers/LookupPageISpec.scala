@@ -50,6 +50,8 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.title shouldBe messages("lookupPage.title")
         doc.h1.text() shouldBe messages("lookupPage.heading")
 
+        doc.getElementById("afterHeadingText") shouldBe null
+
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
@@ -169,6 +171,10 @@ class LookupPageISpec extends IntegrationSpecBase {
           doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
           doc.h1.text() shouldBe lookupPage.heading.get
 
+          doc.getElementsByClass("afterHeadingText") should have(
+            text("after-heading-text")
+          )
+
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
           )
@@ -235,6 +241,10 @@ class LookupPageISpec extends IntegrationSpecBase {
           doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
           doc.h1.text() shouldBe lookupPage.heading.get
 
+          doc.getElementsByClass("afterHeadingText") should have(
+            text("after-heading-text")
+          )
+
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
           )
@@ -282,6 +292,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         } yield {
           doc.title shouldBe lookupPage.title.get
           doc.h1.text() shouldBe lookupPage.heading.get
+          doc.getElementsByClass("afterHeadingText") should have(text("after-heading-text"))
           doc.select("a[class=govuk-back-link]") should have(text("Back"))
           doc.input(LookupPage.postcodeId) should have(label(lookupPage.postcodeLabel.get), value(testPostCode))
           doc.input(LookupPage.filterId) should have(label(lookupPage.filterLabel.get + hardCodedFormHint), value(testFilterValue))

@@ -58,6 +58,7 @@ object TestConstants {
   object Lookup {
     val title = Some("lookupTitle")
     val heading = Some("lookupHeading")
+    val afterHeadingText = Some("lookupAfterHeadingText")
     val filter = Some("filterLabel")
     val postcode = Some("postcodeLabel")
     val submit = Some("lookupSubmitLabel")
@@ -139,7 +140,7 @@ object TestConstants {
   val fullV2SelectLabels = Some(SelectPageLabels(Select.title, Select.heading, Select.headingWithPostcode,
     Select.proposalListLabel, Select.submitLabel, Select.searchAgainLinkText, Select.editAddressLinkText))
 
-  val fullV2LookupLabels = Some(LookupPageLabels(Lookup.title, Lookup.heading, Lookup.filter, Lookup.postcode,
+  val fullV2LookupLabels = Some(LookupPageLabels(Lookup.title, Lookup.heading, Lookup.afterHeadingText, Lookup.filter, Lookup.postcode,
     Lookup.submit, Lookup.noResultsFound, Lookup.limitExceeded, Lookup.enterManually))
 
   val fullV2EditLabels = Some(EditPageLabels(EditConst.title, EditConst.heading, EditConst.line1, EditConst.line2, EditConst.line3, EditConst.town,
@@ -324,6 +325,7 @@ object TestConstants {
             titleUkMode = Some("enLookupPageTitle"),
             heading = Some("enLookupPageHeading"),
             headingUkMode = Some("enLookupPageHeading"),
+            afterHeadingText = Some("enAfterHeadingText"),
             filterLabel = Some("enFilterLabel"),
             postcodeLabel = Some("enPostcodeLabel"),
             postcodeLabelUkMode = Some("enPostcodeLabel"),
@@ -374,6 +376,7 @@ object TestConstants {
             titleUkMode = Some("cyLookupPageTitle"),
             heading = Some("cyLookupPageHeading"),
             headingUkMode = Some("cyLookupPageHeading"),
+            afterHeadingText = Some("cyAfterHeadingText"),
             filterLabel = Some("cyFilterLabel"),
             postcodeLabel = Some("cyPostcodeLabel"),
             postcodeLabelUkMode = Some("cyPostcodeLabel"),
@@ -466,6 +469,7 @@ object TestConstants {
       |               "titleUkMode":"enLookupPageTitle",
       |               "heading":"enLookupPageHeading",
       |               "headingUkMode":"enLookupPageHeading",
+      |               "afterHeadingText":"enAfterHeadingText",
       |               "filterLabel":"enFilterLabel",
       |               "postcodeLabel":"enPostcodeLabel",
       |               "postcodeLabelUkMode":"enPostcodeLabel",
@@ -516,6 +520,7 @@ object TestConstants {
       |               "titleUkMode":"cyLookupPageTitle",
       |               "heading":"cyLookupPageHeading",
       |               "headingUkMode":"cyLookupPageHeading",
+      |               "afterHeadingText":"cyAfterHeadingText",
       |               "filterLabel":"cyFilterLabel",
       |               "postcodeLabel":"cyPostcodeLabel",
       |               "postcodeLabelUkMode":"cyPostcodeLabel",

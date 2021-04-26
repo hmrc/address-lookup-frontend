@@ -45,6 +45,10 @@ message: Option[String] = None
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
 
+      @if(messages.isDefinedAt("lookupPage.afterHeadingText")) {
+      <div class="govuk-hint" id="afterHeadingText">@{messages("lookupPage.afterHeadingText")}</div>
+      }
+
       @if(message.isDefined) {
       <div class="highlight-message highlight-message--full-width">
         <p>@{message.get}</p>

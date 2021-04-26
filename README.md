@@ -118,6 +118,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "selectPageLabels": {
         "title": "Choose address",
         "heading": "Choose address",
+        "afterHeadingText": "foo",
         "headingWithPostcode": "foo",
         "proposalListLabel": "Please select one of the following addresses",
         "submitLabel": "Continue",
@@ -164,6 +165,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "selectPageLabels": {
         "title": "Choose address welsh",
         "heading": "Choose address welsh",
+        "afterHeadingText": "foo",
         "headingWithPostcode": "foo",
         "proposalListLabel": "Please select one of the following addresses welsh",
         "submitLabel": "Continue welsh",
@@ -270,6 +272,7 @@ Labels for the "lookup" page.
 |----------|-----------|-----------------|----|-------------|
 |`title`|the `html->head->title` text|Optional|String|`"Find the address"`|
 |`heading`|the heading to display above the lookup form|Optional|String|`"Find the address"`|
+|`afterHeadingText`|text that can appear after the heading|Optional|String|`nothing`|
 |`filterLabel`|the input label for the "filter" field|Optional|String|`"Property name or number (optional)"`|
 |`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"UK postcode"`|
 |`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|

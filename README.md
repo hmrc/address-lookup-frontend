@@ -127,6 +127,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "lookupPageLabels": {
         "title": "Find address",
         "heading": "Find address",
+        "afterHeadingText": "We will use this address to send letters",
         "filterLabel": "Property name or number (optional)",
         "postcodeLabel": "Postcode",
         "submitLabel": "Find address",
@@ -173,6 +174,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "lookupPageLabels": {
         "title": "Find address welsh",
         "heading": "Find address welsh",
+        "afterHeadingText": "We will use this address to send letters welsh",
         "filterLabel": "Property name or number welsh (optional)",
         "postcodeLabel": "Postcode welsh",
         "submitLabel": "Find address welsh",
@@ -270,6 +272,7 @@ Labels for the "lookup" page.
 |----------|-----------|-----------------|----|-------------|
 |`title`|the `html->head->title` text|Optional|String|`"Find the address"`|
 |`heading`|the heading to display above the lookup form|Optional|String|`"Find the address"`|
+|`afterHeadingText`|text that can appear after the heading|Optional|String|`nothing`|
 |`filterLabel`|the input label for the "filter" field|Optional|String|`"Property name or number (optional)"`|
 |`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"UK postcode"`|
 |`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|
@@ -290,7 +293,7 @@ Labels for the "select" page.
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
 |`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Enter the address manually"`|
+|`editAddressLinkText`|Link text to use for the "edit address" link|Optional|String|`"Enter the address manually"`|
 
 #### Confirm page label JSON object
 

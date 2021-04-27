@@ -427,6 +427,7 @@ object IntegrationTestConstants {
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("lookup-title"),
             heading = Some("lookup-heading"),
+            afterHeadingText = Some("after-heading-text"),
             filterLabel = Some("lookup-filterLabel"),
             postcodeLabel = Some("lookup-postcodeLabel"),
             submitLabel = Some("lookup-submitLabel"),
@@ -473,6 +474,7 @@ object IntegrationTestConstants {
           lookupPageLabels = Some(LookupPageLabels(
             title = Some("lookup-title"),
             heading = Some("lookup-heading"),
+            afterHeadingText = Some("after-heading-text"),
             filterLabel = Some("lookup-filterLabel"),
             postcodeLabel = Some("lookup-postcodeLabel"),
             submitLabel = Some("lookup-submitLabel"),

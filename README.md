@@ -127,7 +127,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "lookupPageLabels": {
         "title": "Find address",
         "heading": "Find address",
-        "afterHeadingText": "foo",
+        "afterHeadingText": "We will use this address to send letters",
         "filterLabel": "Property name or number (optional)",
         "postcodeLabel": "Postcode",
         "submitLabel": "Find address",
@@ -174,7 +174,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "lookupPageLabels": {
         "title": "Find address welsh",
         "heading": "Find address welsh",
-        "afterHeadingText": "foo",
+        "afterHeadingText": "We will use this address to send letters welsh",
         "filterLabel": "Property name or number welsh (optional)",
         "postcodeLabel": "Postcode welsh",
         "submitLabel": "Find address welsh",

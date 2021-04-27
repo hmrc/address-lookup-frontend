@@ -382,7 +382,7 @@ Response:
 
 ### Running the Application
 
-`sm --start ADDRESS_LOOKUP_SERVICES -f; sm --stop ADDRESS_LOOKUP_FRONTEND`
+`sm --start ADDRESS_LOOKUP_SERVICES; sm --stop ADDRESS_LOOKUP_FRONTEND`
 
 run with
 `sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"` (when in the address-lookup-frontend folder)

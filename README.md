@@ -293,7 +293,7 @@ Labels for the "select" page.
 |`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
 |`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
 |`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`editAddressLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Enter the address manually"`|
+|`editAddressLinkText`|Link text to use for the "edit address" link|Optional|String|`"Enter the address manually"`|
 
 #### Confirm page label JSON object
 

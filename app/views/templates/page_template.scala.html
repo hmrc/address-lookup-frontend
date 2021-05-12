@@ -53,10 +53,12 @@ header: HmrcHeader)
 
         <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
         <script src='@controllers.routes.Assets.at("lib/hmrc-frontend/hmrc/all.js")'></script>
-        <script src="@controllers.routes.Assets.at("vendor/jquery.min.js")"></script>
         <script>
                 window.onpageshow = function(event) {
-                    $('button[disabled]').prop('disabled', false);
+                    const disabledButton = document.querySelector('button[disabled]');
+                    if(disabledButton) {
+                      disabledButton.disabled = false
+                    };
                 };
 
                 window.GOVUKFrontend.initAll();

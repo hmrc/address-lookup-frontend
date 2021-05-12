@@ -97,10 +97,11 @@
                       When this is fixed the custom validation / onConfirm bypass can be removed
                     *@
                     onConfirm: () => {
-                        const countryCode = $("#countryCode-select > option").filter(function() {
-                            return this.text == $("#countryCode").val()
-                        }).val();
-                        $("#countryCode-select").val(countryCode);
+                        const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function(c) {
+                            return c.text === document.getElementById("countryCode").value;
+                        });
+                        const countryCode = matchingOption ? matchingOption.value : undefined;
+                        document.getElementById("countryCode-select").value = countryCode;
                     }
                 })
             </script>

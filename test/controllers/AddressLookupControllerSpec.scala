@@ -17,13 +17,13 @@
 package controllers
 
 
+import address.v2.Country
 import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
 import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
-import play.api.i18n.{Lang, Messages}
 import model._
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
@@ -32,13 +32,11 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Play
 import play.api.http.HeaderNames
 import play.api.http.Status.BAD_REQUEST
-import play.api.i18n.Messages.Implicits._
-import play.api.libs.json.Json
+import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
-import address.v2.Country
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
@@ -66,6 +64,11 @@ class AddressLookupControllerSpec
                  proposals: Seq[ProposedAddress] = Seq.empty,
                  id: Option[String] = None) {
 
+    implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+
+    implicit val lang = Lang("en")
+    implicit lazy val messages =  MessagesImpl(lang, messagesApi)
+
     val req = FakeRequest()
     // TODO: Do we need this and the tests that depend on it?
     val reqWelsh = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
@@ -87,9 +90,6 @@ class AddressLookupControllerSpec
     val too_many_results = app.injector.instanceOf[too_many_results]
     val error_template = app.injector.instanceOf[error_template]
     val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
-
-    implicit val lang = Lang("en")
-    implicit val messages = implicitly[Messages]
 
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig) {
       override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
@@ -122,8 +122,8 @@ class AddressLookupControllerSpec
       new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig,
         components, remoteMessagesApiProvider, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
         too_many_results, error_template) {
-      override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
-    }
+        override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+      }
 
     object MockIdGenerationService extends IdGenerationService {
       override def uuid = id.getOrElse(testJourneyId)

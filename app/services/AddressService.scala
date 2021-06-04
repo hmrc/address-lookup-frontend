@@ -19,13 +19,13 @@ package services
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import forms.Postcode
+
 import javax.inject.{Inject, Singleton}
 import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
 import services.AddressReputationFormats._
 import address.v2._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -41,9 +41,11 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
   val endpoint = frontendAppConfig.addressReputationEndpoint
 
   override def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
+    val x = http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
       Postcode.cleanupPostcode(postcode).get.toString,
-      "filter" -> filter.getOrElse(""))).map { found =>
+      "filter" -> filter.getOrElse("")))
+
+      x.map { found =>
       val results = found.map { addr =>
         ProposedAddress(
           addr.id,

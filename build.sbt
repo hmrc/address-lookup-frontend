@@ -14,7 +14,7 @@ lazy val root = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(majorVersion := 2)
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.11.12")
+  .settings(scalaVersion := "2.12.11")
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(
@@ -26,7 +26,7 @@ lazy val root = Project(appName, file("."))
   .settings(integrationTestSettings(): _*)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    scalaVersion := "2.11.12",
+    scalaVersion := "2.12.11",
     Keys.fork in IntegrationTest := false,
     unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
     addTestReportOption(IntegrationTest, "int-test-reports"),

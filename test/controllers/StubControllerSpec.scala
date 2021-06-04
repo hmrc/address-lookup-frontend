@@ -142,15 +142,12 @@ class StubControllerSpec extends PlaySpec
         |}""".stripMargin
 
     "return 303 to location returned from LOCATION header in initv2 on APIController" in new Setup {
-      val jcv2 = JourneyConfigV2(
-        version = 2,
-        options = JourneyOptions(
-          continueUrl = "/end-of-journey/bar"
-        )
-      )
-      val matchedRequestContainingJourneyConfig = FakeRequest().map(_ => jcv2)
+      val cc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+      def Action: ActionBuilder[MessagesRequest, AnyContent] = {
+        cc.messagesActionBuilder.compose(cc.actionBuilder)
+      }
 
-      when(mockAPIController.initWithConfigV2).thenReturn(Action.async(BodyParsers.parse.json[JourneyConfigV2])(
+      when(mockAPIController.initWithConfigV2).thenReturn(Action.async(cc.parsers.json[JourneyConfigV2])(
         _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/lookup"))))
 
       when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
@@ -162,8 +159,9 @@ class StubControllerSpec extends PlaySpec
 
       redirectLocation(res).get mustBe "/lookup-address/bar/lookup"
     }
+
     "return 400 if journeyConfig is not provided" in new Setup {
-      val res = controller.submitStubForNewJourneyV2()(FakeRequest())
+      val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest())
 
       status(res) mustBe BAD_REQUEST
       Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text() mustBe titleForV2StubPage

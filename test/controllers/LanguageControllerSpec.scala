@@ -19,11 +19,11 @@ package controllers
 import com.codahale.metrics.SharedMetricRegistries
 import config.FrontendAppConfig
 import fixtures.ALFEFixtures
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, Cookie, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException

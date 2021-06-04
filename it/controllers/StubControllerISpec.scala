@@ -27,7 +27,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
       .build
   }
 
-  s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2().url}" should {
+  s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2.url}" should {
     "return 200" in {
       val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
         .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -36,7 +36,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  s"${controllers.testonly.routes.StubController.submitStubForNewJourneyV2().url}" should {
+  s"${controllers.testonly.routes.StubController.submitStubForNewJourneyV2.url}" should {
     "return 303 and redirect to the lookup page" in {
       val basicJDataForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
           version = 2,

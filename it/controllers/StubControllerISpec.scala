@@ -30,7 +30,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
   s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2.url}" should {
     "return 200" in {
       val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       await(res).status shouldBe OK
     }
@@ -62,7 +62,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, updatedContinueUrlForBasicJourney, OK)
 
       val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "journeyConfig" -> Seq(basicJourney)))
 

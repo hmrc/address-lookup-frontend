@@ -1,15 +1,14 @@
 package controllers
 
+import address.v2.Country
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import itutil.config.PageElementConstants.{EditPage, _}
-import model.{ConfirmableAddress, ConfirmableAddressDetails, EditPageLabels, JourneyLabels, LanguageLabels}
-import play.api.i18n.Lang
+import model._
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.i18n.Lang
 import play.api.libs.json.{JsObject, Json}
-import address.v2.Country
 
 class EditPageISpec extends IntegrationSpecBase {
 
@@ -19,7 +18,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -55,7 +54,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -91,7 +90,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, Json.toJson(config).as[JsObject], OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -109,7 +108,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
             "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -127,7 +126,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
 
@@ -139,7 +138,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(), OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
 
@@ -160,7 +159,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, configWIthWelshEmptyBlock, OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -197,7 +196,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
 
@@ -228,7 +227,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
             "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -278,7 +277,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -310,7 +309,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyDataV2EditLabels(Some(false)).config), OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
             "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -360,7 +359,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
         val fResponse = buildClientLookupAddress(path = "edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
             "Csrf-Token" -> "nocheck")
           .get()
@@ -396,7 +395,7 @@ class EditPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
 
@@ -419,7 +418,7 @@ class EditPageISpec extends IntegrationSpecBase {
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit").
-        withHeaders(
+        withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
@@ -459,7 +458,7 @@ class EditPageISpec extends IntegrationSpecBase {
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit").
-        withHeaders(
+        withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx"), "postcode" -> Seq("eebb")))
@@ -493,7 +492,7 @@ class EditPageISpec extends IntegrationSpecBase {
       )
 
       val fResponse = buildClientLookupAddress(path = "edit")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
           "line1" -> Seq(testAddressLine1),
@@ -517,7 +516,7 @@ class EditPageISpec extends IntegrationSpecBase {
           config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit").
-        withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
+        withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
       val res = await(fResponse)
 
@@ -556,7 +555,7 @@ class EditPageISpec extends IntegrationSpecBase {
             labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit").
-        withHeaders(
+        withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
@@ -609,7 +608,7 @@ class EditPageISpec extends IntegrationSpecBase {
       )
 
       val fResponse = buildClientLookupAddress(path = "edit").
-        withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
+        withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
         post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
           "line1" -> Seq(testAddressLine1),
@@ -631,7 +630,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress("edit")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -650,7 +649,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress("edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
           )
@@ -673,7 +672,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress("edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
           )
@@ -696,7 +695,7 @@ class EditPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress("edit")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(),
             "Csrf-Token" -> "nocheck"
           )

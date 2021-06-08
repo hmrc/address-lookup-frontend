@@ -108,7 +108,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, Json.toJson(v2Model), OK)
 
         val res = await(buildClientAPI("v2/init")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Json.toJson(v2Model.config)))
 
         res.status shouldBe ACCEPTED
@@ -125,7 +125,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
 
         val res = await(buildClientAPI(s"v2/confirmed?id=$testJourneyId")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get())
 
         res.status shouldBe OK
@@ -140,7 +140,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
 
         val res = await(buildClientAPI(s"v2/confirmed?id=1234")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get())
 
         res.status shouldBe NOT_FOUND

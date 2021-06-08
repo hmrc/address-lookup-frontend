@@ -22,7 +22,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.data.validation.{Invalid, Valid}
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 
 class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {

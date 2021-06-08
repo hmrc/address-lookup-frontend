@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{PostcodeHelper, RelativeOrAbsoluteWithHostnameFromWhitelist}
+import utils.{PostcodeHelper, RelativeOrAbsoluteWithHostnameFromAllowlist}
 import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 import java.io.File
@@ -573,7 +573,7 @@ class AddressLookupController @Inject()(
     }
 
   // GET /destroySession
-  private val policy = new RelativeOrAbsoluteWithHostnameFromWhitelist(frontendAppConfig.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts)
 
   def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
     implicit req =>

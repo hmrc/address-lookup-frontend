@@ -17,18 +17,18 @@
 package utils
 
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromWhitelist, OnlyRelative, RedirectUrl}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
 
 import scala.util.{Failure, Success, Try}
 
-class RelativeOrAbsoluteWithHostnameFromWhitelist(private val allowedHosts: Set[String]) {
-  private val absoluteWithHostnameFromWhitelist = AbsoluteWithHostnameFromWhitelist(allowedHosts)
+class RelativeOrAbsoluteWithHostnameFromAllowlist(private val allowedHosts: Set[String]) {
+  private val absoluteWithHostnameFromAllowlist = AbsoluteWithHostnameFromAllowlist(allowedHosts)
   private val relativeUrlsOnly = OnlyRelative
 
   def url(theUrl: RedirectUrl): String = url(theUrl.unsafeValue)
   def url(theUrl: String): String = {
     val relRes = Try(RedirectUrl(theUrl).get(relativeUrlsOnly).url)
-    val absRes = Try(RedirectUrl(theUrl).get(absoluteWithHostnameFromWhitelist).url)
+    val absRes = Try(RedirectUrl(theUrl).get(absoluteWithHostnameFromAllowlist).url)
 
     (relRes, absRes) match {
       case (Success(url), _) => url

@@ -19,14 +19,13 @@ package controllers.api
 import config.FrontendAppConfig
 import controllers.AlfController
 import forms.ALFForms
-
-import javax.inject.{Inject, Singleton}
 import model._
 import play.api.libs.json.Json
-import play.api.mvc.{ActionBuilder, AnyContent, MessagesControllerComponents, MessagesRequest}
+import play.api.mvc.MessagesControllerComponents
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

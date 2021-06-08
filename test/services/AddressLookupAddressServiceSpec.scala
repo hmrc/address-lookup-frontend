@@ -97,19 +97,19 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }
 
     "sort the dodgy addresses without failing" in new Scenario(dodgyAddressess) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the suspect addresses without failing" in new Scenario(suspectAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the questionable addresses without failing" in new Scenario(questionableAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the dubious addresses without failing" in new Scenario(dubiousAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
   }
 

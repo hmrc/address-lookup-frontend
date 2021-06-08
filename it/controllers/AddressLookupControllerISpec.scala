@@ -17,7 +17,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
@@ -30,7 +30,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
@@ -43,7 +43,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
@@ -56,7 +56,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "lookup")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
 
@@ -71,7 +71,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, Json.toJson(configWithConfirmedAddress).as[JsObject], OK)
 
       val fResponse = buildClientAPI("v2/confirmed?id=Jid123")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)

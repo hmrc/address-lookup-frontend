@@ -19,16 +19,17 @@ package services
 import config.FrontendAppConfig
 import model._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.{CacheMap, HttpCaching}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class KeystoreJourneyRepositorySpec extends PlaySpec with OneAppPerSuite with ScalaFutures {
+class KeystoreJourneyRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFutures {
 
   implicit val hc = HeaderCarrier()
 

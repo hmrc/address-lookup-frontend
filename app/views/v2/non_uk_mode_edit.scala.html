@@ -23,10 +23,6 @@
             select: GovukSelect, page: page_template)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@resolvedConf = @{
-    journeyData.resolveConfigV2(appConfig)
-}
-
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
 
 @titleWithError = @{

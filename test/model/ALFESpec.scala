@@ -169,7 +169,6 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
   "A timeout" should {
     "throw error" when {
       "timeoutAmount is less than 120 seconds" in {
-        val errorMsgContent = "Timeout duration must be greater than 120 seconds"
         def parseJson = Json.parse(
           """
             |{

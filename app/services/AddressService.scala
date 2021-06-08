@@ -16,17 +16,16 @@
 
 package services
 
+import address.v2._
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import forms.Postcode
-
-import javax.inject.{Inject, Singleton}
 import model.ProposedAddress
 import play.api.libs.json.{Json, OFormat}
 import services.AddressReputationFormats._
-import address.v2._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -41,34 +40,33 @@ class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig
   val endpoint = frontendAppConfig.addressReputationEndpoint
 
   override def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    val x = http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
+    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
       Postcode.cleanupPostcode(postcode).get.toString,
       "filter" -> filter.getOrElse("")))
+      .map { found =>
+        val results = found.map { addr =>
+          ProposedAddress(
+            addr.id,
+            addr.address.postcode,
+            addr.address.town,
+            addr.address.lines,
+            if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
+            else addr.address.country
+          )
+        }.filterNot(a => isukMode && a.country.code != "GB")
 
-      x.map { found =>
-      val results = found.map { addr =>
-        ProposedAddress(
-          addr.id,
-          addr.address.postcode,
-          addr.address.town,
-          addr.address.lines,
-          if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
-          else addr.address.country
-        )
-      }.filterNot(a => isukMode && a.country.code != "GB")
+        results.sortWith((a, b) => {
+          def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
+            case (Some(nA), Some(nB)) :: tail =>
+              if (nA == nB) sort(tail) else nA < nB
+            case (Some(_), None) :: _ => true
+            case (None, Some(_)) :: _ => false
+            case _ => mkString(a) < mkString(b)
+          }
 
-      results.sortWith((a, b) => {
-        def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
-          case (Some(nA), Some(nB)) :: tail =>
-            if (nA == nB) sort(tail) else nA < nB
-          case (Some(_), None) :: _ => true
-          case (None, Some(_)) :: _ => false
-          case _ => mkString(a) < mkString(b)
-        }
-
-        sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
-      })
-    }
+          sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
+        })
+      }
   }
 
   def mkString(p: ProposedAddress) = p.lines.mkString(" ").toLowerCase()

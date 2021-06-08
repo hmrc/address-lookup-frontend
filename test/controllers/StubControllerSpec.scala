@@ -28,10 +28,9 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
-import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -41,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import views.html.testonly.setup_journey_v2_stub_page
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class StubControllerSpec extends PlaySpec
   with GuiceOneAppPerSuite

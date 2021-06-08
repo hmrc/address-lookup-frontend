@@ -20,7 +20,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
@@ -53,7 +53,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, testConfigDefaultAsJsonV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
@@ -68,7 +68,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(
+        .withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRF,
           "Csrf-Token" -> "nocheck"
         )
@@ -113,7 +113,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       )
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(
+        .withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRF,
           "Csrf-Token" -> "nocheck"
         )
@@ -157,7 +157,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       )
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
@@ -194,7 +194,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, json, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
@@ -227,7 +227,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
@@ -263,7 +263,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         testConfigWithAddressNotUkModeV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))), OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
       val res = await(fResponse)
@@ -275,7 +275,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       stubKeystore(testJourneyId, testConfigDefaultAsJsonV2, OK)
 
       val fResponse = buildClientLookupAddress(path = "confirm")
-        .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
       val res = await(fResponse)
@@ -291,7 +291,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"confirm")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -310,7 +310,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"confirm")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -334,7 +334,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"confirm")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -358,7 +358,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"confirm")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)

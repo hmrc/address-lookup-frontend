@@ -21,10 +21,6 @@
 @this(form: FormWithCSRF, button: govukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@resolvedConf = @{
-    journeyData.resolveConfigV2(appConfig)
-}
-
 @page(messages("constants.noResultsPageTitle"), None, journeyData) {
 
     <h1 class="govuk-heading-xl" id="pageHeading">

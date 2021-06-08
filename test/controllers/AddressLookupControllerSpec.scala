@@ -29,10 +29,9 @@ import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Play
 import play.api.http.HeaderNames
 import play.api.http.Status.BAD_REQUEST
-import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
+import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -71,7 +70,7 @@ class AddressLookupControllerSpec
 
     val req = FakeRequest()
     // TODO: Do we need this and the tests that depend on it?
-    val reqWelsh = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
+    val reqWelsh = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy"))
 
     val endpoint = "http://localhost:9000"
 
@@ -596,7 +595,6 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
     ) {
       val spacesInPostcode = Some("AA11     2BB")
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
       val tstEdit = Edit("", None, None, "", "AA11 2BB", "GB")
       controller.addressOrDefault(None, spacesInPostcode) must be(tstEdit)
@@ -606,7 +604,6 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("AA112BB")
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
       val tstEdit = Edit("", None, None, "", "AA11 2BB", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
@@ -616,7 +613,6 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("AA11     BB2")
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
       val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
@@ -626,7 +622,6 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("TF(3@r")
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
 
       val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
@@ -635,8 +630,6 @@ class AddressLookupControllerSpec
     "return an address with a blank postcode when called with no option and a no lookup postcode" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails())
-
       val tstEdit = Edit("", None, None, "", "", "GB")
       controller.addressOrDefault(None, None) must be(tstEdit)
     }
@@ -663,7 +656,7 @@ class AddressLookupControllerSpec
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
-      val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
+      val reqOther = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "en"))
       val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementsByClass("govuk-back-link").html mustBe "Back"
@@ -674,7 +667,7 @@ class AddressLookupControllerSpec
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
-      val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "cy"))
+      val reqOther = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy"))
       val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementsByClass("govuk-back-link").html mustBe "Yn ôl"
@@ -882,7 +875,7 @@ class AddressLookupControllerSpec
       }
 
       "there is no welsh language cookie but welsh labels are provided" in new Scenario {
-        val reqOther = FakeRequest().withCookies(Cookie(Play.langCookieName, "en"))
+        val reqOther = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "en"))
         controller.getWelshContent(testLookupLevelCYJourneyConfigV2)(reqOther) mustBe false
       }
     }

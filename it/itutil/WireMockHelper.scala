@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import itutil.config.{AddressRecordConstants, IntegrationTestConstants}
-import org.scalatestplus.play.OneServerPerSuite
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
 
@@ -34,7 +34,7 @@ object WireMockHelper {
 }
 
 trait WireMockHelper {
-  self: OneServerPerSuite =>
+  self: GuiceOneServerPerSuite =>
 
   import WireMockHelper._
 
@@ -58,7 +58,7 @@ trait WireMockHelper {
 
   def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
 
-  def buildClientLanguage(language: String, referer: String):WSRequest = ws.url(s"http://localhost:$port/lookup-address/language/$language").withHeaders("Referer" -> referer).withFollowRedirects(false)
+  def buildClientLanguage(language: String, referer: String):WSRequest = ws.url(s"http://localhost:$port/lookup-address/language/$language").withHttpHeaders("Referer" -> referer).withFollowRedirects(false)
 
   def buildClientTestOnlyRoutes(path:String) = ws.url(s"http://localhost:$port/lookup-address/test-only/$path").withFollowRedirects(false)
 

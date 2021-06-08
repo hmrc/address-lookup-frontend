@@ -27,7 +27,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.mvc.Http.HeaderNames
 import services.JourneyRepository
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.testonly.setup_journey_v2_stub_page
 
 import scala.concurrent.{ExecutionContext, Future}

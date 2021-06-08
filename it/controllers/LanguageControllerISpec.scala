@@ -1,7 +1,6 @@
 package controllers
 
 import itutil.IntegrationSpecBase
-import play.api.Play
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 
@@ -13,7 +12,7 @@ class LanguageControllerISpec extends IntegrationSpecBase {
     "swap to english and redirect back" in {
       val response = await(buildClientLanguage("english", "testRef").get)
       response.status shouldBe SEE_OTHER
-      response.cookie(Play.langCookieName).get.value shouldBe "en"
+      response.cookie(messagesApi.langCookieName).get.value shouldBe "en"
     }
   }
 
@@ -21,7 +20,7 @@ class LanguageControllerISpec extends IntegrationSpecBase {
     "swap to welsh and redirect back" in {
       val response = await(buildClientLanguage("cymraeg", "testRef").get)
       response.status shouldBe SEE_OTHER
-      response.cookie(Play.langCookieName).get.value shouldBe "cy"
+      response.cookie(messagesApi.langCookieName).get.value shouldBe "cy"
     }
   }
 

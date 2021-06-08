@@ -16,29 +16,26 @@
 
 package controllers
 
-import java.io.File
 import config.{ALFCookieNames, FrontendAppConfig}
 import controllers.countOfResults._
 import forms.ALFForms._
-
-import javax.inject.{Inject, Singleton}
 import model._
 import play.api.i18n.{Lang, Messages}
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
-import spray.http.Uri
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromWhitelist, OnlyRelative, RedirectUrl, RedirectUrlPolicy}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{PostcodeHelper, RelativeOrAbsoluteWithHostnameFromWhitelist}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.{PostcodeHelper, RelativeOrAbsoluteWithHostnameFromAllowlist}
+import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
+import java.io.File
+import java.net.URI
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 object countOfResults {
@@ -66,10 +63,10 @@ class AddressLookupController @Inject()(
                                          implicit val frontendAppConfig: FrontendAppConfig,
                                          messagesControllerComponents: MessagesControllerComponents,
                                          remoteMessagesApiProvider: RemoteMessagesApiProvider,
-                                         lookup: views.html.v2.lookup,
-                                         select: views.html.v2.select,
-                                         uk_mode_edit: views.html.v2.uk_mode_edit,
-                                         non_uk_mode_edit: views.html.v2.non_uk_mode_edit,
+                                         lookup: lookup,
+                                         select: select,
+                                         uk_mode_edit: uk_mode_edit,
+                                         non_uk_mode_edit: non_uk_mode_edit,
                                          confirm: views.html.v2.confirm,
                                          no_results: views.html.v2.no_results,
                                          too_many_results: views.html.v2.too_many_results,
@@ -106,21 +103,21 @@ class AddressLookupController @Inject()(
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
-        import JourneyLabelsForMessages._
+          import JourneyLabelsForMessages._
 
-        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
-        implicit val messages: Messages = remoteMessagesApi.preferred(req)
+          implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
-        val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+          val isWelsh = getWelshContent(journeyData)
+          implicit val permittedLangs: Seq[Lang] =
+            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
-        val isUKMode = journeyData.config.options.isUkMode
-        val formPrePopped = lookupForm(isWelsh)(messages).fill(
-          Lookup(filter, PostcodeHelper.displayPostcode(postcode))
-        )
+          val isUKMode = journeyData.config.options.isUkMode
+          val formPrePopped = lookupForm(isWelsh)(messages).fill(
+            Lookup(filter, PostcodeHelper.displayPostcode(postcode))
+          )
           requestWithWelshHeader(isWelsh) {
             Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode)
             (req, messages, frontendAppConfig))
@@ -556,12 +553,9 @@ class AddressLookupController @Inject()(
             )
           )
 
+
           (Some(jd), requestWithWelshHeader(isWelsh) {
-            Redirect(
-              Uri(journeyData.config.options.continueUrl)
-                .withQuery("id" -> id)
-                .toString()
-            )
+            Redirect(urlWithQuery(journeyData.config.options.continueUrl, s"id=$id").toString)
           })
         } else {
           (None, requestWithWelshHeader(isWelsh) {
@@ -579,10 +573,21 @@ class AddressLookupController @Inject()(
     }
 
   // GET /destroySession
-  private val policy = new RelativeOrAbsoluteWithHostnameFromWhitelist(frontendAppConfig.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts)
+
   def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
     implicit req =>
       Redirect(policy.url(timeoutUrl)).withNewSession
+  }
+
+  def urlWithQuery(url: String, appendQuery: String): URI = {
+    val uri = new URI(url)
+    val queryString = uri.getQuery match {
+      case null => appendQuery
+      case qs => s"$qs&$appendQuery"
+    }
+
+    new URI(uri.getScheme, uri.getAuthority, uri.getPath, queryString, uri.getFragment)
   }
 }
 
@@ -594,7 +599,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
   protected def withJourneyV2(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))
                              (action: JourneyDataV2 => (Option[JourneyDataV2], Result))
                              (implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    //    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     journeyRepository.getV2(id).flatMap {
       case Some(journeyData) =>
@@ -615,8 +620,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
                                     ))(
                                      action: JourneyDataV2 => Future[(Option[JourneyDataV2], Result)]
                                    )(implicit request: Request[AnyContent]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter
-      .fromHeadersAndSession(request.headers, Some(request.session))
+
     journeyRepository.getV2(id).flatMap {
       case Some(journeyData) =>
         action(journeyData).flatMap { outcome =>

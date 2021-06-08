@@ -36,7 +36,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -68,7 +68,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -102,7 +102,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -136,7 +136,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
-          .withHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -184,7 +184,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)

@@ -24,7 +24,6 @@ import play.api.data.Forms.{default, ignored, mapping, optional, text}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
 object Helpers {
 
@@ -149,4 +148,19 @@ object ALFForms extends EmptyStringValidator {
       "id" -> text(1, 255)
     )(Confirmed.apply)(Confirmed.unapply)
   )
+}
+
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+
+object StopOnFirstFail {
+
+  def apply[T](constraints: Constraint[T]*) = Constraint { field: T =>
+    constraints.toList dropWhile (_(field) == Valid) match {
+      case Nil             => Valid
+      case constraint :: _ => constraint(field)
+    }
+  }
+
+  def constraint[T](message: String, validator: (T) => Boolean) =
+    Constraint((data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message))))
 }

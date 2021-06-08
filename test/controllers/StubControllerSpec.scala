@@ -28,10 +28,9 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.http.HeaderNames
-import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -41,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import views.html.testonly.setup_journey_v2_stub_page
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class StubControllerSpec extends PlaySpec
   with GuiceOneAppPerSuite
@@ -142,15 +141,12 @@ class StubControllerSpec extends PlaySpec
         |}""".stripMargin
 
     "return 303 to location returned from LOCATION header in initv2 on APIController" in new Setup {
-      val jcv2 = JourneyConfigV2(
-        version = 2,
-        options = JourneyOptions(
-          continueUrl = "/end-of-journey/bar"
-        )
-      )
-      val matchedRequestContainingJourneyConfig = FakeRequest().map(_ => jcv2)
+      val cc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+      def Action: ActionBuilder[MessagesRequest, AnyContent] = {
+        cc.messagesActionBuilder.compose(cc.actionBuilder)
+      }
 
-      when(mockAPIController.initWithConfigV2).thenReturn(Action.async(BodyParsers.parse.json[JourneyConfigV2])(
+      when(mockAPIController.initWithConfigV2).thenReturn(Action.async(cc.parsers.json[JourneyConfigV2])(
         _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/lookup"))))
 
       when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
@@ -162,8 +158,9 @@ class StubControllerSpec extends PlaySpec
 
       redirectLocation(res).get mustBe "/lookup-address/bar/lookup"
     }
+
     "return 400 if journeyConfig is not provided" in new Setup {
-      val res = controller.submitStubForNewJourneyV2()(FakeRequest())
+      val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest())
 
       status(res) mustBe BAD_REQUEST
       Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text() mustBe titleForV2StubPage

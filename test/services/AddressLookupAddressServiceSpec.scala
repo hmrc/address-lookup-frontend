@@ -26,26 +26,25 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import address.v2._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.collection.immutable.Seq
 import scala.concurrent.Future
 import scala.util.Random
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
 
   class Scenario(resp: List[AddressRecord]) {
-    private implicit val ec = play.api.libs.concurrent.Execution.Implicits.defaultContext
     implicit val hc = HeaderCarrier()
     val end = "http://localhost:42"
 
     val httpClient = mock[HttpClient]
     val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
-    when(httpClient.GET[List[AddressRecord]](any(), any())(any(), any(), any())).thenReturn(Future.successful(resp))
+    when(httpClient.GET[List[AddressRecord]](any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(resp))
 
-    val service = new AddressLookupAddressService(frontendAppConfig, httpClient)(ec) {
+    val service = new AddressLookupAddressService(frontendAppConfig, httpClient) {
       override val endpoint = end
     }
   }
@@ -98,19 +97,19 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }
 
     "sort the dodgy addresses without failing" in new Scenario(dodgyAddressess) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the suspect addresses without failing" in new Scenario(suspectAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the questionable addresses without failing" in new Scenario(questionableAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
 
     "sort the dubious addresses without failing" in new Scenario(dubiousAddresses) {
-      val listOfLines = service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
   }
 

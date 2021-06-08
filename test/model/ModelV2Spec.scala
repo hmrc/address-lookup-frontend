@@ -45,7 +45,6 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
     }
 
     "write to json from full model" in {
-      import model.JourneyLabels._
       Json.toJson(journeyDataV2Full) mustBe journeyDataV2FullJson
     }
     "write to json from minimal model" in {

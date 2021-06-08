@@ -17,7 +17,6 @@
 package model
 
 import config.FrontendAppConfig
-import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json._
@@ -27,7 +26,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
                          selectedAddress: Option[ConfirmableAddress] = None,
                          confirmedAddress: Option[ConfirmableAddress] = None) {
 
-  def resolveConfigV2(appConfig: FrontendAppConfig)(implicit messages: Messages) = ResolvedJourneyConfigV2(config, appConfig)
+  def resolveConfigV2(appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, appConfig)
 
   val welshEnabled
   : Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config

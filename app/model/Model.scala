@@ -17,8 +17,6 @@
 package model
 
 import forms.Postcode
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import play.api.libs.json._
 import services.ForeignOfficeCountryService
 import address.v2.Country

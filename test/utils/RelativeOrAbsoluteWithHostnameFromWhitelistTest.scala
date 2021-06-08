@@ -23,14 +23,14 @@ class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends WordSpec with Matc
     "return checked url" when {
       "absolute url is provided" in {
         val relativeOrAbsoluteWithHostnameFromWhitelist =
-          new RelativeOrAbsoluteWithHostnameFromWhitelist(Set("some-host"))
+          new RelativeOrAbsoluteWithHostnameFromAllowlist(Set("some-host"))
 
         val testUrl = "https://some-host/some/path/here"
         relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl) shouldBe testUrl
       }
       "relative url is provided" in {
         val relativeOrAbsoluteWithHostnameFromWhitelist =
-          new RelativeOrAbsoluteWithHostnameFromWhitelist(Set("some-host"))
+          new RelativeOrAbsoluteWithHostnameFromAllowlist(Set("some-host"))
 
         val testUrl = "/path/here"
         relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl) shouldBe testUrl
@@ -40,7 +40,7 @@ class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends WordSpec with Matc
     "fail to return a checked url" when {
       "absolute url with host that is not whitelisted is provided" in {
         val relativeOrAbsoluteWithHostnameFromWhitelist =
-          new RelativeOrAbsoluteWithHostnameFromWhitelist(Set("some-host"))
+          new RelativeOrAbsoluteWithHostnameFromAllowlist(Set("some-host"))
 
         val testUrl = "https://other-host/some/path/here"
         val e = intercept[IllegalArgumentException] {

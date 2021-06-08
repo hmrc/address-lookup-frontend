@@ -18,6 +18,8 @@
 @import model.JourneyDataV2
 @import java.net.URI
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Footer
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Meta
 
 @this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
@@ -135,6 +137,9 @@ header: HmrcHeader)
 
         @help(ReportTechnicalIssue(
             serviceCode = resolvedJourneyConfig.options.deskProServiceName.getOrElse(appConfig.contactFormServiceIdentifier),
-            language = Some(messages.lang.language)
+            language = messages.lang.code match {
+                case "en" => En
+                case "cy" => Cy
+            }
         ))
     }

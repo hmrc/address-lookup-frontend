@@ -18,16 +18,16 @@ package itutil
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatestplus.play.OneServerPerSuite
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.Mode.Test
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 
 trait IntegrationSpecBase extends WordSpec with LoginStub
   with GivenWhenThen
-  with OneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
+  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig with PageContentHelper {
 
   import scala.concurrent.duration._

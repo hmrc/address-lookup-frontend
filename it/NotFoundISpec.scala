@@ -11,7 +11,7 @@ class NotFoundISpec extends IntegrationSpecBase {
     "the welsh content header isn't set and welsh object isn't provided in config" should {
       "render in English" in {
         val fResponse = buildClientLookupAddress(s"notfound")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -30,7 +30,7 @@ class NotFoundISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(s"notfound")
-          .withHeaders(
+          .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
           )
@@ -52,7 +52,7 @@ class NotFoundISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, OK)
 
         val fResponse = buildClientLookupAddress(s"notfound")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -73,7 +73,7 @@ class NotFoundISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, OK)
 
         val fResponse = buildClientLookupAddress(s"notfound")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)

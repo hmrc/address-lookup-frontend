@@ -3,8 +3,6 @@ package controllers
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
-//import model.JourneyConfigDefaults.EnglishConstants
-import model.{JourneyLabels, LanguageLabels}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -60,7 +58,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
-              .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+              .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
             await(res).status shouldBe OK
@@ -91,7 +89,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
             val res = buildClientLookupAddress(path = s"select?postcode=AB11+1AB&filter=$testFilterValue")
-              .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+              .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
             await(res).status shouldBe OK
@@ -122,7 +120,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
-              .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+              .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
             await(res).status shouldBe OK
@@ -153,7 +151,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
             val res = buildClientLookupAddress(path = s"select?postcode=AB11+1AB&filter=$testFilterValue")
-              .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+              .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
             await(res).status shouldBe OK
@@ -187,7 +185,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         await(res).status shouldBe OK
@@ -203,7 +201,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val completedResponse = await(res)
@@ -219,7 +217,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubGetAddressFromBE(addressJson = Json.arr())
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         await(res).status shouldBe OK

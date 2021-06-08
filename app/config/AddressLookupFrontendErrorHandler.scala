@@ -16,11 +16,12 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AddressLookupFrontendErrorHandler @Inject()(val messagesApi: MessagesApi,

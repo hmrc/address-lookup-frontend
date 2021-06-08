@@ -37,7 +37,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -79,7 +79,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = "select")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -103,7 +103,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"select?postcode=QQ")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -128,7 +128,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         val filterValue = longFilterValue
         val fResponse = buildClientLookupAddress(path = s"select?filter=$filterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -154,7 +154,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -203,7 +203,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testDefaultLookupPageJourneyConfigV2, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -222,7 +222,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
@@ -271,7 +271,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testOtherCustomLookupPageJourneyConfigV2Json, OK)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -310,7 +310,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -328,7 +328,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -348,7 +348,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
@@ -368,7 +368,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
         val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-          .withHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)

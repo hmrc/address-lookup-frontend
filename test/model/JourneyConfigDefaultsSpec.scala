@@ -17,9 +17,6 @@
 package model
 
 import org.scalatest.{MustMatchers, WordSpecLike}
-import play.api.data.validation.ValidationError
-import play.api.libs.json._
-import utils.TestConstants._
 
 class JourneyConfigDefaultsSpec extends WordSpecLike with MustMatchers {
 

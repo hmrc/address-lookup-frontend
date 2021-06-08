@@ -182,7 +182,7 @@ trait PageContentHelper {
     testElementDoesntExist(response, "govuk-phase-banner")
     // TODO: Add additionalStyleSheet option support - see v1
     //testElementDoesntExist(response, "customStyleSheet")
-    doc.select(".govuk-link").last().attr("href") shouldBe "/contact/problem_reports_nonjs?newTab=true&service=AddressLookupFrontend"
+    doc.select(".govuk-link").last().attr("href") shouldBe "/contact/report-technical-problem?newTab=true&service=AddressLookupFrontend"
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
 
@@ -194,8 +194,8 @@ trait PageContentHelper {
     testElementExists(response, "govuk-phase-banner")
     // TODO: Add additionalStyleSheet option support - see v1
     //doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=DESKPRO_SERVICE_NAME"
-    // /contact/problem_reports_nonjs?newTab=true&service=address-lookup-frontend
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=DESKPRO_SERVICE_NAME"
+    // /contact/report-technical-problem?newTab=true&service=address-lookup-frontend
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=deskpro_service_name""")
     // TODO: Re-introduce timeout script support
 //    doc.getElementById("timeoutScript").html().contains("timeout: 120") shouldBe true
@@ -211,7 +211,7 @@ trait PageContentHelper {
     testElementDoesntExist(response, "govuk-phase-banner")
     // TODO: Add additionalStyleSheet option support - see v1
     // testElementDoesntExist(response, "customStyleSheet")
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/problem_reports_nonjs?service=AddressLookupFrontend"
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=AddressLookupFrontend"
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=address_lookup_frontend""")
 //    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false
 //    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe false

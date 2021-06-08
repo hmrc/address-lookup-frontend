@@ -17,7 +17,7 @@
 package views
 
 import config.FrontendAppConfig
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import views.html.v2.non_uk_mode_edit
@@ -30,7 +30,7 @@ class UKModeEditViewSpec extends ViewSpec {
   val non_uk_mode_edit: non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
   "UK Mode Page" should {
-    implicit val lang: Lang = Lang("en")
+    //implicit val lang: Lang = Lang("en")
 
     //TODO: TESTS_REQUIRED
     //would be nice to have some tests around the rendering of errors perhaps

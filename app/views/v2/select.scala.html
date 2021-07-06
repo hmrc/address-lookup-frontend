@@ -39,10 +39,12 @@ page: page_template)
     @if(lookup.filter.isDefined && !firstSearch) {
         <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
         <div class="form-field">
-            <p id="no-results">@{messages("constants.noResults")} '@{lookup.filter.get}'.</p>
-        </div>
-        <div>
-            <p><a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a></p>
+            <p class="govuk-body" id="no-results">
+                @{messages("constants.noResults")} '@{lookup.filter.get}'.
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
+            </p>
         </div>
     } else {
         <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>

@@ -26,6 +26,7 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import address.v2._
+import services.AddressReputationFormats.LookupAddressByPostcode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.collection.immutable.Seq
@@ -42,7 +43,8 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     val httpClient = mock[HttpClient]
     val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
-    when(httpClient.GET[List[AddressRecord]](any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(resp))
+    when(httpClient.POST[LookupAddressByPostcode, List[AddressRecord]](anyString(), any(), any())(any(), any(), any()
+      , any())).thenReturn(Future.successful(resp))
 
     val service = new AddressLookupAddressService(frontendAppConfig, httpClient) {
       override val endpoint = end
@@ -114,9 +116,11 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   }
 
   import services.AddressReputationFormats._
+
   private val dodgyAddressess = Json.parse(getClass.getResourceAsStream("/dodgy.json")).as[List[AddressRecord]]
   private val suspectAddresses = Json.parse(getClass.getResourceAsStream("/suspect.json")).as[List[AddressRecord]]
-  private val questionableAddresses = Json.parse(getClass.getResourceAsStream("/questionable.json")).as[List[AddressRecord]]
+  private val questionableAddresses = Json.parse(getClass.getResourceAsStream("/questionable.json"))
+                                          .as[List[AddressRecord]]
   private val dubiousAddresses = Json.parse(getClass.getResourceAsStream("/dubious.json")).as[List[AddressRecord]]
 
   private val cannedAddresses = List(

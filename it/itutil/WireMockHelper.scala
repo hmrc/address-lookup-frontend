@@ -21,11 +21,13 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.matching.{EqualToJsonPattern, EqualToPattern}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import itutil.config.{AddressRecordConstants, IntegrationTestConstants}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
+import services.AddressReputationFormats.LookupAddressByPostcode
 
 object WireMockHelper {
   val wiremockPort = 11111
@@ -54,22 +56,26 @@ trait WireMockHelper {
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClientLookupAddress(path: String, journeyID: String = "Jid123") = ws.url(s"http://localhost:$port/lookup-address/$journeyID/$path").withFollowRedirects(false)
+  def buildClientLookupAddress(path: String, journeyID: String = "Jid123") =
+    ws.url(s"http://localhost:$port/lookup-address/$journeyID/$path").withFollowRedirects(false)
 
   def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
 
-  def buildClientLanguage(language: String, referer: String):WSRequest = ws.url(s"http://localhost:$port/lookup-address/language/$language").withHttpHeaders("Referer" -> referer).withFollowRedirects(false)
+  def buildClientLanguage(language: String, referer: String): WSRequest =
+    ws.url(s"http://localhost:$port/lookup-address/language/$language").withHttpHeaders("Referer" -> referer)
+      .withFollowRedirects(false)
 
-  def buildClientTestOnlyRoutes(path:String) = ws.url(s"http://localhost:$port/lookup-address/test-only/$path").withFollowRedirects(false)
+  def buildClientTestOnlyRoutes(path: String) =
+    ws.url(s"http://localhost:$port/lookup-address/test-only/$path").withFollowRedirects(false)
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings
 
   def stubKeystore(session: String, theData: JsValue, status: Int = 200): StubMapping = {
     val keystoreUrl = s"/keystore/address-lookup-frontend/$session"
     stubFor(get(urlMatching(keystoreUrl))
-      .willReturn(aResponse().
-        withStatus(status).
-        withBody(
+      .willReturn(aResponse()
+        .withStatus(status)
+        .withBody(
           Json.obj("id" -> session, "data" -> Json.obj(keyId -> theData)).toString()
         )
       )
@@ -80,24 +86,25 @@ trait WireMockHelper {
     val keystoreUrl = s"/keystore/address-lookup-frontend/$session/data/$keyId"
     stubFor(put(urlMatching(keystoreUrl))
       .withRequestBody(equalTo(Json.toJson(theData).toString))
-      .willReturn(aResponse().
-        withStatus(status).
-        withBody(
+      .willReturn(aResponse()
+        .withStatus(status)
+        .withBody(
           Json.obj("id" -> session, "data" -> Json.obj(keyId -> theData)).toString()
         )
       )
     )
   }
 
-  def stubGetAddressFromBEWithFilter(postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
+  def stubGetAddressFromBEWithFilter(postcode: String = IntegrationTestConstants.testPostCode,
                                      expectedStatus: Int = 200,
-                                     addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
+                                     addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping
+  = {
 
-    val alfBackendURL = "/v2/uk/addresses"
+    val alfBackendURL = "/lookup"
 
-    stubFor(get(urlPathEqualTo(alfBackendURL))
-      .withQueryParam("postcode", equalTo("AB11 1AB"))
-      .withQueryParam("filter", equalTo("bar"))
+    val lookupAddressByPostcode = LookupAddressByPostcode(postcode, Some("bar"))
+    stubFor(post(urlPathEqualTo(alfBackendURL))
+      .withRequestBody(equalTo(Json.toJson(lookupAddressByPostcode).toString()))
       .willReturn(
         aResponse()
           .withStatus(expectedStatus)
@@ -106,15 +113,14 @@ trait WireMockHelper {
     )
   }
 
-  def stubGetAddressFromBE(postcode: String = IntegrationTestConstants.testPostCode.split(" ").mkString("+"),
+  def stubGetAddressFromBE(postcode: String = IntegrationTestConstants.testPostCode,
                            expectedStatus: Int = 200,
                            addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping = {
+    val alfBackendURL = "/lookup"
 
-    val alfBackendURL = "/v2/uk/addresses"
-
-    stubFor(get(urlPathEqualTo(alfBackendURL))
-      .withQueryParam("postcode", equalTo("AB11 1AB"))
-      .withQueryParam("filter", equalTo(""))
+    val lookupAddressByPostcode = LookupAddressByPostcode(postcode, None)
+    stubFor(post(urlPathEqualTo(alfBackendURL))
+      .withRequestBody(equalTo(Json.toJson(lookupAddressByPostcode).toString()))
       .willReturn(
         aResponse()
           .withStatus(expectedStatus)
@@ -122,5 +128,4 @@ trait WireMockHelper {
       )
     )
   }
-
 }

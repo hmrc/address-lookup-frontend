@@ -21,7 +21,7 @@ import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import forms.Postcode
 import model.ProposedAddress
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OFormat, Writes}
 import services.AddressReputationFormats._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -31,18 +31,20 @@ import scala.util.Try
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
-  def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
+  def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier)
+  : Future[Seq[ProposedAddress]]
 }
 
 @Singleton
-class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient)(implicit val ec: ExecutionContext) extends AddressService {
+class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient)(implicit val
+ec: ExecutionContext) extends AddressService {
 
   val endpoint = frontendAppConfig.addressReputationEndpoint
 
-  override def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    http.GET[List[AddressRecord]](s"$endpoint/v2/uk/addresses", Seq("postcode" ->
-      Postcode.cleanupPostcode(postcode).get.toString,
-      "filter" -> filter.getOrElse("")))
+  override def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier)
+  : Future[Seq[ProposedAddress]] = {
+    val lookupAddressByPostcode = LookupAddressByPostcode(Postcode.cleanupPostcode(postcode).get.toString, filter)
+    http.POST[LookupAddressByPostcode, List[AddressRecord]](s"$endpoint/lookup", lookupAddressByPostcode)
       .map { found =>
         val results = found.map { addr =>
           ProposedAddress(
@@ -83,4 +85,10 @@ object AddressReputationFormats {
   implicit val format2: OFormat[Address] = Json.format[Address]
   implicit val format3: OFormat[AddressRecord] = Json.format[AddressRecord]
   implicit val format4: OFormat[International] = Json.format[International]
+
+  case class LookupAddressByPostcode(postcode: String, filter: Option[String])
+
+  object LookupAddressByPostcode {
+    implicit val writes: Writes[LookupAddressByPostcode] = Json.writes[LookupAddressByPostcode]
+  }
 }

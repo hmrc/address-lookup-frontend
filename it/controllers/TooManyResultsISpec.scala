@@ -45,9 +45,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     val noResultsPageTitle = "We cannot find any addresses"
   }
 
-//  val EnglishConstantsUkMode = EnglishConstants(true)
+  //  val EnglishConstantsUkMode = EnglishConstants(true)
 
-//  import EnglishConstantsUkMode._
+  //  import EnglishConstantsUkMode._
 
   "The 'Too Many Results' page" should {
     "be rendered" when {
@@ -182,7 +182,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = addressAmount))
-        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+        stubKeystoreSave(testJourneyId,
+          Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -198,7 +199,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns 1 address and redirects to the confirm page" in {
         stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(1))
-        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
+        stubKeystoreSave(testJourneyId,
+          Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

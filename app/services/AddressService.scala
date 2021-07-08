@@ -85,10 +85,10 @@ object AddressReputationFormats {
   implicit val format2: OFormat[Address] = Json.format[Address]
   implicit val format3: OFormat[AddressRecord] = Json.format[AddressRecord]
   implicit val format4: OFormat[International] = Json.format[International]
+}
 
-  case class LookupAddressByPostcode(postcode: String, filter: Option[String])
+case class LookupAddressByPostcode(postcode: String, filter: Option[String])
 
-  object LookupAddressByPostcode {
-    implicit val writes: Writes[LookupAddressByPostcode] = Json.writes[LookupAddressByPostcode]
-  }
+object LookupAddressByPostcode {
+  implicit val writes: Writes[LookupAddressByPostcode] = Json.writes[LookupAddressByPostcode]
 }

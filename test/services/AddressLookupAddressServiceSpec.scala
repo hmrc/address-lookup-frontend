@@ -26,7 +26,6 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import address.v2._
-import services.AddressReputationFormats.LookupAddressByPostcode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.collection.immutable.Seq

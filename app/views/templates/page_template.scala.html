@@ -32,16 +32,6 @@ header: HmrcHeader)
     }
 
     @head = {
-        <!--[if lte IE 8]><link href='@controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-        <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.at("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
-        <link href='@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.css")' media="screen" rel="stylesheet" type="text/css" />
-    }
-
-    @resolvedJourneyConfig = @{
-        journeyData.resolveConfigV2(appConfig)
-    }
-
-    @scriptElem = {
         @resolvedJourneyConfig.options.timeoutConfig.map(t =>
             timeoutDialog(TimeoutDialog(
                 language = Some(messages.lang.code),
@@ -52,7 +42,16 @@ header: HmrcHeader)
                 signOutUrl = Some(s"/lookup-address/destroySession?timeoutUrl=${t.timeoutUrl}")
             ))
         )
+        <!--[if lte IE 8]><link href='@controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
+        <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.at("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+        <link href='@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.css")' media="screen" rel="stylesheet" type="text/css" />
+    }
 
+    @resolvedJourneyConfig = @{
+        journeyData.resolveConfigV2(appConfig)
+    }
+
+    @scriptElem = {
         <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
         <script src='@controllers.routes.Assets.at("lib/hmrc-frontend/hmrc/all.js")'></script>
         <script>

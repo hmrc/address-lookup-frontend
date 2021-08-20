@@ -93,6 +93,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "FR"
     ],
     "ukMode": false,
+    "headingStyle": "govuk-heading-l",
     "selectPageConfig": {
       "proposalListLimit": 30,
       "showSearchLinkAgain": true
@@ -226,6 +227,7 @@ If your service doesn't have Welsh translations you can disable them setting the
 |`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
 |`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
 |`ukMode`|enable uk only Lookup and Edit mode|Optional|Boolean|`None`|
+|`headingStyle`|css style to use for page headings (H1)|Optional|String|`govuk-heading-xl`|
 
 #### Select page configuration JSON object
 

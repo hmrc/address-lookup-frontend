@@ -34,7 +34,7 @@ select: GovukSelect, page: page_template)
 
 @page(titleWithError, Some(editForm), journeyData) {
 
-    <h1 class="govuk-heading-xl" id="pageHeading">
+    <h1 class="@journeyData.headingStyle" id="pageHeading">
         @{messages("editPage.heading")}
     </h1>
 

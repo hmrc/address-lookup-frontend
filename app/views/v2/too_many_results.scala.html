@@ -23,7 +23,7 @@
 
 @page(messages("constants.noResultsFoundTitle"), None, journeyData) {
 
-    <h1 class="govuk-heading-xl" id="pageHeading">
+    <h1 class="@journeyData.headingStyle" id="pageHeading">
         @{if(firstLookup) {
             messages("constants.tooManyResultsText")
         } else {

@@ -28,6 +28,8 @@ case class JourneyDataV2(config: JourneyConfigV2,
 
   def resolveConfigV2(appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, appConfig)
 
+  val headingStyle: String = config.options.headingStyle.getOrElse("govuk-heading-xl")
+
   val welshEnabled
   : Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config
     .options.disableTranslations exists (_ != false)))
@@ -55,7 +57,8 @@ case class JourneyOptions(continueUrl: String,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
                           timeoutConfig: Option[TimeoutConfig] = None,
-                          serviceHref: Option[String] = None) {
+                          serviceHref: Option[String] = None,
+                          headingStyle: Option[String] = None) {
 
   val isUkMode: Boolean = ukMode contains true
 

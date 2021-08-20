@@ -41,7 +41,7 @@ message: Option[String] = None
 @page(titleWithError, Some(lookupForm), journeyData) {
 
   @form(routes.AddressLookupController.select(id)) {
-      <h1 class="govuk-heading-xl" id="pageHeading">
+      <h1 class="@journeyData.headingStyle" id="pageHeading">
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
 

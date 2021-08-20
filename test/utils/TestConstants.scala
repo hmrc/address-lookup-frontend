@@ -18,10 +18,10 @@ package utils
 
 import java.util.UUID
 
+import address.v2.Country
 import controllers.Proposals
 import model._
 import play.api.libs.json.{JsValue, Json}
-import address.v2.Country
 
 object TestConstants {
   val testJourneyId: String = UUID.randomUUID().toString
@@ -1071,4 +1071,14 @@ object TestConstants {
       )
     )
   )
+  val testCustomHeadingConfig =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(
+          continueUrl = "testContinueUrl",
+          headingStyle = Some("custom-heading")
+        )
+      )
+    )
 }

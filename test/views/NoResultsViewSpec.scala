@@ -19,6 +19,7 @@ package views
 import config.FrontendAppConfig
 import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -35,6 +36,20 @@ class NoResultsViewSpec extends ViewSpec {
 
 
   "The 'No results' view" should {
+    "render the H1 using the appropriate class" when {
+      "using the default config" in {
+        val testPage = no_results(id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "govuk-heading-xl"
+      }
+
+      "using custom config" in {
+        val testPage = no_results(id = testJourneyId, journeyData = testCustomHeadingConfig, postcode = testPostCode)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "custom-heading"
+      }
+    }
+
     "render the view without the back link" in {
       val noResultsView = no_results(id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
       val doc = Jsoup.parse(noResultsView.body)

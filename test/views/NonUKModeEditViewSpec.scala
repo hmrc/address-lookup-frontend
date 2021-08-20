@@ -17,8 +17,8 @@
 package views
 
 import config.FrontendAppConfig
-import model._
 import forms.ALFForms._
+import model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, MessagesApi}
@@ -88,6 +88,20 @@ class NonUKModeEditViewSpec extends ViewSpec {
         option("countryCode-FR", "France"),
         option("countryCode-AL", "Albanian")
       )
+    }
+
+    "render the H1 using the appropriate class" when {
+      "using the default config" in {
+        val testPage = non_uk_mode_edit("", testSelectPageConfig, nonUkEditForm(), countries = Seq.empty, isWelsh = false)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "govuk-heading-xl"
+      }
+
+      "using custom config" in {
+        val testPage = non_uk_mode_edit("", testCustomHeadingConfig, nonUkEditForm(), countries = Seq.empty, isWelsh = false)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "custom-heading"
+      }
     }
   }
 }

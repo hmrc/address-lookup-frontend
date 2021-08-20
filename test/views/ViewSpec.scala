@@ -19,8 +19,8 @@ package views
 import com.codahale.metrics.SharedMetricRegistries
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
+import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.LangImplicits
@@ -36,13 +36,15 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
   implicit class DocumentTest(doc: Document) {
 
-    val getBackLinkText: String =  doc.select(".govuk-back-link").text()
+    val getBackLinkText: String = doc.select(".govuk-back-link").text()
 
     val getParagraphAsText: String = doc.getElementsByTag("p").text()
 
     val getBulletPointsAsText: String = doc.getElementsByTag("li").text()
 
     val getH1ElementAsText: String = doc.getElementsByTag("h1").text()
+
+    val getH1ElementStyle: String = doc.getElementsByTag("h1").attr("class")
 
     val getH2ElementAsText: String = doc.getElementsByTag("h2").text()
 
@@ -79,7 +81,9 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
     def getTextFieldLabel(name: String, textElement: String = "label"): String = doc.select(s"label[for=$name]").text()
 
     def getSelectOption(name: String): Elements = doc.select(s"""option[name=${name}]""")
+
     def getSelectOptionValue(name: String): String = getSelectOption(name).attr("value")
+
     def getSelectOptionLabel(name: String): String = getSelectOption(name).text()
 
     def getFieldErrorMessageContent(fieldName: String): String = doc.select(s"""a[href=#$fieldName]""").text()
@@ -88,7 +92,7 @@ trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with Lang
 
     def bulletPointList: Elements = doc.select("ul[class=govuk-list govuk-list-bullet]")
 
-    def getDropList(id:String) = doc.select(s"select[id=$id]")
+    def getDropList(id: String) = doc.select(s"select[id=$id]")
 
     def testElementExists(elementId: String) = doc.getElementById(elementId) should not be null
 

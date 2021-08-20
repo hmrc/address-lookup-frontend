@@ -33,8 +33,22 @@ class ConfirmViewSpec extends ViewSpec {
   val confirm = app.injector.instanceOf[confirm]
 
   "ConfirmView" when {
-   implicit val lang: Lang = Lang("en")
+    implicit val lang: Lang = Lang("en")
     val messages = implicitly[Messages]
+
+    "render the H1 using the appropriate class" when {
+      "using the default config" in {
+        val testPage = confirm("", testSelectPageConfig, Some(testAddress), isWelsh = false)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "govuk-heading-xl"
+      }
+
+      "using custom config" in {
+        val testPage = confirm("", testCustomHeadingConfig, Some(testAddress), isWelsh = false)
+        val doc: Document = Jsoup.parse(testPage.body)
+        doc.getH1ElementStyle shouldBe "custom-heading"
+      }
+    }
 
     "show back button is true" should {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)

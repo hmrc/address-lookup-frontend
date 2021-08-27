@@ -254,8 +254,8 @@ Configuration of the timeout popup in which user is shown a popup allowing them 
 |Field name|Description|Optional/Required|Type|Default value|
 |----------|-----------|-----------------|----|-------------|
 |`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
-|`timeoutUrl`|the url to be redirected to on session timeout|Required|String|N/A|
-|`timeoutKeepAliveUrl`|keep alive url to keep the session alive on calling service|Optional|String|N/A|
+|`timeoutUrl`|the url to be redirected to on session timeout ***(This must be a relative URL, or a URL on the allow list.)***|Required|String|N/A|
+|`timeoutKeepAliveUrl`|keep alive url to keep the session alive on calling service ***(This must be a relative URL, or a URL on the allow list.)***|Optional|String|N/A|
 
 #### Top-level label JSON object
 

@@ -20,7 +20,7 @@
 @import model.JourneyOptions
 @import model.JourneyConfigV2
 
-@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, page: page_template)
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, page: page_template)
 @(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @dummyJourney = @{

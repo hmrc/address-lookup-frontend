@@ -36,6 +36,5 @@ lazy val root = Project(appName, file("."))
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-  "uk.gov.hmrc.govukfrontend.views.html.components._",
-  "uk.gov.hmrc.govukfrontend.views.html.helpers._"
+  "uk.gov.hmrc.govukfrontend.views.html.components._"
 )

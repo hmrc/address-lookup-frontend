@@ -18,7 +18,7 @@
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
-@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, radios: GovukRadios,
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
 select: GovukSelect, page: page_template)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 

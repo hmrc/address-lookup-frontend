@@ -18,7 +18,7 @@
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 
-@this(form: FormWithCSRF, textarea: govukTextarea, button: govukButton, textInput: GovukInput, page: page_template)
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, page: page_template)
 @(id: String,
 journeyData: JourneyDataV2,
 lookupForm: Form[Lookup],

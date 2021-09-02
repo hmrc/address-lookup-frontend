@@ -105,8 +105,8 @@ If your service doesn't have Welsh translations you can disable them setting the
     },
     "timeoutConfig": {
       "timeoutAmount": 900,
-      "timeoutUrl": "http://service/timeout-uri",
-      "timeoutKeepAliveUrl": "http://service/keep-alive-uri"
+      "timeoutUrl": "/timeout-uri",
+      "timeoutKeepAliveUrl": "/keep-alive-uri"
     }
   },
   "labels": {

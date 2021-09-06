@@ -552,8 +552,8 @@
     "entry-timestamp": "2016-04-05T13:23:05Z",
     "item-hash": "sha-256:d854e31c09e4487a8e607a141de81d2bc34b1ca9f6d60d505888801ee5fb3510",
     "country": "SZ",
-    "official-name": "The Kingdom of Swaziland",
-    "name": "Swaziland",
+    "official-name": "Kingdom of Eswatini",
+    "name": "Eswatini",
     "citizen-names": "Swazi"
   },
   "CL": {
@@ -1554,10 +1554,10 @@
     "entry-timestamp": "2016-04-05T13:23:05Z",
     "item-hash": "sha-256:af8130b639bb8a675234c313dd763781a7da4e13b7529583d3a3a26c9f580fa7",
     "country": "MK",
-    "official-name": "The Republic of Macedonia",
-    "name": "Macedonia",
+    "official-name": "Republic of North Macedonia",
+    "name": "North Macedonia",
     "start-date": "1991-09-08",
-    "citizen-names": "Macedonian"
+    "citizen-names": "Macedonian, Citizen of the Republic of North Macedonia"
   },
   "ML": {
     "entry-number": "116",
@@ -1574,8 +1574,8 @@
     "item-hash": "sha-256:d826a3c8c191b08c3da4c7b61e9e8fc1dcb2d6501211df4814d9075f6b865164",
     "country": "MM",
     "official-name": "The Republic of the Union of Myanmar",
-    "name": "Burma",
-    "citizen-names": "Burmese"
+    "name": "Myanmar (Burma)",
+    "citizen-names": "Citizen of Myanmar"
   },
   "MN": {
     "entry-number": "125",

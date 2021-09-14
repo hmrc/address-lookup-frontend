@@ -53,7 +53,8 @@ ec: ExecutionContext) extends AddressService {
             addr.address.town,
             addr.address.lines,
             if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
-            else addr.address.country
+            else addr.address.country,
+            addr.poBox
           )
         }.filterNot(a => isukMode && a.country.code != "GB")
 

@@ -61,13 +61,14 @@ case class ProposedAddress(addressId: String,
                            lines: List[String] = List.empty,
                            country: Country = ForeignOfficeCountryService
                              .find(code = "GB")
-                             .getOrElse(Country("GB", "United Kingdom"))) {
+                             .getOrElse(Country("GB", "United Kingdom")),
+                           poBox: Option[String] = None) {
 
   def toConfirmableAddress(auditRef: String): ConfirmableAddress =
     ConfirmableAddress(
       auditRef,
       Some(addressId),
-      ConfirmableAddressDetails(Some(toLines), Some(postcode), Some(country))
+      ConfirmableAddressDetails(Some(toLines), Some(postcode), Some(country), poBox)
     )
 
   private def toLines: List[String] = {
@@ -95,7 +96,8 @@ case class ConfirmableAddress(auditRef: String,
 case class ConfirmableAddressDetails(
   lines: Option[List[String]] = None,
   postcode: Option[String] = None,
-  country: Option[Country] = ForeignOfficeCountryService.find(code = "GB")
+  country: Option[Country] = ForeignOfficeCountryService.find(code = "GB"),
+  poBox: Option[String] = None
 ) {
 
   def toDescription: String = {

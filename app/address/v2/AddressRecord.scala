@@ -41,7 +41,8 @@ case class AddressRecord(
                           blpuState: Option[String],
                           logicalState: Option[String],
                           streetClassification: Option[String],
-                          administrativeArea: Option[String] = None) {
+                          administrativeArea: Option[String] = None,
+                          poBox: Option[String] = None) {
 
   require(location.isEmpty || location.get.size == 2, location.get)
 

@@ -35,8 +35,7 @@ import scala.util.{Failure, Success, Try}
 class ApiController @Inject()(journeyRepository: JourneyRepository,
                               idGenerationService: IdGenerationService,
                               config: FrontendAppConfig,
-                              controllerComponents: MessagesControllerComponents,
-                              frontendAppConfig: FrontendAppConfig)
+                              controllerComponents: MessagesControllerComponents)
                              (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, controllerComponents) {
 
@@ -45,7 +44,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
 
   protected def uuid: String = idGenerationService.uuid
 
-  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(config.allowedHosts)
 
   case class InitFailure(reason: String)
   object InitFailure {

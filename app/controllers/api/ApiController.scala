@@ -65,11 +65,13 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
     redirectPolicyResult match {
       case Some(Failure(_)) =>
         logger.warn(s"Timeout redirect url from ${userAgent} is not valid according to the security policy: '${timeoutRedirectUrl}'")
+      case _ =>
     }
 
     keepAlivePolicyResult match {
       case Some(Failure(_)) =>
         logger.warn(s"Timeout keepalive url from ${userAgent} is not valid according to the security policy: '${timeoutKeepAliveUrl}'")
+      case _ =>
     }
 
 //    policyResult match {

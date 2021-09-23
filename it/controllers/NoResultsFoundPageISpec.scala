@@ -4,6 +4,7 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
 import model._
+import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
@@ -167,10 +168,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           journeyDataV2Minimal.copy(
             JourneyConfigV2(
               version = 2,
-              options = JourneyOptions(
-                continueUrl = testContinueUrl,
-                showBackButtons = Some(false)
-              ),
+              options = JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(false)),
               labels = Some(JourneyLabels(
                 en = Some(LanguageLabels()),
                 cy = Some(LanguageLabels())
@@ -204,6 +202,37 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.submitButton.text() shouldBe EnglishContent.submitButton
+      }
+    }
+
+    "when provided with a pageHeadingStyle option" should {
+      "allow the initialising service to override the header size" in {
+        val testJson = Json.toJson(
+          journeyDataV2Minimal.copy(
+            JourneyConfigV2(
+              version = 2,
+              options = JourneyOptions(continueUrl = testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")),
+              labels = Some(JourneyLabels(
+                en = Some(LanguageLabels()),
+                cy = Some(LanguageLabels())
+              ))
+            )
+          )
+        )
+
+        stubKeystore(testJourneyId, testJson, OK)
+        stubKeystoreSave(testJourneyId, testJson, OK)
+        stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
+
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+
+        val res = await(fResponse)
+
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
     }
   }

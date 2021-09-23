@@ -32,7 +32,6 @@ object TestConstants {
   val testSignOutHref = Some("signOutHref")
   val testAccessibilityFooterUrl = Some("accessibilityFooterUrl")
   val testNavTitle = Some("navTitle")
-  val testAdditionalStylesheetUrl = Some("additionalStylesheetUrl")
   val testShowPhaseBanner = Some(true)
   val testAlphaPhase = Some(true)
   val testPhaseFeedbackLink = Some("phaseFeedbackLink")
@@ -155,10 +154,7 @@ object TestConstants {
 
   val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
 
-  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testAdditionalStylesheetUrl,
-    testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons,
-    testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig,
-    fullV2TimeoutConfig)
+  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons, testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig, fullV2TimeoutConfig)
 
   val fullV2LanguageLabelsEn = LanguageLabels(
     appLevelLabels = fullV2AppLabels,
@@ -209,7 +205,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -223,7 +219,6 @@ object TestConstants {
   def fullV2JourneyDataCustomConfig(testContinueUrl: String = testContinueUrl,
                                     testHomeNavHref: Option[String] = testHomeNavRef,
                                     testAccessibilityFooterUrl: Option[String] = testAccessibilityFooterUrl,
-                                    testAdditionalStylesheetUrl: Option[String] = testAdditionalStylesheetUrl,
                                     testPhaseFeedbackLink: Option[String] = testPhaseFeedbackLink,
                                     testDeskProServiceName: Option[String] = testDeskproServiceName,
                                     testShowPhaseBanner: Option[Boolean] = testShowPhaseBanner,
@@ -239,25 +234,7 @@ object TestConstants {
                                     testLabels: Option[JourneyLabels] = fullV2JourneyLabelsEn
                                    ): JourneyDataV2 = {
 
-    val journeyOptions = JourneyOptions(
-      testContinueUrl,
-      testHomeNavHref,
-      testSignOutHref,
-      testAccessibilityFooterUrl,
-      testAdditionalStylesheetUrl,
-      testPhaseFeedbackLink,
-      testDeskProServiceName,
-      testShowPhaseBanner,
-      testAlphaPhase,
-      testShowBackButtons,
-      testDisableTranslations,
-      testIncludeHMRCBranding,
-      testUkMode,
-      testAllowedCountryCodes,
-      testSelectPage,
-      testConfirmPageConfig,
-      testTimeoutConfig
-    )
+    val journeyOptions = JourneyOptions(testContinueUrl, testHomeNavHref, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskProServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons, testDisableTranslations, testIncludeHMRCBranding, testUkMode, testAllowedCountryCodes, testSelectPage, testConfirmPageConfig, testTimeoutConfig)
 
     JourneyDataV2(
       JourneyConfigV2(
@@ -275,36 +252,19 @@ object TestConstants {
   val journeyDataV2Full = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        homeNavHref = Some("testNavHref"),
-        accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-        additionalStylesheetUrl = Some("testStylesheetUrl"),
-        phaseFeedbackLink = Some("testFeedbackLink"),
-        deskProServiceName = Some("testDeskproName"),
-        showPhaseBanner = Some(true),
-        alphaPhase = Some(true),
-        disableTranslations = Some(false),
-        showBackButtons = Some(true),
-        includeHMRCBranding = Some(true),
-        ukMode = Some(true),
-        allowedCountryCodes = Some(Set("UK", "FR")),
-        selectPageConfig = Some(SelectPageConfig(
-          proposalListLimit = Some(30),
-          showSearchAgainLink = Some(true)
-        )),
-        confirmPageConfig = Some(ConfirmPageConfig(
-          showSearchAgainLink = Some(true),
-          showSubHeadingAndInfo = Some(true),
-          showChangeLink = Some(true),
-          showConfirmChangeText = Some(true)
-        )),
-        timeoutConfig = Some(TimeoutConfig(
-          timeoutAmount = 120,
-          timeoutUrl = "testTimeoutUrl",
-          timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-        ))
-      ),
+      options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = Some("testFeedbackLink"), deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), disableTranslations = Some(false), includeHMRCBranding = Some(true), ukMode = Some(true), allowedCountryCodes = Some(Set("UK", "FR")), selectPageConfig = Some(SelectPageConfig(
+                proposalListLimit = Some(30),
+                showSearchAgainLink = Some(true)
+              )), confirmPageConfig = Some(ConfirmPageConfig(
+                showSearchAgainLink = Some(true),
+                showSubHeadingAndInfo = Some(true),
+                showChangeLink = Some(true),
+                showConfirmChangeText = Some(true)
+              )), timeoutConfig = Some(TimeoutConfig(
+                timeoutAmount = 120,
+                timeoutUrl = "testTimeoutUrl",
+                timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+              ))),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(
@@ -420,7 +380,6 @@ object TestConstants {
       |         "continueUrl":"testContinueUrl",
       |         "homeNavHref":"testNavHref",
       |         "accessibilityFooterUrl": "testAccessibilityFooterUrl",
-      |         "additionalStylesheetUrl":"testStylesheetUrl",
       |         "phaseFeedbackLink":"testFeedbackLink",
       |         "deskProServiceName":"testDeskproName",
       |         "showPhaseBanner":true,
@@ -560,28 +519,21 @@ object TestConstants {
   val journeyDataV2Minimal = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl"
-      )
+      options = JourneyOptions(continueUrl = "testContinueUrl")
     )
   )
 
   val journeyDataV2MinimalExpected = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl"
-      )
+      options = JourneyOptions(continueUrl = "testContinueUrl")
     )
   )
 
   val journeyDataV2MinimalUKMode = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        ukMode = Some(true)
-      )
+      options = JourneyOptions(continueUrl = "testContinueUrl", ukMode = Some(true))
     )
   )
 
@@ -669,9 +621,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl"
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl"),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             appLevelLabels = None,
@@ -689,11 +639,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          showBackButtons = Some(true),
-          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))),
         labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
           title = Some("testTitle"),
           heading = Some("testHeading"),
@@ -710,11 +656,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          showBackButtons = Some(true),
-          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))),
         labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
           title = Some("testTitle"),
           heading = Some("testHeading"),
@@ -731,11 +673,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          showBackButtons = Some(true),
-          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             selectPageLabels = Some(SelectPageLabels(
@@ -767,10 +705,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          showBackButtons = Some(false)
-        )
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(false))
       )
     )
 
@@ -778,9 +713,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl"
-        )
+        options = JourneyOptions(continueUrl = "testContinueUrl")
       )
     )
 
@@ -788,11 +721,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          showBackButtons = Some(true),
-          selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))
-        )
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))))
       )
     )
 
@@ -800,27 +729,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          showBackButtons = None,
-          includeHMRCBranding = Some(true),
-          ukMode = None,
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = None, includeHMRCBranding = Some(true), ukMode = None, allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             appLevelLabels = Some(AppLevelLabels(
@@ -841,27 +754,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          showBackButtons = None,
-          includeHMRCBranding = Some(true),
-          ukMode = None,
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = None, includeHMRCBranding = Some(true), ukMode = None, allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             appLevelLabels = Some(AppLevelLabels(
@@ -887,28 +784,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          disableTranslations = Some(true),
-          showBackButtons = None,
-          includeHMRCBranding = Some(true),
-          ukMode = None,
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = None, disableTranslations = Some(true), includeHMRCBranding = Some(true), ukMode = None, allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             appLevelLabels = Some(AppLevelLabels(
@@ -934,27 +814,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          showBackButtons = Some(true),
-          includeHMRCBranding = Some(true),
-          ukMode = None,
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), includeHMRCBranding = Some(true), ukMode = None, allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = Some(LanguageLabels(
             appLevelLabels = None,
@@ -981,27 +845,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          showBackButtons = Some(true),
-          includeHMRCBranding = Some(true),
-          ukMode = Some(false),
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), includeHMRCBranding = Some(true), ukMode = Some(false), allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = None,
           cy = Some(LanguageLabels(
@@ -1029,27 +877,11 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = "testContinueUrl",
-          homeNavHref = Some("testNavHref"),
-          accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
-          additionalStylesheetUrl = Some("testStylesheetUrl"),
-          phaseFeedbackLink = None,
-          deskProServiceName = Some("testDeskproName"),
-          showPhaseBanner = Some(true),
-          alphaPhase = Some(true),
-          showBackButtons = Some(true),
-          includeHMRCBranding = Some(true),
-          ukMode = Some(false),
-          allowedCountryCodes = None,
-          selectPageConfig = None,
-          confirmPageConfig = None,
-          timeoutConfig = Some(TimeoutConfig(
-            timeoutAmount = 120,
-            timeoutUrl = "testTimeoutUrl",
-            timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-          ))
-        ),
+        options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = None, deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), includeHMRCBranding = Some(true), ukMode = Some(false), allowedCountryCodes = None, selectPageConfig = None, confirmPageConfig = None, timeoutConfig = Some(TimeoutConfig(
+                    timeoutAmount = 120,
+                    timeoutUrl = "testTimeoutUrl",
+                    timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+                  ))),
         labels = Some(JourneyLabels(
           en = None,
           cy = Some(LanguageLabels(
@@ -1065,10 +897,7 @@ object TestConstants {
   val testNoResultsConfig = JourneyDataV2(
     config = JourneyConfigV2(
       2,
-      options = JourneyOptions(
-        continueUrl = "",
-        showBackButtons = Some(false)
-      )
+      options = JourneyOptions(continueUrl = "", showBackButtons = Some(false))
     )
   )
 }

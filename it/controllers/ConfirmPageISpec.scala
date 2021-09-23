@@ -5,6 +5,7 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import play.api.i18n.Lang
 import model._
+import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -145,6 +146,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       )
       res.status shouldBe OK
     }
+
     "pre-pop with an address and all elements are correct for almost full journey config model (missing field in confirm page) with all booleans as FALSE for page" in {
       val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
 
@@ -253,6 +255,21 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         fResponse
       )
       res.status shouldBe OK
+    }
+
+    "allow the initialising service to override the header size" in {
+      stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
+        JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))), OK)
+
+      val fResponse = buildClientLookupAddress(path = "confirm")
+        .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+          "Csrf-Token" -> "nocheck")
+        .get()
+      val res = await(fResponse)
+
+      res.status shouldBe OK
+      val document = Jsoup.parse(res.body)
+      document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
     }
   }
 

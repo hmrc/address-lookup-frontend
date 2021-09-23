@@ -38,24 +38,16 @@ case class JourneyConfigV2(version: Int,
                            labels: Option[JourneyLabels] = None, //messages
                            requestedVersion: Option[Int] = None)
 
-case class JourneyOptions(continueUrl: String,
-                          homeNavHref: Option[String] = None,
-                          signOutHref: Option[String] = None,
-                          accessibilityFooterUrl: Option[String] = None,
-                          additionalStylesheetUrl: Option[String] = None,
-                          phaseFeedbackLink: Option[String] = None,
-                          deskProServiceName: Option[String] = None,
-                          showPhaseBanner: Option[Boolean] = None,
-                          alphaPhase: Option[Boolean] = None,
-                          showBackButtons: Option[Boolean] = None,
-                          disableTranslations: Option[Boolean] = None,
-                          includeHMRCBranding: Option[Boolean] = None,
-                          ukMode: Option[Boolean] = None,
-                          allowedCountryCodes: Option[Set[String]] = None,
+case class JourneyOptions(continueUrl: String, homeNavHref: Option[String] = None, signOutHref: Option[String] = None,
+                          accessibilityFooterUrl: Option[String] = None, phaseFeedbackLink: Option[String] = None,
+                          deskProServiceName: Option[String] = None, showPhaseBanner: Option[Boolean] = None,
+                          alphaPhase: Option[Boolean] = None, showBackButtons: Option[Boolean] = None,
+                          disableTranslations: Option[Boolean] = None, includeHMRCBranding: Option[Boolean] = None,
+                          ukMode: Option[Boolean] = None, allowedCountryCodes: Option[Set[String]] = None,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
-                          timeoutConfig: Option[TimeoutConfig] = None,
-                          serviceHref: Option[String] = None) {
+                          timeoutConfig: Option[TimeoutConfig] = None, serviceHref: Option[String] = None,
+                          pageHeadingStyle: Option[String] = None) {
 
   val isUkMode: Boolean = ukMode contains true
 

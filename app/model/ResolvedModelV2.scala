@@ -30,7 +30,6 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val signOutHref: Option[String] = journeyOptions.signOutHref
   val serviceHref: Option[String] = journeyOptions.serviceHref
   val accessibilityFooterUrl: Option[String] = journeyOptions.accessibilityFooterUrl
-  val additionalStylesheetUrl: Option[String] = journeyOptions.additionalStylesheetUrl
 
   // This should never resolve to None here
   val phaseFeedbackLink: String = journeyOptions.phaseFeedbackLink.getOrElse(appConfig.feedbackUrl)
@@ -47,6 +46,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig()))
   val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig()))
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
+
+  val pageHeadingStyle: String = journeyOptions.pageHeadingStyle.getOrElse("govuk-heading-xl")
 }
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {

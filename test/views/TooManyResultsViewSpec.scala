@@ -46,8 +46,7 @@ class TooManyResultsViewSpec extends ViewSpec {
   }
 
   private def render(showBackButtons: Boolean = true, firstLookup: Boolean = false, filter: Option[String] = None): Document = {
-    val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
-      continueUrl = testContinueUrl, showBackButtons = Some(showBackButtons))))
+    val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(showBackButtons))))
 
     Jsoup.parse(too_many_results(id = testJourneyId, journeyData = journeyData,
       lookup = model.Lookup(filter, testPostCode), firstLookup = firstLookup).body)

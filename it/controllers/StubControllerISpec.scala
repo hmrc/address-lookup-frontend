@@ -40,15 +40,11 @@ class  StubControllerISpec extends IntegrationSpecBase {
     "return 303 and redirect to the lookup page" in {
       val basicJDataForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
           version = 2,
-          options = JourneyOptions(
-            continueUrl = "testContinueUrl"
-          )
+          options = JourneyOptions(continueUrl = "testContinueUrl")
       )))
       val updatedContinueUrlForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(
-          continueUrl = s"/lookup-address/test-only/end-of-journey/$testJourneyId"
-        )
+        options = JourneyOptions(continueUrl = s"/lookup-address/test-only/end-of-journey/$testJourneyId")
       )))
       val basicJourney =
         """{

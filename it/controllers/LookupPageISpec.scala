@@ -4,6 +4,8 @@ import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
+import model.{JourneyConfigV2, JourneyOptions}
+import org.jsoup.Jsoup
 import play.api.i18n.Lang
 import play.api.Application
 import play.api.Mode.Test
@@ -145,6 +147,22 @@ class LookupPageISpec extends IntegrationSpecBase {
           errorMessage(s"Error: $message Error: error.required"),
           value(filterValue)
         )
+      }
+    }
+
+    "when provided with a pageHeadingStyle option" should {
+      "allow the initialising service to override the header size" in {
+        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
+          JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))), OK)
+
+        val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
     }
 

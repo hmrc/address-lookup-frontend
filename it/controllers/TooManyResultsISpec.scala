@@ -3,6 +3,8 @@ package controllers
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
+import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
+import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -173,6 +175,27 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             )
           }
         }
+      }
+    }
+
+    "allow the initialising service to override the header size" when {
+      "provided with a pageHeadingStyle option" in {
+        val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
+          testContinueUrl,
+          selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))),
+          pageHeadingStyle = Some("govuk-heading-l"))))
+
+        stubKeystore(testJourneyId, Json.toJson(journeyData), OK)
+        stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
+
+        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
     }
 

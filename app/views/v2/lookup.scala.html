@@ -38,10 +38,14 @@ message: Option[String] = None
     }
 }
 
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
 @page(titleWithError, Some(lookupForm), journeyData) {
 
   @form(routes.AddressLookupController.select(id)) {
-      <h1 class="govuk-heading-xl" id="pageHeading">
+      <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
 

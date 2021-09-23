@@ -274,11 +274,7 @@ class AddressLookupControllerSpec
       JourneyDataV2(
         config = JourneyConfigV2(
           version = 2,
-          options = JourneyOptions(
-            continueUrl = "testContinueUrl",
-            showPhaseBanner = Some(true)
-
-          ),
+          options = JourneyOptions(continueUrl = "testContinueUrl", showPhaseBanner = Some(true)),
           labels = Some(
             JourneyLabels(en = Some(LanguageLabels()), cy = None)
           )
@@ -299,11 +295,7 @@ class AddressLookupControllerSpec
       JourneyDataV2(
         config = JourneyConfigV2(
           version = 2,
-          options = JourneyOptions(
-            continueUrl = "testContinueUrl",
-            showPhaseBanner = Some(true),
-            alphaPhase = Some(false)
-          ),
+          options = JourneyOptions(continueUrl = "testContinueUrl", showPhaseBanner = Some(true), alphaPhase = Some(false)),
           labels = Some(JourneyLabels(
             en = Some(LanguageLabels(
               appLevelLabels = Some(AppLevelLabels(
@@ -506,12 +498,9 @@ class AddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(
             version = 2,
-            options = JourneyOptions(
-              continueUrl = "continue",
-              confirmPageConfig = Some(ConfirmPageConfig(
-                showConfirmChangeText = Some(true)
-              ))
-            ),
+            options = JourneyOptions(continueUrl = "continue", confirmPageConfig = Some(ConfirmPageConfig(
+                            showConfirmChangeText = Some(true)
+                          ))),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(
                 confirmPageLabels = Some(ConfirmPageLabels(
@@ -538,12 +527,9 @@ class AddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(
             version = 2,
-            options = JourneyOptions(
-              continueUrl = "continue",
-              confirmPageConfig = Some(ConfirmPageConfig(
-                showConfirmChangeText = Some(true)
-              ))
-            ),
+            options = JourneyOptions(continueUrl = "continue", confirmPageConfig = Some(ConfirmPageConfig(
+                            showConfirmChangeText = Some(true)
+                          ))),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(
                 confirmPageLabels = Some(ConfirmPageLabels(

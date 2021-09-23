@@ -18,22 +18,12 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
   val testJourneyFromConfig = JourneyDataV2(
     config = JourneyConfigV2(
       version = testApiVersion,
-      options = JourneyOptions(
-        continueUrl = "/api/confirmed",
-        homeNavHref = Some("http://www.hmrc.gov.uk/"),
-        showPhaseBanner = Some(false),
-        alphaPhase = Some(false),
-        phaseFeedbackLink = Some("#"),
-        showBackButtons = Some(true),
-        includeHMRCBranding = Some(true),
-        selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50), showSearchAgainLink = Some(true))),
-        confirmPageConfig = Some(ConfirmPageConfig(
-          showSearchAgainLink = Some(true),
-          showSubHeadingAndInfo = Some(false),
-          showChangeLink = Some(true),
-          showConfirmChangeText = Some(false)
-        ))
-      ),
+      options = JourneyOptions(continueUrl = "/api/confirmed", homeNavHref = Some("http://www.hmrc.gov.uk/"), phaseFeedbackLink = Some("#"), showPhaseBanner = Some(false), alphaPhase = Some(false), showBackButtons = Some(true), includeHMRCBranding = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50), showSearchAgainLink = Some(true))), confirmPageConfig = Some(ConfirmPageConfig(
+                showSearchAgainLink = Some(true),
+                showSubHeadingAndInfo = Some(false),
+                showChangeLink = Some(true),
+                showConfirmChangeText = Some(false)
+              ))),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(navTitle = Some("Address Lookup"))),
@@ -99,9 +89,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         val v2Model = JourneyDataV2(
           config = JourneyConfigV2(
             version = testApiVersion,
-            options = JourneyOptions(
-              continueUrl = testContinueUrl
-            )
+            options = JourneyOptions(continueUrl = testContinueUrl)
           )
         )
 

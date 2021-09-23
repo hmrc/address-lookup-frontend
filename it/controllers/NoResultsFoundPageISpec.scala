@@ -167,10 +167,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           journeyDataV2Minimal.copy(
             JourneyConfigV2(
               version = 2,
-              options = JourneyOptions(
-                continueUrl = testContinueUrl,
-                showBackButtons = Some(false)
-              ),
+              options = JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(false)),
               labels = Some(JourneyLabels(
                 en = Some(LanguageLabels()),
                 cy = Some(LanguageLabels())

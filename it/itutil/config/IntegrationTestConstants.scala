@@ -95,7 +95,6 @@ object IntegrationTestConstants {
       |      },
       |      "homeNavHref":"homeNavRef",
       |      "navTitle":"navTitle",
-      |      "additionalStylesheetUrl":"additionalStylesheetUrl",
       |      "showPhaseBanner":true,
       |      "alphaPhase":true,
       |      "phaseFeedbackLink":"phaseFeedbackLink",
@@ -186,7 +185,6 @@ object IntegrationTestConstants {
       |      "options":{
       |         "continueUrl":"testContinueUrl",
       |         "homeNavHref":"tesNavtHref",
-      |         "additionalStylesheetUrl":"testStylesheetUrl",
       |         "phaseFeedbackLink":"testFeedbackLink",
       |         "deskProServiceName":"testDeskproName",
       |         "showPhaseBanner":true,
@@ -323,7 +321,7 @@ object IntegrationTestConstants {
 
   val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
   val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
-  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(ukMode = Some(false), continueUrl = testContinueUrl))
+  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(continueUrl = testContinueUrl, ukMode = Some(false)))
 
   val testConfigWithAddressNotUkModeV2 = testConfigWithFullNonUKAddressV2.copy(config = testConfigNotUkModeV2)
 
@@ -345,9 +343,7 @@ object IntegrationTestConstants {
   val testMinimalLevelJourneyConfigV2 = Json.toJson(JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl"
-      ),
+      options = JourneyOptions(continueUrl = "testContinueUrl"),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = None,
@@ -364,11 +360,7 @@ object IntegrationTestConstants {
   val testDefaultLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        showBackButtons = Some(false),
-        homeNavHref = Some("NAV_TITLE")
-      ),
+      options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("NAV_TITLE"), showBackButtons = Some(false)),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(
@@ -389,34 +381,19 @@ object IntegrationTestConstants {
   def testCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        homeNavHref = Some("NAV_TITLE"),
-        additionalStylesheetUrl = Some("ADDITIONAL_STYLESHEET_URL"),
-        phaseFeedbackLink = Some("testFeedbackLink"),
-        deskProServiceName = Some("DESKPRO_SERVICE_NAME"),
-        showPhaseBanner = Some(true),
-        alphaPhase = Some(true),
-        showBackButtons = Some(true),
-        includeHMRCBranding = Some(true),
-        ukMode = Some(true),
-        allowedCountryCodes = Some(Set("UK", "FR")),
-        selectPageConfig = Some(SelectPageConfig(
-          proposalListLimit = Some(30),
-          showSearchAgainLink = Some(true)
-        )),
-        confirmPageConfig = Some(ConfirmPageConfig(
-          showSearchAgainLink = Some(true),
-          showSubHeadingAndInfo = Some(true),
-          showChangeLink = Some(true),
-          showConfirmChangeText = Some(true)
-        )),
-        timeoutConfig = Some(TimeoutConfig(
-          timeoutAmount = 120,
-          timeoutUrl = "TIMEOUT_URL",
-          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
-        ))
-      ),
+      options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("NAV_TITLE"), phaseFeedbackLink = Some("testFeedbackLink"), deskProServiceName = Some("DESKPRO_SERVICE_NAME"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), includeHMRCBranding = Some(true), ukMode = Some(true), allowedCountryCodes = Some(Set("UK", "FR")), selectPageConfig = Some(SelectPageConfig(
+                proposalListLimit = Some(30),
+                showSearchAgainLink = Some(true)
+              )), confirmPageConfig = Some(ConfirmPageConfig(
+                showSearchAgainLink = Some(true),
+                showSubHeadingAndInfo = Some(true),
+                showChangeLink = Some(true),
+                showConfirmChangeText = Some(true)
+              )), timeoutConfig = Some(TimeoutConfig(
+                timeoutAmount = 120,
+                timeoutUrl = "TIMEOUT_URL",
+                timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
+              ))),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(
@@ -448,25 +425,15 @@ object IntegrationTestConstants {
   def testOtherCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(
-        continueUrl = "testContinueUrl",
-        phaseFeedbackLink = Some("testFeedbackLink"),
-        showPhaseBanner = Some(false),
-        alphaPhase = Some(false),
-        includeHMRCBranding = Some(true),
-        ukMode = Some(true),
-        allowedCountryCodes = Some(Set("UK", "FR")),
-        selectPageConfig = Some(SelectPageConfig(
-          proposalListLimit = Some(30),
-          showSearchAgainLink = Some(true)
-        )),
-        confirmPageConfig = Some(ConfirmPageConfig(
-          showSearchAgainLink = Some(true),
-          showSubHeadingAndInfo = Some(true),
-          showChangeLink = Some(true),
-          showConfirmChangeText = Some(true)
-        ))
-      ),
+      options = JourneyOptions(continueUrl = "testContinueUrl", phaseFeedbackLink = Some("testFeedbackLink"), showPhaseBanner = Some(false), alphaPhase = Some(false), includeHMRCBranding = Some(true), ukMode = Some(true), allowedCountryCodes = Some(Set("UK", "FR")), selectPageConfig = Some(SelectPageConfig(
+                proposalListLimit = Some(30),
+                showSearchAgainLink = Some(true)
+              )), confirmPageConfig = Some(ConfirmPageConfig(
+                showSearchAgainLink = Some(true),
+                showSubHeadingAndInfo = Some(true),
+                showChangeLink = Some(true),
+                showConfirmChangeText = Some(true)
+              ))),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = None,
@@ -512,26 +479,11 @@ object IntegrationTestConstants {
 
     JourneyConfigV2(
       2,
-      options = JourneyOptions(
-        continueUrl = "continueUrl",
-        selectPageConfig = Some(fullSelectPageConfigV2.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
-        confirmPageConfig = Some(fullConfirmPageConfigV2.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
-        homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
-        additionalStylesheetUrl = returnNoneOrConfig(Some("ADDITIONAL_STYLESHEET_URL")),
-        showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
-        alphaPhase = Some(allBooleanSetAndAppropriateOptions),
-        phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
-        showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
-        includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
-        deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
-        allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
-        timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
-          timeoutAmount = 120,
-          timeoutUrl = "TIMEOUT_URL",
-          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
-        ))),
-        ukMode = Some(allBooleanSetAndAppropriateOptions)
-      ),
+      options = JourneyOptions(continueUrl = "continueUrl", homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")), phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")), deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")), showPhaseBanner = Some(allBooleanSetAndAppropriateOptions), alphaPhase = Some(allBooleanSetAndAppropriateOptions), showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)), includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions), ukMode = Some(allBooleanSetAndAppropriateOptions), allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))), selectPageConfig = Some(fullSelectPageConfigV2.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))), confirmPageConfig = Some(fullConfirmPageConfigV2.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))), timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
+                timeoutAmount = 120,
+                timeoutUrl = "TIMEOUT_URL",
+                timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
+              )))),
       Some(JourneyLabels(
         en = Some(LanguageLabels(
           confirmPageLabels = Some(ConfirmPageLabels(
@@ -583,16 +535,14 @@ object IntegrationTestConstants {
         selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
       ))
 
-  val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))), ukMode = Some(true))))
+  val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
   val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true))))
   val journeyDataV2ResultLimit: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
   val journeyDataV2Minimal: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl)))
 
   def journeyDataV2EditLabels(ukModeBool: Option[Boolean]): JourneyDataV2 = JourneyDataV2(JourneyConfigV2(
     2,
-    JourneyOptions(
-      testContinueUrl, ukMode = ukModeBool
-    ),
+    JourneyOptions(testContinueUrl, ukMode = ukModeBool),
     Some(JourneyLabels(
       Some(LanguageLabels(
         editPageLabels = Some(EditPageLabels(
@@ -613,12 +563,9 @@ object IntegrationTestConstants {
   val journeyDataV2SelectLabels: JourneyDataV2 = JourneyDataV2(
     JourneyConfigV2(
       2,
-      JourneyOptions(
-        testContinueUrl,
-        selectPageConfig = Some(SelectPageConfig(
-          proposalListLimit = Some(50)
-        ))
-      ),
+      JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(
+                proposalListLimit = Some(50)
+              ))),
       Some(JourneyLabels(
         Some(LanguageLabels(
           selectPageLabels = Some(SelectPageLabels(
@@ -638,12 +585,9 @@ object IntegrationTestConstants {
   val journeyDataV2DefaultWelshLabels: JourneyDataV2 = JourneyDataV2(
     JourneyConfigV2(
       2,
-      JourneyOptions(
-        testContinueUrl,
-        selectPageConfig = Some(SelectPageConfig(
-          proposalListLimit = Some(50)
-        ))
-      ),
+      JourneyOptions(testContinueUrl, selectPageConfig = Some(SelectPageConfig(
+                proposalListLimit = Some(50)
+              ))),
       Some(JourneyLabels(
         None,
         cy = Some(LanguageLabels())

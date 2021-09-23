@@ -45,7 +45,6 @@ class NonUKModeEditViewSpec extends ViewSpec {
   object configuredContent {
     val title = "editTitle - navTitle - GOV.UK"
     val heading = "editHeading"
-    val additionalStylesheet = "testStylesheetUrl"
     val addressLine1 = "editLine1"
     val addressLine2 = "editLine2"
     val addressLine3 = "editLine3"

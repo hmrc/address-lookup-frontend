@@ -46,10 +46,8 @@ object StubHelper {
   def changeContinueUrlFromUserInputToStubV2(journeyconfigV2: JourneyConfigV2,
                                              id: String): JourneyConfigV2 =
     journeyconfigV2.copy(
-      options = journeyconfigV2.options.copy(
-        continueUrl =
-          controllers.testonly.routes.StubController.showResultOfJourney(id).url
-      )
+      options = journeyconfigV2.options.copy(continueUrl =
+                controllers.testonly.routes.StubController.showResultOfJourney(id).url)
     )
 
   val defaultJourneyConfigV2JsonAsString: JsValue =

@@ -196,7 +196,6 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       originalJourneyConfig.options.continueUrl mustBe resolvedJourneyConfig.options.continueUrl
       originalJourneyConfig.options.homeNavHref mustBe resolvedJourneyConfig.options.homeNavHref
       originalJourneyConfig.options.accessibilityFooterUrl mustBe resolvedJourneyConfig.options.accessibilityFooterUrl
-      originalJourneyConfig.options.additionalStylesheetUrl mustBe resolvedJourneyConfig.options.additionalStylesheetUrl
       originalJourneyConfig.options.phaseFeedbackLink must contain(resolvedJourneyConfig.options.phaseFeedbackLink)
       originalJourneyConfig.options.deskProServiceName mustBe resolvedJourneyConfig.options.deskProServiceName
       originalJourneyConfig.options.showPhaseBanner must contain(resolvedJourneyConfig.options.showPhaseBanner)
@@ -266,7 +265,6 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
-      resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
       resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
       resolvedJourneyConfig.options.showPhaseBanner mustBe false
@@ -335,7 +333,6 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
       resolvedJourneyConfig.options.continueUrl mustBe originalJourneyConfig.options.continueUrl
       resolvedJourneyConfig.options.homeNavHref mustBe originalJourneyConfig.options.homeNavHref
-      resolvedJourneyConfig.options.additionalStylesheetUrl mustBe originalJourneyConfig.options.additionalStylesheetUrl
 
       resolvedJourneyConfig.options.phaseFeedbackLink mustBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
       resolvedJourneyConfig.options.deskProServiceName mustBe Some("AddressLookupFrontend")
@@ -425,13 +422,13 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
     }
 
     "set the phase value to alpha" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(true), showPhaseBanner = Some(true)), appConfig).phase mustBe "alpha"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(true), alphaPhase = Some(true)), appConfig).phase mustBe "alpha"
     }
     "set the phase value to beta" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false), showPhaseBanner = Some(true)), appConfig).phase mustBe "beta"
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(true), alphaPhase = Some(false)), appConfig).phase mustBe "beta"
     }
     "set the phase value to empty string" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(alphaPhase = Some(false), showPhaseBanner = Some(false)), appConfig).phase mustBe ""
+      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(false), alphaPhase = Some(false)), appConfig).phase mustBe ""
     }
   }
 }

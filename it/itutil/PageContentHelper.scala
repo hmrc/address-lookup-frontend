@@ -180,8 +180,6 @@ trait PageContentHelper {
     val doc = getDocFromResponse(response)
 //    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
     testElementDoesntExist(response, "govuk-phase-banner")
-    // TODO: Add additionalStyleSheet option support - see v1
-    //testElementDoesntExist(response, "customStyleSheet")
     doc.select(".govuk-link").last().attr("href") shouldBe "/contact/report-technical-problem?newTab=true&service=AddressLookupFrontend"
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
@@ -192,8 +190,7 @@ trait PageContentHelper {
     doc.getElementsByClass("govuk-phase-banner__content__tag").text() shouldBe "alpha"
     doc.getElementsByClass("govuk-phase-banner__content").text() shouldBe "alpha PHASE_BANNER_HTML"
     testElementExists(response, "govuk-phase-banner")
-    // TODO: Add additionalStyleSheet option support - see v1
-    //doc.getElementById("customStyleSheet").attr("href") shouldBe "ADDITIONAL_STYLESHEET_URL"
+
 //    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=DESKPRO_SERVICE_NAME"
     // /contact/report-technical-problem?newTab=true&service=address-lookup-frontend
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=deskpro_service_name""")
@@ -209,8 +206,7 @@ trait PageContentHelper {
     doc.getElementsByClass("govuk-phase-banner__content__tag").first() shouldBe null
     doc.getElementsByClass("govuk-phase-banner__content").first() shouldBe null
     testElementDoesntExist(response, "govuk-phase-banner")
-    // TODO: Add additionalStyleSheet option support - see v1
-    // testElementDoesntExist(response, "customStyleSheet")
+
 //    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=AddressLookupFrontend"
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=address_lookup_frontend""")
 //    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false

@@ -21,9 +21,13 @@
 @this(button: GovukButton, page: page_template)
 @(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
 @page(messages("constants.noResultsFoundTitle"), None, journeyData) {
 
-    <h1 class="govuk-heading-xl" id="pageHeading">
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{if(firstLookup) {
             messages("constants.tooManyResultsText")
         } else {

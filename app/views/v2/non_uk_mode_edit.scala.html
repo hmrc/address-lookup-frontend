@@ -33,9 +33,13 @@
     }
 }
 
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
 @page(titleWithError, Some(editForm), journeyData) {
 
-    <h1 class="govuk-heading-xl" id="pageHeading">
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{messages("editPage.heading")}
     </h1>
 

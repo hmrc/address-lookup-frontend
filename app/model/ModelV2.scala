@@ -46,7 +46,8 @@ case class JourneyOptions(continueUrl: String, homeNavHref: Option[String] = Non
                           ukMode: Option[Boolean] = None, allowedCountryCodes: Option[Set[String]] = None,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
-                          timeoutConfig: Option[TimeoutConfig] = None, serviceHref: Option[String] = None) {
+                          timeoutConfig: Option[TimeoutConfig] = None, serviceHref: Option[String] = None,
+                          pageHeadingStyle: Option[String] = None) {
 
   val isUkMode: Boolean = ukMode contains true
 

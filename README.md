@@ -107,7 +107,8 @@ If your service doesn't have Welsh translations you can disable them setting the
       "timeoutAmount": 900,
       "timeoutUrl": "/timeout-uri",
       "timeoutKeepAliveUrl": "/keep-alive-uri"
-    }
+    },
+    "pageHeadingStyle": "govuk-heading-xl"
   },
   "labels": {
     "en": {
@@ -226,6 +227,7 @@ If your service doesn't have Welsh translations you can disable them setting the
 |`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
 |`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
 |`ukMode`|enable uk only Lookup and Edit mode|Optional|Boolean|`None`|
+|`pageHeadingStyle`|specify an alternative css class for page headings, e.g `govuk-heading-xl`|Optional|String|`govuk-heading-xl`|
 
 #### Select page configuration JSON object
 

@@ -37,7 +37,7 @@ page: page_template)
 @page(titleWithError, Some(selectForm), journeyData) {
 
     @if(lookup.filter.isDefined && !firstSearch) {
-        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
+        <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
         <div class="form-field">
             <p class="govuk-body" id="no-results">
                 @{messages("constants.noResults")} '@{lookup.filter.get}'.
@@ -47,7 +47,7 @@ page: page_template)
             </p>
         </div>
     } else {
-        <h1 class="govuk-heading-xl" id="pageHeading">@{messages("selectPage.heading")}</h1>
+        <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.heading")}</h1>
     }
 
     @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {

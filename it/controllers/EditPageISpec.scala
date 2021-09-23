@@ -28,6 +28,7 @@ class EditPageISpec extends IntegrationSpecBase {
         //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "Enter address"
         document.getElementById("pageHeading").text() shouldBe "Enter address"
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -97,6 +98,39 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         //testElementExists(res, EditPage.nonUkEditId)
+      }
+
+      "allow the initialising service to override the header size" when {
+        "uk Mode is false" in {
+          stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
+            JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))), OK)
+
+          val fResponse = buildClientLookupAddress(path = "edit")
+            .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+              "Csrf-Token" -> "nocheck")
+            .get()
+          val res = await(fResponse)
+
+          res.status shouldBe OK
+          val document = Jsoup.parse(res.body)
+          document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        }
+
+        "uk Mode is true" in {
+          stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
+            JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true),
+              pageHeadingStyle = Some("govuk-heading-l")))), OK)
+
+          val fResponse = buildClientLookupAddress(path = "edit")
+            .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+              "Csrf-Token" -> "nocheck")
+            .get()
+          val res = await(fResponse)
+
+          res.status shouldBe OK
+          val document = Jsoup.parse(res.body)
+          document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        }
       }
 
       "redirect to the UK edit page if uk UK mode is true" in {

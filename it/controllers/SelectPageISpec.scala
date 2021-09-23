@@ -3,7 +3,9 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
-import itutil.config.PageElementConstants.SelectPage
+import itutil.config.PageElementConstants.{LookupPage, SelectPage}
+import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
+import org.jsoup.Jsoup
 import play.api.i18n.Lang
 //import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 //import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
@@ -54,7 +56,6 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
       }
     }
-
     "be shown with configured text" when {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 30
@@ -167,6 +168,32 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         doc.title() shouldBe messages(Lang("cy"), "selectPage.title")
         doc.h1.text() shouldBe messages(Lang("cy"), "selectPage.heading")
+      }
+    }
+
+    "allow the initialising service to override the header size" when {
+      "provided with a pageHeadingStyle option" in {
+
+        val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
+          testContinueUrl,
+          pageHeadingStyle = Some("govuk-heading-l"),
+          selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
+
+        val addressAmount = 50
+        val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
+        stubKeystore(session = testJourneyId, Json.toJson(journeyData), OK)
+        stubGetAddressFromBE(addressJson = testResultsList)
+        stubKeystoreSave(testJourneyId,
+          Json.toJson(journeyData.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+
+        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
+
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
     }
   }
@@ -298,7 +325,7 @@ class SelectPageISpec extends IntegrationSpecBase {
     "the welsh content header is set to false and welsh object is provided in config" should {
       "render in English" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet
-                                   (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
+        (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 
@@ -322,7 +349,7 @@ class SelectPageISpec extends IntegrationSpecBase {
     "the welsh content header is set to true and welsh object provided in config" should {
       "render in Welsh" in {
         val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet
-                                   (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
+        (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
         stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
         stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 

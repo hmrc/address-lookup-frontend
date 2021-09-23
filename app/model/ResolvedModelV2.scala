@@ -46,6 +46,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig()))
   val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig()))
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
+
+  val pageHeadingStyle: String = journeyOptions.pageHeadingStyle.getOrElse("govuk-heading-xl")
 }
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {

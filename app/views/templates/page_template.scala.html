@@ -20,11 +20,12 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Footer
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Meta
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 
 @this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
 HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog,
-header: HmrcHeader)
+header: HmrcHeader, standardFooter: HmrcStandardFooter)
 @(title: String, form: Option[Form[_]], journeyData: JourneyDataV2)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
     @userAction = @{
@@ -117,12 +118,7 @@ header: HmrcHeader)
         ))),
         beforeContentBlock = Some(beforeContent),
         scriptsBlock = Some(scriptElem),
-        footerBlock = Some(footer(Footer(
-            meta = Some(Meta(
-                visuallyHiddenTitle = Some(messages("constants.footer.visuallyHiddenText")),
-                items = Some(FooterLinks(resolvedJourneyConfig.options.accessibilityFooterUrl, userAction))
-            ))
-        )))
+        footerBlock = Some(standardFooter(accessibilityStatementUrl = resolvedJourneyConfig.options.accessibilityFooterUrl))
     ) {
         @form.map { f =>
             @if(f.hasErrors) {

@@ -14,6 +14,5 @@ GET  /destroySession             @controllers.AddressLookupController.destroySes
 # Other
 GET  /language/:lang        @controllers.LanguageController.switchToLanguage(lang: String)
 
-->         /govuk-frontend           govuk.Routes
 ->         /hmrc-frontend            hmrcfrontend.Routes
 GET        /assets/*file             controllers.Assets.at(path = "/public", file)

@@ -16,8 +16,9 @@
 
 @import config.FrontendAppConfig
 @import config.FooterLinks
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 
-@this(govukLayout: GovukLayout)
+@this(govukLayout: GovukLayout, standardFooter: HmrcStandardFooter)
 
 @(title: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
@@ -51,7 +52,7 @@
     pageTitle = Some(fullTitle),
     headBlock = Some(head),
     scriptsBlock = Some(scriptElem),
-    footerItems = FooterLinks(None, "")) {
+    footerBlock = Some(standardFooter())) {
 
     <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
     <p class="govuk-body">@{Text(message).asHtml}</p>

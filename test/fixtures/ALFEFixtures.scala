@@ -28,11 +28,11 @@ trait ALFEFixtures {
      ))
    ))
 
-   def editFormConstructor(a: Edit = Edit("foo", Some("bar"), Some("wizz"), "bang","B11 6HJ", "GB"))
-   = Seq(("line1", a.line1),
+   def editFormConstructor(a: Edit = Edit(Some("foo"), Some("bar"), Some("wizz"), Some("bang"),"B11 6HJ", "GB"))
+   = Seq(a.line3.map(a => ("line1", a)).getOrElse(("", "")),
       a.line2.map(b => ("line2", b)).getOrElse(("", "")),
       a.line3.map(c => ("line3", c)).getOrElse(("", "")),
-      ("town", a.town),
+      a.town.map(t => ("town", t)).getOrElse(("", "")),
       ("postcode", a.postcode),
       ("countryCode", a.countryCode))
 }

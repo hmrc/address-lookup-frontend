@@ -30,10 +30,10 @@ case class Timeout(timeoutAmount: Int,
 
 case class Select(addressId: String)
 
-case class Edit(line1: String,
+case class Edit(line1: Option[String],
                 line2: Option[String],
                 line3: Option[String],
-                town: String,
+                town: Option[String],
                 postcode: String,
                 countryCode: String = "GB") {
 
@@ -42,11 +42,8 @@ case class Edit(line1: String,
       auditRef,
       None,
       ConfirmableAddressDetails(
-        Some(
-          List(line1) ++ line2.map(_.toString).toList ++ line3
-            .map(_.toString)
-            .toList ++ List(town)
-        ),
+        List(line1, line2, line3).flatten,
+        town,
         if (postcode.isEmpty) None
         else if (countryCode == "GB") Postcode.cleanupPostcode(postcode).map(_.toString)
         else Some(postcode),
@@ -68,12 +65,8 @@ case class ProposedAddress(addressId: String,
     ConfirmableAddress(
       auditRef,
       Some(addressId),
-      ConfirmableAddressDetails(Some(toLines), Some(postcode), Some(country), poBox)
+      ConfirmableAddressDetails(lines, Some(town), Some(postcode), Some(country), poBox)
     )
-
-  private def toLines: List[String] = {
-      lines.take(3) ++ List(town)
-  }
 
   // TODO verify description format
   def toDescription: String = {
@@ -94,50 +87,29 @@ case class ConfirmableAddress(auditRef: String,
 }
 
 case class ConfirmableAddressDetails(
-  lines: Option[List[String]] = None,
+  lines: Seq[String] = Seq(),
+  town: Option[String] = None,
   postcode: Option[String] = None,
   country: Option[Country] = ForeignOfficeCountryService.find(code = "GB"),
   poBox: Option[String] = None
 ) {
 
   def toDescription: String = {
-    (lines.getOrElse(List.empty) ++ postcode.toList ++ country.toList.map(
+    (lines ++ postcode.toList ++ country.toList.map(
       _.name
     )).mkString(", ") + "."
   }
 
   def toEdit: Edit = {
-    val el = editLines
     Edit(
-      el._1,
-      el._2,
-      el._3,
-      el._4,
+      lines.headOption,
+      lines.lift(1),
+      lines.lift(2),
+      town,
       PostcodeHelper.displayPostcode(postcode),
       country.map(_.code).get
     )
   }
-
-  def editLines: (String, Option[String], Option[String], String) = {
-    val l1 = lines
-      .map { lines =>
-        lines.lift(0).getOrElse("")
-      }
-      .getOrElse("")
-    val l2 = lines.flatMap(l => {
-      if (l.length > 2) l.lift(1) else None
-    })
-    val l3 = lines.flatMap(l => {
-      if (l.length > 3) l.lift(2) else None
-    })
-    val l4 = lines
-      .flatMap(l => {
-        if (l.length > 1) l.lastOption else None
-      })
-      .getOrElse("")
-    (l1, l2, l3, l4)
-  }
-
 }
 
 object CountryFormat {

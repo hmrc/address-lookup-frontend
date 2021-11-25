@@ -44,6 +44,7 @@ constants.editPageTownMinErrorMessage = Enter town or city of the address
 constants.editPagePostcodeErrorMessage.ukMode = Enter a valid UK postcode
 constants.editPagePostcodeErrorMessage = Enter a valid postcode
 constants.editPageCountryErrorMessage = Enter country of the address
+constants.editPageAtLeastOneLineOrTown = Enter at least one address line or a town
 
 constants.errorRequired = Select the property for the address
 constants.errorMin = Minimum length is $min

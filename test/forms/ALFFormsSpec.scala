@@ -88,7 +88,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
     }
 
     "isvalidPostCode should accept international address with no postcode because country is defaulted to GB and postcode is optional" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, "", "FR"))).hasErrors mustBe false
     }
     Seq(("case 1", "MN 99555"),
       ("case 2","A"),
@@ -98,11 +98,11 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       ("case 6", "SW778 2BH")).foreach{
       case (caseNum,postcode) =>
         s"$editFormUk NOT accept international address with invalid postcodes ($caseNum) because country code is defaulted to GB" in {
-          ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", postcode, "FR"))).hasErrors mustBe true
+          ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, postcode, "FR"))).hasErrors mustBe true
         }
     }
     "isvalidPostCode should  accept international address with valid postcode because country is defaulted to GB" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit("", None, None, "", "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
     }
   }
 
@@ -135,7 +135,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
       // #Scenario: UK Address no postcode
       s" accept a UK address with no postcode where for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "", "GB"))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, "", "GB"))).hasErrors mustBe false
       }
       // #Scenario Outline: UK Address with Invalid PostCode
       Seq(
@@ -147,7 +147,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
         ("case 6","SW778 2BH")).foreach {
         case (caseNum, postcode) =>
           s"not accept a UK address with an invalid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, "GB"))).hasErrors mustBe true
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, postcode, "GB"))).hasErrors mustBe true
           }
       }
 
@@ -161,31 +161,68 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
         ("case 6","B11 6HJ")).foreach{
         case  (caseNum,postcode) =>
           s"accept a UK address with a valid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", postcode, "GB"))).hasErrors mustBe false
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, postcode, "GB"))).hasErrors mustBe false
           }
       }
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit("", None, None, "", "ZZ11ZZ", ""))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, "ZZ11ZZ", ""))).hasErrors mustBe false
       }
 
-      s"$formOfTest return error if line 1 is empty" in {
+      s"$formOfTest accept input if only line 1 is present" in {
+        val data = Map(
+          "line1" -> "foo1",
+          "line2" -> "",
+          "line3" -> "",
+          "town" -> "",
+          "postcode" -> "ZZ11ZZ",
+          "countryCode" -> "GB")
+
+        form.bind(data).hasErrors mustBe false
+      }
+
+      s"$formOfTest accept input if only line 2 is present" in {
         val data = Map(
           "line1" -> "",
           "line2" -> "foo2",
-          "line3" -> "foo3",
-          "town" -> "twn",
-          "postcode" -> "AA199ZZ",
+          "line3" -> "",
+          "town" -> "",
+          "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors mustBe false
       }
-      s"$formOfTest return error if line 4 is empty" in {
+
+      s"$formOfTest accept input if only line 3 is present" in {
         val data = Map(
-          "line1" -> "foo1",
-          "line2" -> "foo2",
+          "line1" -> "",
+          "line2" -> "",
           "line3" -> "foo3",
           "town" -> "",
           "postcode" -> "ZZ11ZZ",
+          "countryCode" -> "GB")
+
+        form.bind(data).hasErrors mustBe false
+      }
+
+      s"$formOfTest accept input if only town is present" in {
+        val data = Map(
+          "line1" -> "",
+          "line2" -> "",
+          "line3" -> "",
+          "town" -> "town",
+          "postcode" -> "AA199ZZ",
+          "countryCode" -> "GB")
+
+        form.bind(data).hasErrors mustBe false
+      }
+
+      s"$formOfTest return error if all lines and town are empty" in {
+        val data = Map(
+          "line1" -> "",
+          "line2" -> "",
+          "line3" -> "",
+          "town" -> "",
+          "postcode" -> "AA199ZZ",
           "countryCode" -> "GB")
 
         form.bind(data).hasErrors mustBe true

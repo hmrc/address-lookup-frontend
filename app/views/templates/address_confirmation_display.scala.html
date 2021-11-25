@@ -19,15 +19,14 @@
 @(addr: ConfirmableAddressDetails)
 
 <div id="address">
-    @addr.lines.map { linesList =>
-        @for( (line, index) <- linesList.zipWithIndex ) {
-            <span class="govuk-body-l"  id="line@{index+1}">@line</span><br>
-        }
+    @for( (line, index) <- (addr.lines ++ addr.town).zipWithIndex ) {
+        <span class="govuk-body-l"  id="line@{index+1}">@line</span><br>
     }
+
     @addr.postcode.map { pc =>
         <span class="govuk-body-l" id="postCode">@pc</span><br>
     }
     @addr.country.map { ctry =>
-    <span class="govuk-body-l" id="country">@{ctry.name}</span>
+        <span class="govuk-body-l" id="country">@{ctry.name}</span>
     }
 </div>

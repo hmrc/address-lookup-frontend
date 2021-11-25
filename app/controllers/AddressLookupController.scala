@@ -368,10 +368,10 @@ class AddressLookupController @Inject()(
       .map(_.toEdit)
       .getOrElse(
         Edit(
-          "",
           None,
           None,
-          "",
+          None,
+          None,
           PostcodeHelper.displayPostcode(lookUpPostCode),
           "GB"
         )
@@ -386,10 +386,10 @@ class AddressLookupController @Inject()(
       .map(_.toEdit)
       .getOrElse(
         Edit(
-          "",
           None,
           None,
-          "",
+          None,
+          None,
           PostcodeHelper.displayPostcode(lookUpPostCode),
           ""
         )

@@ -119,28 +119,28 @@ object ALFForms extends EmptyStringValidator {
 
   def ukEditForm()(implicit messages: Messages): Form[Edit] = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))
-        .verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+      "line1" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage")))),
       "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
       "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
-      "town" -> customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))
-        .verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage"))),
+      "town" -> optional(text.verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage")))),
       "postcode" -> default(text,""),
       "countryCode" -> ignored[String]("GB")
-    )(Edit.apply)(Edit.unapply)
+    )(Edit.apply)(Edit.unapply).verifying(messages(s"constants.editPageAtLeastOneLineOrTown"), edit => {
+      Seq(edit.line1, edit.line2, edit.line3, edit.town).flatten.nonEmpty
+    })
   )
 
   def nonUkEditForm()(implicit messages: Messages) = Form(
     mapping(
-      "line1" -> customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))
-        .verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+      "line1" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage")))),
       "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
       "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
-      "town" -> customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))
-        .verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage"))),
+      "town" -> optional(text.verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage")))),
       "postcode" -> default(text,""),
       "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
-    )(Edit.apply)(Edit.unapply)
+    )(Edit.apply)(Edit.unapply).verifying(messages(s"constants.editPageAtLeastOneLineOrTown"), edit => {
+      Seq(edit.line1, edit.line2, edit.line3, edit.town).flatten.nonEmpty
+    })
   )
 
   val confirmedForm = Form(

@@ -8,6 +8,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import address.v2.Country
+import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 
 class AddressLookupControllerISpec extends IntegrationSpecBase {
 
@@ -77,10 +78,10 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       res.status shouldBe OK
-      res.json shouldBe Json.toJson(ConfirmableAddress(
+      res.json shouldBe Json.toJson(ConfirmedResponseAddress(
         auditRef = testAuditRef,
         id = Some(testAddressIdRaw),
-        address = ConfirmableAddressDetails(List(testAddressLine1, testAddressLine2, testAddressLine3), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France"))))
+        address = ConfirmedResponseAddressDetails(Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
       )
     }
   }

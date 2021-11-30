@@ -117,7 +117,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           .get())
 
         res.status shouldBe OK
-        Json.parse(res.body) shouldBe Json.toJson(testConfirmedAddress)
+        Json.parse(res.body) shouldBe Json.toJson(testConfirmedResponseAddress)
       }
     }
 

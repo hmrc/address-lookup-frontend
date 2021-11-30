@@ -1,11 +1,11 @@
 package itutil.config
 
 import java.util.UUID
-
 import itutil.config.IntegrationTestConstants._
 import model._
 import play.api.libs.json._
 import address.v2.Country
+import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 
 object IntegrationTestConstants {
   val testApiVersion = 2
@@ -30,6 +30,10 @@ object IntegrationTestConstants {
   val testFullNonUKAddress = ConfirmableAddressDetails(List(testAddressLine1, testAddressLine2, testAddressLine3), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France")))
   val testUKAddress = ConfirmableAddressDetails(List(testAddressLine1, testAddressLine2), Some(testAddressTown), Some(testPostCode), Some(Country("GB", "United Kingdom")))
   val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)
+
+  val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
+  val testConfirmedResponseAddress = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
+
   val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)
 
   def testProposedAddresses(amount: Int): Seq[ProposedAddress] = (1 to amount) map { _ =>

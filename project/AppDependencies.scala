@@ -13,7 +13,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.14.0",
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "1.14.0-play-28",
     "uk.gov.hmrc" %% "http-caching-client" % "9.5.0-play-28",
-    "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28"
+    "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28",
+    "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.10.0-play-28"
   ).map(_.withSources())
 
   def test(scope: String = "test") = Seq(

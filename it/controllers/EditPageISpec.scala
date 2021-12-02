@@ -39,8 +39,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Address line 1",
-          "line2" -> "Address line 2 (optional)",
-          "line3" -> "Address line 3 (optional)",
+          "line2" -> "Address line 2",
+          "line3" -> "Address line 3",
           "town" -> "Town/city",
           "postcode" -> "Postcode (optional)",
           "countryCode" -> "Country"
@@ -77,8 +77,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Cyfeiriad – llinell 1",
-          "line2" -> "Cyfeiriad – llinell 2 (dewisol)",
-          "line3" -> "Cyfeiriad – llinell 3 (dewisol)",
+          "line2" -> "Cyfeiriad – llinell 2",
+          "line3" -> "Cyfeiriad – llinell 3",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad"
@@ -215,8 +215,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Cyfeiriad – llinell 1",
-          "line2" -> "Cyfeiriad – llinell 2 (dewisol)",
-          "line3" -> "Cyfeiriad – llinell 3 (dewisol)",
+          "line2" -> "Cyfeiriad – llinell 2",
+          "line3" -> "Cyfeiriad – llinell 3",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)"
         ))
@@ -436,8 +436,8 @@ class EditPageISpec extends IntegrationSpecBase {
       res.status shouldBe BAD_REQUEST
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Address line 1",
-        "line2" -> "Address line 2 (optional)",
-        "line3" -> "Address line 3 (optional)",
+        "line2" -> "Address line 2",
+        "line3" -> "Address line 3",
         "town" -> "Town/city",
         "postcode" -> "Postcode (optional)",
         "countryCode" -> "Country"))
@@ -473,8 +473,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2 (dewisol)",
-        "line3" -> "Cyfeiriad – llinell 3 (dewisol)",
+        "line2" -> "Cyfeiriad – llinell 2",
+        "line3" -> "Cyfeiriad – llinell 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -504,8 +504,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2 (dewisol)",
-        "line3" -> "Cyfeiriad – llinell 3 (dewisol)",
+        "line2" -> "Cyfeiriad – llinell 2",
+        "line3" -> "Cyfeiriad – llinell 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -570,8 +570,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Address line 1",
-        "line2" -> "Address line 2 (optional)",
-        "line3" -> "Address line 3 (optional)",
+        "line2" -> "Address line 2",
+        "line3" -> "Address line 3",
         "town" -> "Town/city",
         "postcode" -> "UK postcode (optional)"
       ))
@@ -609,8 +609,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2 (dewisol)",
-        "line3" -> "Cyfeiriad – llinell 3 (dewisol)",
+        "line2" -> "Cyfeiriad – llinell 2",
+        "line3" -> "Cyfeiriad – llinell 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post yn y DU (dewisol)"
       ))

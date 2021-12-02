@@ -20,10 +20,12 @@ import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
 import model.{Edit, Lookup, Select}
 import play.api.data.{Form, FormError, Forms}
-import play.api.data.Forms.{default, ignored, mapping, optional, text}
+import play.api.data.Forms.{default, ignored, mapping, nonEmptyText, optional, text}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.Messages
+import uk.gov.voa.play.form.Condition
+import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 
 object Helpers {
 
@@ -35,12 +37,14 @@ object Helpers {
         case "" => None
         case entry => Some(entry)
       }
+
       def bind(key: String, data: Map[String, String]): Either[Seq[FormError],String] = getNonEmpty(key, data).toRight(Seq(FormError(key, message, Nil)))
       def unbind(key: String, value: String) = Map(key -> value)
     }
 
   }
 }
+
 object ALFForms extends EmptyStringValidator {
 
   def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
@@ -93,6 +97,12 @@ object ALFForms extends EmptyStringValidator {
     )(Select.apply)(Select.unapply)
   )
 
+  val constraintOptString256 = (msg: String)  => new Constraint[Option[String]](Some("length.max"),Seq.empty)(s => if(s.isEmpty || s.get.length < 256) {
+    Valid
+  } else {
+    Invalid(msg)
+  } )
+
   val constraintString256 = (msg: String)  => new Constraint[String](Some("length.max"),Seq.empty)(s => if(s.length < 256) {
     Valid
   } else {
@@ -116,13 +126,26 @@ object ALFForms extends EmptyStringValidator {
     }
   }
 
+  def atLeastOneAddressLineOrTown(message: String = "") = Forms.of[Option[String]](formatter(message))
+  def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError],Option[String]] = {
+      val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
+      if (values.forall(_.isEmpty)) {
+        Left(Seq(FormError(key, message, Nil)))
+      } else {
+        Right(data.get(key))
+      }
+    }
+
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
+  }
 
   def ukEditForm()(implicit messages: Messages): Form[Edit] = Form(
     mapping(
-      "line1" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage")))),
-      "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
-      "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
-      "town" -> optional(text.verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage")))),
+      "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+      "line2" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
+      "line3" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
+      "town" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
       "postcode" -> default(text,""),
       "countryCode" -> ignored[String]("GB")
     )(Edit.apply)(Edit.unapply).verifying(messages(s"constants.editPageAtLeastOneLineOrTown"), edit => {
@@ -130,18 +153,44 @@ object ALFForms extends EmptyStringValidator {
     })
   )
 
-  def nonUkEditForm()(implicit messages: Messages) = Form(
-    mapping(
-      "line1" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine1MaxErrorMessage")))),
-      "line2" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine2MaxErrorMessage")))),
-      "line3" -> optional(text.verifying(constraintString256(messages(s"constants.editPageAddressLine3MaxErrorMessage")))),
-      "town" -> optional(text.verifying(constraintString256(messages(s"constants.editPageTownMaxErrorMessage")))),
-      "postcode" -> default(text,""),
-      "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
-    )(Edit.apply)(Edit.unapply).verifying(messages(s"constants.editPageAtLeastOneLineOrTown"), edit => {
-      Seq(edit.line1, edit.line2, edit.line3, edit.town).flatten.nonEmpty
-    })
-  )
+  import uk.gov.voa.play.form._
+
+
+
+
+  def nonUkEditForm()(implicit messages: Messages) =
+    Form(
+      mapping(
+        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
+        "line2" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
+        "line3" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
+        "town" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
+        "postcode" -> default(text,""),
+        "countryCode" -> customErrorTextValidation("")
+      )(Edit.apply)(Edit.unapply)
+    )
+
+//  def nonUkEditForm()(implicit messages: Messages) = {
+//    val x = constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))
+//    Form(
+//      mapping(
+//        "line1" -> mandatoryIf(
+//          isEqual("line2", "") and isEqual("line3", "") and isEqual("town", ""),
+//          customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))).verifying(x),
+//        "line2" -> mandatoryIf(
+//          isEqual("line1", "") and isEqual("line3", "") and isEqual("town", ""),
+//          customErrorTextValidation(messages(s"constants.editPageAddressLine2MinErrorMessage"))).verifying(x),
+//        "line3" -> mandatoryIf(
+//          isEqual("line1", "") and isEqual("line2", "") and isEqual("town", ""),
+//          customErrorTextValidation(messages(s"constants.editPageAddressLine3MinErrorMessage"))).verifying(x),
+//        "town" -> mandatoryIf(
+//          isEqual("line1", "") and isEqual("line2", "") and isEqual("line3", ""),
+//          customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))).verifying(x),
+//        "postcode" -> default(text,""),
+//        "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
+//      )(Edit.apply)(Edit.unapply)
+//    )
+//  }
 
   val confirmedForm = Form(
     mapping(

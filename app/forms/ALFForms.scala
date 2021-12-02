@@ -133,7 +133,7 @@ object ALFForms extends EmptyStringValidator {
       if (values.forall(_.isEmpty)) {
         Left(Seq(FormError(key, message, Nil)))
       } else {
-        Right(data.get(key))
+        Right(data.get(key).collect { case x if x.trim.nonEmpty => x })
       }
     }
 
@@ -153,11 +153,6 @@ object ALFForms extends EmptyStringValidator {
     })
   )
 
-  import uk.gov.voa.play.form._
-
-
-
-
   def nonUkEditForm()(implicit messages: Messages) =
     Form(
       mapping(
@@ -166,31 +161,9 @@ object ALFForms extends EmptyStringValidator {
         "line3" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
         "town" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
         "postcode" -> default(text,""),
-        "countryCode" -> customErrorTextValidation("")
+        "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
       )(Edit.apply)(Edit.unapply)
     )
-
-//  def nonUkEditForm()(implicit messages: Messages) = {
-//    val x = constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))
-//    Form(
-//      mapping(
-//        "line1" -> mandatoryIf(
-//          isEqual("line2", "") and isEqual("line3", "") and isEqual("town", ""),
-//          customErrorTextValidation(messages(s"constants.editPageAddressLine1MinErrorMessage"))).verifying(x),
-//        "line2" -> mandatoryIf(
-//          isEqual("line1", "") and isEqual("line3", "") and isEqual("town", ""),
-//          customErrorTextValidation(messages(s"constants.editPageAddressLine2MinErrorMessage"))).verifying(x),
-//        "line3" -> mandatoryIf(
-//          isEqual("line1", "") and isEqual("line2", "") and isEqual("town", ""),
-//          customErrorTextValidation(messages(s"constants.editPageAddressLine3MinErrorMessage"))).verifying(x),
-//        "town" -> mandatoryIf(
-//          isEqual("line1", "") and isEqual("line2", "") and isEqual("line3", ""),
-//          customErrorTextValidation(messages(s"constants.editPageTownMinErrorMessage"))).verifying(x),
-//        "postcode" -> default(text,""),
-//        "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
-//      )(Edit.apply)(Edit.unapply)
-//    )
-//  }
 
   val confirmedForm = Form(
     mapping(

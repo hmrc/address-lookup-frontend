@@ -157,9 +157,9 @@ object ALFForms extends EmptyStringValidator {
     Form(
       mapping(
         "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
-        "line2" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
-        "line3" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
-        "town" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
+        "line2" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
+        "line3" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
+        "town" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
         "postcode" -> default(text,""),
         "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
       )(Edit.apply)(Edit.unapply)

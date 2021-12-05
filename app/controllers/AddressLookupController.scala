@@ -449,22 +449,26 @@ class AddressLookupController @Inject()(
             isValidPostcode(nonUkEditForm().bindFromRequest())
 
           validatedForm.fold(
-            errors =>
-              (None, requestWithWelshHeader(isWelsh) {
-                BadRequest(
-                  non_uk_mode_edit(
-                    id,
-                    journeyData,
-                    errors,
-                    allowedCountries(
-                      countries(isWelsh),
-                      journeyData.config.options.allowedCountryCodes
-                    ),
-                    isWelsh = isWelsh,
-                    isUKMode = isUKMode
+            errors => {
+
+              //val pretendErrors =
+
+                (None, requestWithWelshHeader(isWelsh) {
+                  BadRequest(
+                    non_uk_mode_edit(
+                      id,
+                      journeyData,
+                      errors,
+                      allowedCountries(
+                        countries(isWelsh),
+                        journeyData.config.options.allowedCountryCodes
+                      ),
+                      isWelsh = isWelsh,
+                      isUKMode = isUKMode
+                    )
                   )
-                )
-              }),
+                })
+            },
             edit =>
               (
                 Some(

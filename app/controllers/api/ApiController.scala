@@ -60,28 +60,14 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
     val redirectPolicyResult = timeoutRedirectUrl.map { url => Try { policy.url(url) } }
     val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try { policy.url(url) } }
 
-    val userAgent = req.headers.get(USER_AGENT).getOrElse("unknown")
-
-    redirectPolicyResult match {
-      case Some(Failure(_)) =>
-        logger.warn(s"Timeout redirect url from ${userAgent} is not valid according to the security policy: '${timeoutRedirectUrl}'")
+   (redirectPolicyResult, keepAlivePolicyResult) match {
+      case (Some(Failure(_)), _) | (_, Some(Failure(_))) =>
+        import InitFailure.writes
+        Future.successful(BadRequest(Json.toJson(InitFailure("Timeout config only allows relative urls"))))
       case _ =>
+        journeyRepository.putV2(id, JourneyDataV2(config = req.body))
+          .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
     }
-
-    keepAlivePolicyResult match {
-      case Some(Failure(_)) =>
-        logger.warn(s"Timeout keepalive url from ${userAgent} is not valid according to the security policy: '${timeoutKeepAliveUrl}'")
-      case _ =>
-    }
-
-//    policyResult match {
-//      case Success(_) =>
-    journeyRepository.putV2(id, JourneyDataV2(config = req.body))
-      .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
-//      case _ =>
-//        import InitFailure.writes
-//        Future.successful(BadRequest(Json.toJson(InitFailure("Timeout config only allows relative urls"))))
-//    }
   }
 
   def confirmedV2 = Action.async { implicit req =>

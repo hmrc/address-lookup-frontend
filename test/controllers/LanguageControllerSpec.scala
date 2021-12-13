@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFEFixtures {
-  SharedMetricRegistries.clear()
+    SharedMetricRegistries.clear()
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 

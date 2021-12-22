@@ -44,7 +44,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
 
   protected def uuid: String = idGenerationService.uuid
 
-  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(config.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(config.allowedHosts, config.environment)
 
   case class InitFailure(reason: String)
   object InitFailure {
@@ -56,14 +56,16 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
 
     val timeoutRedirectUrl = req.body.options.timeoutConfig.map(t => t.timeoutUrl)
     val timeoutKeepAliveUrl = req.body.options.timeoutConfig.flatMap(t => t.timeoutKeepAliveUrl)
+    val signoutUrl = req.body.options.signOutHref
 
     val redirectPolicyResult = timeoutRedirectUrl.map { url => Try { policy.url(url) } }
     val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try { policy.url(url) } }
+    val signoutPolicyResult = signoutUrl.map { url => Try { policy.url(url) } }
 
-   (redirectPolicyResult, keepAlivePolicyResult) match {
-      case (Some(Failure(_)), _) | (_, Some(Failure(_))) =>
+   (redirectPolicyResult, keepAlivePolicyResult, signoutPolicyResult) match {
+      case (Some(Failure(_)), _, _) | (_, Some(Failure(_)), _) | (_, _, Some(Failure(_))) =>
         import InitFailure.writes
-        Future.successful(BadRequest(Json.toJson(InitFailure("Timeout config only allows relative urls"))))
+        Future.successful(BadRequest(Json.toJson(InitFailure("Config only allows relative or allow listed urls"))))
       case _ =>
         journeyRepository.putV2(id, JourneyDataV2(config = req.body))
           .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))

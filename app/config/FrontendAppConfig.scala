@@ -16,7 +16,7 @@
 
 package config
 
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -38,7 +38,7 @@ trait AppConfig {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig, val environment: Environment) {
   private def loadConfig(key: String) = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   val appName: String = config.get[String]("appName")

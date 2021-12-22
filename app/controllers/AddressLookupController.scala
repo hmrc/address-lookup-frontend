@@ -577,7 +577,7 @@ class AddressLookupController @Inject()(
     }
 
   // GET /destroySession
-  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts)
+  private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts, frontendAppConfig.environment)
 
   def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
     implicit req =>

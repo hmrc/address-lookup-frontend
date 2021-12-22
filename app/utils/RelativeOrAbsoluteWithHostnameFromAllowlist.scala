@@ -16,25 +16,22 @@
 
 package utils
 
+import play.api.Environment
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, PermitAllOnDev, RedirectUrl}
 
 import scala.util.{Failure, Success, Try}
 
-class RelativeOrAbsoluteWithHostnameFromAllowlist(private val allowedHosts: Set[String]) {
+class RelativeOrAbsoluteWithHostnameFromAllowlist(private val allowedHosts: Set[String], private val environment: Environment) {
   private val absoluteWithHostnameFromAllowlist = AbsoluteWithHostnameFromAllowlist(allowedHosts)
   private val relativeUrlsOnly = OnlyRelative
+  private val permitAllOnDev = PermitAllOnDev(environment)
 
   def url(theUrl: RedirectUrl): String = url(theUrl.unsafeValue)
   def url(theUrl: String): String = {
-    val relRes = Try(RedirectUrl(theUrl).get(relativeUrlsOnly).url)
-    val absRes = Try(RedirectUrl(theUrl).get(absoluteWithHostnameFromAllowlist).url)
-
-    (relRes, absRes) match {
-      case (Success(url), _) => url
-      case (_, Success(url)) => url
-      case (Failure(e), _) => throw e
-      case (_, Failure(e)) => throw e
+    RedirectUrl(theUrl).getEither(relativeUrlsOnly | absoluteWithHostnameFromAllowlist | permitAllOnDev) match {
+      case Right(safeRedirectUrl) => safeRedirectUrl.url
+      case Left(error) => throw new IllegalArgumentException(error)
     }
   }
 }

@@ -41,6 +41,7 @@ case class Edit(line1: Option[String],
     ConfirmableAddress(
       auditRef,
       None,
+      None, None, None, None,
       ConfirmableAddressDetails(
         List(line1, line2, line3).flatten,
         town,
@@ -53,6 +54,10 @@ case class Edit(line1: Option[String],
 }
 
 case class ProposedAddress(addressId: String,
+                           uprn: Option[Long],
+                           parentUprn: Option[Long],
+                           usrn: Option[Long],
+                           organisation: Option[String],
                            postcode: String,
                            town: String,
                            lines: List[String] = List.empty,
@@ -65,6 +70,7 @@ case class ProposedAddress(addressId: String,
     ConfirmableAddress(
       auditRef,
       Some(addressId),
+      uprn, parentUprn, usrn, organisation,
       ConfirmableAddressDetails(lines, Some(town), Some(postcode), Some(country), poBox)
     )
 
@@ -77,6 +83,10 @@ case class ProposedAddress(addressId: String,
 
 case class ConfirmableAddress(auditRef: String,
                               id: Option[String] = None,
+                              uprn: Option[Long] = None,
+                              parentUprn: Option[Long] = None,
+                              usrn: Option[Long] = None,
+                              organisation: Option[String] = None,
                               address: ConfirmableAddressDetails =
                                 ConfirmableAddressDetails()) {
 

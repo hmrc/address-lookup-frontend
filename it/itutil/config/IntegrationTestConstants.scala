@@ -29,16 +29,20 @@ object IntegrationTestConstants {
   val testNonUKAddress = ConfirmableAddressDetails(List(testAddressLine1), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France")))
   val testFullNonUKAddress = ConfirmableAddressDetails(List(testAddressLine1, testAddressLine2, testAddressLine3), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France")))
   val testUKAddress = ConfirmableAddressDetails(List(testAddressLine1, testAddressLine2), Some(testAddressTown), Some(testPostCode), Some(Country("GB", "United Kingdom")))
-  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testUKAddress)
+  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testUKAddress)
 
   val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
   val testConfirmedResponseAddress = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
 
-  val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, testFullNonUKAddress)
+  val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testFullNonUKAddress)
 
   def testProposedAddresses(amount: Int): Seq[ProposedAddress] = (1 to amount) map { _ =>
     ProposedAddress(
       addressId = testAddressIdRaw,
+      uprn = None,
+      parentUprn = None,
+      usrn = None,
+      organisation = None,
       postcode = testPostCode,
       lines = List(testAddressLine1, testAddressLine2),
       town = testAddressTown,
@@ -536,7 +540,7 @@ object IntegrationTestConstants {
     Json.toJson(
       JourneyDataV2(
         journeyConfigV2,
-        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, selectedAddress))
+        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress))
       ))
 
   val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
@@ -626,6 +630,10 @@ object AddressRecordConstants {
     (1 to numberOfRepeats).map(n =>
       ProposedAddress(
         addressId = testAddressIdRaw,
+        uprn = None,
+        parentUprn = None,
+        usrn = None,
+        organisation = None,
         postcode = testPostCode,
         lines = List(testAddressLine1, testAddressLine2),
         town = testAddressTown,

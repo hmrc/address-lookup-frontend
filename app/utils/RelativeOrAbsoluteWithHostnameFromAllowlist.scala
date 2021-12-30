@@ -20,8 +20,6 @@ import play.api.Environment
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, PermitAllOnDev, RedirectUrl}
 
-import scala.util.{Failure, Success, Try}
-
 class RelativeOrAbsoluteWithHostnameFromAllowlist(private val allowedHosts: Set[String], private val environment: Environment) {
   private val absoluteWithHostnameFromAllowlist = AbsoluteWithHostnameFromAllowlist(allowedHosts)
   private val relativeUrlsOnly = OnlyRelative

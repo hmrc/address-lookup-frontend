@@ -47,10 +47,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupControllerSpec
-  extends PlaySpec
-    with GuiceOneAppPerSuite
-    with JsoupShouldMatchers
-    with ScalaFutures with ALFEFixtures {
+    extends PlaySpec
+        with GuiceOneAppPerSuite
+        with JsoupShouldMatchers
+        with ScalaFutures with ALFEFixtures {
 
   SharedMetricRegistries.clear()
 
@@ -66,7 +66,7 @@ class AddressLookupControllerSpec
     implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
     implicit val lang = Lang("en")
-    implicit lazy val messages =  MessagesImpl(lang, messagesApi)
+    implicit lazy val messages = MessagesImpl(lang, messagesApi)
 
     val req = FakeRequest()
     // TODO: Do we need this and the tests that depend on it?
@@ -288,7 +288,7 @@ class AddressLookupControllerSpec
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("BETA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
-        .withValue("This is a new service – your feedback will help us to improve it.")
+          .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
     val customBetaBannerJourneyV2 =
@@ -312,7 +312,7 @@ class AddressLookupControllerSpec
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("BETA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
-        .withValue("enPhaseBannerHtml")
+          .withValue("enPhaseBannerHtml")
     }
 
     val alphaBannerJourneyV2 = testLookupLevelJourneyConfigV2
@@ -324,7 +324,7 @@ class AddressLookupControllerSpec
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("ALPHA")
       html should include element withAttrValue("class", "govuk-phase-banner__content")
-        .withValue("This is a new service – your feedback will help us to improve it.")
+          .withValue("This is a new service – your feedback will help us to improve it.")
     }
 
     val customAlphaBannerJourneyV2 = testAppLevelJourneyConfigV2
@@ -335,7 +335,7 @@ class AddressLookupControllerSpec
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("ALPHA")
-        .withValue("enPhaseBannerHtml")
+                                                                 .withValue("enPhaseBannerHtml")
     }
   }
 
@@ -343,7 +343,7 @@ class AddressLookupControllerSpec
 
     "display the too many addresses page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
-      proposals = Seq(ProposedAddress("1", "ZZ11 1ZZ", "some-town"), ProposedAddress("2", "ZZ11 1ZZ", "some-town"))
+      proposals = Seq(ProposedAddress("1", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("2",       uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
       val html = contentAsString(res).asBodyFragment
@@ -363,7 +363,7 @@ class AddressLookupControllerSpec
 
     "display a single address on confirmation page" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
-      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", lines = List("line1", "line2"), town = "town"))
+      proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", lines = List("line1", "line2"), town = "town"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
 
@@ -373,7 +373,7 @@ class AddressLookupControllerSpec
 
     "display a list of  english proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
-      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", "ZZ11 1ZZ", "some-town"))
+      proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891",       uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
@@ -385,7 +385,7 @@ class AddressLookupControllerSpec
 
     "display a list of welsh proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2),
-      proposals = Seq(ProposedAddress("GB1234567890", "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", "ZZ11 1ZZ", "some-town"))
+      proposals = Seq(ProposedAddress("GB1234567890",      uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891",       uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
       val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
@@ -399,7 +399,7 @@ class AddressLookupControllerSpec
   "handle select" should {
 
     "redirect to confirm page when a proposal is selected" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
       val res: Future[Result] = controller.handleSelect("foo", None, testPostCode).apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
       status(res) must be(303)
@@ -407,7 +407,7 @@ class AddressLookupControllerSpec
     }
 
     "redirect to select page when an address hasn't been selected" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
       val res: Future[Result] = controller.handleSelect("foo", None, testPostCode).apply(req)
       status(res) must be(BAD_REQUEST)
@@ -448,7 +448,7 @@ class AddressLookupControllerSpec
       }
       "the proposals in the journey data don't contain the proposal the user selected" in new Scenario(
         journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(
-          proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2", "some-town")))))
+          proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
       ) {
         val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
@@ -471,7 +471,7 @@ class AddressLookupControllerSpec
       "allow confirmChangeText to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
-          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"),
+          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), None, None, None, None,
             address = ConfirmableAddressDetails(lines = List("line1", "line2"), town = Some("town"), Some("ZZ11 1ZZ"))))
         ))
       ) {
@@ -482,7 +482,8 @@ class AddressLookupControllerSpec
       "render address with blank string in lines correctly" in new Scenario(
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
-          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), address = ConfirmableAddressDetails(lines = List("line1", "", "line3"), town = Some("town"), Some("ZZ11 1ZZ"))))
+          selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), None, None, None, None,
+            address = ConfirmableAddressDetails(lines = List("line1", "", "line3"), town = Some("town"), Some("ZZ11 1ZZ"))))
         ))
       ) {
         val res = controller.confirm("foo").apply(req)
@@ -500,8 +501,8 @@ class AddressLookupControllerSpec
           config = JourneyConfigV2(
             version = 2,
             options = JourneyOptions(continueUrl = "continue", confirmPageConfig = Some(ConfirmPageConfig(
-                            showConfirmChangeText = Some(true)
-                          ))),
+              showConfirmChangeText = Some(true)
+            ))),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(
                 confirmPageLabels = Some(ConfirmPageLabels(
@@ -513,6 +514,7 @@ class AddressLookupControllerSpec
           selectedAddress = Some(ConfirmableAddress(
             auditRef = "",
             id = Some("GB1234567890"),
+            None, None, None, None,
             address = ConfirmableAddressDetails(
               lines = List("line1", "line2"), town = Some("town"),
               postcode = Some("ZZ11 1ZZ")
@@ -529,8 +531,8 @@ class AddressLookupControllerSpec
           config = JourneyConfigV2(
             version = 2,
             options = JourneyOptions(continueUrl = "continue", confirmPageConfig = Some(ConfirmPageConfig(
-                            showConfirmChangeText = Some(true)
-                          ))),
+              showConfirmChangeText = Some(true)
+            ))),
             labels = Some(JourneyLabels(
               cy = Some(LanguageLabels(
                 confirmPageLabels = Some(ConfirmPageLabels(
@@ -542,6 +544,7 @@ class AddressLookupControllerSpec
           selectedAddress = Some(ConfirmableAddress(
             auditRef = "",
             id = Some("GB1234567890"),
+            None, None, None, None,
             address = ConfirmableAddressDetails(
               lines = List("cyLine1", "", "cyLine3"), town = Some("town"),
               postcode = Some("ZZ11 1ZZ")
@@ -563,23 +566,23 @@ class AddressLookupControllerSpec
   "Calling addressOrDefault" should {
 
     "return an address when called with a defined option removing postcode as its invalid" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit(None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
     "return an address when called with a defined option - and long postcode" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit(None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
     "return an address with a normalised postcode when called with no option and a long lookup postcode " in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val spacesInPostcode = Some("AA11     2BB")
 
@@ -588,7 +591,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a normalised postcode when called with no option and no spaces in lookup postcode " in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("AA112BB")
 
@@ -597,7 +600,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a lookup postcode with incorrect format" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("AA11     BB2")
 
@@ -606,7 +609,7 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a lookup postcode with invalid characters" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val lookUpPostcode = Some("TF(3@r")
 
@@ -615,22 +618,22 @@ class AddressLookupControllerSpec
     }
 
     "return an address with a blank postcode when called with no option and a no lookup postcode" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val tstEdit = Edit(None, None, None, None, "", "GB")
       controller.addressOrDefault(None, None) must be(tstEdit)
     }
 
     "return an address when called with a defined option - postcode with no space, postcode confirmable gets removed" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA11BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), ConfirmableAddressDetails(postcode = Some("postCode")))
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
       val tstEdit = Edit(None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
     "return an address when called with an empty option" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",      uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
       val tstEdit = Edit(None, None, None, None, "", "GB")
       controller.addressOrDefault(None) must be(tstEdit)
@@ -707,7 +710,7 @@ class AddressLookupControllerSpec
     "editing an existing address with a country code that is not in the allowedCountryCodes config" when {
       "allowedCountryCodes contains multiple countries" in new Scenario(
         journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
-          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, ConfirmableAddressDetails(Seq(), None, None, Some(Country("FR", "France"))))),
+          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, None, None, None, None, ConfirmableAddressDetails(Seq(), None, None, Some(Country("FR", "France"))))),
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
         )) {
 
@@ -789,7 +792,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
     ) {
       val res = controller.handleEdit("foo")
-        .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
+                          .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
       status(res) must be(303)
     }
 
@@ -815,7 +818,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo")
-        .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit(Some("foo"), None, None, Some("fooBar"), "", "")): _*))
+                          .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit(Some("foo"), None, None, Some("fooBar"), "", "")): _*))
       status(res) must be(303)
     }
   }

@@ -49,6 +49,10 @@ ec: ExecutionContext) extends AddressService {
         val results = found.map { addr =>
           ProposedAddress(
             addr.id,
+            addr.uprn,
+            addr.parentUprn,
+            addr.usrn,
+            addr.organisation,
             addr.address.postcode,
             addr.address.town,
             addr.address.lines,

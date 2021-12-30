@@ -56,7 +56,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       service.find("ZZ11 1ZZ", isukMode = false).futureValue must be(toProposals(oneAddress))
     }
 
-    "map UK to GB & isukMode == false" in new Scenario(List(addr(Some("UK")))) {
+    "map UK to GB & isukMode == false" in new Scenario(List(addr(Some("UK"))(1000L))) {
       service.find("ZZ11 1ZZ", isukMode = false).futureValue.head.country.code must be("GB")
     }
 
@@ -123,24 +123,24 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   private val dubiousAddresses = Json.parse(getClass.getResourceAsStream("/dubious.json")).as[List[AddressRecord]]
 
   private val cannedAddresses = List(
-    cannedAddress(List("3c", "Malvern Court"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat 2a stuff 4", "Malvern Court"), "ZZ11 1ZZ"),
-    cannedAddress(List("3b", "Malvern Court"), "ZZ11 1ZZ"),
-    cannedAddress(List("1", "Malvern Court"), "ZZ11 1ZZ"))
+    cannedAddress(1000L, List("3c", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(2000L, List("Flat 2a stuff 4", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(3000L, List("3b", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(4000L, List("1", "Malvern Court"), "ZZ11 1ZZ"))
 
   private val cannedComplexAddresses = List(
-    cannedAddress(List("Flat 1", "74 Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat 2", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat 1", "70 Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat 2", "74 Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat B", "78 Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("72a", "Comeragh Road"), "ZZ11 1ZZ"),
-    cannedAddress(List("Flat 1", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"))
+    cannedAddress(5000L, List("Flat 1", "74 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(6000L, List("Flat 2", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(7000L, List("Flat 1", "70 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(8000L, List("Flat 2", "74 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(9000L, List("Flat B", "78 Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(10000L, List("72a", "Comeragh Road"), "ZZ11 1ZZ"),
+    cannedAddress(11000L, List("Flat 1", "The Curtains Up", "Comeragh Road"), "ZZ11 1ZZ"))
 
   private val manyAddresses = (numberOfAddresses: Int) =>
-    (code: Option[String]) => someAddresses(numberOfAddresses, addr(code))
+    (code: Option[String]) => someAddresses(numberOfAddresses, addr(code)(1000L))
 
-  private val oneAddress = someAddresses(1, addr(Some("GB")))
+  private val oneAddress = someAddresses(1, addr(Some("GB"))(1000L))
 
   private def someAddresses(num: Int = 1, addr: AddressRecord): List[AddressRecord] = {
     (0 to num).map { i =>
@@ -148,14 +148,17 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }.toList
   }
 
-  private def cannedAddress(lines: List[String], postCode: String) =
-    AddressRecord("1234", Some(Random.nextLong()), Address(lines, "some-town", postCode, Some(Countries.England),
+  private def cannedAddress(uprn: Long, lines: List[String], postCode: String) =
+    AddressRecord(uprn.toString, Some(uprn), None, None, None, Address(lines, "some-town", postCode, Some(Countries.England),
       Country("GB", rndstr(32))), "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
 
-  private def addr(code: Option[String]): AddressRecord = {
+  private def addr(code: Option[String])(uprn: Long): AddressRecord = {
     AddressRecord(
-      rndstr(16),
-      Some(Random.nextLong()),
+      uprn.toString,
+      Some(uprn),
+      Some(uprn+100),
+      Some(uprn+20),
+      None,
       Address(
         List(rndstr(16), rndstr(16), rndstr(8)),
         rndstr(16),
@@ -174,6 +177,10 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     found.map { addr =>
       ProposedAddress(
         addr.id,
+        uprn = addr.uprn,
+        parentUprn = addr.parentUprn,
+        usrn = addr.usrn,
+        organisation = addr.organisation,
         addr.address.postcode,
         addr.address.town,
         addr.address.lines,

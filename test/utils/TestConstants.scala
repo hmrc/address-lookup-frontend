@@ -48,10 +48,10 @@ object TestConstants {
 
   val testAuditRef = "Jid123"
   val testAddressDetails = ConfirmableAddressDetails(List("1 High Street", "Line 2", "Line 3"), Some("Town"), Some("TF1 1NT"), Some(Country("UK", "United Kingdom")))
-  val testAddress = ConfirmableAddress(testAuditRef, Some("1"), testAddressDetails)
+  val testAddress = ConfirmableAddress(testAuditRef, Some("1"), None, None, None, None, testAddressDetails)
   val testProposedAddressSeq = Seq(
-    ProposedAddress("1", "TF1 1NT", "Telford", List("1 High Street", "Line 2", "Line 3"), Country("UK", "United Kingdom")),
-    ProposedAddress("2", "TF2 2NT", "Shrewsbury", List("2 High Street", "Line2", "Line3"), Country("UK", "United Kingdom"))
+    ProposedAddress("1",       uprn = None, parentUprn = None, usrn = None, organisation = None, "TF1 1NT", "Telford", List("1 High Street", "Line 2", "Line 3"), Country("UK", "United Kingdom")),
+    ProposedAddress("2",       uprn = None, parentUprn = None, usrn = None, organisation = None, "TF2 2NT", "Shrewsbury", List("2 High Street", "Line2", "Line3"), Country("UK", "United Kingdom"))
   )
 
   object Lookup {
@@ -582,6 +582,10 @@ object TestConstants {
   val testProposal =
     Proposals(
       proposals = Some(Seq(ProposedAddress(
+        uprn = None,
+        parentUprn = None,
+        usrn = None,
+        organisation = None,
         town = "Telford",
         addressId = "testAddressId",
         postcode = "TF3 4NT",
@@ -593,6 +597,10 @@ object TestConstants {
     Proposals(
       proposals = Some(Seq(
         ProposedAddress(
+          uprn = None,
+          parentUprn = None,
+          usrn = None,
+          organisation = None,
           town = "Telford",
           addressId = "testAddressId0",
           postcode = "TF3 4NT",
@@ -600,6 +608,10 @@ object TestConstants {
         ),
 
         ProposedAddress(
+          uprn = None,
+          parentUprn = None,
+          usrn = None,
+          organisation = None,
           town = "Telford",
           addressId = "testAddressId1",
           postcode = "TF3 4NT",
@@ -607,6 +619,10 @@ object TestConstants {
         ),
 
         ProposedAddress(
+          uprn = None,
+          parentUprn = None,
+          usrn = None,
+          organisation = None,
           town = "Telford",
           addressId = "testAddressId2",
           postcode = "TF3 4NT",

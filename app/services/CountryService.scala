@@ -17,10 +17,12 @@
 package services
 
 import javax.inject.Singleton
-
+import com.github.tototoshi.csv._
 import com.google.inject.ImplementedBy
 import play.api.libs.json.Json
 import address.v2.Country
+
+import scala.io.Source
 
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {
@@ -37,9 +39,47 @@ class ForeignOfficeCountryService extends CountryService {
 
   implicit val fcoCountryFormat = Json.format[FcoCountry]
 
-  private val countriesEN: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesEN.json")).as[Map[String, FcoCountry]].map { country =>
+  private val countriesENJson: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesEN.json")).as[Map[String, FcoCountry]].map { country =>
     Country(country._2.country, country._2.name)
   }.toSeq.sortWith(_.name < _.name)
+
+  private val mappings = Map(
+    "independent" -> None,
+    "alpha_3_code" -> None,
+    "full_name_en" -> Some("Official Name"),
+    "status" -> None,
+    "short_name_uppercase_en" -> None,
+    "numeric_code" -> None,
+    "short_name_en" -> Some("Name"),
+    "alpha_2_code" -> Some("Country")
+  )
+
+  private def renameFields(m: Map[String, String]): Map[String, String] = {
+    mappings.flatMap{case (o,nm) => nm.map(n => n -> m(o))}
+  }
+
+  private val countriesENFull: Seq[Country] = {
+    val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
+                              .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
+                              .map(renameFields)
+                              .groupBy(_("Country"))
+
+    val allFCDORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
+                               .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+                               .groupBy(_("Country"))
+
+    val allFCDOTRows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_territories.csv"), "UTF-8"))
+                                .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+                                .filterNot(m => m("Country") == "Not applicable")
+                                .groupBy(_("Country"))
+
+    (allISORows ++ allFCDORows ++ allFCDOTRows)
+        .mapValues(v => v.head)
+        .map(Country.apply)
+        .toSeq.sortBy(_.name)
+  }
+
+  private val countriesEN = countriesENFull
 
   private val countriesCY: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesCY.json")).as[Map[String, FcoCountry]].map { country =>
     Country(country._2.country, country._2.name)

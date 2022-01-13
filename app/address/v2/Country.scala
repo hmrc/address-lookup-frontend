@@ -31,6 +31,12 @@ case class Country(
   def asV1 = v1.Country(code, name)
 }
 
+object Country {
+  def apply(codeCountryMap: (String, Map[String, String])): Country = codeCountryMap match {
+    case (code, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
+  }
+}
+
 
 object Countries {
   // note that "GB" is the official ISO code for UK, although "UK" is a reserved synonym and is less confusing

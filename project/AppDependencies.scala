@@ -10,11 +10,12 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.14.0",
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "1.14.0-play-28",
-    "uk.gov.hmrc" %% "http-caching-client" % "9.5.0-play-28",
-    "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28",
-    "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.10.0-play-28"
+    "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"      % "5.14.0",
+    "uk.gov.hmrc"           %% "play-frontend-hmrc"              % "1.14.0-play-28",
+    "uk.gov.hmrc"           %% "http-caching-client"             % "9.5.0-play-28",
+    "uk.gov.hmrc"           %% "play-language"                   % "5.1.0-play-28",
+    "uk.gov.hmrc"           %% "play-conditional-form-mapping"   % "1.10.0-play-28",
+    "com.github.tototoshi"  %% "scala-csv"                       % "1.3.10"
   ).map(_.withSources())
 
   def test(scope: String = "test") = Seq(
@@ -27,6 +28,6 @@ object AppDependencies {
   ).map(_.withSources())
 
   def itDependencies = test("it") ++
-  Seq("com.github.tomakehurst" % "wiremock-jre8" % "2.26.1" % "it")
+      Seq("com.github.tomakehurst" % "wiremock-jre8" % "2.26.1" % "it")
 
 }

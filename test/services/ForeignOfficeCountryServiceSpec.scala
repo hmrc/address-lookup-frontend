@@ -20,6 +20,8 @@ import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
+import scala.io.Source
+
 class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   class Scenario {
@@ -31,7 +33,7 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     "return list of countries ordered by name" in new Scenario {
       val found = service.findAll()
       found.head.name must be ("Afghanistan")
-      found.last.name must be ("Zimbabwe")
+      found.last.name must be ("Åland Islands")
     }
 
   }

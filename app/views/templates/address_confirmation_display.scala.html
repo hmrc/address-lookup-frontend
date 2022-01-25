@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@
 @(addr: ConfirmableAddressDetails)
 
 <div id="address">
+    @addr.organisation.map { o =>
+        <span class="govuk-body-l" id="organisation">@o</span><br>
+    }
+
     @for( (line, index) <- (addr.lines ++ addr.town).zipWithIndex ) {
         <span class="govuk-body-l"  id="line@{index+1}">@line</span><br>
     }

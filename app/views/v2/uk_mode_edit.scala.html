@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,11 @@ select: GovukSelect, page: page_template)
     </h1>
 
     @form(routes.AddressLookupController.handleEdit(id)) {
+            @textInput(Input(value = editForm("organisation").value,
+                label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
+                formGroupClasses = "form-field-group", autocomplete = Some("address-organisation"),
+                name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
+                errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line1").value,
                 label = Label(content = HtmlContent(messages("editPage.line1Label"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),

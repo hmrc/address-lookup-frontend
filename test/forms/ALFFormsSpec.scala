@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
   "ukEditForm" should {
     "return no errors with valid data" in {
       val data = Map(
+        "organisation" -> "some-organisation",
         "line1" -> "foo1",
         "line2" -> "foo2",
         "line3" -> "foo3",
@@ -53,6 +54,29 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
         "countryCode" -> "GB")
 
       editFormUk.bind(data).hasErrors mustBe false
+    }
+    "retrieve organisation when present" in {
+      val data = Map(
+        "organisation" -> "some-organisation",
+        "line1" -> "foo1",
+        "line2" -> "foo2",
+        "line3" -> "foo3",
+        "town" -> "twn",
+        "postcode" -> "ZZ1 1ZZ",
+        "countryCode" -> "GB")
+
+      editFormUk.bind(data).get.organisation mustBe Some("some-organisation")
+    }
+    "not retrieve organisation when it is not present" in {
+      val data = Map(
+        "line1" -> "foo1",
+        "line2" -> "foo2",
+        "line3" -> "foo3",
+        "town" -> "twn",
+        "postcode" -> "ZZ1 1ZZ",
+        "countryCode" -> "GB")
+
+      editFormUk.bind(data).get.organisation mustBe None
     }
     "should default country code if country code is different to GB but all data is valid" in {
       val data = Map(
@@ -88,7 +112,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
     }
 
     "isvalidPostCode should accept international address with no postcode because country is defaulted to GB and postcode is optional" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, "", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "", "FR"))).hasErrors mustBe false
     }
     Seq(("case 1", "MN 99555"),
       ("case 2","A"),
@@ -98,11 +122,11 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       ("case 6", "SW778 2BH")).foreach{
       case (caseNum,postcode) =>
         s"$editFormUk NOT accept international address with invalid postcodes ($caseNum) because country code is defaulted to GB" in {
-          ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, postcode, "FR"))).hasErrors mustBe true
+          ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, postcode, "FR"))).hasErrors mustBe true
         }
     }
     "isvalidPostCode should  accept international address with valid postcode because country is defaulted to GB" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
     }
   }
 
@@ -135,7 +159,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
       // #Scenario: UK Address no postcode
       s" accept a UK address with no postcode where for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, "", "GB"))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, "", "GB"))).hasErrors mustBe false
       }
       // #Scenario Outline: UK Address with Invalid PostCode
       Seq(
@@ -147,7 +171,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
         ("case 6","SW778 2BH")).foreach {
         case (caseNum, postcode) =>
           s"not accept a UK address with an invalid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, postcode, "GB"))).hasErrors mustBe true
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode, "GB"))).hasErrors mustBe true
           }
       }
 
@@ -161,11 +185,11 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
         ("case 6","B11 6HJ")).foreach{
         case  (caseNum,postcode) =>
           s"accept a UK address with a valid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, postcode, "GB"))).hasErrors mustBe false
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode, "GB"))).hasErrors mustBe false
           }
       }
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, "ZZ11ZZ", ""))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, "ZZ11ZZ", ""))).hasErrors mustBe false
       }
 
       s"$formOfTest accept input if only line 1 is present" in {

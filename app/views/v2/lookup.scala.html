@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, page: page_template)
 @(id: String,
-journeyData: JourneyDataV2,
-lookupForm: Form[Lookup],
-isWelsh: Boolean,
-isUKMode: Boolean = true,
-message: Option[String] = None
+    journeyData: JourneyDataV2,
+    lookupForm: Form[Lookup],
+    isWelsh: Boolean,
+    isUKMode: Boolean = true,
+    message: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,6 +142,7 @@ object ALFForms extends EmptyStringValidator {
 
   def ukEditForm()(implicit messages: Messages): Form[Edit] = Form(
     mapping(
+      "organisation" -> optional(text),
       "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
       "line2" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
       "line3" -> atLeastOneAddressLineOrTown().verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
@@ -156,6 +157,7 @@ object ALFForms extends EmptyStringValidator {
   def nonUkEditForm()(implicit messages: Messages) =
     Form(
       mapping(
+        "organisation" -> optional(text),
         "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptString256(messages(s"constants.editPageAddressLine1MaxErrorMessage"))),
         "line2" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
         "line3" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),

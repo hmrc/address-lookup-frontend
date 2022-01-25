@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -372,6 +372,7 @@ class AddressLookupController @Inject()(
           None,
           None,
           None,
+          None,
           PostcodeHelper.displayPostcode(lookUpPostCode),
           "GB"
         )
@@ -386,6 +387,7 @@ class AddressLookupController @Inject()(
       .map(_.toEdit)
       .getOrElse(
         Edit(
+          None,
           None,
           None,
           None,

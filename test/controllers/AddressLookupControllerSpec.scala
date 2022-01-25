@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -472,7 +472,7 @@ class AddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), None, None, None, None,
-            address = ConfirmableAddressDetails(lines = List("line1", "line2"), town = Some("town"), Some("ZZ11 1ZZ"))))
+            address = ConfirmableAddressDetails(organisation = None, lines = List("line1", "line2"), town = Some("town"), Some("ZZ11 1ZZ"))))
         ))
       ) {
         val res = controller.confirm("foo").apply(req)
@@ -483,7 +483,7 @@ class AddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> JourneyDataV2(
           config = JourneyConfigV2(2, JourneyOptions("continue", confirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(true)))), Some(JourneyLabels(Some(LanguageLabels(confirmPageLabels = Some(ConfirmPageLabels(confirmChangeText = Some("I confirm")))))))),
           selectedAddress = Some(ConfirmableAddress(auditRef = "", id = Some("GB1234567890"), None, None, None, None,
-            address = ConfirmableAddressDetails(lines = List("line1", "", "line3"), town = Some("town"), Some("ZZ11 1ZZ"))))
+            address = ConfirmableAddressDetails(organisation = None, lines = List("line1", "", "line3"), town = Some("town"), Some("ZZ11 1ZZ"))))
         ))
       ) {
         val res = controller.confirm("foo").apply(req)
@@ -569,7 +569,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
@@ -577,7 +577,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
@@ -586,7 +586,7 @@ class AddressLookupControllerSpec
     ) {
       val spacesInPostcode = Some("AA11     2BB")
 
-      val tstEdit = Edit(None, None, None, None, "AA11 2BB", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "AA11 2BB", "GB")
       controller.addressOrDefault(None, spacesInPostcode) must be(tstEdit)
     }
 
@@ -595,7 +595,7 @@ class AddressLookupControllerSpec
     ) {
       val lookUpPostcode = Some("AA112BB")
 
-      val tstEdit = Edit(None, None, None, None, "AA11 2BB", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "AA11 2BB", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
@@ -604,7 +604,7 @@ class AddressLookupControllerSpec
     ) {
       val lookUpPostcode = Some("AA11     BB2")
 
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
@@ -613,14 +613,14 @@ class AddressLookupControllerSpec
     ) {
       val lookUpPostcode = Some("TF(3@r")
 
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
     }
 
     "return an address with a blank postcode when called with no option and a no lookup postcode" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(None, None) must be(tstEdit)
     }
 
@@ -628,14 +628,14 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",       uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11BB2", "some-town")))))
     ) {
       val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
     }
 
     "return an address when called with an empty option" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890",      uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val tstEdit = Edit(None, None, None, None, "", "GB")
+      val tstEdit = Edit(None, None, None, None, None, "", "GB")
       controller.addressOrDefault(None) must be(tstEdit)
     }
   }
@@ -710,7 +710,7 @@ class AddressLookupControllerSpec
     "editing an existing address with a country code that is not in the allowedCountryCodes config" when {
       "allowedCountryCodes contains multiple countries" in new Scenario(
         journeyDataV2 = Map("foo" -> basicJourneyV2().copy(
-          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, None, None, None, None, ConfirmableAddressDetails(Seq(), None, None, Some(Country("FR", "France"))))),
+          selectedAddress = Some(ConfirmableAddress("someAuditRef", None, None, None, None, None, ConfirmableAddressDetails(None, Seq(), None, None, Some(Country("FR", "France"))))),
           config = basicJourneyV2().config.copy(options = basicJourneyV2().config.options.copy(allowedCountryCodes = Some(Set("DE", "GB")))))
         )) {
 
@@ -775,7 +775,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo").apply(
-        req.withFormUrlEncodedBody(editFormConstructor(Edit(Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
+        req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
       status(res) must be(303)
     }
   }
@@ -810,7 +810,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2())
     ) {
       val res = controller.handleEdit("foo").apply(
-        req.withFormUrlEncodedBody(editFormConstructor(Edit(Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
+        req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
       status(res) must be(303)
     }
 
@@ -818,7 +818,7 @@ class AddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
       val res = controller.handleEdit("foo")
-                          .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit(Some("foo"), None, None, Some("fooBar"), "", "")): _*))
+                          .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), None, None, Some("fooBar"), "", "")): _*))
       status(res) must be(303)
     }
   }

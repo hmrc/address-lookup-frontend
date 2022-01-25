@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,9 +78,11 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
     "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
       val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      val listOfOrgs = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.organisation).flatten
 
-      listOfLines mustBe Seq(
-        "1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
+      listOfLines mustBe Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
+
+      listOfOrgs mustBe Seq("malvern-organisation")
     }
 
     "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
@@ -123,7 +125,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   private val dubiousAddresses = Json.parse(getClass.getResourceAsStream("/dubious.json")).as[List[AddressRecord]]
 
   private val cannedAddresses = List(
-    cannedAddress(1000L, List("3c", "Malvern Court"), "ZZ11 1ZZ"),
+    cannedAddress(1000L, List("3c", "Malvern Court"), "ZZ11 1ZZ", Some("malvern-organisation")),
     cannedAddress(2000L, List("Flat 2a stuff 4", "Malvern Court"), "ZZ11 1ZZ"),
     cannedAddress(3000L, List("3b", "Malvern Court"), "ZZ11 1ZZ"),
     cannedAddress(4000L, List("1", "Malvern Court"), "ZZ11 1ZZ"))
@@ -148,17 +150,17 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }.toList
   }
 
-  private def cannedAddress(uprn: Long, lines: List[String], postCode: String) =
-    AddressRecord(uprn.toString, Some(uprn), None, None, None, Address(lines, "some-town", postCode, Some(Countries.England),
+  private def cannedAddress(uprn: Long, lines: List[String], postCode: String, organisation: Option[String] = None) =
+    AddressRecord(uprn.toString, Some(uprn), None, None, organisation, Address(lines, "some-town", postCode, Some(Countries.England),
       Country("GB", rndstr(32))), "en", Some(LocalCustodian(123, "Tyne & Wear")), None, None, None, None)
 
-  private def addr(code: Option[String])(uprn: Long): AddressRecord = {
+  private def addr(code: Option[String])(uprn: Long, organisation: Option[String] = None): AddressRecord = {
     AddressRecord(
       uprn.toString,
       Some(uprn),
       Some(uprn+100),
       Some(uprn+20),
-      None,
+      organisation,
       Address(
         List(rndstr(16), rndstr(16), rndstr(8)),
         rndstr(16),

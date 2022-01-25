@@ -136,7 +136,7 @@ class EditPageISpec extends IntegrationSpecBase {
       "redirect to the UK edit page if uk UK mode is true" in {
         val testConfigWithAddressAndUkMode = journeyDataV2Minimal.copy(
           selectedAddress = Some(
-            ConfirmableAddress("foo", Some("bar"), None, None, None, None, ConfirmableAddressDetails(List("wizz"), Some("bang"), Some("fooP"), Some(Country("GB", "United Kingdom"))))
+            ConfirmableAddress("foo", Some("bar"), None, None, None, None, ConfirmableAddressDetails(None, List("wizz"), Some("bang"), Some("fooP"), Some(Country("GB", "United Kingdom"))))
           ), config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true)))
         )
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)
@@ -154,7 +154,7 @@ class EditPageISpec extends IntegrationSpecBase {
       "redirect to the UK edit page if country doesn't exist in selected address and AND UK mode is true" in {
         val testConfigWithAddressAndUkMode = journeyDataV2Minimal.copy(
           selectedAddress = Some(
-            ConfirmableAddress("foo", Some("bar"), None, None, None, None, ConfirmableAddressDetails(List("wizz"), Some("bang"), Some("fooP")))
+            ConfirmableAddress("foo", Some("bar"), None, None, None, None, ConfirmableAddressDetails(None, List("wizz"), Some("bang"), Some("fooP")))
           ), config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true)))
         )
         stubKeystore(testJourneyId, Json.toJson(testConfigWithAddressAndUkMode).as[JsObject], OK)

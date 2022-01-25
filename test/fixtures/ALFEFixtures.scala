@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ trait ALFEFixtures {
      ))
    ))
 
-   def editFormConstructor(a: Edit = Edit(Some("foo"), Some("bar"), Some("wizz"), Some("bang"),"B11 6HJ", "GB"))
+   def editFormConstructor(a: Edit = Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bang"),"B11 6HJ", "GB"))
    = Seq(a.line3.map(a => ("line1", a)).getOrElse(("", "")),
       a.line2.map(b => ("line2", b)).getOrElse(("", "")),
       a.line3.map(c => ("line3", c)).getOrElse(("", "")),

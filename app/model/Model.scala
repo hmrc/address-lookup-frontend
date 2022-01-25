@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ case class Timeout(timeoutAmount: Int,
 
 case class Select(addressId: String)
 
-case class Edit(line1: Option[String],
+case class Edit(organisation: Option[String],
+                line1: Option[String],
                 line2: Option[String],
                 line3: Option[String],
                 town: Option[String],
@@ -41,8 +42,9 @@ case class Edit(line1: Option[String],
     ConfirmableAddress(
       auditRef,
       None,
-      None, None, None, None,
+      None, None, None, organisation,
       ConfirmableAddressDetails(
+        organisation,
         List(line1, line2, line3).flatten,
         town,
         if (postcode.isEmpty) None
@@ -71,12 +73,12 @@ case class ProposedAddress(addressId: String,
       auditRef,
       Some(addressId),
       uprn, parentUprn, usrn, organisation,
-      ConfirmableAddressDetails(lines, Some(town), Some(postcode), Some(country), poBox)
+      ConfirmableAddressDetails(organisation, lines, Some(town), Some(postcode), Some(country), poBox)
     )
 
-  // TODO verify description format
   def toDescription: String = {
-    lines.take(3).mkString(", ") + ", " + town + ", " + postcode
+    val addressDescription = lines.take(3).mkString(", ") + ", " + town + ", " + postcode
+    organisation.fold(addressDescription)(org => s"$org, $addressDescription")
   }
 
 }
@@ -97,6 +99,7 @@ case class ConfirmableAddress(auditRef: String,
 }
 
 case class ConfirmableAddressDetails(
+  organisation: Option[String] = None,
   lines: Seq[String] = Seq(),
   town: Option[String] = None,
   postcode: Option[String] = None,
@@ -105,13 +108,14 @@ case class ConfirmableAddressDetails(
 ) {
 
   def toDescription: String = {
-    (lines ++ postcode.toList ++ country.toList.map(
+    (organisation ++ lines ++ postcode.toList ++ country.toList.map(
       _.name
     )).mkString(", ") + "."
   }
 
   def toEdit: Edit = {
     Edit(
+      organisation,
       lines.headOption,
       lines.lift(1),
       lines.lift(2),

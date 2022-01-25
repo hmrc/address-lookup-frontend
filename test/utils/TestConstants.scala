@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ object TestConstants {
   val testUkMode = Some(true)
 
   val testAuditRef = "Jid123"
-  val testAddressDetails = ConfirmableAddressDetails(List("1 High Street", "Line 2", "Line 3"), Some("Town"), Some("TF1 1NT"), Some(Country("UK", "United Kingdom")))
+  val testAddressDetails = ConfirmableAddressDetails(None, List("1 High Street", "Line 2", "Line 3"), Some("Town"), Some("TF1 1NT"), Some(Country("UK", "United Kingdom")))
   val testAddress = ConfirmableAddress(testAuditRef, Some("1"), None, None, None, None, testAddressDetails)
   val testProposedAddressSeq = Seq(
     ProposedAddress("1",       uprn = None, parentUprn = None, usrn = None, organisation = None, "TF1 1NT", "Telford", List("1 High Street", "Line 2", "Line 3"), Country("UK", "United Kingdom")),

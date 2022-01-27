@@ -24,10 +24,7 @@ case class ConfirmedResponseAddress(auditRef: String,
                               address: ConfirmedResponseAddressDetails =
                               ConfirmedResponseAddressDetails())
 
-case class ConfirmedResponseAddressDetails(lines: Option[Seq[String]] = None,
-                                          postcode: Option[String] = None,
-                                          country: Option[Country] = None,
-                                          poBox: Option[String] = None)
+case class ConfirmedResponseAddressDetails(organisation: Option[String] = None, lines: Option[Seq[String]] = None, postcode: Option[String] = None, country: Option[Country] = None, poBox: Option[String] = None)
 
 object ConfirmedResponseAddressDetails {
   implicit val countryFormat: Format[Country] = Json.format[Country]

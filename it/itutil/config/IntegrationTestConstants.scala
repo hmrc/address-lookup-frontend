@@ -31,7 +31,7 @@ object IntegrationTestConstants {
   val testUKAddress = ConfirmableAddressDetails(None, List(testAddressLine1, testAddressLine2), Some(testAddressTown), Some(testPostCode), Some(Country("GB", "United Kingdom")))
   val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testUKAddress)
 
-  val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
+  val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
   val testConfirmedResponseAddress = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
 
   val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testFullNonUKAddress)

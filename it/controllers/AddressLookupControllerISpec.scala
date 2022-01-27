@@ -81,7 +81,7 @@ class AddressLookupControllerISpec extends IntegrationSpecBase {
       res.json shouldBe Json.toJson(ConfirmedResponseAddress(
         auditRef = testAuditRef,
         id = Some(testAddressIdRaw),
-        address = ConfirmedResponseAddressDetails(Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
+        address = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
       )
     }
   }

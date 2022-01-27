@@ -104,7 +104,7 @@ confirmPage.searchAgainLinkText = Search again
 
 editPage.title = Enter address
 editPage.heading = Enter address
-editPage.organisationLabel = Organisation
+editPage.organisationLabel = Organisation (optional)
 editPage.line1Label = Address line 1
 editPage.line2Label = Address line 2
 editPage.line3Label = Address line 3

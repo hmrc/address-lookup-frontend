@@ -104,7 +104,7 @@ confirmPage.searchAgainLinkText = Chwilio eto
 
 editPage.title = Nodwch gyfeiriad
 editPage.heading = Nodwch gyfeiriad
-editPage.organisationLabel = W Organisation
+editPage.organisationLabel = W Organisation (optional)
 editPage.line1Label = Cyfeiriad – llinell 1
 editPage.line2Label = Cyfeiriad – llinell 2
 editPage.line3Label = Cyfeiriad – llinell 3

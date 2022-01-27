@@ -79,8 +79,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
         withJourneyV2(confirmed.id, NotFound) { journeyData =>
           journeyData.confirmedAddress match {
             case Some(ca) =>
-              val details = ConfirmedResponseAddressDetails(Some(ca.address.lines ++ ca.address.town),
-                ca.address.postcode, ca.address.country, ca.address.poBox)
+              val details = ConfirmedResponseAddressDetails(ca.address.organisation, Some(ca.address.lines ++ ca.address.town), ca.address.postcode, ca.address.country, ca.address.poBox)
 
               (None, Ok(Json.toJson(ConfirmedResponseAddress(ca.auditRef, ca.id, details))))
             case _ => (None, NotFound)

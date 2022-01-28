@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import model._
 @import config.FrontendAppConfig
+@import model._
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import views.html.templates.page_template
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-            select: GovukSelect, page: page_template)
+        select: GovukSelect, page: page_template)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
@@ -60,52 +60,52 @@
     @form(routes.AddressLookupController.handleEdit(id)) {
         @textInput(Input(value = editForm("organisation").value,
             label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
-            formGroupClasses = "form-field-group", autocomplete = Some("address-organisation"),
+            formGroupClasses = "form-field-group", autocomplete = Some("organization"),
             name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
             errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("line1").value,
-                label = Label(content = HtmlContent(messages("editPage.line1Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
-                name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("line2").value,
-                label = Label(content = HtmlContent(messages("editPage.line2Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
-                name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent("DUMMY")))))
-            @textInput(Input(value = editForm("line3").value,
-                label = Label(content = HtmlContent(messages("editPage.line3Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
-                name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("town").value,
-                label = Label(content = HtmlContent(messages("editPage.townLabel"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
-                name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("postcode").value,
-                label = Label(content = HtmlContent(messages("editPage.postcodeLabel"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
-                name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
-                errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+        @textInput(Input(value = editForm("line1").value,
+            label = Label(content = HtmlContent(messages("editPage.line1Label"))),
+            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
+            name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+            errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+        @textInput(Input(value = editForm("line2").value,
+            label = Label(content = HtmlContent(messages("editPage.line2Label"))),
+            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
+            name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+            errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent("DUMMY")))))
+        @textInput(Input(value = editForm("line3").value,
+            label = Label(content = HtmlContent(messages("editPage.line3Label"))),
+            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
+            name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+            errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+        @textInput(Input(value = editForm("town").value,
+            label = Label(content = HtmlContent(messages("editPage.townLabel"))),
+            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
+            name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+            errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+        @textInput(Input(value = editForm("postcode").value,
+            label = Label(content = HtmlContent(messages("editPage.postcodeLabel"))),
+            formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+            name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
+            errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
-            @select(components.Select(
-                id = "countryCode",
-                name = "countryCode",
-                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
-                errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
-                items = Seq(SelectItem(value = Some(""), text="Select a country")) ++ countries.map {
-                    case (k,v) ⇒ SelectItem(
-                        value = Some(k),
-                        text = v,
-                        selected = k == editForm("countryCode").value.getOrElse(""),
-                        attributes = Map("id" → s"countryCode-$k"))
-                },
-                formGroupClasses = "form-field-group"
-            ))
+        @select(components.Select(
+            id = "countryCode",
+            name = "countryCode",
+            label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
+            errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+            items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
+                case (k, v) ⇒ SelectItem(
+                    value = Some(k),
+                    text = v,
+                    selected = k == editForm("countryCode").value.getOrElse(""),
+                    attributes = Map("id" → s"countryCode-$k"))
+            },
+            formGroupClasses = "form-field-group"
+        ))
 
-            <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
-            <script>
+        <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
+        <script>
                 accessibleAutocomplete.enhanceSelectElement({
                     selectElement: document.getElementById("countryCode"),
                     name: 'countryCodeAutocomplete',
@@ -116,17 +116,17 @@
                       When this is fixed the custom validation / onConfirm bypass can be removed
                     *@
                     onConfirm: () => {
-                        const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function(c) {
+                        const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
                             return c.text === document.getElementById("countryCode").value;
                         });
                         const countryCode = matchingOption ? matchingOption.value : undefined;
                         document.getElementById("countryCode-select").value = countryCode;
                     }
                 })
-            </script>
+        </script>
 
-            @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
-                name = Some("continue"),
-                inputType = Some("submit"), attributes = Map("id" → "continue")))
+        @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
+            name = Some("continue"),
+            inputType = Some("submit"), attributes = Map("id" → "continue")))
     }
 }

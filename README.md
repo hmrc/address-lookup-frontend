@@ -1,7 +1,5 @@
 # Address Lookup Frontend
 
-[![Build Status](https://travis-ci.org/hmrc/address-lookup-frontend.svg)](https://travis-ci.org/hmrc/address-lookup-frontend-new) [ ![Download](https://api.bintray.com/packages/hmrc/releases/address-lookup-frontend/images/download.svg)<!-- @IGNORE PREVIOUS: link --> ](https://bintray.com/hmrc/releases/address-lookup-frontend/_latestVersion)<!-- @IGNORE PREVIOUS: link -->
-
 This microservice provides a user interface for entering and editing addresses. Assistance is provided to the end-user for looking up their address from a database (via the backend service [address-lookup](https://github.com/hmrc/address-lookup)).
 
 Initially, the use-case covers only UK addresses. BFPO addresses might be added soon. The roadmap includes support for international addresses.
@@ -384,6 +382,82 @@ Response:
 }
 ```
 **Note** that the `id` attribute will not be present if the selected address was entered manually, or was an edited search result.
+
+### Mocking ALF for your journey tests
+
+When creating your journey tests we suggest that you mock out ALF, this has the following benefits:
+
+ - Your tests will complete much faster since you will bypass all the ALF screens.
+ - Your tests will not fail when we change the ALF UI (this happens more than you may think).
+
+Here is an example showing how to mock out ALF using mock-server (https://www.mock-server.com/), the principle is the same with any mocking library.
+
+```scala
+val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(6001)
+val journeyId = "some-guid" //You can randomise this if you want to run tests in parallel
+val alfStubbedUrl = s"http://localhost:9028/lookup-address/$journeyId/lookup"
+val urlAlfReturnsUserTo = "http://your.service/some/path"
+ 
+// Mock the init call that is made to ALF
+mockServer.when(
+  HttpRequest.request()
+    .withMethod("POST")
+    .withPath("/api/v2/init")
+).respond(
+  HttpResponse.response()
+    .withHeader("Location", "alfStubbedUrl")
+    .withStatusCode(200)
+)
+ 
+// Create a mock that will emulate the handover from your service -> ALF, and then ALF -> your service
+mockServer.when(
+  HttpRequest.request()
+    .withMethod("GET")
+    .withPath(alfStubbedUrl)
+).respond(
+  HttpResponse.response()
+    .withHeader("Location", urlAlfReturnsUserTo)
+    .withStatusCode(303)
+)
+ 
+// Create your expected ALF address response using the models defined in ALF
+// You will need to add the following to your dependencies to pull in these models
+// "uk.gov.hmrc" %% "address-lookup-frontend" % "2.+" % Test
+val expectedAlfResponse = Json.toJson(
+  ConfirmedResponseAddress(
+    auditRef = "some-ref",
+    id = Some("123456789"),
+    address = ConfirmedResponseAddressDetails(
+      organisation = Some("organistation"),
+      lines = Some(List("1 test Street")),
+      postcode = Some("TE5 5TD"),
+      country = Some(Country("UK", "United Kingdom")),
+      poBox = None
+    )
+  )
+)
+ 
+//Mock the request that collects the data that the user has entered in ALF using the above expected response
+mockServer.when(
+  HttpRequest.request()
+    .withMethod("GET")
+    .withPath(s"/v2/confirmed?id=$journeyId")
+).respond(
+  HttpResponse.response()
+    .withHeader("Content-Type", "application/json")
+    .withBody(expectedAlfResponse.toString())
+    .withStatusCode(200)
+)
+```
+When you start your service up in service manager you will need to configure it to point the request to ALF into the mock you have configured above (you will obviously need to update the configuration keys and relevant ports in the below config).  When mocking out services it is best to use ports 6001 - 6010 so that your service can interact with the mock when running on Jenkins, see [here](https://confluence.tools.tax.service.gov.uk/display/DTRG/Investigating+a+Test+Job+Failure) for more information.
+```bash
+sm --start YOUR_SERVICE -r --appendArgs '{                                                                                                             
+  "YOUR_SERVICE": [
+    "-J-Dmicroservice.services.adress-lookup-frontend-api.port=6001",
+    "-J-Dmicroservice.services.addres-lookup-frontend-web.port=6001",
+  ]
+}'
+```
 
 ### Running the Application
 

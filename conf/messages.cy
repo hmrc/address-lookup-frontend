@@ -46,6 +46,8 @@ constants.editPagePostcodeErrorMessage = Nodwch god post dilys
 constants.editPageCountryErrorMessage = Nodwch wlad y cyfeiriad
 constants.editPageAtLeastOneLineOrTown = (W) Enter at least one address line or a town
 
+constants.countryPickerPageCountryErrorMessage = Nodwch wlad y cyfeiriad
+
 constants.errorRequired = Dewiswch yr eiddo ar gyfer y cyfeiriad
 constants.errorMin = $min yw’r isafswm hyd
 constants.errorMax = $max yw’r uchafswm hyd
@@ -92,6 +94,11 @@ constants.notFoundErrorBody = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywi
 constants.error.prefix = Gwall:
 
 constants.footer.visuallyHiddenText = Cysylltiadau cymorth
+
+countryPickerPage.title = Nodwch gyfeiriad
+countryPickerPage.heading = Nodwch gyfeiriad
+countryPickerPage.countryLabel = Gwlad
+countryPickerPage.submitLabel = Yn eich blaen
 
 confirmPage.title = Adolygu a chadarnhau
 confirmPage.heading = Adolygu a chadarnhau

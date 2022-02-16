@@ -16,15 +16,19 @@
 
 package model
 
+import address.v2.Country
 import config.FrontendAppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json._
 
+import CountryFormat._
+
 case class JourneyDataV2(config: JourneyConfigV2,
                          proposals: Option[Seq[ProposedAddress]] = None,
                          selectedAddress: Option[ConfirmableAddress] = None,
-                         confirmedAddress: Option[ConfirmableAddress] = None) {
+                         confirmedAddress: Option[ConfirmableAddress] = None,
+                         country: Option[Country] = None) {
 
   def resolveConfigV2(appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, appConfig)
 
@@ -72,7 +76,8 @@ case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
                           selectPageLabels: Option[SelectPageLabels] = None,
                           lookupPageLabels: Option[LookupPageLabels] = None,
                           editPageLabels: Option[EditPageLabels] = None,
-                          confirmPageLabels: Option[ConfirmPageLabels] = None)
+                          confirmPageLabels: Option[ConfirmPageLabels] = None,
+                          countryPickerLabels: Option[CountryPickerPageLabels] = None)
 
 object JourneyLabels {
   implicit val appLevelWrites: Writes[AppLevelLabels] = Json.writes[AppLevelLabels]
@@ -80,6 +85,7 @@ object JourneyLabels {
   implicit val lookupPageWrites: Writes[LookupPageLabels] = Json.writes[LookupPageLabels]
   implicit val editPageWrites: Writes[EditPageLabels] = Json.writes[EditPageLabels]
   implicit val confirmPageWrites: Writes[ConfirmPageLabels] = Json.writes[ConfirmPageLabels]
+  implicit val countryPickerPageWrites: Writes[CountryPickerPageLabels] = Json.writes[CountryPickerPageLabels]
   implicit val languageLabelsWrites: Writes[LanguageLabels] = Json.writes[LanguageLabels]
   implicit val writes: OWrites[JourneyLabels] = Json.writes[JourneyLabels]
 
@@ -88,6 +94,7 @@ object JourneyLabels {
   implicit val lookupPageReads: Reads[LookupPageLabels] = Json.reads[LookupPageLabels]
   implicit val editPageReads: Reads[EditPageLabels] = Json.reads[EditPageLabels]
   implicit val confirmPageReads: Reads[ConfirmPageLabels] = Json.reads[ConfirmPageLabels]
+  implicit val countryPickerPageReads: Reads[CountryPickerPageLabels] = Json.reads[CountryPickerPageLabels]
   implicit val languageLabelsReads: Reads[LanguageLabels] = Json.reads[LanguageLabels]
   implicit val reads: Reads[JourneyLabels] = Json.reads[JourneyLabels]
 }
@@ -157,12 +164,22 @@ object JourneyLabelsForMessages {
       )
   }
 
+  implicit def countryPickerLabelsWrites: OWrites[CountryPickerPageLabels] = {
+    (__ \ "countryPickerPage.title").writeNullable[String]
+      .and((__ \ "countryPickerPage.heading").writeNullable[String])
+      .and((__ \ "countryPickerPage.countryLabel").writeNullable[String])
+      .and((__ \ "countryPickerPage.submitLabel").writeNullable[String])(
+        unlift(CountryPickerPageLabels.unapply)
+      )
+  }
+
   implicit def languageLabelsWrites: OWrites[LanguageLabels] = {
     (__).writeNullable[AppLevelLabels]
       .and((__).writeNullable[SelectPageLabels])
       .and((__).writeNullable[LookupPageLabels])
       .and((__).writeNullable[EditPageLabels])
-      .and((__).writeNullable[ConfirmPageLabels])(
+      .and((__).writeNullable[ConfirmPageLabels])
+      .and((__).writeNullable[CountryPickerPageLabels])(
         unlift(LanguageLabels.unapply)
       )
   }
@@ -222,6 +239,11 @@ case class ConfirmPageLabels(title: Option[String] = None,
                              searchAgainLinkText: Option[String] = None,
                              changeLinkText: Option[String] = None,
                              confirmChangeText: Option[String] = None)
+
+case class CountryPickerPageLabels(title: Option[String] = None,
+                                   heading: Option[String] = None,
+                                   countryLabel: Option[String] = None,
+                                   submitLabel: Option[String] = None)
 
 object JourneyDataV2 {
   implicit val format: Format[JourneyDataV2] = Json.format[JourneyDataV2]

@@ -16,6 +16,7 @@
 
 package controllers
 
+import address.v2.Countries
 import config.{ALFCookieNames, FrontendAppConfig}
 import controllers.countOfResults._
 import forms.ALFForms._
@@ -70,7 +71,8 @@ class AddressLookupController @Inject()(
                                          confirm: views.html.v2.confirm,
                                          no_results: views.html.v2.no_results,
                                          too_many_results: views.html.v2.too_many_results,
-                                         error_template: views.html.error_template
+                                         error_template: views.html.error_template,
+                                         country_picker: views.html.v2.country_picker
                                        )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -96,6 +98,68 @@ class AddressLookupController @Inject()(
   def noJourney() = Action { implicit req =>
     implicit val messages = messagesApi.preferred(req)
     Ok(error_template(messages("no.journey.title.text"), messages("no.journey.heading.text"), ""))
+  }
+
+  def begin(id: String): Action[AnyContent] = Action.async {
+    implicit req =>
+      journeyRepository.getV2(id).map {
+        case Some(journeyData) =>
+          import JourneyLabelsForMessages._
+
+          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+          implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+          val isWelsh = getWelshContent(journeyData)
+          implicit val permittedLangs: Seq[Lang] =
+            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+          val isUKMode = journeyData.config.options.isUkMode
+          if (isUKMode) {
+            Redirect(routes.AddressLookupController.lookup(id, None, None))
+          }
+          else {
+            Redirect(routes.AddressLookupController.countryPicker(id))
+          }
+
+        case None => Redirect(routes.AddressLookupController.noJourney())
+      }
+  }
+
+  def countryPicker(id: String): Action[AnyContent] = Action.async {
+    implicit req =>
+      journeyRepository.getV2(id).map {
+        case Some(journeyData) =>
+          import JourneyLabelsForMessages._
+
+          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+          implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+          val isWelsh = getWelshContent(journeyData)
+          implicit val permittedLangs: Seq[Lang] =
+            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+          val isUKMode = journeyData.config.options.isUkMode
+          if (isUKMode) {
+            Redirect(routes.AddressLookupController.lookup(id, None, None))
+          }
+          else {
+            val allowedSeqCountries = (s: Seq[(String, String)]) =>
+              allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+
+            requestWithWelshHeader(isWelsh) {
+              Ok(country_picker(id, journeyData, countryPickerForm().fill(CountryPicker("")), isWelsh,
+                allowedSeqCountries(countries(isWelsh)))(req, messages, frontendAppConfig))
+            }
+          }
+
+        case None => Redirect(routes.AddressLookupController.noJourney())
+      }
+
+
   }
 
   // GET  /:id/lookup
@@ -181,6 +245,50 @@ class AddressLookupController @Inject()(
     }
   }
 
+  def handleCountryPicker(id: String) = Action.async {
+    implicit req =>
+      withJourneyV2(id) { journeyData =>
+        import JourneyLabelsForMessages._
+
+        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+        implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+        val isWelsh = getWelshContent(journeyData)
+        implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
+
+        val bound = countryPickerForm().bindFromRequest()
+
+        bound.fold(
+          errors => {
+            val allowedSeqCountries = (s: Seq[(String, String)]) =>
+              allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+
+            None -> {
+              requestWithWelshHeader(isWelsh) {
+                BadRequest(country_picker(id, journeyData, errors, isWelsh,
+                  allowedSeqCountries(countries(isWelsh)))(req, messages, frontendAppConfig))
+              }
+            }
+          },
+          selection => {
+
+            val country = Countries.find(selection.countryCode)
+            val updatedJourney = journeyData.copy(country = country)
+
+            if (country.isDefined) {
+              (Some(updatedJourney), Redirect(routes.AddressLookupController.lookup(id)))
+            }
+            else {
+              (None, Redirect(routes.AddressLookupController.edit(id, None, Some(selection.countryCode))))
+            }
+          }
+        )
+
+      }
+  }
+
   private[controllers] def handleLookup(
                                          id: String,
                                          journeyData: JourneyDataV2,
@@ -226,6 +334,7 @@ class AddressLookupController @Inject()(
     implicit req =>
       withJourneyV2(id) { journeyData =>
         import JourneyLabelsForMessages._
+
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
@@ -307,11 +416,10 @@ class AddressLookupController @Inject()(
   }
 
   // GET  /:id/edit
-  def edit(id: String, lookUpPostCode: Option[String]): Action[AnyContent] =
+  def edit(id: String, lookUpPostCode: Option[String], lookUpCountryCode: Option[String] = None): Action[AnyContent] =
     Action.async { implicit req =>
       withJourneyV2(id) { journeyData => {
-        val editAddress =
-          addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
+
         val allowedSeqCountries = (s: Seq[(String, String)]) =>
           allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
@@ -329,6 +437,8 @@ class AddressLookupController @Inject()(
         val isUKMode = journeyData.config.options.isUkMode
 
         if (isUKMode) {
+          val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
+
           (None, requestWithWelshHeader(isWelsh) {
             Ok(
               uk_mode_edit(
@@ -342,8 +452,7 @@ class AddressLookupController @Inject()(
             )
           })
         } else {
-          val defaultAddress =
-            addressOrEmpty(journeyData.selectedAddress, lookUpPostCode)
+          val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode, lookUpCountryCode)
           (None, requestWithWelshHeader(isWelsh) {
             Ok(
               non_uk_mode_edit(
@@ -381,7 +490,8 @@ class AddressLookupController @Inject()(
 
   private[controllers] def addressOrEmpty(
                                            oAddr: Option[ConfirmableAddress],
-                                           lookUpPostCode: Option[String] = None
+                                           lookUpPostCode: Option[String] = None,
+                                           lookupCountryCode: Option[String] = None
                                          ): Edit = {
     oAddr
       .map(_.toEdit)
@@ -393,7 +503,7 @@ class AddressLookupController @Inject()(
           None,
           None,
           PostcodeHelper.displayPostcode(lookUpPostCode),
-          ""
+          lookupCountryCode.getOrElse("")
         )
       )
   }
@@ -455,21 +565,21 @@ class AddressLookupController @Inject()(
 
               //val pretendErrors =
 
-                (None, requestWithWelshHeader(isWelsh) {
-                  BadRequest(
-                    non_uk_mode_edit(
-                      id,
-                      journeyData,
-                      errors,
-                      allowedCountries(
-                        countries(isWelsh),
-                        journeyData.config.options.allowedCountryCodes
-                      ),
-                      isWelsh = isWelsh,
-                      isUKMode = isUKMode
-                    )
+              (None, requestWithWelshHeader(isWelsh) {
+                BadRequest(
+                  non_uk_mode_edit(
+                    id,
+                    journeyData,
+                    errors,
+                    allowedCountries(
+                      countries(isWelsh),
+                      journeyData.config.options.allowedCountryCodes
+                    ),
+                    isWelsh = isWelsh,
+                    isUKMode = isUKMode
                   )
-                })
+                )
+              })
             },
             edit =>
               (

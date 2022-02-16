@@ -46,6 +46,8 @@ constants.editPagePostcodeErrorMessage = Enter a valid postcode
 constants.editPageCountryErrorMessage = Enter country of the address
 constants.editPageAtLeastOneLineOrTown = Enter at least one address line or a town
 
+constants.countryPickerPageCountryErrorMessage = Enter country of the address
+
 constants.errorRequired = Select the property for the address
 constants.errorMin = Minimum length is $min
 constants.errorMax = Maximum length is $max
@@ -92,6 +94,11 @@ constants.notFoundErrorBody = Please check that you have entered the correct web
 constants.error.prefix = Error:
 
 constants.footer.visuallyHiddenText = Support links
+
+countryPickerPage.title = Enter address
+countryPickerPage.heading = Enter address
+countryPickerPage.countryLabel = Country
+countryPickerPage.submitLabel = Continue
 
 confirmPage.title = Review and confirm
 confirmPage.heading = Review and confirm

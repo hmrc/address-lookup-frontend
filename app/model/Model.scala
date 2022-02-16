@@ -22,6 +22,8 @@ import services.ForeignOfficeCountryService
 import address.v2.Country
 import utils.PostcodeHelper
 
+case class CountryPicker(countryCode: String)
+
 case class Lookup(filter: Option[String], postcode: String)
 
 case class Timeout(timeoutAmount: Int,

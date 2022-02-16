@@ -68,7 +68,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
         Future.successful(BadRequest(Json.toJson(InitFailure("Config only allows relative or allow listed urls"))))
       case _ =>
         journeyRepository.putV2(id, JourneyDataV2(config = req.body))
-          .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/lookup"))
+          .map(_ => Accepted.withHeaders(HeaderNames.LOCATION -> s"$addressLookupEndpoint/lookup-address/$id/begin"))
     }
   }
 

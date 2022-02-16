@@ -55,7 +55,7 @@ class StubControllerSpec extends PlaySpec
 
   "StubHelper getJourneyIDFromURL" should {
     "return id if url matches regex" in {
-      val id = StubHelper.getJourneyIDFromURL("/lookup-address/FOOBarWizzID/lookup")
+      val id = StubHelper.getJourneyIDFromURL("/lookup-address/FOOBarWizzID/begin")
       id mustBe "FOOBarWizzID"
     }
     "return exception if url does not match regex" in {
@@ -147,7 +147,7 @@ class StubControllerSpec extends PlaySpec
       }
 
       when(mockAPIController.initWithConfigV2).thenReturn(Action.async(cc.parsers.json[JourneyConfigV2])(
-        _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/lookup"))))
+        _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/begin"))))
 
       when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(true))
@@ -156,7 +156,7 @@ class StubControllerSpec extends PlaySpec
         "journeyConfig" -> basicJourney
       ))
 
-      redirectLocation(res).get mustBe "/lookup-address/bar/lookup"
+      redirectLocation(res).get mustBe "/lookup-address/bar/begin"
     }
 
     "return 400 if journeyConfig is not provided" in new Setup {

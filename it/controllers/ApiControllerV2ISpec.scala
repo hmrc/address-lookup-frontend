@@ -100,7 +100,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           .post(Json.toJson(v2Model.config)))
 
         res.status shouldBe ACCEPTED
-        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/lookup")
+        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/begin")
       }
     }
   }

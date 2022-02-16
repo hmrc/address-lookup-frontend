@@ -1,0 +1,103 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import model._
+@import config.FrontendAppConfig
+@import views.html.templates.page_template
+@import uk.gov.hmrc.govukfrontend.views.html.components
+
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, select: GovukSelect, page: page_template)
+@(id: String,
+    journeyData: JourneyDataV2,
+    countryPickerForm: Form[CountryPicker],
+    isWelsh: Boolean,
+    countries: Seq[(String, String)],
+    message: Option[String] = None
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@errorPrefix = @{s"${messages("constants.error.prefix")} "}
+
+@titleWithError = @{
+    val baseTitle = messages("countryPickerPage.title")
+    if(countryPickerForm.errors) {
+        errorPrefix + baseTitle
+    } else {
+        baseTitle
+    }
+}
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
+@page(titleWithError, Some(countryPickerForm), journeyData) {
+
+  @form(routes.AddressLookupController.handleCountryPicker(id)) {
+      <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
+        @messages("countryPickerPage.heading")
+      </h1>
+
+      @if(messages.isDefinedAt("countryPickerPage.afterHeadingText")) {
+      <div class="govuk-hint" id="afterHeadingText">@{messages("countryPickerPage.afterHeadingText")}</div>
+      }
+
+      @if(message.isDefined) {
+      <div class="highlight-message highlight-message--full-width">
+        <p>@{message.get}</p>
+      </div>
+      }
+
+      @select(components.Select(
+          id = "countryCode",
+          name = "countryCode",
+          label = Label(content = HtmlContent(messages("countryPickerPage.countryLabel"))),
+          errorMessage = countryPickerForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+          items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
+              case (k, v) ⇒ SelectItem(
+                  value = Some(k),
+                  text = v,
+                  selected = k == countryPickerForm("countryCode").value.getOrElse(""),
+                  attributes = Map("id" → s"countryCode-$k"))
+          },
+          formGroupClasses = "form-field-group"
+      ))
+
+      <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
+      <script>
+              accessibleAutocomplete.enhanceSelectElement({
+                  selectElement: document.getElementById("countryCode"),
+                  name: 'countryCodeAutocomplete',
+                  defaultValue: '',
+                  @*
+                    TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
+                    https://github.com/alphagov/accessible-autocomplete/issues/260
+                    When this is fixed the custom validation / onConfirm bypass can be removed
+                  *@
+                  onConfirm: () => {
+                      const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
+                          return c.text === document.getElementById("countryCode").value;
+                      });
+                      const countryCode = matchingOption ? matchingOption.value : undefined;
+                      document.getElementById("countryCode-select").value = countryCode;
+                  }
+              })
+      </script>
+
+      @button(Button(content = HtmlContent(messages("countryPickerPage.submitLabel")),
+          name=Some("continue"),
+          inputType=Some("submit"), attributes = Map("id" → "continue")))
+  }
+}

@@ -605,6 +605,34 @@ object IntegrationTestConstants {
 
   val journeyDataV2SelectLabelsNoBack: JourneyDataV2 = journeyDataV2SelectLabels.copy(config = journeyDataV2SelectLabels.config.copy(options = journeyDataV2SelectLabels.config.options.copy(showBackButtons = Some(false))))
 
+  def testCustomCountryPickerPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+    config = JourneyConfigV2(
+      version = 2,
+      options = JourneyOptions(continueUrl = "testContinueUrl"),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels(
+          appLevelLabels = None,
+          selectPageLabels = None,
+          lookupPageLabels = None,
+          editPageLabels = None,
+          confirmPageLabels = None,
+          countryPickerLabels = Some(CountryPickerPageLabels(
+            title = Some("countryPicker-title"), heading = Some("countryPicker-heading"),
+            countryLabel = Some("Custom Country"), submitLabel = Some("Custom Continue")))
+        )),
+        cy = Some(LanguageLabels(
+          appLevelLabels = None,
+          selectPageLabels = None,
+          lookupPageLabels = None,
+          editPageLabels = None,
+          confirmPageLabels = None,
+          countryPickerLabels = Some(CountryPickerPageLabels(
+            title = Some("countryPicker-title-cy"), heading = Some("countryPicker-heading-cy"),
+            countryLabel = Some("Custom Country Cy"), submitLabel = Some("Custom Continue Cy")))
+        ))
+      ))
+    )
+  )).as[JsValue]
 }
 
 

@@ -18,7 +18,7 @@ package forms
 
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
-import model.{Edit, Lookup, Select}
+import model.{CountryPicker, Edit, Lookup, Select}
 import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.{default, ignored, mapping, nonEmptyText, optional, text}
 import play.api.data.format.Formatter
@@ -165,6 +165,13 @@ object ALFForms extends EmptyStringValidator {
         "postcode" -> default(text,""),
         "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
       )(Edit.apply)(Edit.unapply)
+    )
+
+  def countryPickerForm()(implicit messages: Messages) =
+    Form(
+      mapping(
+        "countryCode" -> customErrorTextValidation(messages(s"constants.countryPickerPageCountryErrorMessage"))
+      )(CountryPicker.apply)(CountryPicker.unapply)
     )
 
   val confirmedForm = Form(

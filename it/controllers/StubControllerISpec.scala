@@ -37,7 +37,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
   }
 
   s"${controllers.testonly.routes.StubController.submitStubForNewJourneyV2.url}" should {
-    "return 303 and redirect to the lookup page" in {
+    "return 303 and redirect to the begin endpoint" in {
       val basicJDataForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
           version = 2,
           options = JourneyOptions(continueUrl = "testContinueUrl")
@@ -64,7 +64,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
 
       val response = await(res)
       response.status shouldBe SEE_OTHER
-      response.header(HeaderNames.LOCATION).get shouldBe "http://localhost:9028/lookup-address/Jid123/lookup"
+      response.header(HeaderNames.LOCATION).get shouldBe "http://localhost:9028/lookup-address/Jid123/begin"
 
     }
   }

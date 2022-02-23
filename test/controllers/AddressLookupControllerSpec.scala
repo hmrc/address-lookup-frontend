@@ -88,6 +88,7 @@ class AddressLookupControllerSpec
     val no_results = app.injector.instanceOf[no_results]
     val too_many_results = app.injector.instanceOf[too_many_results]
     val error_template = app.injector.instanceOf[error_template]
+    val country_picker = app.injector.instanceOf[country_picker]
     val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
 
     val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig) {
@@ -115,12 +116,12 @@ class AddressLookupControllerSpec
 
     val controller = new AddressLookupController(journeyRepository, addressService, countryService, auditConnector,
       frontendAppConfig, components, remoteMessagesApiProvider, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm,
-      no_results, too_many_results, error_template)
+      no_results, too_many_results, error_template, country_picker)
 
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) =
       new AddressLookupController(journeyRepository, addressService, countryService, auditConnector, frontendAppConfig,
         components, remoteMessagesApiProvider, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
-        too_many_results, error_template) {
+        too_many_results, error_template, country_picker) {
         override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 

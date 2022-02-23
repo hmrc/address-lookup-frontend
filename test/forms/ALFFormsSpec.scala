@@ -42,6 +42,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
   val chars257 = List.fill(257)("A").reduce(_ + _)
   val chars256 = List.fill(256)("A").reduce(_ + _)
   val chars255 = List.fill(255)("A").reduce(_ + _)
+
   "ukEditForm" should {
     "return no errors with valid data" in {
       val data = Map(
@@ -298,6 +299,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       }
     }
   }
+
   "constraintString256" should {
     "return invalid for string > 256" in {
       ALFForms.constraintString256("foo")(chars257) mustBe Invalid("foo")
@@ -309,6 +311,7 @@ class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       ALFForms.constraintString256("foo")(chars255)  mustBe Valid
     }
   }
+
   "constraintMinLength" should {
     "return invalid for empty string" in {
       ALFForms.constraintMinLength("foo")("") mustBe Invalid("foo")

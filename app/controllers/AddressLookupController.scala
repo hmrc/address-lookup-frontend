@@ -273,15 +273,14 @@ class AddressLookupController @Inject()(
             }
           },
           selection => {
+            val updatedJourney = journeyData.copy(countryCode = Some(selection.countryCode))
 
             val country = Countries.find(selection.countryCode)
-            val updatedJourney = journeyData.copy(country = country)
-
             if (country.isDefined) {
               (Some(updatedJourney), Redirect(routes.AddressLookupController.lookup(id)))
             }
             else {
-              (None, Redirect(routes.AddressLookupController.edit(id, None, Some(selection.countryCode))))
+              (Some(updatedJourney), Redirect(routes.AddressLookupController.edit(id, None, Some(selection.countryCode))))
             }
           }
         )

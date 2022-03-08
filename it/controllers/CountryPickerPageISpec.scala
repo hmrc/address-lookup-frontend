@@ -124,7 +124,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted with a country that has OS data" should {
       "redirect to the address lookup screen" in {
         stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(country = Some(Countries.GB))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some(Countries.GB.code))), OK)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -139,7 +139,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted with a country that does not have OS data" should {
       "redirect to the manual entry screen" in {
         stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(country = Some(Country("BM", "Bermuda")))), OK)
+        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM"))), OK)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

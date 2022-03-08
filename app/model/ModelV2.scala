@@ -28,7 +28,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
                          proposals: Option[Seq[ProposedAddress]] = None,
                          selectedAddress: Option[ConfirmableAddress] = None,
                          confirmedAddress: Option[ConfirmableAddress] = None,
-                         country: Option[Country] = None) {
+                         countryCode: Option[String] = None) {
 
   def resolveConfigV2(appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, appConfig)
 

@@ -36,6 +36,20 @@ select: GovukSelect, page: page_template)
     journeyData.resolveConfigV2(appConfig)
 }
 
+@addressLinesInputErrorClass = @{
+    editForm("line1").error match {
+        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") => "govuk-input--error"
+        case _ => ""
+    }
+}
+
+@addressLinesFormGroupErrorClass = @{
+    editForm("line1").error match {
+        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") => "govuk-form-group--error"
+        case _ => ""
+    }
+}
+
 @page(titleWithError, Some(editForm), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
@@ -50,23 +64,23 @@ select: GovukSelect, page: page_template)
                 errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line1").value,
                 label = Label(content = HtmlContent(messages("editPage.line1Label"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line1"),
-                name = editForm("line1").name, id = editForm("line1").name, classes = "govuk-input--width-20",
+                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
+                name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
                 errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line2").value,
                 label = Label(content = HtmlContent(messages("editPage.line2Label"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line2"),
-                name = editForm("line2").name, id = editForm("line2").name, classes = "govuk-input--width-20",
+                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
+                name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
                 errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("line3").value,
                 label = Label(content = HtmlContent(messages("editPage.line3Label"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-line3"),
-                name = editForm("line3").name, id = editForm("line3").name, classes = "govuk-input--width-20",
+                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
+                name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
                 errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("town").value,
                 label = Label(content = HtmlContent(messages("editPage.townLabel"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("address-level2"),
-                name = editForm("town").name, id = editForm("town").name, classes = "govuk-input--width-20",
+                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
+                name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
                 errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
             @textInput(Input(value = editForm("postcode").value,
                 label = Label(content = HtmlContent(messages("editPage.postcodeLabel.ukMode"))),

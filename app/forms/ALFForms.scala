@@ -149,9 +149,7 @@ object ALFForms extends EmptyStringValidator {
       "town" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
       "postcode" -> default(text,""),
       "countryCode" -> ignored[String]("GB")
-    )(Edit.apply)(Edit.unapply).verifying(messages(s"constants.editPageAtLeastOneLineOrTown"), edit => {
-      Seq(edit.line1, edit.line2, edit.line3, edit.town).flatten.nonEmpty
-    })
+    )(Edit.apply)(Edit.unapply)
   )
 
   def nonUkEditForm()(implicit messages: Messages) =

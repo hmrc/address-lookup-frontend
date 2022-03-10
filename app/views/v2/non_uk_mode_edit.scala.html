@@ -96,8 +96,8 @@ select: GovukSelect, page: page_template)
                 editForm("countryCode").value.flatMap(c => ForeignOfficeCountryService.find(code = c)).map(_.name),
                 attributes = Map("disabled" -> "disabled"),
                 label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("countryCode"),
-                name = editForm("countryCode").name, id = editForm("countryCode").name,
+                formGroupClasses = "form-field-group", autocomplete = Some("country"),
+                name = editForm("countryName").name, id = editForm("countryName").id,
                 errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
             <input type="hidden" id="countryCode" name="countryCode" value="@editForm("countryCode").value" />

@@ -29,11 +29,20 @@ case class Country(
                     name: String) {
 
   def asV1 = v1.Country(code, name)
+
+  def toMap: Map[String, String] = Map(
+    "Country" -> code,
+    "Name" -> name
+  )
 }
 
 object Country {
   def apply(codeCountryMap: (String, Map[String, String])): Country = codeCountryMap match {
     case (code, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
+  }
+
+  def toMap(country: Country): (String, Map[String, String]) = {
+    (country.code -> country.toMap)
   }
 }
 

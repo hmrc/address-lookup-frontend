@@ -55,35 +55,70 @@ class ForeignOfficeCountryService extends CountryService {
   )
 
   private def renameFields(m: Map[String, String]): Map[String, String] = {
-    mappings.flatMap{case (o,nm) => nm.map(n => n -> m(o))}
+    mappings.flatMap { case (o, nm) => nm.map(n => n -> m(o)) }
   }
+
+  private val utfSorter = java.text.Collator.getInstance()
 
   private val countriesENFull: Seq[Country] = {
     val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
-                              .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
-                              .map(renameFields)
-                              .groupBy(_("Country"))
+      .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
+      .map(renameFields)
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
 
     val allFCDORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
-                               .allWithOrderedHeaders._2.sortBy(x => x("Country"))
-                               .groupBy(_("Country"))
+      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
 
     val allFCDOTRows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_territories.csv"), "UTF-8"))
-                                .allWithOrderedHeaders._2.sortBy(x => x("Country"))
-                                .filterNot(m => m("Country") == "Not applicable")
-                                .groupBy(_("Country"))
+      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .filterNot(m => m("Country") == "Not applicable")
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
 
     (allISORows ++ allFCDORows ++ allFCDOTRows)
-        .mapValues(v => v.head)
-        .map(Country.apply)
-        .toSeq.sortBy(_.name)
+      .map(Country.apply)
+      .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
   private val countriesEN = countriesENFull
 
-  private val countriesCY: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesCY.json")).as[Map[String, FcoCountry]].map { country =>
+  private val countriesCYJson: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesCY.json")).as[Map[String, FcoCountry]].map { country =>
     Country(country._2.country, country._2.name)
   }.toSeq.sortWith(_.name < _.name)
+
+  private val countriesCYFull: Seq[Country] = {
+    val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
+      .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
+      .map(renameFields)
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
+
+    val countriesCYJsonMaps = countriesCYJson.map(Country.toMap).toMap
+    val countriesCYCodeSet = countriesCYJsonMaps.keySet
+
+    val allFCDORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
+      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
+
+    val allFCDOTRows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_territories.csv"), "UTF-8"))
+      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .filterNot(m => m("Country") == "Not applicable")
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
+
+    ((allISORows ++ allFCDORows ++ allFCDOTRows)
+      .filterNot {
+        case (code, _) => countriesCYCodeSet.contains(code)
+      } ++ countriesCYJsonMaps)
+      .map(Country.apply)
+      .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
+  }
+
+  private val countriesCY = countriesCYFull
 
   override def findAll(welshFlag: Boolean = false): Seq[Country] =
     if (!welshFlag) countriesEN
@@ -91,8 +126,8 @@ class ForeignOfficeCountryService extends CountryService {
 
   override def find(welshFlag: Boolean = false, code: String): Option[Country] = {
     if (!welshFlag) {
-    val filtered = countriesEN.filter(_.code == code)
-    filtered.headOption
+      val filtered = countriesEN.filter(_.code == code)
+      filtered.headOption
     }
     else {
       val filtered = countriesCY.filter(_.code == code)

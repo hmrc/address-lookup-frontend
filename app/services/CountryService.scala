@@ -58,6 +58,8 @@ class ForeignOfficeCountryService extends CountryService {
     mappings.flatMap { case (o, nm) => nm.map(n => n -> m(o)) }
   }
 
+  private val utfSorter = java.text.Collator.getInstance()
+
   private val countriesENFull: Seq[Country] = {
     val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
@@ -78,7 +80,7 @@ class ForeignOfficeCountryService extends CountryService {
 
     (allISORows ++ allFCDORows ++ allFCDOTRows)
       .map(Country.apply)
-      .toSeq.sortBy(_.name)
+      .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
   private val countriesEN = countriesENFull
@@ -113,7 +115,7 @@ class ForeignOfficeCountryService extends CountryService {
         case (code, _) => countriesCYCodeSet.contains(code)
       } ++ countriesCYJsonMaps)
       .map(Country.apply)
-      .toSeq.sortBy(_.name)
+      .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
   private val countriesCY = countriesCYFull

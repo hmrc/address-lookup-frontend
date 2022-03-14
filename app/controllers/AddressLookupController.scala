@@ -280,7 +280,7 @@ class AddressLookupController @Inject()(
               (Some(updatedJourney), Redirect(routes.AddressLookupController.lookup(id)))
             }
             else {
-              (Some(updatedJourney), Redirect(routes.AddressLookupController.edit(id, None, Some(selection.countryCode))))
+              (Some(updatedJourney), Redirect(routes.AddressLookupController.edit(id, None)))
             }
           }
         )
@@ -415,7 +415,7 @@ class AddressLookupController @Inject()(
   }
 
   // GET  /:id/edit
-  def edit(id: String, lookUpPostCode: Option[String], lookUpCountryCode: Option[String] = None): Action[AnyContent] =
+  def edit(id: String, lookUpPostCode: Option[String]): Action[AnyContent] =
     Action.async { implicit req =>
       withJourneyV2(id) { journeyData => {
 
@@ -451,7 +451,7 @@ class AddressLookupController @Inject()(
             )
           })
         } else {
-          val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode, lookUpCountryCode)
+          val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode, journeyData.countryCode)
           (None, requestWithWelshHeader(isWelsh) {
             Ok(
               non_uk_mode_edit(

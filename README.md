@@ -114,6 +114,12 @@ If your service doesn't have Welsh translations you can disable them setting the
         "navTitle": "",
         "phaseBannerHtml": ""
       },
+      "countryPickerLabels": {
+        "title": "Custom title",
+        "heading": "Custom heading",
+        "countryLabel": "Custom country label",
+        "submitLabel": "Custom submit label"
+      },
       "selectPageLabels": {
         "title": "Choose address",
         "heading": "Choose address",
@@ -160,6 +166,12 @@ If your service doesn't have Welsh translations you can disable them setting the
       "appLevelLabels": {
         "navTitle": "",
         "phaseBannerHtml": ""
+      },
+      "countryPickerLabels": {
+        "title": "Custom title - Welsh",
+        "heading": "Custom heading - Welsh",
+        "countryLabel": "Custom country label - Welsh",
+        "submitLabel": "Custom submit label - Welsh"
       },
       "selectPageLabels": {
         "title": "Choose address welsh",

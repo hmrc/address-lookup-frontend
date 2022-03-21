@@ -63,7 +63,7 @@ constants.lookupPostcodeInvalidError = Postcode must only contain letters A - Z,
 constants.lookupPostcodeError.ukMode = Enter a real UK Postcode e.g. AA1 1AA
 constants.lookupPostcodeError = Enter a real Postcode e.g. AA1 1AA
 
-constants.lookupFilterError = Your house name/number needs to be fewer than 256 characters
+constants.lookupFilterError = Your house name or number needs to be fewer than 256 characters
 constants.lookupFilterHint = For example, The Mill, 116 or Flat 37a
 
 constants.errorText = There is a problem
@@ -95,9 +95,9 @@ constants.error.prefix = Error:
 
 constants.footer.visuallyHiddenText = Support links
 
-countryPickerPage.title = Enter address
-countryPickerPage.heading = Enter address
-countryPickerPage.countryLabel = Country
+countryPickerPage.title = Select your country
+countryPickerPage.heading = Select your country
+countryPickerPage.countryLabel = Select your country
 countryPickerPage.submitLabel = Continue
 
 confirmPage.title = Review and confirm
@@ -105,26 +105,26 @@ confirmPage.heading = Review and confirm
 confirmPage.infoSubheading = Your selected address
 confirmPage.infoMessage = This is how your address will look. Please double-check it and, if accurate, click on the Confirm button.
 confirmPage.submitLabel = Confirm address
-confirmPage.changeLinkText = Change address
+confirmPage.changeLinkText = Edit address
 confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
 confirmPage.searchAgainLinkText = Search again
 
-editPage.title = Enter address
-editPage.heading = Enter address
+editPage.title = Enter your address
+editPage.heading = Enter your address
 editPage.organisationLabel = Organisation (optional)
 editPage.line1Label = Address line 1
 editPage.line2Label = Address line 2
 editPage.line3Label = Address line 3
-editPage.townLabel = Town/city
+editPage.townLabel = Town or city
 editPage.postcodeLabel = Postcode (optional)
 editPage.postcodeLabel.ukMode = UK postcode (optional)
 editPage.countryLabel = Country
 editPage.submitLabel = Continue
 
-lookupPage.title = Find address
-lookupPage.title.ukMode = Find UK address
-lookupPage.heading = Find address
-lookupPage.heading.ukMode = Find UK address
+lookupPage.title = Find your address
+lookupPage.title.ukMode = Find your UK address
+lookupPage.heading = Find your address
+lookupPage.heading.ukMode = Find your UK address
 lookupPage.filterLabel = Property name or number (optional)
 lookupPage.postcodeLabel = Postcode
 lookupPage.postcodeLabel.ukMode = UK postcode

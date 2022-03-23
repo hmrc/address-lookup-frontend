@@ -177,8 +177,8 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find address")
-        html should include element withName("h1").withValue("Find address")
+        html should include element withName("title").withValue("Find your address")
+        html should include element withName("h1").withValue("Find your address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
@@ -195,8 +195,8 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo"), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find UK address")
-        html should include element withName("h1").withValue("Find UK address")
+        html should include element withName("title").withValue("Find your UK address")
+        html should include element withName("h1").withValue("Find your UK address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")

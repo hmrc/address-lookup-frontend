@@ -137,7 +137,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe BAD_REQUEST
 
-        val message = "Your house name/number needs to be fewer than 256 characters"
+        val message = "The house name or number needs to be fewer than 256 characters"
 
         doc.errorSummary should have(
           errorSummaryMessage(LookupPage.filterId, message)

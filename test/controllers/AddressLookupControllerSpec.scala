@@ -177,7 +177,7 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find your address")
+        html should include element withName("title").withValue("Find address")
         html should include element withName("h1").withValue("Find your address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
@@ -195,7 +195,7 @@ class AddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo"), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find your UK address")
+        html should include element withName("title").withValue("Find UK address")
         html should include element withName("h1").withValue("Find your UK address")
         html should include element withName("form").withAttrValue("action", routes.AddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
@@ -378,7 +378,7 @@ class AddressLookupControllerSpec
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("h1").withValue("Choose address")
+      html should include element withName("h1").withValue("Choose your address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")

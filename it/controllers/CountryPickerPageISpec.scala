@@ -25,13 +25,13 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Enter address"
-        document.getElementById("pageHeading").text() shouldBe "Enter address"
+        document.title() shouldBe "Select country"
+        document.getElementById("pageHeading").text() shouldBe "Select your country"
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "countryCode" -> "Country"
+          "countryCode" -> "Select country"
         ))
       }
 
@@ -117,7 +117,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.status shouldBe BAD_REQUEST
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Error: Enter address"
+        document.title() shouldBe "Error: Select country"
       }
     }
 

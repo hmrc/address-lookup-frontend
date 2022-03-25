@@ -27,7 +27,7 @@ class EditPageISpec extends IntegrationSpecBase {
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "Enter address"
-        document.getElementById("pageHeading").text() shouldBe "Enter address"
+        document.getElementById("pageHeading").text() shouldBe "Enter your address"
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
@@ -41,7 +41,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line1" -> "Address line 1",
           "line2" -> "Address line 2",
           "line3" -> "Address line 3",
-          "town" -> "Town/city",
+          "town" -> "Town or city",
           "postcode" -> "Postcode (optional)",
           "countryCode" -> "Country"
         ))
@@ -438,7 +438,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line1" -> "Address line 1",
         "line2" -> "Address line 2",
         "line3" -> "Address line 3",
-        "town" -> "Town/city",
+        "town" -> "Town or city",
         "postcode" -> "Postcode (optional)",
         "countryCode" -> "Country"))
     }
@@ -558,7 +558,7 @@ class EditPageISpec extends IntegrationSpecBase {
       //testElementExists(res, EditPage.ukEditId)
 
       document.title shouldBe "Error: Enter address"
-      document.h1.text shouldBe "Enter address"
+      document.h1.text shouldBe "Enter your address"
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")
 
@@ -572,7 +572,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line1" -> "Address line 1",
         "line2" -> "Address line 2",
         "line3" -> "Address line 3",
-        "town" -> "Town/city",
+        "town" -> "Town or city",
         "postcode" -> "UK postcode (optional)"
       ))
 

@@ -35,20 +35,20 @@ constants.forPostcode = for postcode
 constants.postcodeLabel.ukMode = UK postcode (optional)
 constants.postcodeLabel = Postcode (optional)
 
-constants.editPageAddressLine1MaxErrorMessage = Enter a first address line using 256 characters or less
-constants.editPageAddressLine2MaxErrorMessage = Enter a second address line using 256 characters or less
-constants.editPageAddressLine3MaxErrorMessage = Enter a third address line using 256 characters or less
-constants.editPageTownMaxErrorMessage = Enter a town or city using 256 characters or less
-constants.editPageAddressLine1MinErrorMessage = Enter first line of address
-constants.editPageTownMinErrorMessage = Enter town or city of the address
+constants.editPageAddressLine1MaxErrorMessage = The first address line needs to be fewer than 256 characters
+constants.editPageAddressLine2MaxErrorMessage = The second address line needs to be fewer than 256 characters
+constants.editPageAddressLine3MaxErrorMessage = The third address line needs to be fewer than 256 characters
+constants.editPageTownMaxErrorMessage = The town or city needs to be fewer than 256 characters
+constants.editPageAddressLine1MinErrorMessage = Enter the first line of address
+constants.editPageTownMinErrorMessage = Enter the town or city
 constants.editPagePostcodeErrorMessage.ukMode = Enter a valid UK postcode
 constants.editPagePostcodeErrorMessage = Enter a valid postcode
-constants.editPageCountryErrorMessage = Enter country of the address
+constants.editPageCountryErrorMessage = Enter the country of the address
 constants.editPageAtLeastOneLineOrTown = Enter at least one address line or a town
 
 constants.countryPickerPageCountryErrorMessage = Enter country of the address
 
-constants.errorRequired = Select the property for the address
+constants.errorRequired = Select an address
 constants.errorMin = Minimum length is $min
 constants.errorMax = Maximum length is $max
 
@@ -56,14 +56,14 @@ constants.confirmSelectedAddressError1 = You have not selected any address. Plea
 constants.confirmSelectedAddressError2 = search for and select your address
 
 constants.lookupErrorHeading = There is a problem
-constants.lookupPostcodeEmptyError.ukMode = Enter UK postcode
-constants.lookupPostcodeEmptyError = Enter postcode
-constants.lookupPostcodeInvalidError.ukMode = UK Postcode must only contain letters A - Z, and 0 - 9
-constants.lookupPostcodeInvalidError = Postcode must only contain letters A - Z, and 0 - 9
+constants.lookupPostcodeEmptyError.ukMode = Enter a UK postcode
+constants.lookupPostcodeEmptyError = Enter a postcode
+constants.lookupPostcodeInvalidError.ukMode = A UK Postcode must only contain letters A - Z, and 0 - 9
+constants.lookupPostcodeInvalidError = A postcode must only contain letters A - Z, and 0 - 9
 constants.lookupPostcodeError.ukMode = Enter a real UK Postcode e.g. AA1 1AA
 constants.lookupPostcodeError = Enter a real Postcode e.g. AA1 1AA
 
-constants.lookupFilterError = Your house name or number needs to be fewer than 256 characters
+constants.lookupFilterError = The house name or number needs to be fewer than 256 characters
 constants.lookupFilterHint = For example, The Mill, 116 or Flat 37a
 
 constants.errorText = There is a problem
@@ -95,9 +95,9 @@ constants.error.prefix = Error:
 
 constants.footer.visuallyHiddenText = Support links
 
-countryPickerPage.title = Select your country
+countryPickerPage.title = Select country
 countryPickerPage.heading = Select your country
-countryPickerPage.countryLabel = Select your country
+countryPickerPage.countryLabel = Select country
 countryPickerPage.submitLabel = Continue
 
 confirmPage.title = Review and confirm
@@ -109,7 +109,7 @@ confirmPage.changeLinkText = Edit address
 confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
 confirmPage.searchAgainLinkText = Search again
 
-editPage.title = Enter your address
+editPage.title = Enter address
 editPage.heading = Enter your address
 editPage.organisationLabel = Organisation (optional)
 editPage.line1Label = Address line 1
@@ -121,8 +121,8 @@ editPage.postcodeLabel.ukMode = UK postcode (optional)
 editPage.countryLabel = Country
 editPage.submitLabel = Continue
 
-lookupPage.title = Find your address
-lookupPage.title.ukMode = Find your UK address
+lookupPage.title = Find address
+lookupPage.title.ukMode = Find UK address
 lookupPage.heading = Find your address
 lookupPage.heading.ukMode = Find your UK address
 lookupPage.filterLabel = Property name or number (optional)
@@ -132,11 +132,11 @@ lookupPage.submitLabel = Continue
 lookupPage.manualAddressLinkText = Enter the address manually
 
 selectPage.title = Choose address
-selectPage.heading = Choose address
+selectPage.heading = Choose your address
 selectPage.headingWithPostcode = Showing all results for
 selectPage.proposalListLabel = Please select one of the following addresses
 selectPage.submitLabel = Continue
-selectPage.editAddressLinkText = Enter the address manually
+selectPage.editAddressLinkText = Enter your address manually
 selectPage.searchAgainLinkText = Search again
 
 phaseBannerHtml = This is a new service – your <a href='$link' class='govuk-link'>feedback</a> will help us to improve it.

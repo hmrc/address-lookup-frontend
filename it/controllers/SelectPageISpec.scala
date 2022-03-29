@@ -37,7 +37,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         doc.h1.text() shouldBe messages("selectPage.heading")
         doc.submitButton.text() shouldBe messages("selectPage.submitLabel")
         doc.link("editAddress") should have(
-          href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
+          href(routes.AbpAddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
           text(messages("selectPage.editAddressLinkText"))
         )
 
@@ -82,7 +82,7 @@ class SelectPageISpec extends IntegrationSpecBase {
           doc.h1.text() shouldBe selectPage.heading.get
           doc.submitButton.text() shouldBe selectPage.submitLabel.get
           doc.link("editAddress") should have(
-            href(routes.AddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
+            href(routes.AbpAddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
             text(selectPage.editAddressLinkText.get)
           )
         }

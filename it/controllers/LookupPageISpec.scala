@@ -69,7 +69,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         )
 
         doc.link(LookupPage.manualAddressLink) should have(
-          href(routes.AddressLookupController.edit(testJourneyId).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId).url),
           text(messages("lookupPage.manualAddressLinkText"))
         )
 
@@ -206,7 +206,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           )
 
           doc.link(LookupPage.manualAddressLink) should have(
-            href(routes.AddressLookupController.edit(testJourneyId).url),
+            href(routes.AbpAddressLookupController.edit(testJourneyId).url),
             text(lookupPage.manualAddressLinkText.get)
           )
 
@@ -274,7 +274,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           )
 
           doc.link(LookupPage.manualAddressLink) should have(
-            href(routes.AddressLookupController.edit(testJourneyId).url),
+            href(routes.AbpAddressLookupController.edit(testJourneyId).url),
             text(lookupPage.manualAddressLinkText.get)
           )
 
@@ -311,7 +311,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           doc.input(LookupPage.postcodeId) should have(label(lookupPage.postcodeLabel.get), value(testPostCode))
           doc.input(LookupPage.filterId) should have(label(lookupPage.filterLabel.get + hardCodedFormHint), value(testFilterValue))
           doc.link(LookupPage.manualAddressLink) should have(
-            href(routes.AddressLookupController.edit(testJourneyId).url),
+            href(routes.AbpAddressLookupController.edit(testJourneyId).url),
             text(lookupPage.manualAddressLinkText.get)
           )
 

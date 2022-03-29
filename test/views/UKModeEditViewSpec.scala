@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import views.html.v2.non_uk_mode_edit
+import views.html.abp.non_uk_mode_edit
 
 class UKModeEditViewSpec extends ViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

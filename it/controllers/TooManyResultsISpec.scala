@@ -77,7 +77,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
-              href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
+              href(routes.AbpAddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
               text("Enter the address manually")
             )
           }
@@ -108,7 +108,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
-              href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
+              href(routes.AbpAddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
               text("Enter the address manually")
             )
           }
@@ -139,7 +139,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
-              href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
+              href(routes.AbpAddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
               text("Enter the address manually")
             )
           }
@@ -170,7 +170,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(
-              href(routes.AddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
+              href(routes.AbpAddressLookupController.edit(testJourneyId, Some(testPostCode)).url),
               text("Enter the address manually")
             )
           }

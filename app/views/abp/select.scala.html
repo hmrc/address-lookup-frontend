@@ -43,16 +43,16 @@ page: page_template)
                 @{messages("constants.noResults")} '@{lookup.filter.get}'.
             </p>
             <p class="govuk-body">
-                <a class="govuk-link" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
             </p>
         </div>
     } else {
         <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.heading")}</h1>
     }
 
-    @form(controllers.routes.AddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+    @form(controllers.routes.AbpAddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
+            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(
@@ -78,7 +78,7 @@ page: page_template)
 
         @if(resolvedConf.options.selectPageConfig.showSearchAgainLink) {
             <p class="govuk-!-margin-bottom-7">
-                <a class="govuk-link" href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
             </p>
         }
 

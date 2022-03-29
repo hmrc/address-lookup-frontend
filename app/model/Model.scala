@@ -26,6 +26,8 @@ case class CountryPicker(countryCode: String)
 
 case class Lookup(filter: Option[String], postcode: String)
 
+case class NonAbpLookup(filter: String)
+
 case class Timeout(timeoutAmount: Int,
                    timeoutUrl: String,
                    timeoutKeepAliveUrl: Option[String])

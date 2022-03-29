@@ -28,7 +28,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utils.TestConstants._
-import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
+import views.html.abp.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 class SelectPageViewSpec extends ViewSpec {
 
@@ -107,7 +107,7 @@ class SelectPageViewSpec extends ViewSpec {
   "render the try a different name or number link" when {
     "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
       doc.getALinkText(id = "differentAddress") shouldBe messages("constants.differentSearch")
-      doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
+      doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AbpAddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
     }
   }
 

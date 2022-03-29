@@ -23,7 +23,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import views.html.v2.no_results
+import views.html.abp.no_results
 
 class NoResultsViewSpec extends ViewSpec {
 

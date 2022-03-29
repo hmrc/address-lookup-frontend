@@ -147,7 +147,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
         val res = await(fResponse)
         res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/edit"
+        res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/international/edit"
       }
     }
 

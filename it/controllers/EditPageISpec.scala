@@ -26,7 +26,7 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Enter address"
+        document.title() shouldBe "Enter your address"
         document.getElementById("pageHeading").text() shouldBe "Enter your address"
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
@@ -514,7 +514,7 @@ class EditPageISpec extends IntegrationSpecBase {
       //testElementExists(res, EditPage.nonUkEditId)
     }
 
-    s"return 303 if form is valid and redirect to ${controllers.routes.AddressLookupController.confirm("")}" in {
+    s"return 303 if form is valid and redirect to ${controllers.routes.AbpAddressLookupController.confirm("")}" in {
       stubKeystore(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))).as[JsObject], OK)
       stubKeystoreSave(
         testJourneyId,
@@ -557,7 +557,7 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
       //testElementExists(res, EditPage.ukEditId)
 
-      document.title shouldBe "Error: Enter address"
+      document.title shouldBe "Error: Enter your address"
       document.h1.text shouldBe "Enter your address"
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")

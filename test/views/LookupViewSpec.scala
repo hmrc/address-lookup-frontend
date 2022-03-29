@@ -18,7 +18,7 @@ package views
 
 import config.FrontendAppConfig
 import play.api.i18n.MessagesApi
-import views.html.v2.lookup
+import views.html.abp.lookup
 
 class LookupViewSpec extends ViewSpec {
 

@@ -25,7 +25,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import views.html.v2.{lookup, non_uk_mode_edit, select, uk_mode_edit}
+import views.html.abp.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 
 class NonUKModeEditViewSpec extends ViewSpec {

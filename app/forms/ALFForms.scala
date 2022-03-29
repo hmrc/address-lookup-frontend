@@ -18,7 +18,7 @@ package forms
 
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
-import model.{CountryPicker, Edit, Lookup, Select}
+import model.{CountryPicker, Edit, Lookup, NonAbpLookup, Select}
 import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.{default, ignored, mapping, nonEmptyText, optional, text}
 import play.api.data.format.Formatter
@@ -70,6 +70,12 @@ object ALFForms extends EmptyStringValidator {
       "filter" -> optional(text.verifying(messages(s"constants.lookupFilterError"), txt => txt.length < 256)),
       "postcode" -> text.verifying(postcodeConstraint(isUkMode))
     )(Lookup.apply)(Lookup.unapply)
+  )
+
+  def nonAbpLookupForm()(implicit messages: Messages) = Form(
+    mapping(
+      "filter" -> text.verifying(messages(s"constants.lookupFilterError"), txt => txt.length < 256)
+    )(NonAbpLookup.apply)(NonAbpLookup.unapply)
   )
 
   val minimumLength: Int = 1

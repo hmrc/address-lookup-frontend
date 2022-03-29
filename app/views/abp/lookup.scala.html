@@ -44,7 +44,7 @@
 
 @page(titleWithError, Some(lookupForm), journeyData) {
 
-  @form(routes.AddressLookupController.select(id)) {
+  @form(routes.AbpAddressLookupController.select(id)) {
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
@@ -71,7 +71,7 @@
           errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
+            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
         </p>
 
       @textInput(Input(

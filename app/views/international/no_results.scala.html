@@ -19,7 +19,7 @@
 @import views.html.templates.page_template
 
 @this(form: FormWithCSRF, button: GovukButton, page: page_template)
-@(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, filter: String, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -28,12 +28,12 @@
 @page(messages("constants.noResultsPageTitle"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{s"${messages("constants.noResultsPageHeading")} $postcode"}
+        @{s"${messages("constants.noResultsPageHeading")}"}
     </h1>
 
-    @form(controllers.routes.AddressLookupController.lookup(id)) {
+    @form(controllers.routes.InternationalAddressLookupController.lookup(id, Some(filter))) {
         <p><a class="govuk-link" href="@{
-            routes.AddressLookupController.edit(id, None)
+            routes.InternationalAddressLookupController.edit(id)
         }" id="enterManual">@{
             messages("constants.noResultsPageEnterManually")
         }</a></p>

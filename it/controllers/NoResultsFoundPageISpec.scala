@@ -54,7 +54,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId, None).url),
           text(EnglishContent.manualEntry)
         )
 
@@ -86,7 +86,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId, None).url),
           text(EnglishContent.manualEntry)
         )
 
@@ -120,7 +120,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId, None).url),
           text(EnglishContent.manualEntry)
         )
 
@@ -154,7 +154,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId, None).url),
           text(WelshContent.manualEntry)
         )
 
@@ -197,7 +197,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           )
 
         doc.link("enterManual") should have(
-          href(routes.AddressLookupController.edit(testJourneyId, None).url),
+          href(routes.AbpAddressLookupController.edit(testJourneyId, None).url),
           text(EnglishContent.manualEntry)
         )
 

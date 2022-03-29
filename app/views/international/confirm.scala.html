@@ -33,7 +33,7 @@
     </h1>
 
     @if(selectedAddress.isDefined) {
-        @form(controllers.routes.AddressLookupController.handleConfirm(id)) {
+        @form(controllers.routes.InternationalAddressLookupController.handleConfirm(id)) {
             @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
                 <h2 class="govuk-heading-m" id="infoSubheading">@{messages("confirmPage.infoSubheading")}</h2>
                 <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("confirmPage.infoMessage"))</p>
@@ -42,13 +42,13 @@
 
             @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
                 <p>
-                    <a class="govuk-link" href="@{routes.AddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
+                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, None)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
                 </p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
                 <p class="govuk-!-margin-bottom-7">
-                    <a class="govuk-link" href="@{routes.AddressLookupController.edit(id, None)}" id="changeLink">@{messages("confirmPage.changeLinkText")}</a>
+                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="changeLink">@{messages("confirmPage.changeLinkText")}</a>
                 </p>
             }
 
@@ -64,7 +64,7 @@
         <p>@{
             messages("constants.confirmSelectedAddressError1")
         } <a class="govuk-link" href="@{
-            routes.AddressLookupController.lookup(id)
+            routes.InternationalAddressLookupController.lookup(id, None)
         }" id="lookupLink">@{
             messages("constants.confirmSelectedAddressError2")
         }</a>.</p>

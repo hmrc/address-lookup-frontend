@@ -24,7 +24,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import views.html.v2.too_many_results
+import views.html.abp.too_many_results
 
 class TooManyResultsViewSpec extends ViewSpec {
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]

@@ -24,7 +24,7 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import views.html.v2.confirm
+import views.html.abp.confirm
 
 class ConfirmViewSpec extends ViewSpec {
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()

@@ -23,6 +23,7 @@ import forms.Postcode
 import model.ProposedAddress
 import play.api.libs.json.{Format, Json, Writes}
 import services.AddressReputationFormats._
+import uk.gov.hmrc.http.HttpReadsInstances.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
@@ -76,6 +77,48 @@ ec: ExecutionContext) extends AddressService {
       }
   }
 
+  def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
+    import AddressReputationFormats.nonUkAddressRecordReads
+
+    val endpoint = frontendAppConfig.addressReputationEndpoint
+
+    val lookupAddressByCountry = LookupAddressByCountry(filter)
+
+    ???
+
+//    http.POST[LookupAddressByPostcode, List[NonUkAddressRecord]](s"$endpoint/country/$countryCode/lookup", lookupAddressByCountry)
+//      .map { found =>
+//        val results = found.map { addr =>
+//          ProposedAddress(
+//            addr.id,
+//            addr.uprn,
+//            addr.parentUprn,
+//            addr.usrn,
+//            addr.organisation,
+//            addr.address.postcode,
+//            addr.address.town,
+//            addr.address.lines,
+//            if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
+//            else addr.address.country,
+//            addr.poBox
+//          )
+//        }.filterNot(a => isukMode && a.country.code != "GB")
+//
+//        results.sortWith((a, b) => {
+//          def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
+//            case (Some(nA), Some(nB)) :: tail =>
+//              if (nA == nB) sort(tail) else nA < nB
+//            case (Some(_), None) :: _ => true
+//            case (None, Some(_)) :: _ => false
+//            case _ => mkString(a) < mkString(b)
+//          }
+//
+//          sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
+//        })
+//      }
+
+  }
+
   def mkString(p: ProposedAddress) = p.lines.mkString(" ").toLowerCase()
 
   // Find numbers in proposed address in order of significance, from rightmost to leftmost.
@@ -111,9 +154,13 @@ object AddressReputationFormats {
 
   implicit val format3: Format[AddressRecord] = Format(addressRecordReads, Json.writes[AddressRecord])
   implicit val format4: Format[International] = Json.format[International]
+
+  implicit val nonUkAddressRecordReads: Reads[NonUkAddressRecord] = Json.reads[NonUkAddressRecord]
 }
 
 case class LookupAddressByPostcode(postcode: String, filter: Option[String])
+
+case class LookupAddressByCountry(filter: String)
 
 object LookupAddressByPostcode {
   implicit val writes: Writes[LookupAddressByPostcode] = Json.writes[LookupAddressByPostcode]

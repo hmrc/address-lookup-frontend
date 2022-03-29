@@ -28,11 +28,11 @@
 @page(messages("constants.noResultsFoundTitle"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{if(firstLookup) {
-            messages("constants.tooManyResultsText")
-        } else {
-            messages("constants.cannotFindText")
-        }}
+    @{if(firstLookup) {
+        messages("constants.tooManyResultsText")
+    } else {
+        messages("constants.cannotFindText")
+    }}
     </h1>
 
     <p class="govuk-heading-m" >@messages("constants.youEntered")</p>
@@ -44,9 +44,9 @@
     </ul>
     <br />
 
-        <p><a id="anotherSearch" class="govuk-button" href="@{routes.AddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
-            @messages("constants.anotherSearchText")
-        </a></p>
+    <p><a id="anotherSearch" class="govuk-button" href="@{routes.AbpAddressLookupController.lookup(id,Some(lookup.postcode),lookup.filter)}">
+    @messages("constants.anotherSearchText")
+    </a></p>
 
-    <p><a class="govuk-link" href="@{routes.AddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messages("constants.tooManyResultsManualLink")</a></p>
+    <p><a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id,Some(lookup.postcode))}" id="enterManual">@messages("constants.tooManyResultsManualLink")</a></p>
 }

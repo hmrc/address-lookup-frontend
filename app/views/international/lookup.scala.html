@@ -1,0 +1,79 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import model._
+@import config.FrontendAppConfig
+@import views.html.templates.page_template
+
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, page: page_template)
+@(id: String,
+    journeyData: JourneyDataV2,
+    lookupForm: Form[NonAbpLookup],
+    isWelsh: Boolean,
+    isUKMode: Boolean = true,
+    message: Option[String] = None
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@errorPrefix = @{s"${messages("constants.error.prefix")} "}
+
+@titleWithError = @{
+    val baseTitle = messages("nonAbpLookupPage.title")
+    if(lookupForm.errors) {
+        errorPrefix + baseTitle
+    } else {
+        baseTitle
+    }
+}
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
+@page(titleWithError, Some(lookupForm), journeyData) {
+
+  @form(routes.InternationalAddressLookupController.select(id)) {
+      <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
+        @messages("nonAbpLookupPage.heading")
+      </h1>
+
+      @if(messages.isDefinedAt("nonAbpLookupPage.afterHeadingText")) {
+      <div class="govuk-hint" id="afterHeadingText">@{messages("nonAbpLookupPage.afterHeadingText")}</div>
+      }
+
+      @if(message.isDefined) {
+      <div class="highlight-message highlight-message--full-width">
+        <p>@{message.get}</p>
+      </div>
+      }
+
+      @textInput(Input(
+          label = Label(content = HtmlContent(messages("nonAbpLookupPage.filterLabel"))),
+          name = lookupForm("filter").name,
+          value = lookupForm("filter").value,
+          classes = "govuk-input--width-20",
+          id = lookupForm("filter").id,
+          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+          hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
+
+@*      <p class="govuk-!-margin-bottom-6 govuk-body">*@
+@*          <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="manualAddress">@{messages("nonAbpLookupPage.manualAddressLinkText")}</a>*@
+@*      </p>*@
+
+      @button(Button(content = HtmlContent(messages("nonAbpLookupPage.submitLabel")),
+          name=Some("continue"),
+          inputType=Some("submit"), attributes = Map("id" → "continue")))
+  }
+}

@@ -1,0 +1,45 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import model._
+@import config.FrontendAppConfig
+@import views.html.templates.page_template
+
+@this(form: FormWithCSRF, button: GovukButton, page: page_template)
+@(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@resolvedConf = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
+@page(messages("constants.noResultsPageTitle"), None, journeyData) {
+
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
+        @{s"${messages("constants.noResultsPageHeading")} $postcode"}
+    </h1>
+
+    @form(controllers.routes.AbpAddressLookupController.lookup(id)) {
+        <p><a class="govuk-link" href="@{
+            routes.AbpAddressLookupController.edit(id, None)
+        }" id="enterManual">@{
+            messages("constants.noResultsPageEnterManually")
+        }</a></p>
+
+        @button(Button(content = HtmlContent(messages("constants.noResultsPageDifferentPostcode")),
+            name = Some("continue"),
+            inputType = Some("submit"), attributes = Map("id" → "continue")))
+    }
+}

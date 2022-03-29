@@ -56,7 +56,7 @@ select: GovukSelect, page: page_template)
         @{messages("editPage.heading")}
     </h1>
 
-    @form(routes.AddressLookupController.handleEdit(id)) {
+    @form(routes.AbpAddressLookupController.handleEdit(id)) {
             @textInput(Input(value = editForm("organisation").value,
                 label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("organization"),

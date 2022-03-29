@@ -131,6 +131,12 @@ lookupPage.postcodeLabel.ukMode = UK postcode
 lookupPage.submitLabel = Continue
 lookupPage.manualAddressLinkText = Enter the address manually
 
+nonAbpLookupPage.title = Find your address
+nonAbpLookupPage.heading = Find your address
+nonAbpLookupPage.filterLabel = Type a part of address or postcode
+nonAbpLookupPage.submitLabel = Continue
+nonAbpLookupPage.manualAddressLinkText = Enter the address manually
+
 selectPage.title = Choose address
 selectPage.heading = Choose your address
 selectPage.headingWithPostcode = Showing all results for

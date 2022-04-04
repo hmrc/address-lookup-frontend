@@ -30,7 +30,7 @@
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
 
 @titleWithError = @{
-    val baseTitle = messages("nonAbpLookupPage.title")
+    val baseTitle = messages("international.lookupPage.title")
     if(lookupForm.errors) {
         errorPrefix + baseTitle
     } else {
@@ -46,11 +46,11 @@
 
   @form(routes.InternationalAddressLookupController.select(id)) {
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @messages("nonAbpLookupPage.heading")
+        @messages("international.lookupPage.heading")
       </h1>
 
-      @if(messages.isDefinedAt("nonAbpLookupPage.afterHeadingText")) {
-      <div class="govuk-hint" id="afterHeadingText">@{messages("nonAbpLookupPage.afterHeadingText")}</div>
+      @if(messages.isDefinedAt("international.lookupPage.afterHeadingText")) {
+      <div class="govuk-hint" id="afterHeadingText">@{messages("international.lookupPage.afterHeadingText")}</div>
       }
 
       @if(message.isDefined) {
@@ -60,7 +60,7 @@
       }
 
       @textInput(Input(
-          label = Label(content = HtmlContent(messages("nonAbpLookupPage.filterLabel"))),
+          label = Label(content = HtmlContent(messages("international.lookupPage.filterLabel"))),
           name = lookupForm("filter").name,
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
@@ -68,11 +68,11 @@
           errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
           hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
-@*      <p class="govuk-!-margin-bottom-6 govuk-body">*@
-@*          <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="manualAddress">@{messages("nonAbpLookupPage.manualAddressLinkText")}</a>*@
-@*      </p>*@
+      <p class="govuk-!-margin-bottom-6 govuk-body">
+          <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="manualAddress">@{messages("international.lookupPage.manualAddressLinkText")}</a>
+      </p>
 
-      @button(Button(content = HtmlContent(messages("nonAbpLookupPage.submitLabel")),
+      @button(Button(content = HtmlContent(messages("international.lookupPage.submitLabel")),
           name=Some("continue"),
           inputType=Some("submit"), attributes = Map("id" → "continue")))
   }

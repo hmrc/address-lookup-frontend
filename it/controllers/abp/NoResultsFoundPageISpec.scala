@@ -1,5 +1,6 @@
-package controllers
+package controllers.abp
 
+import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage

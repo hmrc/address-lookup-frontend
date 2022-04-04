@@ -139,4 +139,38 @@ selectPage.submitLabel = Yn eich blaen
 selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
 selectPage.searchAgainLinkText = Chwilio eto
 
+international.lookupPage.title = Dod o hyd i gyfeiriad
+international.lookupPage.heading = Dod o hyd i gyfeiriad
+international.lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
+international.lookupPage.submitLabel = Yn eich blaen
+international.lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
+
+international.selectPage.title = Dewiswch gyfeiriad
+international.selectPage.heading = Dewiswch gyfeiriad
+international.selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer
+international.selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
+international.selectPage.submitLabel = Yn eich blaen
+international.selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
+international.selectPage.searchAgainLinkText = Chwilio eto
+
+international.editPage.title = Nodwch gyfeiriad
+international.editPage.heading = Nodwch gyfeiriad
+international.editPage.organisationLabel = W Organisation (optional)
+international.editPage.line1Label = Cyfeiriad – llinell 1
+international.editPage.line2Label = Cyfeiriad – llinell 2
+international.editPage.line3Label = Cyfeiriad – llinell 3
+international.editPage.townLabel = Tref/dinas
+international.editPage.postcodeLabel = Cod post (dewisol)
+international.editPage.countryLabel = Gwlad
+international.editPage.submitLabel = Yn eich blaen
+
+international.confirmPage.title = Adolygu a chadarnhau
+international.confirmPage.heading = Adolygu a chadarnhau
+international.confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
+international.confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm Cadarnhau.
+international.confirmPage.submitLabel = Cadarnhau’r cyfeiriad
+international.confirmPage.changeLinkText = Newid y cyfeiriad
+international.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
+international.confirmPage.searchAgainLinkText = Chwilio eto
+
 phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href='$link' class='govuk-link'>adborth</a> yn ein helpu i’w wella.

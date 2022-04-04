@@ -26,7 +26,7 @@ import itutil.config.{AddressRecordConstants, IntegrationTestConstants}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest}
-import services.LookupAddressByPostcode
+import services.{LookupAddressByCountry, LookupAddressByPostcode}
 
 object WireMockHelper {
   val wiremockPort = 11111
@@ -120,6 +120,22 @@ trait WireMockHelper {
     val lookupAddressByPostcode = LookupAddressByPostcode(postcode, None)
     stubFor(post(urlPathEqualTo(alfBackendURL))
       .withRequestBody(equalTo(Json.toJson(lookupAddressByPostcode).toString()))
+      .willReturn(
+        aResponse()
+          .withStatus(expectedStatus)
+          .withBody(addressJson.toString())
+      )
+    )
+  }
+
+  def stubGetAddressByCountry(countryCode: String, filter: String = IntegrationTestConstants.testFilterValue,
+                           expectedStatus: Int = 200,
+                           addressJson: JsValue = AddressRecordConstants.internationalAddressRecordSeqJson): StubMapping = {
+    val alfBackendURL = s"/country/$countryCode/lookup"
+
+    val lookupAddressByCountry = LookupAddressByCountry(filter)
+    stubFor(post(urlPathEqualTo(alfBackendURL))
+      .withRequestBody(equalTo(Json.toJson(lookupAddressByCountry).toString()))
       .willReturn(
         aResponse()
           .withStatus(expectedStatus)

@@ -28,7 +28,7 @@
 @page(messages("constants.noResultsPageTitle"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{s"${messages("constants.noResultsPageHeading")}"}
+        @{s"${messages("constants.noResultsPageHeading")} $filter"}
     </h1>
 
     @form(controllers.routes.InternationalAddressLookupController.lookup(id, Some(filter))) {

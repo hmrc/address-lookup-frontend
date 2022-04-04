@@ -34,6 +34,8 @@ import scala.util.Try
 trait AddressService {
   def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier)
   : Future[Seq[ProposedAddress]]
+
+  def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
 }
 
 @Singleton
@@ -54,8 +56,8 @@ ec: ExecutionContext) extends AddressService {
             addr.parentUprn,
             addr.usrn,
             addr.organisation,
-            addr.address.postcode,
-            addr.address.town,
+            Some(addr.address.postcode),
+            Some(addr.address.town),
             addr.address.lines,
             if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
             else addr.address.country,
@@ -78,44 +80,42 @@ ec: ExecutionContext) extends AddressService {
   }
 
   def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    import AddressReputationFormats.nonUkAddressRecordReads
-
     val endpoint = frontendAppConfig.addressReputationEndpoint
-
     val lookupAddressByCountry = LookupAddressByCountry(filter)
 
-    ???
+    http.POST[LookupAddressByCountry, List[NonUkAddressRecord]](s"$endpoint/country/$countryCode/lookup", lookupAddressByCountry)
+      .map { found =>
+        val results = found.map { addr =>
+          ProposedAddress(
+            addr.id,
+            None,
+            None,
+            None,
+            None,
+            addr.postcode,
+            addr.city,
+            Seq(
+              s"${Seq(addr.unit, addr.number, addr.street).flatten.mkString(" ")}",
+              s"${addr.district.getOrElse("")}",
+              s"${addr.city.getOrElse("")}",
+              s"${addr.region.getOrElse("")}"
+            ).filter(_.nonEmpty).toList,
+            ForeignOfficeCountryService.find(code = countryCode).get
+          )
+        }
 
-//    http.POST[LookupAddressByPostcode, List[NonUkAddressRecord]](s"$endpoint/country/$countryCode/lookup", lookupAddressByCountry)
-//      .map { found =>
-//        val results = found.map { addr =>
-//          ProposedAddress(
-//            addr.id,
-//            addr.uprn,
-//            addr.parentUprn,
-//            addr.usrn,
-//            addr.organisation,
-//            addr.address.postcode,
-//            addr.address.town,
-//            addr.address.lines,
-//            if ("UK" == addr.address.country.code) Country("GB", "United Kingdom")
-//            else addr.address.country,
-//            addr.poBox
-//          )
-//        }.filterNot(a => isukMode && a.country.code != "GB")
-//
-//        results.sortWith((a, b) => {
-//          def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
-//            case (Some(nA), Some(nB)) :: tail =>
-//              if (nA == nB) sort(tail) else nA < nB
-//            case (Some(_), None) :: _ => true
-//            case (None, Some(_)) :: _ => false
-//            case _ => mkString(a) < mkString(b)
-//          }
-//
-//          sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
-//        })
-//      }
+        results.sortWith((a, b) => {
+          def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
+            case (Some(nA), Some(nB)) :: tail =>
+              if (nA == nB) sort(tail) else nA < nB
+            case (Some(_), None) :: _ => true
+            case (None, Some(_)) :: _ => false
+            case _ => mkString(a) < mkString(b)
+          }
+
+          sort(numbersIn(a).zipAll(numbersIn(b), None, None).toList)
+        })
+      }
 
   }
 
@@ -160,8 +160,12 @@ object AddressReputationFormats {
 
 case class LookupAddressByPostcode(postcode: String, filter: Option[String])
 
-case class LookupAddressByCountry(filter: String)
-
 object LookupAddressByPostcode {
   implicit val writes: Writes[LookupAddressByPostcode] = Json.writes[LookupAddressByPostcode]
+}
+
+case class LookupAddressByCountry(filter: String)
+
+object LookupAddressByCountry {
+  implicit val writes: Writes[LookupAddressByCountry] = Json.writes[LookupAddressByCountry]
 }

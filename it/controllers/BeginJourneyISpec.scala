@@ -1,11 +1,9 @@
 package controllers
 
-import address.v2.{Countries, Country}
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants.{journeyDataV2MinimalUkMode, testCustomCountryPickerPageJourneyConfigV2, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId, testMinimalLevelJourneyConfigV2}
-import org.jsoup.Jsoup
+import itutil.config.IntegrationTestConstants.{journeyDataV2MinimalUkMode, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId}
 import play.api.http.HeaderNames
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 
 class BeginJourneyISpec extends IntegrationSpecBase {

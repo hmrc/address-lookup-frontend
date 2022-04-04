@@ -105,6 +105,8 @@ class AbpAddressLookupControllerSpec
       override def find(postcode: String, filter: Option[String], isUkMode: Boolean)(implicit hc: HeaderCarrier) = {
         Future.successful(proposals)
       }
+
+      override def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = ???
     }
 
     val countryService = new CountryService {

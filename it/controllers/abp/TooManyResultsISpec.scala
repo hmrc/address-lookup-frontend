@@ -1,5 +1,6 @@
-package controllers
+package controllers.abp
 
+import controllers.routes
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}

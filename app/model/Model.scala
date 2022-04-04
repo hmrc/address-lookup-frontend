@@ -64,8 +64,8 @@ case class ProposedAddress(addressId: String,
                            parentUprn: Option[Long],
                            usrn: Option[Long],
                            organisation: Option[String],
-                           postcode: String,
-                           town: String,
+                           postcode: Option[String],
+                           town: Option[String],
                            lines: List[String] = List.empty,
                            country: Country = ForeignOfficeCountryService
                              .find(code = "GB")
@@ -77,11 +77,11 @@ case class ProposedAddress(addressId: String,
       auditRef,
       Some(addressId),
       uprn, parentUprn, usrn, organisation,
-      ConfirmableAddressDetails(organisation, lines, Some(town), Some(postcode), Some(country), poBox)
+      ConfirmableAddressDetails(organisation, lines, town, postcode, Some(country), poBox)
     )
 
   def toDescription: String = {
-    val addressDescription = lines.take(3).mkString(", ") + ", " + town + ", " + postcode
+    val addressDescription = (lines.take(3).map(Some(_)) :+ town :+ postcode).flatten.mkString(", ")
     organisation.fold(addressDescription)(org => s"$org, $addressDescription")
   }
 
@@ -147,4 +147,22 @@ object ConfirmableAddress {
 object ProposedAddress {
   import CountryFormat._
   implicit val proposedAddressFormat = Json.format[ProposedAddress]
+
+  def apply(addressId: String, uprn: Option[Long], parentUprn: Option[Long], usrn: Option[Long],
+            organisation: Option[String], postcode: String, town: String): ProposedAddress =
+
+    ProposedAddress(addressId = addressId, uprn = uprn, parentUprn = parentUprn, usrn = usrn,
+      organisation = organisation, postcode = Some(postcode), town = Some(town))
+
+  def apply(addressId: String, uprn: Option[Long], parentUprn: Option[Long], usrn: Option[Long],
+            organisation: Option[String], postcode: String, town: String, lines: List[String]): ProposedAddress =
+
+    ProposedAddress(addressId = addressId, uprn = uprn, parentUprn = parentUprn, usrn = usrn,
+      organisation = organisation, postcode = Some(postcode), town = Some(town), lines = lines)
+
+  def apply(addressId: String, uprn: Option[Long], parentUprn: Option[Long], usrn: Option[Long],
+            organisation: Option[String], postcode: String, town: String, lines: List[String], country: Country): ProposedAddress =
+
+    ProposedAddress(addressId = addressId, uprn = uprn, parentUprn = parentUprn, usrn = usrn,
+      organisation = organisation, postcode = Some(postcode), town = Some(town), lines = lines, country = country)
 }

@@ -29,25 +29,17 @@
 
 @titleWithError = @{
     if(selectForm.errors) {
-        errorPrefix + messages("selectPage.title")} else {
-        messages("selectPage.title")}
+        errorPrefix + messages("international.selectPage.title")} else {
+        messages("international.selectPage.title")}
 }
 
 @page(titleWithError, Some(selectForm), journeyData) {
 
-    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.headingWithPostcode")}</h1>
-    <div class="form-field">
-        <p class="govuk-body" id="no-results">
-            @{messages("constants.noResults")} '@{lookup.filter}'.
-        </p>
-        <p class="govuk-body">
-            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, Some(lookup.filter))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
-        </p>
-    </div>
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("international.selectPage.heading")}</h1>
 
     @form(controllers.routes.InternationalAddressLookupController.handleSelect(id, lookup.filter)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
+            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{messages("international.selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(
@@ -56,7 +48,7 @@
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(messages("selectPage.proposalListLabel")),
+                    content = HtmlContent(messages("international.selectPage.proposalListLabel")),
                     classes = "govuk-visually-hidden"
                 ))
             )),
@@ -77,7 +69,7 @@
             </p>
         }
 
-        @button(Button(content = HtmlContent(messages("selectPage.submitLabel")),
+        @button(Button(content = HtmlContent(messages("international.selectPage.submitLabel")),
             name=Some("continue"), inputType=Some("submit"), attributes = Map("id" → "continue")))
     }
 }

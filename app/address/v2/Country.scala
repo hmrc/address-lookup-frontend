@@ -61,9 +61,15 @@ object Countries {
   val Cymru = Country("GB-CYM", "Cymru")
   val NorthernIreland = Country("GB-NIR", "Northern Ireland")
 
+  val Bermuda = Country("BM", "Bermuda")
+
   private val all = List(UK, GB, GG, IM, JE, England, Scotland, Wales, Cymru, NorthernIreland)
 
+  private val countriesWithLookupData = List(Bermuda)
+
   def find(code: String): Option[Country] = all.find(_.code == code)
+
+  def findCountryWithData(code: String): Option[Country] = countriesWithLookupData.find(_.code == code)
 
   def findByName(name: String): Option[Country] = all.find(_.name == name)
 

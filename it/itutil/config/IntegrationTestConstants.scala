@@ -6,6 +6,7 @@ import model._
 import play.api.libs.json._
 import address.v2.Country
 import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
+import services.ForeignOfficeCountryService
 
 object IntegrationTestConstants {
   val testApiVersion = 2
@@ -28,8 +29,18 @@ object IntegrationTestConstants {
 
   val testNonUKAddress = ConfirmableAddressDetails(None, List(testAddressLine1), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France")))
   val testFullNonUKAddress = ConfirmableAddressDetails(None, List(testAddressLine1, testAddressLine2, testAddressLine3), Some(testAddressTown), Some(testPostCode), Some(Country("FR", "France")))
+
   val testUKAddress = ConfirmableAddressDetails(None, List(testAddressLine1, testAddressLine2), Some(testAddressTown), Some(testPostCode), Some(Country("GB", "United Kingdom")))
+  val testInternationalAddress = ConfirmableAddressDetails(None,
+    lines =  Seq(
+      s"${Seq(s"Unit 1", s"1", s"Street 1").mkString(" ")}",
+      s"District 1",
+      s"City 1",
+      s"Region 1").toList,
+    Some("City 1"), Some("Postcode 1"), Some(Country("BM", "Bermuda")))
+
   val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testUKAddress)
+  val testInternationalConfirmedAddress = ConfirmableAddress(testAuditRef, Some("id1"), None, None, None, None, testInternationalAddress)
 
   val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
   val testConfirmedResponseAddress = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
@@ -43,10 +54,28 @@ object IntegrationTestConstants {
       parentUprn = None,
       usrn = None,
       organisation = None,
-      postcode = testPostCode,
+      postcode = Some(testPostCode),
       lines = List(testAddressLine1, testAddressLine2),
-      town = testAddressTown,
+      town = Some(testAddressTown),
       country = testCountry
+    )
+  }
+
+  def testInternationalProposedAddresses(amount: Int, countryCode: String = "GB"): Seq[ProposedAddress] = (1 to amount) map { n =>
+    ProposedAddress(
+      addressId = s"id$n",
+      uprn = None,
+      parentUprn = None,
+      usrn = None,
+      organisation = None,
+      postcode = Some(s"Postcode $n"),
+      lines =  Seq(
+        s"${Seq(s"Unit $n", s"$n", s"Street $n").mkString(" ")}",
+        s"District $n",
+        s"City $n",
+        s"Region $n").toList,
+      town = Some(s"City $n"),
+      country =  ForeignOfficeCountryService.find(code = countryCode).get
     )
   }
 
@@ -348,7 +377,7 @@ object IntegrationTestConstants {
     showChangeLink = Some(true)
   )
 
-  val testMinimalLevelJourneyConfigV2 = Json.toJson(JourneyDataV2(
+  val testMinimalLevelJourneyDataV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl"),
@@ -363,9 +392,11 @@ object IntegrationTestConstants {
         cy = None
       ))
     )
-  )).as[JsValue]
+  )
 
-  val testDefaultLookupPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+  val testMinimalLevelJourneyConfigV2 = Json.toJson(testMinimalLevelJourneyDataV2).as[JsValue]
+
+  val testDefaultLookupPageJourneyDataV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("NAV_TITLE"), showBackButtons = Some(false)),
@@ -382,7 +413,9 @@ object IntegrationTestConstants {
         cy = None
       ))
     )
-  )).as[JsValue]
+  )
+
+  val testDefaultLookupPageJourneyConfigV2 = Json.toJson(testDefaultLookupPageJourneyDataV2).as[JsValue]
 
   def testCustomLookupPageJourneyConfigV2Json = Json.toJson(testCustomLookupPageJourneyConfigV2).as[JsValue]
 
@@ -536,11 +569,12 @@ object IntegrationTestConstants {
       ))
 
   def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
-                                           selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress) =
+                                           selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress, countryCode: Option[String] = None) =
     Json.toJson(
       JourneyDataV2(
         journeyConfigV2,
-        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress))
+        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress)),
+        countryCode = countryCode
       ))
 
   val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
@@ -654,6 +688,31 @@ object AddressRecordConstants {
     )
   )
 
+  val internationalAddressRecordSeqJson: JsValue = Json.toJson(
+    Seq(
+      NonUKAddress(
+        id = "id1",
+        number = Some("1"),
+        street = Some("Street"),
+        unit = Some("Unit"),
+        district = Some("District"),
+        city = Some("City"),
+        region = Some("Region"),
+        postcode = Some("Postcode")
+      ),
+      NonUKAddress(
+        id = "id1",
+        number = Some("2"),
+        street = Some("Street 2"),
+        unit = Some("Unit 2"),
+        district = Some("District 2"),
+        city = Some("City 2"),
+        region = Some("Region 2"),
+        postcode = Some("Postcode 2")
+      ),
+    )
+  )
+
   def addressResultsModelListBySize(numberOfRepeats: Int): List[ProposedAddress] =
     (1 to numberOfRepeats).map(n =>
       ProposedAddress(
@@ -662,9 +721,9 @@ object AddressRecordConstants {
         parentUprn = None,
         usrn = None,
         organisation = None,
-        postcode = testPostCode,
+        postcode = Some(testPostCode),
         lines = List(testAddressLine1, testAddressLine2),
-        town = testAddressTown,
+        town = Some(testAddressTown),
         country = testCountry
       ))
       .toList
@@ -679,6 +738,24 @@ object AddressRecordConstants {
             town = testAddressTown,
             postcode = testPostCode,
             country = testCountry
+          )
+      } toList
+    )
+  }
+
+ def internationalAddressResultsListBySize(numberOfRepeats: Int): JsValue = {
+    Json.toJson(
+      (1 to numberOfRepeats) map {
+        n =>
+          NonUKAddress(
+            id = s"id$n",
+            number = Some(s"$n"),
+            street = Some(s"Street $n"),
+            unit = Some(s"Unit $n"),
+            district = Some(s"District $n"),
+            city = Some(s"City $n"),
+            region = Some(s"Region $n"),
+            postcode = Some(s"Postcode $n")
           )
       } toList
     )
@@ -710,6 +787,14 @@ object AddressRecordConstants {
     "logicalState" -> Json.toJson("logicalState"),
     "streetClassification" -> "streetClassification"
   )
+
+  case class NonUKAddress(id: String, number: Option[String], street: Option[String], unit: Option[String],
+                          city: Option[String], district: Option[String], region: Option[String],
+                          postcode: Option[String])
+
+  object NonUKAddress {
+    implicit val format: Format[NonUKAddress] = Json.format[NonUKAddress]
+  }
 
 }
 

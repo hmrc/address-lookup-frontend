@@ -44,13 +44,12 @@ class InternationalAddressLookupController @Inject()(
                                                       implicit val frontendAppConfig: FrontendAppConfig,
                                                       messagesControllerComponents: MessagesControllerComponents,
                                                       remoteMessagesApiProvider: RemoteMessagesApiProvider,
-                                                      lookup: lookup,
                                                       select: select,
                                                       edit: edit,
                                                       confirm: views.html.international.confirm,
                                                       no_results: views.html.international.no_results,
                                                       too_many_results: views.html.international.too_many_results,
-                                                      non_abp_lookup: views.html.international.lookup
+                                                      lookup: views.html.international.lookup
                                                     )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -75,7 +74,7 @@ class InternationalAddressLookupController @Inject()(
           val formPrePopped = nonAbpLookupForm()(messages).fill(NonAbpLookup(filter.getOrElse("")))
 
           requestWithWelshHeader(isWelsh) {
-            Ok(non_abp_lookup(id, journeyData, formPrePopped, isWelsh)
+            Ok(lookup(id, journeyData, formPrePopped, isWelsh)
             (req, messages, frontendAppConfig))
           }
 
@@ -93,32 +92,21 @@ class InternationalAddressLookupController @Inject()(
       .getOrElse(SelectPageConfig())
       .proposalListLimit
 
-    ???
-
-    //    addressService
-    //      .findByCountry(journeyData.countryCode, lookup.filter, journeyData.config.options.isUkMode)
-    //      .flatMap {
-    //        case noneFound if noneFound.isEmpty =>
-    //          if (lookup.filter.isDefined) {
-    //            handleLookup(
-    //              id: String,
-    //              journeyData,
-    //              lookup.copy(filter = None),
-    //              firstLookup = false
-    //            ) //TODO Pass a boolean through to show no results were found and this is a retry?
-    //          } else {
-    //            Future.successful(NoResults)
-    //          }
-    //        case oneFound if oneFound.size == 1 =>
-    //          Future.successful(OneResult(oneFound.head))
-    //        case tooManyFound
-    //          if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) =>
-    //          Future.successful(
-    //            TooManyResults(tooManyFound.take(addressLimit.get), firstLookup)
-    //          )
-    //        case displayProposals =>
-    //          Future.successful(ResultsList(displayProposals, firstLookup))
-    //      }
+    addressService
+      .findByCountry(journeyData.countryCode.get, lookup.filter)
+      .flatMap {
+        case noneFound if noneFound.isEmpty =>
+          Future.successful(NoResults)
+        case oneFound if oneFound.size == 1 =>
+          Future.successful(OneResult(oneFound.head))
+        case tooManyFound
+          if tooManyFound.size > addressLimit.getOrElse(tooManyFound.size) =>
+          Future.successful(
+            TooManyResults(tooManyFound.take(addressLimit.get), firstLookup)
+          )
+        case displayProposals =>
+          Future.successful(ResultsList(displayProposals, firstLookup))
+      }
   }
 
   def select(id: String): Action[AnyContent] = Action.async { implicit req =>
@@ -136,7 +124,7 @@ class InternationalAddressLookupController @Inject()(
         .bindFromRequest()
         .fold(
           errors => Future.successful(None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(non_abp_lookup(id, journeyData, errors, isWelsh))
+            BadRequest(lookup(id, journeyData, errors, isWelsh))
           }),
           lookup => {
 

@@ -28,9 +28,9 @@ select: GovukSelect, page: page_template)
 
 @titleWithError = @{
     if(editForm.errors) {
-        errorPrefix + messages("editPage.title")
+        errorPrefix + messages("international.editPage.title")
     } else {
-        messages("editPage.title")
+        messages("international.editPage.title")
     }
 }
 
@@ -55,37 +55,37 @@ select: GovukSelect, page: page_template)
 @page(titleWithError, Some(editForm), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{messages("editPage.heading")}
+        @{messages("international.editPage.heading")}
     </h1>
 
     @form(routes.InternationalAddressLookupController.handleEdit(id)) {
         @textInput(Input(value = editForm("organisation").value,
-            label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
+            label = Label(content = HtmlContent(messages("international.editPage.organisationLabel"))),
             formGroupClasses = "form-field-group", autocomplete = Some("organization"),
             name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
             errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
         @textInput(Input(value = editForm("line1").value,
-            label = Label(content = HtmlContent(messages("editPage.line1Label"))),
+            label = Label(content = HtmlContent(messages("international.editPage.line1Label"))),
             formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
             name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
             errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
         @textInput(Input(value = editForm("line2").value,
-            label = Label(content = HtmlContent(messages("editPage.line2Label"))),
+            label = Label(content = HtmlContent(messages("international.editPage.line2Label"))),
             formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
             name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
             errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent("DUMMY")))))
         @textInput(Input(value = editForm("line3").value,
-            label = Label(content = HtmlContent(messages("editPage.line3Label"))),
+            label = Label(content = HtmlContent(messages("international.editPage.line3Label"))),
             formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
             name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
             errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
         @textInput(Input(value = editForm("town").value,
-            label = Label(content = HtmlContent(messages("editPage.townLabel"))),
+            label = Label(content = HtmlContent(messages("international.editPage.townLabel"))),
             formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
             name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
             errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
         @textInput(Input(value = editForm("postcode").value,
-            label = Label(content = HtmlContent(messages("editPage.postcodeLabel"))),
+            label = Label(content = HtmlContent(messages("international.editPage.postcodeLabel"))),
             formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
             name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
             errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
@@ -95,7 +95,7 @@ select: GovukSelect, page: page_template)
             @textInput(Input(value =
                 editForm("countryCode").value.flatMap(c => ForeignOfficeCountryService.find(code = c)).map(_.name),
                 attributes = Map("disabled" -> "disabled"),
-                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
+                label = Label(content = HtmlContent(messages("international.editPage.countryLabel"))),
                 formGroupClasses = "form-field-group", autocomplete = Some("country"),
                 name = "countryName", id = "countryName",
                 errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
@@ -106,7 +106,7 @@ select: GovukSelect, page: page_template)
             @select(components.Select(
                 id = "countryCode",
                 name = "countryCode",
-                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
+                label = Label(content = HtmlContent(messages("international.editPage.countryLabel"))),
                 errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
                 items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
                     case (k, v) ⇒ SelectItem(
@@ -141,7 +141,7 @@ select: GovukSelect, page: page_template)
         }
 
 
-        @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
+        @button(Button(content = HtmlContent(messages("international.editPage.submitLabel")),
             name = Some("continue"),
             inputType = Some("submit"), attributes = Map("id" → "continue")))
     }

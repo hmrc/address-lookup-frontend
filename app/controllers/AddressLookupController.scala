@@ -165,7 +165,13 @@ class AddressLookupController @Inject()(
               (Some(updatedJourney), Redirect(routes.AbpAddressLookupController.lookup(id)))
             }
             else {
-              (Some(updatedJourney), Redirect(routes.InternationalAddressLookupController.edit(id)))
+              val countryWithData = Countries.findCountryWithData(selection.countryCode)
+              if (countryWithData.isDefined) {
+                (Some(updatedJourney), Redirect(routes.InternationalAddressLookupController.lookup(id, None)))
+              }
+              else {
+                (Some(updatedJourney), Redirect(routes.InternationalAddressLookupController.edit(id)))
+              }
             }
           }
         )

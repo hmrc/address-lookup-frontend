@@ -144,7 +144,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
           None,
           prop.lines.take(3),
           Some("some-town"),
-          Some(prop.postcode),
+          prop.postcode,
           Some(prop.country)))
 
       conf must be (expected)
@@ -161,7 +161,7 @@ class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
           None,
           prop.lines.take(3),
           Some("some-town"),
-          Some(prop.postcode),
+          prop.postcode,
           Some(prop.country)))
 
       conf must be (expected)

@@ -1,13 +1,13 @@
-package controllers
+package controllers.abp
 
 import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
-import play.api.i18n.Lang
 import model._
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.i18n.Lang
 import play.api.libs.json.Json
 
 class ConfirmPageISpec extends IntegrationSpecBase {

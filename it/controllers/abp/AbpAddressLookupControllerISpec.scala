@@ -1,16 +1,15 @@
-package controllers
+package controllers.abp
 
+import address.v2.Country
+import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants._
-import model.{ConfirmableAddress, ConfirmableAddressDetails}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import address.v2.Country
-import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 
-class AddressLookupControllerISpec extends IntegrationSpecBase {
+class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {

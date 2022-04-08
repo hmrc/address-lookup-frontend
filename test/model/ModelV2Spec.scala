@@ -124,7 +124,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
   }
 
   "LanguageLabels" should {
-    import JourneyLabels.{languageLabelsReads, languageLabelsWrites}
+    import LanguageLabels.{languageLabelsReads, languageLabelsWrites}
 
     "read successfully from minimal json" in {
       Json.fromJson[LanguageLabels](emptyJson) mustBe JsSuccess(languageLabelsMinimal)
@@ -132,6 +132,18 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
 
     "write to json with minimal data" in {
       Json.toJson(languageLabelsMinimal) mustBe emptyJson
+    }
+  }
+
+  "InternationalLanguageLabels" should {
+    import InternationalLanguageLabels.{internationalLanguageLabelsReads, internationalLanguageLabelsWrites}
+
+    "read successfully from minimal json" in {
+      Json.fromJson[InternationalLanguageLabels](emptyJson) mustBe JsSuccess(internationalLanguageLabelsMinimal)
+    }
+
+    "write to json with minimal data" in {
+      Json.toJson(internationalLanguageLabelsMinimal) mustBe emptyJson
     }
   }
 

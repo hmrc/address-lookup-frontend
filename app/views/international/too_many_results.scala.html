@@ -25,25 +25,32 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("constants.noResultsFoundTitle"), None, journeyData) {
+@internationalMessage(key: String) = @{
+    if (messages.isDefinedAt(s"international.$key"))
+        messages(s"international.$key")
+    else
+        messages(key)
+}
+
+@page(internationalMessage("constants.noResultsFoundTitle"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
     @{if(firstLookup) {
-        messages("constants.tooManyResultsText")
+        internationalMessage("constants.tooManyResultsText")
     } else {
-        messages("constants.cannotFindText")
+        internationalMessage("constants.cannotFindText")
     }}
     </h1>
 
-    <p class="govuk-heading-m" >@messages("constants.youEntered")</p>
+    <p class="govuk-heading-m" >@internationalMessage("constants.youEntered")</p>
     <ul class="govuk-list govuk-list-bullet">
-        <li>@{s"'${lookup.filter}' ${messages("constants.nameNumberText")}"}</li>
+        <li>@{s"'${lookup.filter}' ${internationalMessage("constants.nameNumberText")}"}</li>
     </ul>
     <br />
 
     <p><a id="anotherSearch" class="govuk-button" href="@{routes.InternationalAddressLookupController.lookup(id, Some(lookup.filter))}">
-    @messages("constants.anotherSearchText")
+    @internationalMessage("constants.anotherSearchText")
     </a></p>
 
-    <p><a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="enterManual">@messages("constants.tooManyResultsManualLink")</a></p>
+    <p><a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="enterManual">@internationalMessage("constants.tooManyResultsManualLink")</a></p>
 }

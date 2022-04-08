@@ -78,9 +78,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "confirm-title - NAV_TITLE - GOV.UK"
-      doc.h1.text() shouldBe "confirm-heading"
-      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.title shouldBe "international-confirm-title - NAV_TITLE - GOV.UK"
+      doc.h1.text() shouldBe "international-confirm-heading"
+      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -89,13 +89,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         addressLine("postCode", "AB11 1AB"),
         addressLine("country", "France")
       )
-      doc.link("changeLink") should have(text("confirm-changeLinkText"))
-      doc.h2s should have(elementWithValue("confirm-infoSubheading"))
-      doc.paras should have(elementWithValue("confirm-infoMessage"))
+      doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
+      doc.h2s should have(elementWithValue("international-confirm-infoSubheading"))
+      doc.paras should have(elementWithValue("international-confirm-infoMessage"))
       doc.link("searchAgainLink") should have(
-        text("confirm-searchAgainLinkText")
+        text("international-confirm-searchAgainLinkText")
       )
-      doc.link("changeLink") should have(text("confirm-changeLinkText"))
+      doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
 
       testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(
         fResponse,
@@ -123,9 +123,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "confirm-title"
-      doc.h1.text() shouldBe "confirm-heading"
-      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.title shouldBe "international-confirm-title"
+      doc.h1.text() shouldBe "international-confirm-heading"
+      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -166,9 +166,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "confirm-title"
+      doc.title shouldBe "international-confirm-title"
       doc.h1.text() shouldBe "Review and confirm"
-      doc.submitButton.text() shouldBe "confirm-submitLabel"
+      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -237,9 +237,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
 
       doc.select("a[class=govuk-back-link]") should have(text(messages(Lang("cy"), "constants.back")))
-      doc.title shouldBe "cy-confirm-title"
-      doc.h1.text() shouldBe "cy-confirm-heading"
-      doc.submitButton.text() shouldBe "cy-confirm-submitLabel"
+      doc.title shouldBe "cy-international-confirm-title"
+      doc.h1.text() shouldBe "cy-international-confirm-heading"
+      doc.submitButton.text() shouldBe "cy-international-confirm-submitLabel"
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),

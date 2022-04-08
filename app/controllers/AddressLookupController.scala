@@ -74,7 +74,7 @@ class AddressLookupController @Inject()(
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
-          import JourneyLabelsForMessages._
+          import LanguageLabelsForMessages._
 
           val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
             journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -101,7 +101,7 @@ class AddressLookupController @Inject()(
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
-          import JourneyLabelsForMessages._
+          import LanguageLabelsForMessages._
 
           val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
             journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -133,7 +133,7 @@ class AddressLookupController @Inject()(
   def handleCountryPicker(id: String) = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
-        import JourneyLabelsForMessages._
+        import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))

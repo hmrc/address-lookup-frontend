@@ -131,21 +131,17 @@ class LookupPageISpec extends IntegrationSpecBase {
         for {
           l <- testCustomLookupPageJourneyConfigV2.config.labels
           en <- l.en
-          lookupPage <- en.lookupPageLabels
+          international <- en.international
+          lookupPage <- international.lookupPageLabels
         } yield {
 
           doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
           doc.h1.text() shouldBe lookupPage.heading.get
 
-          doc.getElementById("afterHeadingText").html shouldBe "after-heading-text"
+          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
 
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
-          )
-
-          doc.input(LookupPage.postcodeId) should have(
-            label(lookupPage.postcodeLabel.get),
-            value(testPostCode)
           )
 
           doc.input(LookupPage.filterId) should have(
@@ -200,20 +196,16 @@ class LookupPageISpec extends IntegrationSpecBase {
         for {
           l <- testCustomLookupPageJourneyConfigV2.config.labels
           en <- l.en
-          lookupPage <- en.lookupPageLabels
+          international <- en.international
+          lookupPage <- international.lookupPageLabels
         } yield {
           doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
           doc.h1.text() shouldBe lookupPage.heading.get
 
-          doc.getElementById("afterHeadingText").html shouldBe "after-heading-text"
+          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
 
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
-          )
-
-          doc.input(LookupPage.postcodeId) should have(
-            label(lookupPage.postcodeLabel.get),
-            value(testPostCode)
           )
 
           doc.input(LookupPage.filterId) should have(
@@ -250,13 +242,13 @@ class LookupPageISpec extends IntegrationSpecBase {
         for {
           l <- testOtherCustomLookupPageJourneyConfigV2.config.labels
           en <- l.en
-          lookupPage <- en.lookupPageLabels
+          international <- en.international
+          lookupPage <- international.lookupPageLabels
         } yield {
           doc.title shouldBe lookupPage.title.get
           doc.h1.text() shouldBe lookupPage.heading.get
-          doc.getElementById("afterHeadingText").html shouldBe "after-heading-text"
+          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
           doc.select("a[class=govuk-back-link]") should have(text("Back"))
-          doc.input(LookupPage.postcodeId) should have(label(lookupPage.postcodeLabel.get), value(testPostCode))
           doc.input(LookupPage.filterId) should have(label(lookupPage.filterLabel.get + hardCodedFormHint), value(testFilterValue))
           doc.link(LookupPage.manualAddressLink) should have(
             href(routes.InternationalAddressLookupController.edit(testJourneyId).url),

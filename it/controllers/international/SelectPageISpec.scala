@@ -80,7 +80,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         for {
           l <- journeyDataV2SelectLabels.config.labels
           en <- l.en
-          selectPage <- en.selectPageLabels
+          international <- en.international
+          selectPage <- international.selectPageLabels
         } yield {
           doc.title shouldBe selectPage.title.get
           doc.h1.text() shouldBe selectPage.heading.get

@@ -26,47 +26,54 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("international.confirmPage.title"), None, journeyData) {
+@internationalMessage(key: String) = @{
+    if (messages.isDefinedAt(s"international.$key"))
+        messages(s"international.$key")
+    else
+        messages(key)
+}
+
+@page(internationalMessage("confirmPage.title"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{messages("international.confirmPage.heading")}
+        @{internationalMessage("confirmPage.heading")}
     </h1>
 
     @if(selectedAddress.isDefined) {
         @form(controllers.routes.InternationalAddressLookupController.handleConfirm(id)) {
             @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
-                <h2 class="govuk-heading-m" id="infoSubheading">@{messages("international.confirmPage.infoSubheading")}</h2>
-                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("international.confirmPage.infoMessage"))</p>
+                <h2 class="govuk-heading-m" id="infoSubheading">@{internationalMessage("confirmPage.infoSubheading")}</h2>
+                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(internationalMessage("confirmPage.infoMessage"))</p>
             }
             @address_confirmation_display(selectedAddress.get.address)
 
             @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
                 <p>
-                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, None)}" id="searchAgainLink">@{messages("international.confirmPage.searchAgainLinkText")}</a>
+                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, None)}" id="searchAgainLink">@{internationalMessage("confirmPage.searchAgainLinkText")}</a>
                 </p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
                 <p class="govuk-!-margin-bottom-7">
-                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="changeLink">@{messages("international.confirmPage.changeLinkText")}</a>
+                    <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="changeLink">@{internationalMessage("confirmPage.changeLinkText")}</a>
                 </p>
             }
 
             @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
-                <p class="govuk-body" id="confirmChangeText">@messages("international.confirmPage.confirmChangeText")</p>
+                <p class="govuk-body" id="confirmChangeText">@internationalMessage("confirmPage.confirmChangeText")</p>
             }
 
-            @button(Button(content = HtmlContent(messages("international.confirmPage.submitLabel")),
+            @button(Button(content = HtmlContent(internationalMessage("confirmPage.submitLabel")),
                 name = Some("continue"),
                 inputType = Some("submit"), attributes = Map("id" → "continue")))
         }
     } else {
         <p>@{
-            messages("constants.confirmSelectedAddressError1")
+            internationalMessage("constants.confirmSelectedAddressError1")
         } <a class="govuk-link" href="@{
             routes.InternationalAddressLookupController.lookup(id, None)
         }" id="lookupLink">@{
-            messages("constants.confirmSelectedAddressError2")
+            internationalMessage("constants.confirmSelectedAddressError2")
         }</a>.</p>
     }
 }

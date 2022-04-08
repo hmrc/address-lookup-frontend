@@ -187,6 +187,8 @@ object TestConstants {
 
   val languageLabelsMinimal = LanguageLabels(None, None, None, None, None)
 
+  val internationalLanguageLabelsMinimal = InternationalLanguageLabels(None, None, None, None)
+
   val journeyLabelsMinimal = JourneyLabels(None, None)
 
   val timeoutConfigMissingKeepAliveUrlJson: JsValue = Json.parse("""{"timeoutAmount":119, "timeoutUrl": "testTimeoutUrl", "timeoutKeepAliveUrl": "testTimeoutKeepAliveUrl"}""")

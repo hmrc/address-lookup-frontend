@@ -1,6 +1,5 @@
 package controllers.international
 
-import address.v2.Country
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
@@ -101,19 +100,19 @@ class EditPageISpec extends IntegrationSpecBase {
       }
 
       "allow the initialising service to override the header size" in {
-          stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
-            JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM")), OK)
+        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 =
+          JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM")), OK)
 
-          val fResponse = buildClientLookupAddress(path = "international/edit")
-            .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
-              "Csrf-Token" -> "nocheck")
-            .get()
-          val res = await(fResponse)
+        val fResponse = buildClientLookupAddress(path = "international/edit")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+            "Csrf-Token" -> "nocheck")
+          .get()
+        val res = await(fResponse)
 
-          res.status shouldBe OK
-          val document = Jsoup.parse(res.body)
-          document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
-        }
+        res.status shouldBe OK
+        val document = Jsoup.parse(res.body)
+        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+      }
     }
 
     "provided with only custom content that has welsh block" should {
@@ -136,7 +135,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-//        //testElementExists(res, EditPage.nonUkEditId)
+        //        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "Nodwch gyfeiriad"
         document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
@@ -171,10 +170,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-//        testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "edit-title"
-        document.getElementById("pageHeading").text() shouldBe "edit-heading"
-        document.getElementById("continue").text() shouldBe "edit-submitLabel"
+        document.title() shouldBe "international-edit-title"
+        document.getElementById("pageHeading").text() shouldBe "international-edit-heading"
+        document.getElementById("continue").text() shouldBe "international-edit-submitLabel"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
         document.getElementById("line2").`val` shouldBe "Line 2"
@@ -183,12 +181,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode",
-          "countryName" -> "Custom Country"
+          "line1" -> "International Custom Line1",
+          "line2" -> "International Custom Line2",
+          "line3" -> "International Custom Line3",
+          "town" -> "International Custom Town",
+          "postcode" -> "International Custom Postcode",
+          "countryName" -> "International Custom Country"
         ))
       }
 
@@ -203,9 +201,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "edit-title"
-        document.getElementById("pageHeading").text() shouldBe "edit-heading"
-        document.getElementById("continue").text() shouldBe "edit-submitLabel"
+        document.title() shouldBe "international-edit-title"
+        document.getElementById("pageHeading").text() shouldBe "international-edit-heading"
+        document.getElementById("continue").text() shouldBe "international-edit-submitLabel"
         Option(document.getElementById("countryName")).isDefined shouldBe true
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -215,11 +213,11 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode"
+          "line1" -> "International Custom Line1",
+          "line2" -> "International Custom Line2",
+          "line3" -> "International Custom Line3",
+          "town" -> "International Custom Town",
+          "postcode" -> "International Custom Postcode"
         ))
       }
 
@@ -228,19 +226,20 @@ class EditPageISpec extends IntegrationSpecBase {
         val configWithWelsh = journeyDataV2WithSelectedAddressJson(jc.copy(labels =
           Some(jc.labels.get.copy(cy =
             Some(LanguageLabels(
-              editPageLabels = Some(EditPageLabels(
-                title = Some("edit-title welsh"),
-                heading = Some("edit-heading welsh"),
-                line1Label = Some("Custom Line1 welsh"),
-                line2Label = Some("Custom Line2 welsh"),
-                line3Label = Some("Custom Line3 welsh"),
-                townLabel = Some("Custom Town welsh"),
-                postcodeLabel = Some("Custom Postcode welsh"),
-                countryLabel = Some("Custom Country welsh"),
-                submitLabel = Some("edit-submitLabel welsh")
+              international = Some(InternationalLanguageLabels(
+                editPageLabels = Some(InternationalEditPageLabels(
+                  title = Some("edit-title welsh"),
+                  heading = Some("edit-heading welsh"),
+                  line1Label = Some("Custom Line1 welsh"),
+                  line2Label = Some("Custom Line2 welsh"),
+                  line3Label = Some("Custom Line3 welsh"),
+                  townLabel = Some("Custom Town welsh"),
+                  postcodeLabel = Some("Custom Postcode welsh"),
+                  countryLabel = Some("Custom Country welsh"),
+                  submitLabel = Some("edit-submitLabel welsh")
+                ))
               ))
-            ))
-          ))), countryCode = Some("BM"))
+            ))))), countryCode = Some("BM"))
 
         stubKeystore(testJourneyId, configWithWelsh, OK)
 
@@ -316,11 +315,11 @@ class EditPageISpec extends IntegrationSpecBase {
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryName")).isDefined shouldBe true
 
-      document.input("line1") should have (value(""))
-      document.input("line2") should have (value(""))
-      document.input("line3") should have (value(""))
-      document.input("town") should have (value(""))
-      document.input("postcode") should have (value(""))
+      document.input("line1") should have(value(""))
+      document.input("line2") should have(value(""))
+      document.input("line3") should have(value(""))
+      document.input("town") should have(value(""))
+      document.input("postcode") should have(value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",
@@ -349,8 +348,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.input("postcode") should have (value("eebb"))
-//      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
+      document.input("postcode") should have(value("eebb"))
+      //      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",

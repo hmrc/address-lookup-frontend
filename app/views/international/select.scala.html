@@ -25,21 +25,28 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@errorPrefix = @{s"${messages("constants.error.prefix")} "}
+@internationalMessage(key: String) = @{
+    if (messages.isDefinedAt(s"international.$key"))
+        messages(s"international.$key")
+    else
+        messages(key)
+}
+
+@errorPrefix = @{s"${internationalMessage("constants.error.prefix")} "}
 
 @titleWithError = @{
     if(selectForm.errors) {
-        errorPrefix + messages("international.selectPage.title")} else {
-        messages("international.selectPage.title")}
+        errorPrefix + internationalMessage("selectPage.title")} else {
+        internationalMessage("selectPage.title")}
 }
 
 @page(titleWithError, Some(selectForm), journeyData) {
 
-    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("international.selectPage.heading")}</h1>
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{internationalMessage("selectPage.heading")}</h1>
 
     @form(controllers.routes.InternationalAddressLookupController.handleSelect(id, lookup.filter)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{messages("international.selectPage.editAddressLinkText")}</a>
+            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{internationalMessage("selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(
@@ -48,7 +55,7 @@
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(messages("international.selectPage.proposalListLabel")),
+                    content = HtmlContent(internationalMessage("selectPage.proposalListLabel")),
                     classes = "govuk-visually-hidden"
                 ))
             )),
@@ -65,11 +72,11 @@
 
         @if(resolvedConf.options.selectPageConfig.showSearchAgainLink) {
             <p class="govuk-!-margin-bottom-7">
-                <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, Some(lookup.filter))}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
+                <a class="govuk-link" href="@{routes.InternationalAddressLookupController.lookup(id, Some(lookup.filter))}" id="searchAgainLink">@{internationalMessage("confirmPage.searchAgainLinkText")}</a>
             </p>
         }
 
-        @button(Button(content = HtmlContent(messages("international.selectPage.submitLabel")),
+        @button(Button(content = HtmlContent(internationalMessage("selectPage.submitLabel")),
             name=Some("continue"), inputType=Some("submit"), attributes = Map("id" → "continue")))
     }
 }

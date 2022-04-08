@@ -454,7 +454,19 @@ object IntegrationTestConstants {
             manualAddressLinkText = Some("lookup-manualAddressLinkText")
           )),
           editPageLabels = None,
-          confirmPageLabels = None
+          confirmPageLabels = None,
+          international = Some(InternationalLanguageLabels(
+            lookupPageLabels = Some(InternationalLookupPageLabels(
+              title = Some("international-lookup-title"),
+              heading = Some("international-lookup-heading"),
+              afterHeadingText = Some("international-after-heading-text"),
+              filterLabel = Some("international-lookup-filterLabel"),
+              submitLabel = Some("international-lookup-submitLabel"),
+              resultLimitExceededMessage = Some("international-lookup-resultLimitExceededMessage"),
+              noResultsFoundMessage = Some("international-lookup-noResultsFoundMessage"),
+              manualAddressLinkText = Some("international-lookup-manualAddressLinkText")
+            ))
+          ))
         )),
         cy = None
       ))
@@ -509,6 +521,18 @@ object IntegrationTestConstants {
           searchAgainLinkText = Some("confirm-searchAgainLinkText"),
           changeLinkText = Some("confirm-changeLinkText"),
           confirmChangeText = Some("confirm-confirmChangeText")
+        )),
+        international = Some(InternationalLanguageLabels(
+          confirmPageLabels = Some(InternationalConfirmPageLabels(
+            title = Some("international-confirm-title"),
+            heading = heading,
+            infoSubheading = Some("international-confirm-infoSubheading"),
+            infoMessage = Some("international-confirm-infoMessage"),
+            submitLabel = Some("international-confirm-submitLabel"),
+            searchAgainLinkText = Some("international-confirm-searchAgainLinkText"),
+            changeLinkText = Some("international-confirm-changeLinkText"),
+            confirmChangeText = Some("international-confirm-confirmChangeText")
+          ))
         ))
       ))
     ))
@@ -539,7 +563,18 @@ object IntegrationTestConstants {
           )),
           appLevelLabels = Some(AppLevelLabels(
             navTitle = returnNoneOrConfig(Some("NAV_TITLE")),
-            phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML"))))
+            phaseBannerHtml = returnNoneOrConfig(Some("PHASE_BANNER_HTML")))),
+          international = Some(InternationalLanguageLabels(
+            confirmPageLabels = Some(InternationalConfirmPageLabels(
+              title = Some("international-confirm-title"),
+              heading = Some("international-confirm-heading"),
+              infoSubheading = Some("international-confirm-infoSubheading"),
+              infoMessage = Some("international-confirm-infoMessage"),
+              submitLabel = Some("international-confirm-submitLabel"),
+              searchAgainLinkText = Some("international-confirm-searchAgainLinkText"),
+              changeLinkText = Some("international-confirm-changeLinkText"),
+              confirmChangeText = Some("international-confirm-confirmChangeText")
+            ))))
         )),
         cy = if (isWelsh) {
           Some(LanguageLabels(
@@ -555,7 +590,18 @@ object IntegrationTestConstants {
             )),
             appLevelLabels = Some(AppLevelLabels(
               navTitle = returnNoneOrConfig(Some("cy-NAV_TITLE")),
-              phaseBannerHtml = returnNoneOrConfig(Some("cy-PHASE_BANNER_HTML"))))
+              phaseBannerHtml = returnNoneOrConfig(Some("cy-PHASE_BANNER_HTML")))),
+            international = Some(InternationalLanguageLabels(
+              confirmPageLabels = Some(InternationalConfirmPageLabels(
+                title = Some("cy-international-confirm-title"),
+                heading = Some("cy-international-confirm-heading"),
+                infoSubheading = Some("cy-international-confirm-infoSubheading"),
+                infoMessage = Some("cy-international-confirm-infoMessage"),
+                submitLabel = Some("cy-international-confirm-submitLabel"),
+                searchAgainLinkText = Some("cy-international-confirm-searchAgainLinkText"),
+                changeLinkText = Some("cy-international-confirm-changeLinkText"),
+                confirmChangeText = Some("cy-international-confirm-confirmChangeText")
+              ))))
           ))
         } else None
       ))
@@ -597,7 +643,18 @@ object IntegrationTestConstants {
           postcodeLabel = Some("Custom Postcode"),
           countryLabel = Some("Custom Country"),
           submitLabel = Some("edit-submitLabel")
-        ))
+        )),
+        international = Some(InternationalLanguageLabels(editPageLabels = Some(InternationalEditPageLabels(
+          title = Some("international-edit-title"),
+          heading = Some("international-edit-heading"),
+          line1Label = Some("International Custom Line1"),
+          line2Label = Some("International Custom Line2"),
+          line3Label = Some("International Custom Line3"),
+          townLabel = Some("International Custom Town"),
+          postcodeLabel = Some("International Custom Postcode"),
+          countryLabel = Some("International Custom Country"),
+          submitLabel = Some("international-edit-submitLabel")
+        ))))
       ))
     ))
   ))
@@ -618,6 +675,17 @@ object IntegrationTestConstants {
             submitLabel = Some("select-submitLabel"),
             searchAgainLinkText = Some("select-searchAgainLinkText"),
             editAddressLinkText = Some("select-editAddressLinkText")
+          )),
+          international = Some(InternationalLanguageLabels(
+            selectPageLabels = Some(InternationalSelectPageLabels(
+              title = Some("international-select-title"),
+              heading = Some("international-select-heading"),
+              headingWithPostcode = Some("international-select-headingWithPostcode"),
+              proposalListLabel = Some("international-select-proposalListLabel"),
+              submitLabel = Some("international-select-submitLabel"),
+              searchAgainLinkText = Some("international-select-searchAgainLinkText"),
+              editAddressLinkText = Some("international-select-editAddressLinkText")
+            ))
           ))
         ))
       ))

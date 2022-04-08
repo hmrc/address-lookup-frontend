@@ -61,7 +61,7 @@ class AbpAddressLookupController @Inject()(
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
-          import JourneyLabelsForMessages._
+          import LanguageLabelsForMessages._
 
           val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
             journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -89,7 +89,7 @@ class AbpAddressLookupController @Inject()(
   // GET  /:id/select
   def select(id: String): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
-      import JourneyLabelsForMessages._
+      import LanguageLabelsForMessages._
 
       val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
         journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -184,7 +184,7 @@ class AbpAddressLookupController @Inject()(
                    postcode: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
-        import JourneyLabelsForMessages._
+        import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -261,7 +261,7 @@ class AbpAddressLookupController @Inject()(
         val allowedSeqCountries = (s: Seq[(String, String)]) =>
           allowedCountries(s, journeyData.config.options.allowedCountryCodes)
 
-        import JourneyLabelsForMessages._
+        import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -350,7 +350,7 @@ class AbpAddressLookupController @Inject()(
   def handleEdit(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData => {
-        import JourneyLabelsForMessages._
+        import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -439,7 +439,7 @@ class AbpAddressLookupController @Inject()(
   // GET  /:id/confirm
   def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
     withJourneyV2(id) { journeyData => {
-      import JourneyLabelsForMessages._
+      import LanguageLabelsForMessages._
 
       val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
         journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
@@ -478,7 +478,7 @@ class AbpAddressLookupController @Inject()(
   def handleConfirm(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData => {
-        import JourneyLabelsForMessages._
+        import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))

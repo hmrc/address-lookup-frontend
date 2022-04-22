@@ -95,7 +95,7 @@ constants.error.prefix = Error:
 
 constants.footer.visuallyHiddenText = Support links
 
-countryPickerPage.title = Select country
+countryPickerPage.title = Select your country
 countryPickerPage.heading = Select your country
 countryPickerPage.countryLabel = Select country
 countryPickerPage.submitLabel = Continue
@@ -109,8 +109,8 @@ confirmPage.changeLinkText = Edit address
 confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
 confirmPage.searchAgainLinkText = Search again
 
-editPage.title = Enter address
-editPage.heading = Enter address
+editPage.title = Enter your address
+editPage.heading = Enter your address
 editPage.organisationLabel = Organisation (optional)
 editPage.line1Label = Address line 1
 editPage.line2Label = Address line 2
@@ -121,8 +121,8 @@ editPage.postcodeLabel.ukMode = UK postcode (optional)
 editPage.countryLabel = Country
 editPage.submitLabel = Continue
 
-lookupPage.title = Find address
-lookupPage.title.ukMode = Find UK address
+lookupPage.title = Find your address
+lookupPage.title.ukMode = Find your UK address
 lookupPage.heading = Find your address
 lookupPage.heading.ukMode = Find your UK address
 lookupPage.filterLabel = Property name or number (optional)
@@ -131,7 +131,7 @@ lookupPage.postcodeLabel.ukMode = UK postcode
 lookupPage.submitLabel = Continue
 lookupPage.manualAddressLinkText = Enter the address manually
 
-selectPage.title = Choose address
+selectPage.title = Choose your address
 selectPage.heading = Choose your address
 selectPage.headingWithPostcode = Showing all results for
 selectPage.proposalListLabel = Please select one of the following addresses
@@ -139,22 +139,22 @@ selectPage.submitLabel = Continue
 selectPage.editAddressLinkText = Enter your address manually
 selectPage.searchAgainLinkText = Search again
 
-international.lookupPage.title = Find address
-international.lookupPage.heading = Find address
+international.lookupPage.title = Find your address
+international.lookupPage.heading = Find your address
 international.lookupPage.filterLabel = Type a part of address or postcode
 international.lookupPage.submitLabel = Continue
-international.lookupPage.manualAddressLinkText = Enter the address manually
+international.lookupPage.manualAddressLinkText = Enter your address manually
 
-international.selectPage.title = Choose address
-international.selectPage.heading = Choose address
+international.selectPage.title = Choose your address
+international.selectPage.heading = Choose your address
 international.selectPage.headingWithPostcode = Showing all results for
 international.selectPage.proposalListLabel = Please select one of the following addresses
 international.selectPage.submitLabel = Continue
 international.selectPage.editAddressLinkText = Enter your address manually
 international.selectPage.searchAgainLinkText = Search again
 
-international.editPage.title = Enter address
-international.editPage.heading = Enter address
+international.editPage.title = Enter your address
+international.editPage.heading = Enter your address
 international.editPage.organisationLabel = Organisation (optional)
 international.editPage.line1Label = Address line 1
 international.editPage.line2Label = Address line 2

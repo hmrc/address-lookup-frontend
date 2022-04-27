@@ -217,7 +217,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe "Choose address"
+        doc.title shouldBe messages("selectPage.title")
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {

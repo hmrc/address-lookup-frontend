@@ -26,8 +26,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Enter address"
-        document.getElementById("pageHeading").text() shouldBe "Enter address"
+        document.title() shouldBe messages("editPage.title")
+        document.getElementById("pageHeading").text() shouldBe messages("editPage.heading")
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
@@ -65,8 +65,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch gyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
+        document.title() shouldBe messages(Lang("cy"), "editPage.title")
+        document.getElementById("pageHeading").text() shouldBe messages(Lang("cy"), "editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -202,8 +202,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
 //        //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch gyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
+        document.title() shouldBe messages(Lang("cy"), "editPage.title")
+        document.getElementById("pageHeading").text() shouldBe messages(Lang("cy"), "editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
         Option(document.getElementById("countryCode")).isDefined shouldBe true
 
@@ -557,8 +557,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
       //testElementExists(res, EditPage.ukEditId)
 
-      document.title shouldBe "Error: Enter address"
-      document.h1.text shouldBe "Enter address"
+      document.title shouldBe s"Error: ${messages("editPage.title")}"
+      document.h1.text shouldBe messages("editPage.heading")
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")
 
@@ -596,8 +596,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch gyfeiriad"
-      document.h1.text shouldBe "Nodwch gyfeiriad"
+      document.title shouldBe s"Gwall: ${messages(Lang("cy"), "editPage.title")}"
+      document.h1.text shouldBe messages(Lang("cy"), "editPage.title")
       document.submitButton.text shouldBe "Yn eich blaen"
       testElementDoesntExist(res,"countryCode")
 

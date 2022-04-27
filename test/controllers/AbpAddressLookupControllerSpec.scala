@@ -178,8 +178,8 @@ class AbpAddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find address")
-        html should include element withName("h1").withValue("Find your address")
+        html should include element withName("title").withValue(messages("lookupPage.title"))
+        html should include element withName("h1").withValue(messages("lookupPage.heading"))
         html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
@@ -196,8 +196,8 @@ class AbpAddressLookupControllerSpec
       ) {
         val res = call(controller.lookup("foo"), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue("Find UK address")
-        html should include element withName("h1").withValue("Find your UK address")
+        html should include element withName("title").withValue(messages("lookupPage.title.ukMode"))
+        html should include element withName("h1").withValue(messages("lookupPage.heading.ukMode"))
         html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")

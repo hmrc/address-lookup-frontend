@@ -25,8 +25,8 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Select country"
-        document.getElementById("pageHeading").text() shouldBe "Select your country"
+        document.title() shouldBe messages("countryPickerPage.title")
+        document.getElementById("pageHeading").text() shouldBe  messages("countryPickerPage.heading")
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
@@ -117,7 +117,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.status shouldBe BAD_REQUEST
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Error: Select country"
+        document.title() shouldBe s"Error: ${messages("countryPickerPage.title")}"
       }
     }
 

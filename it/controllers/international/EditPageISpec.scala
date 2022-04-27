@@ -25,8 +25,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Enter address"
-        document.getElementById("pageHeading").text() shouldBe "Enter address"
+        document.title() shouldBe messages("international.editPage.title")
+        document.getElementById("pageHeading").text() shouldBe messages("international.editPage.heading")
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
@@ -64,8 +64,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch gyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
+        document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
+        document.getElementById("pageHeading").text() shouldBe messages(Lang("cy"), "international.editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
 
         document.getElementById("line1").`val` shouldBe "1 High Street"
@@ -136,8 +136,8 @@ class EditPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
         //        //testElementExists(res, EditPage.nonUkEditId)
-        document.title() shouldBe "Nodwch gyfeiriad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
+        document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
+        document.getElementById("pageHeading").text() shouldBe  messages(Lang("cy"), "international.editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
         Option(document.getElementById("countryName")).isDefined shouldBe true
 

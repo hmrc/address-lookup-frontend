@@ -62,10 +62,12 @@ object Countries {
   val NorthernIreland = Country("GB-NIR", "Northern Ireland")
 
   val Bermuda = Country("BM", "Bermuda")
+  val Netherlands = Country("NL", "Netherlands")
+  val BritishVirginIslands = Country("VG", "British Virgin Islands")
 
   private val all = List(UK, GB, GG, IM, JE, England, Scotland, Wales, Cymru, NorthernIreland)
 
-  private val countriesWithLookupData = List(Bermuda)
+  private val countriesWithLookupData = List(Bermuda, Netherlands, BritishVirginIslands)
 
   def find(code: String): Option[Country] = all.find(_.code == code)
 

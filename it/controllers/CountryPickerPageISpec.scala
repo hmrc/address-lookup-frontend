@@ -1,6 +1,6 @@
 package controllers
 
-import address.v2.{Countries, Country}
+import address.v2.Countries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.{testCustomCountryPickerPageJourneyConfigV2, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId, testMinimalLevelJourneyConfigV2}
 import org.jsoup.Jsoup
@@ -26,7 +26,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
         val document = Jsoup.parse(res.body)
         document.title() shouldBe messages("countryPickerPage.title")
-        document.getElementById("pageHeading").text() shouldBe  messages("countryPickerPage.heading")
+        document.getElementById("pageHeading").text() shouldBe messages("countryPickerPage.heading")
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Continue"
 
@@ -48,12 +48,12 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
         val document = Jsoup.parse(res.body)
         document.title() shouldBe "Dewiswch eich gwlad"
-        document.getElementById("pageHeading").text() shouldBe "Nodwch gyfeiriad"
+        document.getElementById("pageHeading").text() shouldBe "Dewiswch eich gwlad"
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "countryCode" -> "Gwlad"
+          "countryCode" -> "Dewiswch wlad"
         ))
       }
     }
@@ -166,18 +166,18 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
       }
     }
 
-//    "submitted with an invalid country code" should {
-//      "redirect to the manual entry screen" in {
-//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-//        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-//
-//        val fResponse = buildClientLookupAddress(path = s"country-picker")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-//          .post(Map("countryCode" -> Seq("12"), "csrfToken" -> Seq("xxx-ignored-xxx")))
-//
-//        val res = await(fResponse)
-//        res.status shouldBe BAD_REQUEST
-//      }
-//    }
+    //    "submitted with an invalid country code" should {
+    //      "redirect to the manual entry screen" in {
+    //        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+    //        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+    //
+    //        val fResponse = buildClientLookupAddress(path = s"country-picker")
+    //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+    //          .post(Map("countryCode" -> Seq("12"), "csrfToken" -> Seq("xxx-ignored-xxx")))
+    //
+    //        val res = await(fResponse)
+    //        res.status shouldBe BAD_REQUEST
+    //      }
+    //    }
   }
 }

@@ -391,7 +391,7 @@ class AbpAddressLookupControllerSpec
     ) {
       val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("h1").withValue("Dewiswch gyfeiriad")
+      html should include element withName("h1").withValue("Dewiswch eich cyfeiriad")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Yn eich blaen")

@@ -203,10 +203,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text(messages(Lang("cy"), "constants.back")))
-      doc.title shouldBe messages(Lang("cy"), "confirmPage.title")
-      doc.h1.text() shouldBe messages(Lang("cy"), "confirmPage.heading")
-      doc.submitButton.text() shouldBe messages(Lang("cy"), "confirmPage.submitLabel")
-      doc.link("changeLink") should have(text(messages(Lang("cy"), "confirmPage.changeLinkText")))
+      doc.title shouldBe messages(Lang("cy"), "international.confirmPage.title")
+      doc.h1.text() shouldBe messages(Lang("cy"), "international.confirmPage.heading")
+      doc.submitButton.text() shouldBe messages(Lang("cy"), "international.confirmPage.submitLabel")
+      doc.link("changeLink") should have(text(messages(Lang("cy"), "international.confirmPage.changeLinkText")))
 
       doc.address should have(
         addressLine("line1", "1 High Street"),

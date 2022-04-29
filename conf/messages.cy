@@ -27,37 +27,37 @@ footer.privacy.url = /help/privacy
 footer.termsConditions.text = Telerau ac Amodau
 footer.termsConditions.url = /help/terms-and-conditions
 
-constants.home = Hafan
+constants.home = Cartref
 constants.back = Yn ôl
 constants.signOut = Allgofnodi
-constants.forPostcode = ar gyfer cod post
+constants.forPostcode = am y cod post
 
-constants.postcodeLabel.ukMode = Cod post y DU (dewisol)
+constants.postcodeLabel.ukMode = Cod post yn y DU (dewisol)
 constants.postcodeLabel = Cod post (dewisol)
 
-constants.editPageAddressLine1MaxErrorMessage = Nodwch linell gyntaf y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai
-constants.editPageAddressLine2MaxErrorMessage = Nodwch ail linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai
-constants.editPageAddressLine3MaxErrorMessage = Nodwch drydedd linell y cyfeiriad gan ddefnyddio 256 o gymeriadau neu lai
-constants.editPageTownMaxErrorMessage = Nodwch dref neu ddinas ddefnyddio 256 o gymeriadau neu lai
+constants.editPageAddressLine1MaxErrorMessage = Mae angen i linell gyntaf y cyfeiriad fod yn llai na 256 o gymeriadau
+constants.editPageAddressLine2MaxErrorMessage = Mae angen i ail linell y cyfeiriad fod yn llai na 256 o gymeriadau
+constants.editPageAddressLine3MaxErrorMessage = Mae angen i drydedd linell y cyfeiriad fod yn llai na 256 o gymeriadau
+constants.editPageTownMaxErrorMessage = Mae angen i’r dref neu’r ddinas fod yn llai na 256 o gymeriadau
 constants.editPageAddressLine1MinErrorMessage = Nodwch linell gyntaf y cyfeiriad
-constants.editPageTownMinErrorMessage = Nodwch dref neu ddinas y cyfeiriad
+constants.editPageTownMinErrorMessage = Nodwch y dref neu’r ddinas
 constants.editPagePostcodeErrorMessage.ukMode = Nodwch god post yn y DU sy’n ddilys
 constants.editPagePostcodeErrorMessage = Nodwch god post dilys
 constants.editPageCountryErrorMessage = Nodwch wlad y cyfeiriad
-constants.editPageAtLeastOneLineOrTown = (W) Enter at least one address line or a town
+constants.editPageAtLeastOneLineOrTown = Nodwch o leiaf un llinell cyfeiriad neu dref
 
 constants.countryPickerPageCountryErrorMessage = Nodwch wlad y cyfeiriad
 
-constants.errorRequired = Dewiswch yr eiddo ar gyfer y cyfeiriad
+constants.errorRequired = Dewiswch gyfeiriad
 constants.errorMin = $min yw’r isafswm hyd
 constants.errorMax = $max yw’r uchafswm hyd
 
-constants.confirmSelectedAddressError1 = Nid ydych wedi dewis unrhyw gyfeiriad. Ewch ati i
-constants.confirmSelectedAddressError2 = Chwilio a dewis eich cyfeiriad
+constants.confirmSelectedAddressError1 = Nid ydych wedi dewis unrhyw gyfeiriad.
+constants.confirmSelectedAddressError2 = Chwiliwch am eich cyfeiriad a’i ddewis
 
 constants.lookupErrorHeading = Mae problem wedi codi
 constants.lookupPostcodeEmptyError.ukMode = Nodwch god post yn y DU
-constants.lookupPostcodeEmptyError = Nodwch y cod post
+constants.lookupPostcodeEmptyError = Nodwch god post
 constants.lookupPostcodeInvalidError.ukMode = Mae’n rhaid i’r cod post yn y DU gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig
 constants.lookupPostcodeInvalidError = Mae’n rhaid i’r cod post gynnwys y llythrennau A i Z a’r rhifau 0 i 9 yn unig
 constants.lookupPostcodeError.ukMode = Nodwch god post go iawn yn y DU, e.e. AA1 1AA
@@ -93,31 +93,31 @@ constants.notFoundErrorBody = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywi
 
 constants.error.prefix = Gwall:
 
-constants.footer.visuallyHiddenText = Cysylltiadau cymorth
+constants.footer.visuallyHiddenText = Dolenni cymorth
 
-countryPickerPage.title = Nodwch gyfeiriad
-countryPickerPage.heading = Nodwch gyfeiriad
-countryPickerPage.countryLabel = Gwlad
+countryPickerPage.title = Dewiswch eich gwlad
+countryPickerPage.heading = Dewiswch eich gwlad
+countryPickerPage.countryLabel = Dewiswch wlad
 countryPickerPage.submitLabel = Yn eich blaen
 
-confirmPage.title = Adolygu a chadarnhau
+confirmPage.title = Cadarnhewch gyfeiriad
 confirmPage.heading = Adolygu a chadarnhau
 confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
 confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm Cadarnhau.
-confirmPage.submitLabel = Cadarnhau’r cyfeiriad
-confirmPage.changeLinkText = Newid y cyfeiriad
+confirmPage.submitLabel = Cadarnhewch gyfeiriad
+confirmPage.changeLinkText = Newidiwch gyfeiriad
 confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
 confirmPage.searchAgainLinkText = Chwilio eto
 
-editPage.title = Nodwch gyfeiriad
-editPage.heading = Nodwch gyfeiriad
-editPage.organisationLabel = W Organisation (optional)
-editPage.line1Label = Cyfeiriad – llinell 1
-editPage.line2Label = Cyfeiriad – llinell 2
-editPage.line3Label = Cyfeiriad – llinell 3
+editPage.title = Nodwch eich cyfeiriad
+editPage.heading = Nodwch eich cyfeiriad
+editPage.organisationLabel = Sefydliad (dewisol)
+editPage.line1Label = Llinell cyfeiriad 1
+editPage.line2Label = Llinell cyfeiriad 2 (dewisol)
+editPage.line3Label = Llinell cyfeiriad 3 (dewisol)
 editPage.townLabel = Tref/dinas
 editPage.postcodeLabel = Cod post (dewisol)
-editPage.postcodeLabel.ukMode = Cod post yn y DU (dewisol)
+editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
 editPage.countryLabel = Gwlad
 editPage.submitLabel = Yn eich blaen
 
@@ -128,11 +128,11 @@ lookupPage.heading.ukMode = Dod o hyd i gyfeiriad yn y DU
 lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
 lookupPage.postcodeLabel = Cod post
 lookupPage.postcodeLabel.ukMode = Cod post yn y DU
-lookupPage.submitLabel = Yn eich blaen
+lookupPage.submitLabel = Chwilio eto
 lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
 
-selectPage.title = Dewiswch gyfeiriad
-selectPage.heading = Dewiswch gyfeiriad
+selectPage.title = Dewiswch eich cyfeiriad
+selectPage.heading = Dewiswch eich cyfeiriad
 selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer
 selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
 selectPage.submitLabel = Yn eich blaen
@@ -141,21 +141,21 @@ selectPage.searchAgainLinkText = Chwilio eto
 
 international.lookupPage.title = Dod o hyd i gyfeiriad
 international.lookupPage.heading = Dod o hyd i gyfeiriad
-international.lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
+international.lookupPage.filterLabel = Teipiwch ran o gyfeiriad neu god post
 international.lookupPage.submitLabel = Yn eich blaen
 international.lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
 
-international.selectPage.title = Dewiswch gyfeiriad
-international.selectPage.heading = Dewiswch gyfeiriad
+international.selectPage.title = Dewiswch eich cyfeiriad
+international.selectPage.heading = Dewiswch eich cyfeiriad
 international.selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer
 international.selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
 international.selectPage.submitLabel = Yn eich blaen
-international.selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
+international.selectPage.editAddressLinkText = Nodwch eich cyfeiriad â llaw
 international.selectPage.searchAgainLinkText = Chwilio eto
 
-international.editPage.title = Nodwch gyfeiriad
-international.editPage.heading = Nodwch gyfeiriad
-international.editPage.organisationLabel = W Organisation (optional)
+international.editPage.title = Nodwch eich cyfeiriad
+international.editPage.heading = Nodwch eich cyfeiriad
+international.editPage.organisationLabel = Sefydliad (dewisol)
 international.editPage.line1Label = Cyfeiriad – llinell 1
 international.editPage.line2Label = Cyfeiriad – llinell 2
 international.editPage.line3Label = Cyfeiriad – llinell 3
@@ -169,8 +169,8 @@ international.confirmPage.heading = Adolygu a chadarnhau
 international.confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
 international.confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm Cadarnhau.
 international.confirmPage.submitLabel = Cadarnhau’r cyfeiriad
-international.confirmPage.changeLinkText = Newid y cyfeiriad
+international.confirmPage.changeLinkText = Golygu’r cyfeiriad
 international.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
 international.confirmPage.searchAgainLinkText = Chwilio eto
 
-phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href='$link' class='govuk-link'>adborth</a> yn ein helpu i’w wella.
+phaseBannerHtml = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.

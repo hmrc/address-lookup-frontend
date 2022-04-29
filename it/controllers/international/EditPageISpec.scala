@@ -310,8 +310,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch gyfeiriad"
-      document.h1.text shouldBe "Nodwch gyfeiriad"
+      document.title shouldBe "Gwall: Nodwch eich cyfeiriad"
+      document.h1.text shouldBe "Nodwch eich cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryName")).isDefined shouldBe true
 

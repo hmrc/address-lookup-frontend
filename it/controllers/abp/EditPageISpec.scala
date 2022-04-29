@@ -76,9 +76,9 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Cyfeiriad – llinell 1",
-          "line2" -> "Cyfeiriad – llinell 2",
-          "line3" -> "Cyfeiriad – llinell 3",
+          "line1" -> "Llinell cyfeiriad 1",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad"
@@ -214,9 +214,9 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Cyfeiriad – llinell 1",
-          "line2" -> "Cyfeiriad – llinell 2",
-          "line3" -> "Cyfeiriad – llinell 3",
+          "line1" -> "Llinell cyfeiriad 1",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)"
         ))
@@ -460,8 +460,8 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch gyfeiriad"
-      document.h1.text shouldBe "Nodwch gyfeiriad"
+      document.title shouldBe "Gwall: Nodwch eich cyfeiriad"
+      document.h1.text shouldBe "Nodwch eich cyfeiriad"
       document.submitButton.text shouldBe "Yn eich blaen"
       Option(document.getElementById("countryCode")).isDefined shouldBe true
 
@@ -472,9 +472,9 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have (value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2",
-        "line3" -> "Cyfeiriad – llinell 3",
+        "line1" -> "Llinell cyfeiriad 1",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -503,9 +503,9 @@ class EditPageISpec extends IntegrationSpecBase {
 //      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2",
-        "line3" -> "Cyfeiriad – llinell 3",
+        "line1" -> "Llinell cyfeiriad 1",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -608,11 +608,11 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have (value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Cyfeiriad – llinell 1",
-        "line2" -> "Cyfeiriad – llinell 2",
-        "line3" -> "Cyfeiriad – llinell 3",
+        "line1" -> "Llinell cyfeiriad 1",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
         "town" -> "Tref/dinas",
-        "postcode" -> "Cod post yn y DU (dewisol)"
+        "postcode" -> "Cod post y DU (dewisol)"
       ))
 
       res.status shouldBe BAD_REQUEST

@@ -16,6 +16,4 @@
 
 package address.v2
 
-case class NonUkAddressRecord(id: String, number: Option[String], street: Option[String], unit: Option[String],
-                          city: Option[String], district: Option[String], region: Option[String],
-                          postcode: Option[String])
+case class NonUkAddressRecord(id: Option[String], number: Option[String], street: Option[String], unit: Option[String], city: Option[String], district: Option[String], region: Option[String], postcode: Option[String])

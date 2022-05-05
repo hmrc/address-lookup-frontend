@@ -287,7 +287,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.options.isUkMode mustBe false
       resolvedJourneyConfig.options.allowedCountryCodes mustBe None
 
-      resolvedJourneyConfig.options.selectPageConfig.proposalListLimit mustBe None
+      resolvedJourneyConfig.options.selectPageConfig.proposalListLimit mustBe Some(50)
       resolvedJourneyConfig.options.selectPageConfig.showSearchAgainLink mustBe false
 
       resolvedJourneyConfig.options.confirmPageConfig.showChangeLink mustBe true
@@ -357,7 +357,7 @@ class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuit
       resolvedJourneyConfig.options.isUkMode mustBe false
       resolvedJourneyConfig.options.allowedCountryCodes mustBe None
 
-      resolvedJourneyConfig.options.selectPageConfig.proposalListLimit mustBe None
+      resolvedJourneyConfig.options.selectPageConfig.proposalListLimit mustBe Some(50)
       resolvedJourneyConfig.options.selectPageConfig.showSearchAgainLink mustBe false
 
       resolvedJourneyConfig.options.confirmPageConfig.showChangeLink mustBe true

@@ -87,7 +87,7 @@ ec: ExecutionContext) extends AddressService {
       .map { found =>
         val results = found.map { addr =>
           ProposedAddress(
-            addr.id.getOrElse(""),
+            addr.id,
             None,
             None,
             None,

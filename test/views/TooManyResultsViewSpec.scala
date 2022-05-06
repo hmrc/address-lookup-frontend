@@ -41,7 +41,7 @@ class TooManyResultsViewSpec extends ViewSpec {
 
     def bullet2WithFilter(filter: String) = s"'$filter' for name or number"
 
-    val tooManyResultsText = "There are too many results"
+    val tooManyResultsText = "Enter more details. This search returns more than 50 addresses"
     val cannotFindText = "We couldn't find any results for that property name or number"
   }
 

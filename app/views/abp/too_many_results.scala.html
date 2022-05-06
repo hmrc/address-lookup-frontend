@@ -25,11 +25,15 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
+@resolvedProposalListLimit = @{
+    resolvedConf.options.selectPageConfig.proposalListLimit.get
+}
+
 @page(messages("constants.noResultsFoundTitle"), None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
     @{if(firstLookup) {
-        messages("constants.tooManyResultsText")
+        messages("constants.tooManyResultsText").replaceAll("\\$limit", resolvedProposalListLimit.toString)
     } else {
         messages("constants.cannotFindText")
     }}

@@ -14,7 +14,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
   object tooManyResultsMessages {
     val title = "No results found"
-    val heading1 = "There are too many results"
+    val heading1 = "Enter more details. This search returns more than 50 addresses"
     val heading2 = "We couldn't find any results for that property name or number"
 
     def bullet1(postcode: String) = s"$postcode for postcode"

@@ -25,9 +25,13 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
+@resolvedProposalListLimit = @{
+    resolvedConf.options.selectPageConfig.proposalListLimit.get
+}
+
 @internationalMessage(key: String) = @{
     if (messages.isDefinedAt(s"international.$key"))
-        messages(s"international.$key")
+        messages(s"international.$key").replaceAll("\\$limit", resolvedProposalListLimit.toString)
     else
         messages(key)
 }

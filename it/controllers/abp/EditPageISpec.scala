@@ -77,8 +77,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+          "line2" -> "Llinell cyfeiriad 2",
+          "line3" -> "Llinell cyfeiriad 3",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad"
@@ -215,8 +215,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+          "line2" -> "Llinell cyfeiriad 2",
+          "line3" -> "Llinell cyfeiriad 3",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)"
         ))
@@ -473,8 +473,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2",
+        "line3" -> "Llinell cyfeiriad 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -504,8 +504,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2",
+        "line3" -> "Llinell cyfeiriad 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post (dewisol)"
       ))
@@ -609,8 +609,8 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
-        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2",
+        "line3" -> "Llinell cyfeiriad 3",
         "town" -> "Tref/dinas",
         "postcode" -> "Cod post y DU (dewisol)"
       ))

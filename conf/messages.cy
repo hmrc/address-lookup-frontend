@@ -105,7 +105,7 @@ confirmPage.heading = Adolygu a chadarnhau
 confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
 confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm Cadarnhau.
 confirmPage.submitLabel = Cadarnhewch gyfeiriad
-confirmPage.changeLinkText = Newidiwch gyfeiriad
+confirmPage.changeLinkText = Golygwch gyfeiriad
 confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
 confirmPage.searchAgainLinkText = Chwilio eto
 
@@ -113,8 +113,8 @@ editPage.title = Nodwch eich cyfeiriad
 editPage.heading = Nodwch eich cyfeiriad
 editPage.organisationLabel = Sefydliad (dewisol)
 editPage.line1Label = Llinell cyfeiriad 1
-editPage.line2Label = Llinell cyfeiriad 2 (dewisol)
-editPage.line3Label = Llinell cyfeiriad 3 (dewisol)
+editPage.line2Label = Llinell cyfeiriad 2
+editPage.line3Label = Llinell cyfeiriad 3
 editPage.townLabel = Tref/dinas
 editPage.postcodeLabel = Cod post (dewisol)
 editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
@@ -122,13 +122,13 @@ editPage.countryLabel = Gwlad
 editPage.submitLabel = Yn eich blaen
 
 lookupPage.title = Dod o hyd i gyfeiriad
-lookupPage.title.ukMode = Dod o hyd i gyfeiriad yn y DU
+lookupPage.title.ukMode = Dod o hyd i’ch cyfeiriad yn y DU
 lookupPage.heading = Dod o hyd i gyfeiriad
-lookupPage.heading.ukMode = Dod o hyd i gyfeiriad yn y DU
+lookupPage.heading.ukMode = Dod o hyd i’ch cyfeiriad yn y DU
 lookupPage.filterLabel = Enw neu rif yr eiddo (dewisol)
 lookupPage.postcodeLabel = Cod post
 lookupPage.postcodeLabel.ukMode = Cod post yn y DU
-lookupPage.submitLabel = Chwilio eto
+lookupPage.submitLabel = Yn eich blaen
 lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
 
 selectPage.title = Dewiswch eich cyfeiriad
@@ -136,14 +136,14 @@ selectPage.heading = Dewiswch eich cyfeiriad
 selectPage.headingWithPostcode = Yn dangos pob canlyniad ar gyfer
 selectPage.proposalListLabel = Dewiswch un o’r cyfeiriadau canlynol
 selectPage.submitLabel = Yn eich blaen
-selectPage.editAddressLinkText = Nodwch y cyfeiriad â llaw
+selectPage.editAddressLinkText = Nodwch eich cyfeiriad â llaw
 selectPage.searchAgainLinkText = Chwilio eto
 
-international.lookupPage.title = Dod o hyd i gyfeiriad
-international.lookupPage.heading = Dod o hyd i gyfeiriad
+international.lookupPage.title = Dod o hyd i’ch cyfeiriad
+international.lookupPage.heading = Dod o hyd i’ch cyfeiriad
 international.lookupPage.filterLabel = Teipiwch ran o gyfeiriad neu god post
 international.lookupPage.submitLabel = Yn eich blaen
-international.lookupPage.manualAddressLinkText = Nodwch y cyfeiriad â llaw
+international.lookupPage.manualAddressLinkText = Nodwch eich cyfeiriad â llaw
 
 international.selectPage.title = Dewiswch eich cyfeiriad
 international.selectPage.heading = Dewiswch eich cyfeiriad
@@ -168,8 +168,8 @@ international.confirmPage.title = Adolygu a chadarnhau
 international.confirmPage.heading = Adolygu a chadarnhau
 international.confirmPage.infoSubheading = Y cyfeiriad rydych wedi’i ddewis
 international.confirmPage.infoMessage = Bydd eich cyfeiriad yn edrych fel hyn. Gwiriwch eto ac, os yw’n gywir, cliciwch y botwm Cadarnhau.
-international.confirmPage.submitLabel = Cadarnhau’r cyfeiriad
-international.confirmPage.changeLinkText = Golygu’r cyfeiriad
+international.confirmPage.submitLabel = Cadarnhewch gyfeiriad
+international.confirmPage.changeLinkText = Golygwch gyfeiriad
 international.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
 international.confirmPage.searchAgainLinkText = Chwilio eto
 

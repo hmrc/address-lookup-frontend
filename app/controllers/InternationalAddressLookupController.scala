@@ -245,7 +245,7 @@ class InternationalAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
         implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
-        val defaultAddress = addressOrEmpty(journeyData.selectedAddress, None, journeyData.countryCode)
+        val defaultAddress = addressOrEmpty(journeyData.selectedAddress, journeyData.countryCode.getOrElse(""))
         (None, requestWithWelshHeader(isWelsh) {
           Ok(
             edit(
@@ -262,13 +262,13 @@ class InternationalAddressLookupController @Inject()(
     }
 
   private[controllers] def addressOrEmpty(oAddr: Option[ConfirmableAddress],
-                                          lookUpPostCode: Option[String] = None,
-                                          lookupCountryCode: Option[String] = None): Edit =
+                                          lookupCountryCode: String): Edit =
     oAddr
       .map(_.toEdit)
       .getOrElse(
         Edit(None,
-          None, None, None, None, PostcodeHelper.displayPostcode(lookUpPostCode), lookupCountryCode.getOrElse("")))
+          None, None, None, None, ""))
+      .copy(countryCode = lookupCountryCode)
 
   // POST /:id/edit
   def handleEdit(id: String): Action[AnyContent] = Action.async {

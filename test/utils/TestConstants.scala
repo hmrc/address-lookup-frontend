@@ -852,7 +852,18 @@ object TestConstants {
               manualAddressLinkText = Some("enManualAddressLinkText")
             )),
             editPageLabels = None,
-            confirmPageLabels = None
+            confirmPageLabels = None,
+            international = Some(InternationalLanguageLabels(
+              lookupPageLabels = Some(InternationalLookupPageLabels(
+                title = Some("international-enLookupPageTitle"),
+                heading = Some("international-enLookupPageHeading"),
+                filterLabel = Some("international-enFilterLabel"),
+                submitLabel = Some("international-enSubmitLabel"),
+                noResultsFoundMessage = Some("international-enNoResultsFoundMessage"),
+                resultLimitExceededMessage = Some("international-enResultLimitExceededMessage"),
+                manualAddressLinkText = Some("international-enManualAddressLinkText")
+              ))
+            ))
           )),
           cy = None
         ))
@@ -910,8 +921,10 @@ object TestConstants {
             confirmPageLabels = None
           ))
         ))
-      )
+      ),
+      countryCode = Some("GB")
     )
+
   val testNoResultsConfig = JourneyDataV2(
     config = JourneyConfigV2(
       2,

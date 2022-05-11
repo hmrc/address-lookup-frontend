@@ -16,7 +16,6 @@
 
 package controllers
 
-
 import address.v2.Country
 import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
@@ -39,13 +38,13 @@ import services.{AddressService, CountryService, IdGenerationService, KeystoreJo
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.TestConstants.{Lookup => _, _}
-import views.html.abp._
+import views.html.international._
 import views.html.{country_picker, error_template}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AbpAddressLookupControllerSpec
+class InternationalAddressLookupControllerSpec
   extends PlaySpec
     with GuiceOneAppPerSuite
     with JsoupShouldMatchers
@@ -81,8 +80,7 @@ class AbpAddressLookupControllerSpec
 
     val lookup = app.injector.instanceOf[lookup]
     val select = app.injector.instanceOf[select]
-    val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
-    val non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
+    val edit = app.injector.instanceOf[edit]
     val confirm = app.injector.instanceOf[confirm]
     val no_results = app.injector.instanceOf[no_results]
     val too_many_results = app.injector.instanceOf[too_many_results]
@@ -106,7 +104,8 @@ class AbpAddressLookupControllerSpec
         Future.successful(proposals)
       }
 
-      override def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = ???
+      override def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] =
+        Future.successful(proposals)
     }
 
     val countryService = new CountryService {
@@ -115,15 +114,13 @@ class AbpAddressLookupControllerSpec
       override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
-    val controller = new AbpAddressLookupController(journeyRepository, addressService, auditConnector,
-      frontendAppConfig, components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm,
-      no_results, too_many_results)
+    val controller = new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
+      frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results,  lookup)
 
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) =
-      new AbpAddressLookupController(journeyRepository, addressService, auditConnector, frontendAppConfig,
-        components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
-        too_many_results) {
-        override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+      new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
+        frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results,  lookup) {
+        override def handleLookup(id: String, journeyData: JourneyDataV2, lookup: NonAbpLookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
     object MockIdGenerationService extends IdGenerationService {
@@ -171,56 +168,27 @@ class AbpAddressLookupControllerSpec
   //    }
   //  }
 
-  "lookup" should {
+  "lookup" when {
     "isWelsh is false" should {
       "return a form which permits input of building name/number and postcode and should pre pop values" in new Scenario(
         journeyDataV2 = Map("foo" -> basicJourneyV2())
       ) {
-        val res = call(controller.lookup("foo", Some("ZZ1 1ZZ"), Some("The House")), req)
+        val res = call(controller.lookup("foo", Some("The House")), req)
         val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue(messages("lookupPage.title"))
-        html should include element withName("h1").withValue(messages("lookupPage.heading"))
-        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
-        html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
+        html should include element withName("title").withValue(messages("international.lookupPage.title"))
+        html should include element withName("h1").withValue(messages("international.lookupPage.heading"))
+        html should include element withName("form").withAttrValue("action", routes.InternationalAddressLookupController.select("foo").url)
+        html should include element withName("label").withAttrValue("for", "filter").withValue("Type a part of address or postcode")
         html should include element withName("input").withAttrValue("name", "filter")
-        html should include element withName("label").withAttrValue("for", "postcode").withValue("Postcode")
-        html should include element withName("input").withAttrValue("name", "postcode")
         html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
-        html should include element withAttrValue("id", "manualAddress").withValue("Enter the address manually")
-        html.getElementById("postcode").`val` mustBe "ZZ1 1ZZ"
+        html should include element withAttrValue("id", "manualAddress").withValue("Enter your address manually")
         html.getElementById("filter").`val` mustBe "The House"
-      }
-
-      "return a form which permits input of building name/number and postcode when set to UK mode and should not pre pop" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2(ukModeBool = Some(true)))
-      ) {
-        val res = call(controller.lookup("foo"), req)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("title").withValue(messages("lookupPage.title.ukMode"))
-        html should include element withName("h1").withValue(messages("lookupPage.heading.ukMode"))
-        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
-        html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
-        html should include element withName("input").withAttrValue("name", "filter")
-        html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
-        html should include element withName("input").withAttrValue("name", "postcode")
-        html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
-        html should include element withAttrValue("id", "manualAddress").withValue("Enter the address manually")
-        html.getElementById("postcode").`val` mustBe ""
-        html.getElementById("filter").`val` mustBe ""
-      }
-      "return a form that pre pops just post code" in new Scenario(
-        journeyDataV2 = Map("foo" -> basicJourneyV2())
-      ) {
-        val res = call(controller.lookup("foo", postcode = Some("AB11 1AB")), req)
-        val html = contentAsString(res).asBodyFragment
-        html.getElementById("postcode").`val` mustBe "AB11 1AB"
-        html.getElementById("filter").`val` mustBe ""
       }
 
       "allow page title to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
       ) {
-        val res = call(controller.lookup("foo"), req)
+        val res = call(controller.lookup("foo", Some("bar")), req)
         val html = contentAsString(res).asBodyFragment
         html should include element withName("title").withValue("enLookupPageTitle")
       }
@@ -228,7 +196,7 @@ class AbpAddressLookupControllerSpec
       "allow page heading to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
       ) {
-        val res = call(controller.lookup("foo"), req)
+        val res = call(controller.lookup("foo", Some("bar")), req)
         val html = contentAsString(res).asBodyFragment
         html should include element withName("h1").withValue("enLookupPageHeading")
       }
@@ -236,23 +204,15 @@ class AbpAddressLookupControllerSpec
       "allow filter label to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
       ) {
-        val res = call(controller.lookup("foo"), req)
+        val res = call(controller.lookup("foo", Some("bar")), req)
         val html = contentAsString(res).asBodyFragment
         html should include element withName("label").withAttrValue("for", "filter").withValue("enFilterLabel")
-      }
-
-      "allow postcode label to be configured" in new Scenario(
-        journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
-      ) {
-        val res = call(controller.lookup("foo"), req)
-        val html = contentAsString(res).asBodyFragment
-        html should include element withName("label").withAttrValue("for", "postcode").withValue("enPostcodeLabel")
       }
 
       "allow submit label to be configured" in new Scenario(
         journeyDataV2 = Map("foo" -> testLookupLevelJourneyConfigV2)
       ) {
-        val res = call(controller.lookup("foo"), req)
+        val res = call(controller.lookup("foo", Some("bar")), req)
         val html = contentAsString(res).asBodyFragment
         html should include element withName("button").withAttrValue("type", "submit").withValue("enSubmitLabel")
       }
@@ -265,7 +225,7 @@ class AbpAddressLookupControllerSpec
     "show no phase banner when deactivated" in new Scenario(
       journeyDataV2 = Map("foo" -> noBannerJourneyV2)
     ) {
-      val res = call(controller.lookup("foo"), req)
+      val res = call(controller.lookup("foo", Some("bar")), req)
       val html = contentAsString(res).asBodyFragment
       private val maybeBannerTextElement = html.getElementsByClass("govuk-phase-banner__text")
 
@@ -285,7 +245,7 @@ class AbpAddressLookupControllerSpec
     "show a default beta phase banner when activated" in new Scenario(
       journeyDataV2 = Map("foo" -> betaBannerJourneyV2)
     ) {
-      val res = call(controller.lookup("foo"), req)
+      val res = call(controller.lookup("foo", Some("bar")), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("BETA")
@@ -309,7 +269,7 @@ class AbpAddressLookupControllerSpec
     "show a custom beta phase banner when supplied with Html" in new Scenario(
       journeyDataV2 = Map("foo" -> customBetaBannerJourneyV2)
     ) {
-      val res = call(controller.lookup("foo"), req)
+      val res = call(controller.lookup("foo", Some("bar")), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("BETA")
@@ -321,7 +281,7 @@ class AbpAddressLookupControllerSpec
     "show a default alpha phase banner when specified" in new Scenario(
       journeyDataV2 = Map("foo" -> alphaBannerJourneyV2)
     ) {
-      val res = call(controller.lookup("foo"), req)
+      val res = call(controller.lookup("foo", Some("bar")), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("ALPHA")
@@ -333,7 +293,7 @@ class AbpAddressLookupControllerSpec
     "show a custom alpha phase banner when specified and supplied with Html" in new Scenario(
       journeyDataV2 = Map("foo" -> customAlphaBannerJourneyV2)
     ) {
-      val res = call(controller.lookup("foo"), req)
+      val res = call(controller.lookup("foo", Some("bar")), req)
       val html = contentAsString(res).asBodyFragment
       html should include element withClass("govuk-phase-banner__text")
       html should include element withClass("govuk-phase-banner").withValue("ALPHA")
@@ -347,16 +307,16 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
       proposals = Seq(ProposedAddress("1", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("2", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11     1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html.getElementById("pageHeading").html mustBe "Enter more details. This search returns more than 1 addresses"
+      html.getElementById("pageHeading").html mustBe "There are too many results"
     }
 
     "display the no results page if no addresses were found" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq()
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
 
       status(res) must be(200)
@@ -367,17 +327,17 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", lines = List("line1", "line2"), town = "town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
 
       status(res) must be(303)
-      header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.confirm("foo").url))
+      header(HeaderNames.LOCATION, res) must be(Some(routes.InternationalAddressLookupController.confirm("foo").url))
     }
 
     "display a list of  english proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Choose your address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
@@ -389,9 +349,9 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html should include element withName("h1").withValue("Dewiswch eich cyfeiriad")
+      html should include element withName("h1").withValue("Dewiswch gyfeiriad")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567891")
       html should include element withName("button").withAttrValue("type", "submit").withValue("Yn eich blaen")
@@ -403,26 +363,26 @@ class AbpAddressLookupControllerSpec
     "redirect to confirm page when a proposal is selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val res: Future[Result] = controller.handleSelect("foo", None, testPostCode).apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
+      val res: Future[Result] = controller.handleSelect("foo", "bar").apply(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
       status(res) must be(303)
-      header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.confirm("foo").url))
+      header(HeaderNames.LOCATION, res) must be(Some(routes.InternationalAddressLookupController.confirm("foo").url))
     }
 
     "redirect to select page when an address hasn't been selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val res: Future[Result] = controller.handleSelect("foo", None, testPostCode).apply(req)
+      val res: Future[Result] = controller.handleSelect("foo", "bar").apply(req)
       status(res) must be(BAD_REQUEST)
       val html = contentAsString(res).asBodyFragment
-      html should include element withAttrValue("action", routes.AbpAddressLookupController.handleSelect("foo", None, testPostCode).url)
+      html should include element withAttrValue("action", routes.InternationalAddressLookupController.handleSelect("foo", "bar").url)
     }
 
     "redirect to the lookup page when there are no proposals in the journey" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None))
     ) {
-      val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
+      val res: Future[Result] = controller.handleSelect("foo", "bar")(req.withFormUrlEncodedBody("addressId" -> "GB1234567890"))
       status(res) mustBe 303
-      redirectLocation(res) mustBe Some(routes.AbpAddressLookupController.lookup("foo").url)
+      redirectLocation(res) mustBe Some(routes.InternationalAddressLookupController.lookup("foo", Some("bar")).url)
     }
 
     "display the select page" when {
@@ -430,7 +390,7 @@ class AbpAddressLookupControllerSpec
         "nothing was selected" in new Scenario(
           journeyDataV2 = Map("foo" -> basicJourneyV2(None))
         ) {
-          val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> ""))
+          val res: Future[Result] = controller.handleSelect("foo", "bar")(req.withFormUrlEncodedBody("addressId" -> ""))
           status(res) mustBe 400
           val html: Element = contentAsString(res).asBodyFragment
           html should include element withName("h1").withValue(messages("selectPage.heading"))
@@ -452,7 +412,7 @@ class AbpAddressLookupControllerSpec
         journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(
           proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
       ) {
-        val res: Future[Result] = controller.handleSelect("foo", None, testPostCode)(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
+        val res: Future[Result] = controller.handleSelect("foo", "bar")(req.withFormUrlEncodedBody("addressId" -> "GB1234567891"))
         status(res) mustBe 400
         val html: Element = contentAsString(res).asBodyFragment
         html should include element withName("h1").withValue(messages("selectPage.heading"))
@@ -467,7 +427,7 @@ class AbpAddressLookupControllerSpec
       ))
     ) {
       val res = controller.confirm("foo").apply(req)
-      await(res).header.headers(HeaderNames.LOCATION) mustBe routes.AbpAddressLookupController.lookup("foo").url
+      await(res).header.headers(HeaderNames.LOCATION) mustBe routes.InternationalAddressLookupController.lookup("foo", None).url
     }
     "display English content" when {
       "allow confirmChangeText to be configured" in new Scenario(
@@ -565,80 +525,44 @@ class AbpAddressLookupControllerSpec
     }
   }
 
-  "Calling addressOrDefault" should {
+  "Calling addressOrEmpty" should {
 
     "return an address when called with a defined option removing postcode as its invalid" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = Some("BM"), proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postcode")))
+      val tstEdit = Edit(None, None, None, None, None, "", "BM")
+      controller.addressOrEmpty(Some(tstAddress), "BM") must be(tstEdit)
     }
 
     "return an address when called with a defined option - and long postcode" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = Some("BM"), proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("ZZ11 1ZZ")))
+      val tstEdit = Edit(None, None, None, None, None, "ZZ11 1ZZ", "BM")
+      controller.addressOrEmpty(Some(tstAddress), "BM") must be(tstEdit)
     }
 
-    "return an address with a normalised postcode when called with no option and a long lookup postcode " in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
+    "return an address with a blank postcode when called with no option" in new Scenario(
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = Some("BM"), proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
     ) {
-      val spacesInPostcode = Some("AA11     2BB")
-
-      val tstEdit = Edit(None, None, None, None, None, "AA11 2BB", "GB")
-      controller.addressOrDefault(None, spacesInPostcode) must be(tstEdit)
-    }
-
-    "return an address with a normalised postcode when called with no option and no spaces in lookup postcode " in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
-    ) {
-      val lookUpPostcode = Some("AA112BB")
-
-      val tstEdit = Edit(None, None, None, None, None, "AA11 2BB", "GB")
-      controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
-    }
-
-    "return an address with a blank postcode when called with no option and a lookup postcode with incorrect format" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
-    ) {
-      val lookUpPostcode = Some("AA11     BB2")
-
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
-    }
-
-    "return an address with a blank postcode when called with no option and a lookup postcode with invalid characters" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
-    ) {
-      val lookUpPostcode = Some("TF(3@r")
-
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(None, lookUpPostcode) must be(tstEdit)
-    }
-
-    "return an address with a blank postcode when called with no option and a no lookup postcode" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11 BB2", "some-town")))))
-    ) {
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(None, None) must be(tstEdit)
+      val tstEdit = Edit(None, None, None, None, None, "", "BM")
+      controller.addressOrEmpty(None, "BM") must be(tstEdit)
     }
 
     "return an address when called with a defined option - postcode with no space, postcode confirmable gets removed" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = Some("BM"), proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA11BB2", "some-town")))))
     ) {
-      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("postCode")))
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(Some(tstAddress)) must be(tstEdit)
+      val tstAddress = ConfirmableAddress("auditRef", Some("id"), None, None, None, None, ConfirmableAddressDetails(postcode = Some("AA11BB2")))
+      val tstEdit = Edit(None, None, None, None, None, "", "BM")
+      controller.addressOrEmpty(Some(tstAddress), "BM") must be(tstEdit)
     }
 
     "return an address when called with an empty option" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = Some("BM"), proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {
-      val tstEdit = Edit(None, None, None, None, None, "", "GB")
-      controller.addressOrDefault(None) must be(tstEdit)
+      val tstEdit = Edit(None, None, None, None, None, "", "BM")
+      controller.addressOrEmpty(None, "BM") must be(tstEdit)
     }
   }
 
@@ -649,7 +573,7 @@ class AbpAddressLookupControllerSpec
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
       val reqOther = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "en"))
-      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
+      val res = controller.edit("foo").apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementsByClass("govuk-back-link").html mustBe "Back"
     }
@@ -660,7 +584,7 @@ class AbpAddressLookupControllerSpec
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))
     ) {
       val reqOther = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy"))
-      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(reqOther)
+      val res = controller.edit("foo").apply(reqOther)
       val html = contentAsString(res).asBodyFragment
       html.getElementsByClass("govuk-back-link").html mustBe "Yn ôl"
 
@@ -669,7 +593,7 @@ class AbpAddressLookupControllerSpec
     "show read-only country without dropdown" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2())
     ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
+      val res = controller.edit("foo").apply(req)
       val html = contentAsString(res).asBodyFragment
 
       html should not include element(withName("option").withAttrValue("value", "GB"))
@@ -684,20 +608,9 @@ class AbpAddressLookupControllerSpec
         .withAttrValue("value", "United Kingdom")
         .withAttr("disabled")
     }
-
-    "editing an address whereby isukMode == true returns ukEditMode page" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ) {
-      val res = controller.edit("foo", Some("ZZ1 1ZZ")).apply(req)
-      status(res) must be(200)
-      val html = contentAsString(res).asBodyFragment
-      html should include element (withName("input").withAttrValue("name", "postcode"))
-      html.getElementById("postcode").attr("value") mustBe "ZZ1 1ZZ"
-      html should not include element(withName("select").withAttrValue("name", "countryCode"))
-    }
   }
 
-  "handleUkEdit" should {
+  "handleEdit" should {
     "return 303 with valid request" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {
@@ -717,48 +630,6 @@ class AbpAddressLookupControllerSpec
     ) {
       val res = controller.handleEdit("foo").apply(
         req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
-      status(res) must be(303)
-    }
-  }
-
-  "handleNonUkEdit" should {
-    "return a 400 with empty request, uk mode == true" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ) {
-      val res = controller.handleEdit("foo").apply(req)
-      status(res) must be(400)
-    }
-
-    "return a 303 with request containing postcode countrycode when ukMode == false" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
-    ) {
-      val res = controller.handleEdit("foo")
-        .apply(req.withFormUrlEncodedBody(editFormConstructor(): _*))
-      status(res) must be(303)
-    }
-
-    "return a 400 with empty request when ukMode == false" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(false)))
-    ) {
-      val res = controller.handleEdit("foo").apply(req)
-      status(res) must be(400)
-      val html = contentAsString(res).asBodyFragment
-      html should include element (withName("input").withAttrValue("name", "postcode"))
-    }
-
-    "return 303 with country code == GB and no postcode provided" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2())
-    ) {
-      val res = controller.handleEdit("foo").apply(
-        req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bar"), "", "GB")): _*))
-      status(res) must be(303)
-    }
-
-    "return a 303 with request containing valid data but blank postcode and countryCode when ukMode == true" in new Scenario(
-      journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
-    ) {
-      val res = controller.handleEdit("foo")
-        .apply(req.withFormUrlEncodedBody(editFormConstructor(Edit(None, Some("foo"), None, None, Some("fooBar"), "", "")): _*))
       status(res) must be(303)
     }
   }

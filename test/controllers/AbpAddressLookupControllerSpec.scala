@@ -349,7 +349,7 @@ class AbpAddressLookupControllerSpec
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html.getElementById("pageHeading").html mustBe "Enter more details. This search returns more than 1 addresses"
+      html.getElementById("pageHeading").html mustBe "Too many results, enter more details"
     }
 
     "display the no results page if no addresses were found" in new Scenario(

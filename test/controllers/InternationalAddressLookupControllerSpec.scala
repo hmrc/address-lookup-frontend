@@ -309,7 +309,7 @@ class InternationalAddressLookupControllerSpec
     ) {
       val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11     1ZZ"))
       val html = contentAsString(res).asBodyFragment
-      html.getElementById("pageHeading").html mustBe "Enter more details. This search returns more than $limit addresses"
+      html.getElementById("pageHeading").html mustBe "Too many results, enter more details"
     }
 
     "display the no results page if no addresses were found" in new Scenario(

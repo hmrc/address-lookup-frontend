@@ -75,7 +75,7 @@ constants.noResultsPageHeading = We cannot find any addresses for
 constants.noResultsPageEnterManually = Enter the address manually
 constants.noResultsPageDifferentPostcode = Try a different postcode
 
-constants.tooManyResultsText = Enter more details. This search returns more than $limit addresses
+constants.tooManyResultsText = Too many results, enter more details
 constants.noResultsFoundTitle = No results found
 constants.cannotFindText = We couldn''t find any results for that property name or number
 constants.anotherSearchText = Try a new search

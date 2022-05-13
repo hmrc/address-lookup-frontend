@@ -75,7 +75,7 @@ constants.noResultsPageHeading = Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyf
 constants.noResultsPageEnterManually = Nodwch y cyfeiriad â llaw
 constants.noResultsPageDifferentPostcode = Rhowch gynnig ar god post gwahanol
 
-constants.tooManyResultsText = W Enter more details. This search returns more than $limit addresses
+constants.tooManyResultsText = W Too many results, enter more details
 constants.noResultsFoundTitle = Dim canlyniadau wedi’u darganfod
 constants.cannotFindText = Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw
 constants.anotherSearchText = Rhowch gynnig ar chwiliad newydd

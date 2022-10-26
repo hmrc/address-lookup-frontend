@@ -85,19 +85,12 @@ class ForeignOfficeCountryService extends CountryService {
 
   private val countriesEN = countriesENFull
 
-  private val countriesCYJson: Seq[Country] = Json.parse(getClass.getResourceAsStream("/countriesCY.json")).as[Map[String, FcoCountry]].map { country =>
-    Country(country._2.country, country._2.name)
-  }.toSeq.sortWith(_.name < _.name)
-
   private val countriesCYFull: Seq[Country] = {
     val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
       .map(renameFields)
       .groupBy(_ ("Country"))
       .mapValues(v => v.head)
-
-    val countriesCYJsonMaps = countriesCYJson.map(Country.toMap).toMap
-    val countriesCYCodeSet = countriesCYJsonMaps.keySet
 
     val allFCDORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("Country"))
@@ -110,10 +103,12 @@ class ForeignOfficeCountryService extends CountryService {
       .groupBy(_ ("Country"))
       .mapValues(v => v.head)
 
-    ((allISORows ++ allFCDORows ++ allFCDOTRows)
-      .filterNot {
-        case (code, _) => countriesCYCodeSet.contains(code)
-      } ++ countriesCYJsonMaps)
+    val allWCORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/wco-countries.csv"), "UTF-8"))
+      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .groupBy(_ ("Country"))
+      .mapValues(v => v.head)
+
+    (allISORows ++ allFCDORows ++ allFCDOTRows ++ allWCORows)
       .map(Country.apply)
       .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }

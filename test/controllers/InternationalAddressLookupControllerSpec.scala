@@ -66,9 +66,9 @@ class InternationalAddressLookupControllerSpec
     implicit val lang = Lang("en")
     implicit lazy val messages = MessagesImpl(lang, messagesApi)
 
-    val req = FakeRequest()
+    val req = FakeRequest().withMethod("POST")
     // TODO: Do we need this and the tests that depend on it?
-    val reqWelsh = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy"))
+    val reqWelsh = FakeRequest().withCookies(Cookie(messagesApi.langCookieName, "cy")).withMethod("POST")
 
     val endpoint = "http://localhost:9000"
 

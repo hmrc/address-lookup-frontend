@@ -152,7 +152,7 @@ class StubControllerSpec extends PlaySpec
       when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(true))
 
-      val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest().withFormUrlEncodedBody(
+      val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest().withMethod("POST").withFormUrlEncodedBody(
         "journeyConfig" -> basicJourney
       ))
 

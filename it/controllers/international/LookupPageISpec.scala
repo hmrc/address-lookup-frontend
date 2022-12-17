@@ -15,6 +15,7 @@ import play.api.i18n.Lang
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 
+import scala.language.postfixOps
 import scala.util.Random
 
 class LookupPageISpec extends IntegrationSpecBase {

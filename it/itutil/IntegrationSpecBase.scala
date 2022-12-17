@@ -25,6 +25,8 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 
+import scala.language.postfixOps
+
 trait IntegrationSpecBase extends WordSpec with LoginStub
   with GivenWhenThen
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers

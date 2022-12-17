@@ -16,6 +16,7 @@
 
 package services
 
+import address.v2._
 import config.FrontendAppConfig
 import model.ProposedAddress
 import org.mockito.Matchers._
@@ -25,13 +26,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
-import address.v2._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import scala.collection.immutable.Seq
-import scala.concurrent.Future
-import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.io.Source
+import scala.util.Random
 
 class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
 
@@ -118,11 +118,11 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
   import services.AddressReputationFormats._
 
-  private val dodgyAddressess = Json.parse(getClass.getResourceAsStream("/dodgy.json")).as[List[AddressRecord]]
-  private val suspectAddresses = Json.parse(getClass.getResourceAsStream("/suspect.json")).as[List[AddressRecord]]
-  private val questionableAddresses = Json.parse(getClass.getResourceAsStream("/questionable.json"))
+  private val dodgyAddressess = Json.parse(Source.fromResource("dodgy.json").mkString).as[List[AddressRecord]]
+  private val suspectAddresses = Json.parse(Source.fromResource("suspect.json").mkString).as[List[AddressRecord]]
+  private val questionableAddresses = Json.parse(Source.fromResource("questionable.json").mkString)
                                           .as[List[AddressRecord]]
-  private val dubiousAddresses = Json.parse(getClass.getResourceAsStream("/dubious.json")).as[List[AddressRecord]]
+  private val dubiousAddresses = Json.parse(Source.fromResource("dubious.json").mkString).as[List[AddressRecord]]
 
   private val cannedAddresses = List(
     cannedAddress(1000L, List("3c", "Malvern Court"), "ZZ11 1ZZ", Some("malvern-organisation")),

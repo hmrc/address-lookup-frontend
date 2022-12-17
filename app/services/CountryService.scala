@@ -16,12 +16,12 @@
 
 package services
 
-import javax.inject.Singleton
+import address.v2.Country
 import com.github.tototoshi.csv._
 import com.google.inject.ImplementedBy
 import play.api.libs.json.Json
-import address.v2.Country
 
+import javax.inject.Singleton
 import scala.io.Source
 
 @ImplementedBy(classOf[ForeignOfficeCountryService])
@@ -85,39 +85,38 @@ class ForeignOfficeCountryService extends CountryService {
 
   private val countriesEN = countriesENFull
 
-  private val countriesCYFull: Seq[Country] = {
+  private val countriesCYFull: Seq[(String, Country)] = {
     val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
       .map(renameFields)
       .groupBy(_ ("Country"))
-      .mapValues(v => v.head)
+      .view.mapValues(v => v.head)
 
     val allFCDORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("Country"))
       .groupBy(_ ("Country"))
-      .mapValues(v => v.head)
+      .view.mapValues(v => v.head)
 
     val allFCDOTRows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_territories.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("Country"))
       .filterNot(m => m("Country") == "Not applicable")
       .groupBy(_ ("Country"))
-      .mapValues(v => v.head)
+      .view.mapValues(v => v.head)
 
     val allWCORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/wco-countries.csv"), "UTF-8"))
       .allWithOrderedHeaders._2.sortBy(x => x("Country"))
       .groupBy(_ ("Country"))
-      .mapValues(v => v.head)
+      .view.mapValues(v => v.head)
 
-    (allISORows ++ allFCDORows ++ allFCDOTRows ++ allWCORows)
-      .map(Country.apply)
-      .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
+    ((allISORows ++ allFCDORows ++ allFCDOTRows).map(c => "en" -> Country.apply(c)) ++ allWCORows.map(c => "cy" -> Country.apply(c)))
+      .toSeq.sortWith { case ((_,a), (_, b)) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
   private val countriesCY = countriesCYFull
 
   override def findAll(welshFlag: Boolean = false): Seq[Country] =
     if (!welshFlag) countriesEN
-    else countriesCY
+    else countriesCY.map { case (_, c) => c }
 
   override def find(welshFlag: Boolean = false, code: String): Option[Country] = {
     if (!welshFlag) {
@@ -125,12 +124,10 @@ class ForeignOfficeCountryService extends CountryService {
       filtered.headOption
     }
     else {
-      val filtered = countriesCY.filter(_.code == code)
-      filtered.headOption
+      val filtered = countriesCY.filter { case (_, c) => c.code == code }.sortBy { case (lang, _) => lang }
+      filtered.headOption.map { case (_, c) => c }
     }
-
   }
-
 }
 
 case class FcoCountry(country: String, name: String)

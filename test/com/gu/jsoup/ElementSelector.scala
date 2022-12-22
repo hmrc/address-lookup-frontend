@@ -16,8 +16,7 @@
 
 package com.gu.jsoup
 
-import scala.collection.JavaConversions._
-
+import scala.jdk.CollectionConverters._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
@@ -29,8 +28,8 @@ sealed trait ElementSelector extends ElementSelectorBuilders {
   final def apply(elem: Element): Elements =
     fold[Element => Elements](
       (f, desc) => f,
-      (l, r) => elem => new Elements(l(elem) flatMap r.apply),
-      (l, r) => elem => new Elements(l(elem) ++ r(elem) distinct)
+      (l, r) => elem => new Elements(l(elem).asScala.flatMap(a => r.apply(a).asScala).asJava),
+      (l, r) => elem => new Elements((l(elem).asScala ++ r(elem).asScala.distinct).asJava)
     )(elem)
 
   override final def toString: String =

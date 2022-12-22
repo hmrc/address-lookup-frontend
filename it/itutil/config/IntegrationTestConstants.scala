@@ -8,6 +8,8 @@ import address.v2.Country
 import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 import services.ForeignOfficeCountryService
 
+import scala.language.postfixOps
+
 object IntegrationTestConstants {
   val testApiVersion = 2
   val testJourneyId = "Jid123"
@@ -208,7 +210,8 @@ object IntegrationTestConstants {
       |         "postcode":"TF1 1NT",
       |         "country":{
       |            "code":"UK",
-      |            "name":"United Kingdom"
+      |            "name":"United Kingdom",
+      |            "lang":"en"
       |         }
       |      }
       |   }

@@ -1,12 +1,11 @@
 import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
 import sbt._
-import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, _}
-import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
+import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
 
 val appName: String = AppDependencies.appName
 
@@ -14,7 +13,7 @@ lazy val root = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(majorVersion := 2)
   .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.12.15")
+  .settings(scalaVersion := "2.13.10")
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(

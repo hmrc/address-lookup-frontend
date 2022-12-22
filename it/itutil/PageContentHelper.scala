@@ -137,7 +137,7 @@ trait PageContentHelper {
   def errorMessage(message: String): HavePropertyMatcher[Elements, String] =
     new HavePropertyMatcher[Elements, String] {
       def apply(element: Elements) = {
-        val errorMessage = element.parents.select("span[class=govuk-error-message")
+        val errorMessage = element.parents.select("p[class=govuk-error-message")
 
         HavePropertyMatchResult(
           errorMessage.text() == message,

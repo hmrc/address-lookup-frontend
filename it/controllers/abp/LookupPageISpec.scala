@@ -82,9 +82,10 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
-        val fResponse = buildClientLookupAddress(path = "select")
+        val fResponse = buildClientLookupAddress(path = "lookup")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .get()
+          .post("")
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
@@ -106,9 +107,10 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
-        val fResponse = buildClientLookupAddress(path = s"select?postcode=QQ")
+        val fResponse = buildClientLookupAddress(path = s"lookup")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .get()
+          .post(Map("postcode" -> "QQ"))
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
@@ -131,9 +133,10 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val filterValue = longFilterValue
-        val fResponse = buildClientLookupAddress(path = s"select?filter=$filterValue")
+        val fResponse = buildClientLookupAddress(path = s"lookup")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .get()
+          .post(Map("filter" -> filterValue))
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 

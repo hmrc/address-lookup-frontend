@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ class TooManyResultsViewSpec extends ViewSpec {
   private def render(showBackButtons: Boolean = true, firstLookup: Boolean = false, filter: Option[String] = None): Document = {
     val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(showBackButtons))))
 
-    Jsoup.parse(too_many_results(id = testJourneyId, journeyData = journeyData,
-      lookup = model.Lookup(filter, testPostCode), firstLookup = firstLookup).body)
+    Jsoup.parse(too_many_results(id = testJourneyId, journeyData = journeyData, testPostCode, filter, firstLookup = firstLookup).body)
   }
 
   "The 'Too Many Results' page" when {

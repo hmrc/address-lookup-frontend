@@ -60,7 +60,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
-            val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
+            val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB")
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
@@ -122,7 +122,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
-            val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB&filter=")
+            val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB")
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
@@ -189,7 +189,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystore(testJourneyId, Json.toJson(journeyData), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
-        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -209,7 +209,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -226,7 +226,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -242,7 +242,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
         stubGetAddressFromBE(addressJson = Json.arr())
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 

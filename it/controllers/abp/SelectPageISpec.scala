@@ -26,7 +26,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -67,7 +67,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -109,7 +109,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -124,7 +124,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -139,7 +139,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
         stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -158,7 +158,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(
             HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"),
             "Csrf-Token" -> "nocheck")
@@ -187,7 +187,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId,
           Json.toJson(journeyData.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
 
-        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB&filter=")
+        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)

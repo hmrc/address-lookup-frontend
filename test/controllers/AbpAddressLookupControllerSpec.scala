@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ class AbpAddressLookupControllerSpec
       new AbpAddressLookupController(journeyRepository, addressService, auditConnector, frontendAppConfig,
         components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
         too_many_results) {
-        override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, lookup: Lookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+        override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, postCode: String, filter: Option[String], firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
     object MockIdGenerationService extends IdGenerationService {
@@ -180,7 +180,7 @@ class AbpAddressLookupControllerSpec
         val html = contentAsString(res).asBodyFragment
         html should include element withName("title").withValue(messages("lookupPage.title"))
         html should include element withName("h1").withValue(messages("lookupPage.heading"))
-        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
+        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.lookup("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("Postcode")
@@ -198,7 +198,7 @@ class AbpAddressLookupControllerSpec
         val html = contentAsString(res).asBodyFragment
         html should include element withName("title").withValue(messages("lookupPage.title.ukMode"))
         html should include element withName("h1").withValue(messages("lookupPage.heading.ukMode"))
-        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.select("foo").url)
+        html should include element withName("form").withAttrValue("action", routes.AbpAddressLookupController.lookup("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Property name or number (optional)")
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("label").withAttrValue("for", "postcode").withValue("UK postcode")
@@ -347,7 +347,7 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
       proposals = Seq(ProposedAddress("1", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("2", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11     1ZZ"))
+      val res = controller.select("foo", "ZZ11     1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
       html.getElementById("pageHeading").html mustBe "Too many results, enter more details"
     }
@@ -356,7 +356,7 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq()
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
 
       status(res) must be(200)
@@ -367,7 +367,7 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", lines = List("line1", "line2"), town = "town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
 
       status(res) must be(303)
       header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.confirm("foo").url))
@@ -377,7 +377,7 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Choose your address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
@@ -389,7 +389,7 @@ class AbpAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("postcode" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(reqWelsh)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Dewiswch eich cyfeiriad")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")

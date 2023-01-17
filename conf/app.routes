@@ -6,7 +6,8 @@ GET  /:id/country-picker         @controllers.AddressLookupController.countryPic
 POST /:id/country-picker         @controllers.AddressLookupController.handleCountryPicker(id: String)
 
 GET  /:id/lookup                 @controllers.AbpAddressLookupController.lookup(id: String, postcode: Option[String] ?= None, filter : Option[String] ?= None)
-GET  /:id/select                 @controllers.AbpAddressLookupController.select(id: String)
+POST /:id/lookup                 @controllers.AbpAddressLookupController.postLookup(id: String)
+GET  /:id/select                 @controllers.AbpAddressLookupController.select(id: String, postcode: String, filter: Option[String] ?= None)
 POST /:id/select                 @controllers.AbpAddressLookupController.handleSelect(id: String, filter: Option[String], postcode: String)
 GET  /:id/edit                   @controllers.AbpAddressLookupController.edit(id: String, lookUpPostCode: Option[String] ?= None)
 POST /:id/edit                   @controllers.AbpAddressLookupController.handleEdit(id: String)

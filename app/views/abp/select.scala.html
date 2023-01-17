@@ -20,7 +20,7 @@
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
 page: page_template)
-@(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, lookup: Lookup, firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, formattedPostcode: String, filter: Option[String], firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -36,23 +36,23 @@ page: page_template)
 
 @page(titleWithError, Some(selectForm), journeyData) {
 
-    @if(lookup.filter.isDefined && !firstSearch) {
-        <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{lookup.postcode}</h1>
+    @if(filter.isDefined && !firstSearch) {
+        <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{formattedPostcode}</h1>
         <div class="form-field">
             <p class="govuk-body" id="no-results">
-                @{messages("constants.noResults")} '@{lookup.filter.get}'.
+                @{messages("constants.noResults")} '@{filter.get}'.
             </p>
             <p class="govuk-body">
-                <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id,Some(lookup.postcode),Some(lookup.filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id, Some(formattedPostcode), Some(filter.get))}" id="differentAddress">@{messages("constants.differentSearch")}</a>
             </p>
         </div>
     } else {
         <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.heading")}</h1>
     }
 
-    @form(controllers.routes.AbpAddressLookupController.handleSelect(id, lookup.filter, lookup.postcode)) {
+    @form(controllers.routes.AbpAddressLookupController.handleSelect(id, filter, formattedPostcode)) {
         <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(lookup.postcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
+            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(formattedPostcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ package views
 import config.FrontendAppConfig
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
-import play.api.i18n.Messages
 import model.{JourneyDataV2, Lookup}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
@@ -58,7 +57,7 @@ class SelectPageViewSpec extends ViewSpec {
 
     val messages = implicitly[Messages]
 
-    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup, firstSearch, welshEnabled)
+    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 

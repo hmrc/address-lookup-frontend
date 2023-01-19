@@ -70,7 +70,7 @@
                   value = Some(k),
                   text = v,
                   selected = k == countryPickerForm("countryCode").value.getOrElse(""),
-                  attributes = Map("id" → s"countryCode-$k"))
+                  attributes = Map("id" -> s"countryCode-$k"))
           },
           formGroupClasses = "form-field-group"
       ))
@@ -98,6 +98,6 @@
 
       @button(Button(content = HtmlContent(messages("countryPickerPage.submitLabel")),
           name=Some("continue"),
-          inputType=Some("submit"), attributes = Map("id" → "continue")))
+          inputType=Some("submit"), attributes = Map("id" -> "continue")))
   }
 }

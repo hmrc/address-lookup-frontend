@@ -29,7 +29,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder()
       .configure(fakeConfig())
-      .configure("error.required" → "Postcode is required")
+      .configure("error.required" -> "Postcode is required")
       .in(Test)
       .build()
   }

@@ -44,7 +44,7 @@
 
 @page(titleWithError, Some(lookupForm), journeyData) {
 
-  @form(routes.AbpAddressLookupController.select(id)) {
+  @form(routes.AbpAddressLookupController.postLookup(id)) {
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
@@ -85,6 +85,6 @@
 
       @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),
           name=Some("continue"),
-          inputType=Some("submit"), attributes = Map("id" → "continue")))
+          inputType=Some("submit"), attributes = Map("id" -> "continue")))
   }
 }

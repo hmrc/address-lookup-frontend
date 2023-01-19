@@ -52,7 +52,7 @@
 
 @page(titleWithError, Some(lookupForm), journeyData) {
 
-  @form(routes.InternationalAddressLookupController.select(id)) {
+  @form(routes.InternationalAddressLookupController.postLookup(id)) {
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @internationalMessage("lookupPage.heading")
       </h1>
@@ -82,6 +82,6 @@
 
       @button(Button(content = HtmlContent(internationalMessage("lookupPage.submitLabel")),
           name=Some("continue"),
-          inputType=Some("submit"), attributes = Map("id" → "continue")))
+          inputType=Some("submit"), attributes = Map("id" -> "continue")))
   }
 }

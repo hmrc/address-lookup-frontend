@@ -37,7 +37,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -59,7 +59,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe EnglishContent.submitButton
+        doc.select("a[class=govuk-button]") should have(
+          text(EnglishContent.submitButton)
+        )
       }
     }
 
@@ -69,7 +71,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()), OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -91,7 +93,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe EnglishContent.submitButton
+        doc.select("a[class=govuk-button]") should have(
+          text(EnglishContent.submitButton)
+        )
       }
     }
 
@@ -103,7 +107,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)), OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -125,7 +129,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe EnglishContent.submitButton
+        doc.select("a[class=govuk-button]") should have(
+          text(EnglishContent.submitButton)
+        )
       }
     }
 
@@ -137,7 +143,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)), OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -159,7 +165,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           text(WelshContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe WelshContent.submitButton
+        doc.select("a[class=govuk-button]") should have(
+          text(WelshContent.submitButton)
+        )
       }
     }
 
@@ -182,7 +190,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testJson, OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -202,7 +210,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           text(EnglishContent.manualEntry)
         )
 
-        doc.submitButton.text() shouldBe EnglishContent.submitButton
+        doc.select("a[class=govuk-button]") should have(
+          text(EnglishContent.submitButton)
+        )
       }
     }
 
@@ -225,7 +235,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testJson, OK)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode&${LookupPage.filterId}=")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 

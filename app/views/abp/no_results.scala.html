@@ -31,7 +31,7 @@
         @{s"${messages("constants.noResultsPageHeading")} $postcode"}
     </h1>
 
-    @form(controllers.routes.AbpAddressLookupController.lookup(id)) {
+    <div>
         <p><a class="govuk-link" href="@{
             routes.AbpAddressLookupController.edit(id, None)
         }" id="enterManual">@{
@@ -40,6 +40,7 @@
 
         @button(Button(content = HtmlContent(messages("constants.noResultsPageDifferentPostcode")),
             name = Some("continue"),
-            inputType = Some("submit"), attributes = Map("id" → "continue")))
-    }
+            href = Some(routes.AbpAddressLookupController.lookup(id).url),
+            inputType = Some("submit"), attributes = Map("id" -> "continue")))
+    </div>
 }

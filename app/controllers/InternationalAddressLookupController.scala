@@ -28,8 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
-import utils.PostcodeHelper
-import views.html.international.{edit, lookup, select}
+import views.html.international.{edit, select}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -82,9 +81,73 @@ class InternationalAddressLookupController @Inject()(
       }
   }
 
+  def postLookup(id: String) = Action.async {
+    implicit req =>
+      journeyRepository.getV2(id).map {
+        case Some(journeyData) =>
+
+          import LanguageLabelsForMessages._
+
+          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+          implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+          val isWelsh = getWelshContent(journeyData)
+
+          nonAbpLookupForm
+            .bindFromRequest()
+            .fold(
+              errors => requestWithWelshHeader(isWelsh) {
+                BadRequest(lookup(id, journeyData, errors, isWelsh))
+              },
+              lookup => Redirect(routes.InternationalAddressLookupController.select(id, lookup.filter))
+            )
+      }
+  }
+
+  def select(id: String, filter: String): Action[AnyContent] = Action.async { implicit req =>
+    withFutureJourneyV2(id) { journeyData =>
+      import LanguageLabelsForMessages._
+
+      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+      implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+      val isWelsh = getWelshContent(journeyData)
+
+      handleLookup(id, journeyData, filter) map {
+        case OneResult(address) =>
+          val journeyDataWithSelectedAddress = journeyData.copy(
+            selectedAddress = Some(address.toConfirmableAddress(id))
+          )
+
+          Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
+            Redirect(routes.InternationalAddressLookupController.confirm(id))
+          }
+        case ResultsList(addresses, firstLookup) =>
+          val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
+
+          Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
+            Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), filter, firstLookup, isWelsh))
+          }
+        case TooManyResults(_, firstLookup) =>
+          None -> requestWithWelshHeader(isWelsh) {
+            Ok(too_many_results(id, journeyData, filter, firstLookup, isWelsh))
+          }
+        case NoResults =>
+          None -> requestWithWelshHeader(isWelsh) {
+            Ok(no_results(id, journeyData, filter, isWelsh))
+          }
+      }
+
+    }
+  }
+
   def handleLookup(id: String,
                    journeyData: JourneyDataV2,
-                   lookup: NonAbpLookup,
+                   filter: String,
                    firstLookup: Boolean = true
                   )(implicit hc: HeaderCarrier): Future[ResultsCount] = {
 
@@ -93,7 +156,7 @@ class InternationalAddressLookupController @Inject()(
       .proposalListLimit
 
     addressService
-      .findByCountry(journeyData.countryCode.get, lookup.filter)
+      .findByCountry(journeyData.countryCode.get, filter)
       .flatMap {
         case noneFound if noneFound.isEmpty =>
           Future.successful(NoResults)
@@ -107,54 +170,6 @@ class InternationalAddressLookupController @Inject()(
         case displayProposals =>
           Future.successful(ResultsList(displayProposals, firstLookup))
       }
-  }
-
-  def select(id: String): Action[AnyContent] = Action.async { implicit req =>
-    withFutureJourneyV2(id) { journeyData =>
-      import LanguageLabelsForMessages._
-
-      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
-
-      implicit val messages: Messages = remoteMessagesApi.preferred(req)
-
-      val isWelsh = getWelshContent(journeyData)
-
-      nonAbpLookupForm
-        .bindFromRequest()
-        .fold(
-          errors => Future.successful(None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(lookup(id, journeyData, errors, isWelsh))
-          }),
-          lookup => {
-
-            handleLookup(id, journeyData, lookup) map {
-              case OneResult(address) =>
-                val journeyDataWithSelectedAddress = journeyData.copy(
-                  selectedAddress = Some(address.toConfirmableAddress(id))
-                )
-
-                Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
-                  Redirect(routes.InternationalAddressLookupController.confirm(id))
-                }
-              case ResultsList(addresses, firstLookup) =>
-                val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
-
-                Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-                  Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), lookup, firstLookup, isWelsh))
-                }
-              case TooManyResults(_, firstLookup) =>
-                None -> requestWithWelshHeader(isWelsh) {
-                  Ok(too_many_results(id, journeyData, lookup, firstLookup, isWelsh))
-                }
-              case NoResults =>
-                None -> requestWithWelshHeader(isWelsh) {
-                  Ok(no_results(id, journeyData, lookup.filter, isWelsh))
-                }
-            }
-          }
-        )
-    }
   }
 
   // TODO enable journey-configurable limit on proposal list size
@@ -183,7 +198,7 @@ class InternationalAddressLookupController @Inject()(
                   journeyData,
                   errors,
                   Proposals(journeyData.proposals),
-                  NonAbpLookup(filter),
+                  filter,
                   firstSearch = true,
                   isWelsh = isWelsh
                 )
@@ -212,7 +227,7 @@ class InternationalAddressLookupController @Inject()(
                           journeyData,
                           bound,
                           Proposals(Some(props)),
-                          NonAbpLookup(filter),
+                          filter,
                           firstSearch = true,
                           isWelsh = isWelsh
                         )
@@ -286,38 +301,38 @@ class InternationalAddressLookupController @Inject()(
           if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val validatedForm =
-            isValidPostcode(nonUkEditForm().bindFromRequest())
+          isValidPostcode(nonUkEditForm().bindFromRequest())
 
-          validatedForm.fold(
-            errors => {
-              (None, requestWithWelshHeader(isWelsh) {
-                BadRequest(
-                  edit(
-                    id,
-                    journeyData,
-                    errors,
-                    allowedCountries(
-                      countries(isWelsh),
-                      journeyData.config.options.allowedCountryCodes
-                    ),
-                    isWelsh = isWelsh
-                  )
+        validatedForm.fold(
+          errors => {
+            (None, requestWithWelshHeader(isWelsh) {
+              BadRequest(
+                edit(
+                  id,
+                  journeyData,
+                  errors,
+                  allowedCountries(
+                    countries(isWelsh),
+                    journeyData.config.options.allowedCountryCodes
+                  ),
+                  isWelsh = isWelsh
                 )
-              })
-            },
-            edit =>
-              (
-                Some(
-                  journeyData.copy(
-                    selectedAddress = Some(edit.toConfirmableAddress(id))
-                  )
-                ),
-                requestWithWelshHeader(isWelsh) {
-                  Redirect(routes.InternationalAddressLookupController.confirm(id))
-                }
               )
-          )
-        }
+            })
+          },
+          edit =>
+            (
+              Some(
+                journeyData.copy(
+                  selectedAddress = Some(edit.toConfirmableAddress(id))
+                )
+              ),
+              requestWithWelshHeader(isWelsh) {
+                Redirect(routes.InternationalAddressLookupController.confirm(id))
+              }
+            )
+        )
+      }
       }
   }
 

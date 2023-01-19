@@ -12,7 +12,6 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"      % "7.12.0",
     "uk.gov.hmrc"           %% "play-frontend-hmrc"              % "5.2.0-play-28",
     "uk.gov.hmrc"           %% "http-caching-client"             % "10.0.0-play-28",
-    "uk.gov.hmrc"           %% "play-language"                   % "6.0.0-play-28",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping"   % "1.12.0-play-28",
     "com.github.tototoshi"  %% "scala-csv"                       % "1.3.10"
   ).map(_.withSources())

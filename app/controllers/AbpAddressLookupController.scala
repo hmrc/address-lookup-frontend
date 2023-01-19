@@ -86,8 +86,38 @@ class AbpAddressLookupController @Inject()(
       }
   }
 
+  // POST  /:id/lookup
+  def postLookup(id: String): Action[AnyContent] = Action.async {
+    implicit req =>
+      journeyRepository.getV2(id).map {
+        case Some(journeyData) =>
+          import LanguageLabelsForMessages._
+
+          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
+            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+
+          implicit val messages: Messages = remoteMessagesApi.preferred(req)
+
+          val isWelsh = getWelshContent(journeyData)
+          implicit val permittedLangs: Seq[Lang] =
+            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
+
+          val isUKMode = journeyData.config.options.isUkMode
+
+          lookupForm(isUKMode)
+            .bindFromRequest()
+            .fold(
+              errors => requestWithWelshHeader(isWelsh) {
+                BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
+              },
+              lookup => Redirect(routes.AbpAddressLookupController.select(id, lookup.postcode, lookup.filter)))
+
+        case None => Redirect(routes.AddressLookupController.noJourney())
+      }
+  }
+
   // GET  /:id/select
-  def select(id: String): Action[AnyContent] = Action.async { implicit req =>
+  def select(id: String, postcode: String, filter: Option[String] = None): Action[AnyContent] = Action.async { implicit req =>
     withFutureJourneyV2(id) { journeyData =>
       import LanguageLabelsForMessages._
 
@@ -100,50 +130,41 @@ class AbpAddressLookupController @Inject()(
 
       val isUKMode = journeyData.config.options.isUkMode
 
-      lookupForm(journeyData.config.options.isUkMode)
-        .bindFromRequest()
-        .fold(
-          errors => Future.successful((None -> requestWithWelshHeader(isWelsh) {
-            BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
-          })),
-          lookup => {
-            val lookupWithFormattedPostcode = lookup
-              .copy(postcode = PostcodeHelper.displayPostcode(lookup.postcode))
+      val formattedPostcode = PostcodeHelper.displayPostcode(postcode)
 
-            handleLookup(id, journeyData, lookup) map {
-              case OneResult(address) =>
-                val journeyDataWithSelectedAddress = journeyData.copy(
-                  selectedAddress = Some(address.toConfirmableAddress(id))
-                )
+      handleLookup(id, journeyData, postcode, filter) map {
+        case OneResult(address) =>
+          val journeyDataWithSelectedAddress = journeyData.copy(
+            selectedAddress = Some(address.toConfirmableAddress(id))
+          )
 
-                Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
-                  Redirect(routes.AbpAddressLookupController.confirm(id))
-                }
-              case ResultsList(addresses, firstLookup) =>
-                val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
-
-                Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-                  Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), lookupWithFormattedPostcode,
-                    firstLookup, isWelsh, isUKMode))
-                }
-              case TooManyResults(_, firstLookup) =>
-                None -> requestWithWelshHeader(isWelsh) {
-                  Ok(too_many_results(id, journeyData, lookupWithFormattedPostcode, firstLookup, isWelsh, isUKMode))
-                }
-              case NoResults =>
-                None -> requestWithWelshHeader(isWelsh) {
-                  Ok(no_results(id, journeyData, lookupWithFormattedPostcode.postcode, isWelsh, isUKMode))
-                }
-            }
+          Some(journeyDataWithSelectedAddress) -> requestWithWelshHeader(isWelsh) {
+            Redirect(routes.AbpAddressLookupController.confirm(id))
           }
-        )
+        case ResultsList(addresses, firstLookup) =>
+          val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
+
+          Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
+            Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), formattedPostcode, filter,
+              firstLookup, isWelsh, isUKMode))
+          }
+        case TooManyResults(_, firstLookup) =>
+          None -> requestWithWelshHeader(isWelsh) {
+            Ok(too_many_results(id, journeyData, formattedPostcode, filter, firstLookup, isWelsh, isUKMode))
+          }
+        case NoResults =>
+          None -> requestWithWelshHeader(isWelsh) {
+            Ok(no_results(id, journeyData, formattedPostcode, isWelsh, isUKMode))
+          }
+      }
     }
   }
 
   private[controllers] def handleLookup(
                                          id: String,
                                          journeyData: JourneyDataV2,
-                                         lookup: Lookup,
+                                         postcode: String,
+                                         filter: Option[String],
                                          firstLookup: Boolean = true
                                        )(implicit hc: HeaderCarrier): Future[ResultsCount] = {
 
@@ -152,14 +173,15 @@ class AbpAddressLookupController @Inject()(
       .proposalListLimit
 
     addressService
-      .find(lookup.postcode, lookup.filter, journeyData.config.options.isUkMode)
+      .find(postcode, filter, journeyData.config.options.isUkMode)
       .flatMap {
         case noneFound if noneFound.isEmpty =>
-          if (lookup.filter.isDefined) {
+          if (filter.isDefined) {
             handleLookup(
               id: String,
               journeyData,
-              lookup.copy(filter = None),
+              postcode,
+              None,
               firstLookup = false
             ) //TODO Pass a boolean through to show no results were found and this is a retry?
           } else {
@@ -206,7 +228,8 @@ class AbpAddressLookupController @Inject()(
                   journeyData,
                   errors,
                   Proposals(journeyData.proposals),
-                  Lookup(filter, postcode),
+                  postcode,
+                  filter,
                   firstSearch = true,
                   isWelsh = isWelsh,
                   isUKMode = isUKMode
@@ -236,7 +259,8 @@ class AbpAddressLookupController @Inject()(
                           journeyData,
                           bound,
                           Proposals(Some(props)),
-                          Lookup(filter, postcode),
+                          postcode,
+                          filter,
                           firstSearch = true,
                           isWelsh = isWelsh,
                           isUKMode = isUKMode

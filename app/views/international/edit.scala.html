@@ -120,7 +120,7 @@ select: GovukSelect, page: page_template)
                         value = Some(k),
                         text = v,
                         selected = k == editForm("countryCode").value.getOrElse(""),
-                        attributes = Map("id" → s"countryCode-$k"))
+                        attributes = Map("id" -> s"countryCode-$k"))
                 },
                 formGroupClasses = "form-field-group"
             ))
@@ -150,6 +150,6 @@ select: GovukSelect, page: page_template)
 
         @button(Button(content = HtmlContent(internationalMessage("editPage.submitLabel")),
             name = Some("continue"),
-            inputType = Some("submit"), attributes = Map("id" → "continue")))
+            inputType = Some("submit"), attributes = Map("id" -> "continue")))
     }
 }

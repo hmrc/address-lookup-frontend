@@ -120,7 +120,7 @@ class InternationalAddressLookupControllerSpec
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) =
       new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
         frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results,  lookup) {
-        override def handleLookup(id: String, journeyData: JourneyDataV2, lookup: NonAbpLookup, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+        override def handleLookup(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
     object MockIdGenerationService extends IdGenerationService {
@@ -177,7 +177,7 @@ class InternationalAddressLookupControllerSpec
         val html = contentAsString(res).asBodyFragment
         html should include element withName("title").withValue(messages("international.lookupPage.title"))
         html should include element withName("h1").withValue(messages("international.lookupPage.heading"))
-        html should include element withName("form").withAttrValue("action", routes.InternationalAddressLookupController.select("foo").url)
+        html should include element withName("form").withAttrValue("action", routes.InternationalAddressLookupController.postLookup("foo").url)
         html should include element withName("label").withAttrValue("for", "filter").withValue("Type a part of address or postcode")
         html should include element withName("input").withAttrValue("name", "filter")
         html should include element withName("button").withAttrValue("type", "submit").withValue("Continue")
@@ -307,7 +307,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = JourneyConfigV2(2, JourneyOptions(continueUrl = "continue", selectPageConfig = Some(SelectPageConfig(Some(1))))))),
       proposals = Seq(ProposedAddress("1", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("2", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11     1ZZ"))
+      val res = controller.select("foo", "ZZ11     1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
       html.getElementById("pageHeading").html mustBe "Too many results, enter more details"
     }
@@ -316,7 +316,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq()
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
 
       status(res) must be(200)
@@ -327,7 +327,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", lines = List("line1", "line2"), town = "town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
 
       status(res) must be(303)
       header(HeaderNames.LOCATION, res) must be(Some(routes.InternationalAddressLookupController.confirm("foo").url))
@@ -337,7 +337,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(req.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo",  "ZZ11 1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Choose your address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")
@@ -349,7 +349,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> testDefaultCYJourneyConfigV2),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo").apply(reqWelsh.withFormUrlEncodedBody("filter" -> "ZZ11 1ZZ"))
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(reqWelsh)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Dewiswch eich cyfeiriad")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")

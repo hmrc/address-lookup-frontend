@@ -19,7 +19,7 @@
 @import views.html.templates.page_template
 
 @this(button: GovukButton, page: page_template)
-@(id: String, journeyData: JourneyDataV2, lookup: NonAbpLookup, firstLookup: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean, isWelsh: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -48,11 +48,11 @@
 
     <p class="govuk-heading-m" >@internationalMessage("constants.youEntered")</p>
     <ul class="govuk-list govuk-list-bullet">
-        <li>@{s"'${lookup.filter}' ${internationalMessage("constants.nameNumberText")}"}</li>
+        <li>@{s"'${filter}' ${internationalMessage("constants.nameNumberText")}"}</li>
     </ul>
     <br />
 
-    <p><a id="anotherSearch" class="govuk-button" href="@{routes.InternationalAddressLookupController.lookup(id, Some(lookup.filter))}">
+    <p><a id="anotherSearch" class="govuk-button" href="@{routes.InternationalAddressLookupController.lookup(id, Some(filter))}">
     @internationalMessage("constants.anotherSearchText")
     </a></p>
 

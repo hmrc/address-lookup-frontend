@@ -78,9 +78,10 @@ class LookupPageISpec extends IntegrationSpecBase {
         stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
 
         val filterValue = longFilterValue
-        val fResponse = buildClientLookupAddress(path = s"international/select?filter=$filterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/lookup")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-          .get()
+          .post(Map("filter" -> filterValue))
+
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 

@@ -15,7 +15,8 @@ GET  /:id/confirm                @controllers.AbpAddressLookupController.confirm
 POST /:id/confirm                @controllers.AbpAddressLookupController.handleConfirm(id: String)
 
 GET  /:id/international/lookup   @controllers.InternationalAddressLookupController.lookup(id: String, filter: Option[String])
-GET  /:id/international/select   @controllers.InternationalAddressLookupController.select(id: String)
+POST /:id/international/lookup   @controllers.InternationalAddressLookupController.postLookup(id: String)
+GET  /:id/international/select   @controllers.InternationalAddressLookupController.select(id: String, filter: String)
 POST /:id/international/select   @controllers.InternationalAddressLookupController.handleSelect(id: String, filter: String)
 GET  /:id/international/edit     @controllers.InternationalAddressLookupController.edit(id: String)
 POST /:id/international/edit     @controllers.InternationalAddressLookupController.handleEdit(id: String)

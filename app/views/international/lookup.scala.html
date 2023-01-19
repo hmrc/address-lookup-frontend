@@ -52,7 +52,7 @@
 
 @page(titleWithError, Some(lookupForm), journeyData) {
 
-  @form(routes.InternationalAddressLookupController.select(id)) {
+  @form(routes.InternationalAddressLookupController.postLookup(id)) {
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @internationalMessage("lookupPage.heading")
       </h1>

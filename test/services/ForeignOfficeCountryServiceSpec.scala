@@ -20,8 +20,6 @@ import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-import scala.io.Source
-
 class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   class Scenario {
@@ -34,6 +32,9 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       val found = service.findAll()
       found.head.name must be ("Afghanistan")
       found.last.name must be ("Zimbabwe")
+    }
+    "return list of countries must have unique elements" in new Scenario {
+      service.findAll().size mustBe  service.findAll().distinct.size
     }
 
   }
@@ -52,6 +53,9 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       val found = service.findAll(welshFlag = true)
       found.head.name must be ("Affganistan")
       found.last.name must be ("Zimbabwe")
+    }
+    "return list of countries must have unique elements" in new Scenario {
+      service.findAll(welshFlag = true).size mustBe  service.findAll(welshFlag = true).distinct.size
     }
   }
 

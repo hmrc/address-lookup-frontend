@@ -49,7 +49,8 @@ case class InternationalEditPageLabels(title: Option[String] = None,
                                        townLabel: Option[String] = None,
                                        postcodeLabel: Option[String] = None,
                                        countryLabel: Option[String] = None,
-                                       submitLabel: Option[String] = None)
+                                       submitLabel: Option[String] = None,
+                                       organisationLabel: Option[String] = None)
 
 case class InternationalConfirmPageLabels(title: Option[String] = None,
                                           heading: Option[String] = None,
@@ -109,7 +110,8 @@ object InternationalLanguageLabelsForMessages {
       .and((__ \ "international.editPage.townLabel").writeNullable[String])
       .and((__ \ "international.editPage.postcodeLabel").writeNullable[String])
       .and((__ \ "international.editPage.countryLabel").writeNullable[String])
-      .and((__ \ "international.editPage.submitLabel").writeNullable[String])(
+      .and((__ \ "international.editPage.submitLabel").writeNullable[String])
+      .and((__ \ "international.editPage.organisationLabel").writeNullable[String])(
         unlift(InternationalEditPageLabels.unapply)
       )
   }

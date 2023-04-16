@@ -37,6 +37,7 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "organisation" -> "Organisation (optional)",
           "line1" -> "Address line 1",
           "line2" -> "Address line 2",
           "line3" -> "Address line 3",
@@ -181,6 +182,7 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "organisation" -> "international-edit-organisationLabel",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
@@ -213,6 +215,7 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "organisation" -> "international-edit-organisationLabel",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
@@ -236,7 +239,8 @@ class EditPageISpec extends IntegrationSpecBase {
                   townLabel = Some("Custom Town welsh"),
                   postcodeLabel = Some("Custom Postcode welsh"),
                   countryLabel = Some("Custom Country welsh"),
-                  submitLabel = Some("edit-submitLabel welsh")
+                  submitLabel = Some("edit-submitLabel welsh"),
+                  organisationLabel = Some("edit-organisationLabel welsh")
                 ))
               ))
             ))))), countryCode = Some("BM"))
@@ -264,6 +268,7 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
+          "organisation" -> "edit-organisationLabel welsh",
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
           "line3" -> "Custom Line3 welsh",

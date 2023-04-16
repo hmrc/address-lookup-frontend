@@ -17,7 +17,7 @@
 package model
 
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.{Format, Json, OWrites, Reads, Writes, __}
+import play.api.libs.json._
 
 case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
                           selectPageLabels: Option[SelectPageLabels] = None,
@@ -65,7 +65,8 @@ case class EditPageLabels(title: Option[String] = None,
                           postcodeLabel: Option[String] = None,
                           var postcodeLabelUkMode: Option[String] = None,
                           countryLabel: Option[String] = None,
-                          submitLabel: Option[String] = None) {
+                          submitLabel: Option[String] = None,
+                          organisationLabel: Option[String] = None) {
   postcodeLabelUkMode = postcodeLabelUkMode.orElse(postcodeLabel)
 }
 
@@ -150,7 +151,8 @@ object LanguageLabelsForMessages {
       .and((__ \ "editPage.postcodeLabel").writeNullable[String])
       .and((__ \ "editPage.postcodeLabel.ukMode").writeNullable[String])
       .and((__ \ "editPage.countryLabel").writeNullable[String])
-      .and((__ \ "editPage.submitLabel").writeNullable[String])(
+      .and((__ \ "editPage.submitLabel").writeNullable[String])
+      .and((__ \ "editPage.organisationLabel").writeNullable[String])(
         unlift(EditPageLabels.unapply)
       )
   }

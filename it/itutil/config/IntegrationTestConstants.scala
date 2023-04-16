@@ -645,7 +645,8 @@ object IntegrationTestConstants {
           townLabel = Some("Custom Town"),
           postcodeLabel = Some("Custom Postcode"),
           countryLabel = Some("Custom Country"),
-          submitLabel = Some("edit-submitLabel")
+          submitLabel = Some("edit-submitLabel"),
+          organisationLabel = Some("edit-organisationLabel")
         )),
         international = Some(InternationalLanguageLabels(editPageLabels = Some(InternationalEditPageLabels(
           title = Some("international-edit-title"),
@@ -656,7 +657,8 @@ object IntegrationTestConstants {
           townLabel = Some("International Custom Town"),
           postcodeLabel = Some("International Custom Postcode"),
           countryLabel = Some("International Custom Country"),
-          submitLabel = Some("international-edit-submitLabel")
+          submitLabel = Some("international-edit-submitLabel"),
+          organisationLabel = Some("international-edit-organisationLabel")
         ))))
       ))
     ))

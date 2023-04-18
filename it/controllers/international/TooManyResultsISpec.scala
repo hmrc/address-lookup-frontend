@@ -45,7 +45,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
   }
 
   object otherPageMessages {
-    val noResultsPageTitle = "We cannot find any addresses"
+    val noResultsPageTitle = "We cannot find any addresses for"
   }
 
   //  val EnglishConstantsUkMode = EnglishConstants(true)
@@ -191,7 +191,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe otherPageMessages.noResultsPageTitle
+        doc.title shouldBe s"${otherPageMessages.noResultsPageTitle} $testFilterValue"
       }
     }
   }

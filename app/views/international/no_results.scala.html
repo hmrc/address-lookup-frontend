@@ -32,7 +32,7 @@
         messages(key)
 }
 
-@page(internationalMessage("constants.noResultsPageTitle"), None, journeyData) {
+@page(s"${internationalMessage("constants.noResultsPageHeading")} $filter", None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{s"${internationalMessage("constants.noResultsPageHeading")} $filter"}

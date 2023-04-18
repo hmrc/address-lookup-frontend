@@ -19,7 +19,7 @@
 @import views.html.templates.page_template
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-select: GovukSelect, page: page_template)
+select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
@@ -57,39 +57,47 @@ select: GovukSelect, page: page_template)
     </h1>
 
     @form(routes.AbpAddressLookupController.handleEdit(id)) {
-            @textInput(Input(value = editForm("organisation").value,
-                label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("organization"),
-                name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
-                errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("line1").value,
-                label = Label(content = HtmlContent(messages("editPage.line1Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
-                name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("line2").value,
-                label = Label(content = HtmlContent(messages("editPage.line2Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
-                name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("line3").value,
-                label = Label(content = HtmlContent(messages("editPage.line3Label"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
-                name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("town").value,
-                label = Label(content = HtmlContent(messages("editPage.townLabel"))),
-                formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
-                name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-                errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-            @textInput(Input(value = editForm("postcode").value,
-                label = Label(content = HtmlContent(messages("editPage.postcodeLabel.ukMode"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
-                name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
-                errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 
-            @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
-                name = Some("continue"),
-                inputType = Some("submit"), attributes = Map("id" -> "continue")))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(content = Text(messages("editPage.heading")), isPageHeading = true, classes = "govuk-visually-hidden")),
+            html = innerHtml
+        ))
+
+        @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
+            name = Some("continue"),
+            inputType = Some("submit"), attributes = Map("id" -> "continue")))
     }
+}
+
+@innerHtml = {
+    @textInput(Input(value = editForm("organisation").value,
+        label = Label(content = HtmlContent(messages("editPage.organisationLabel"))),
+        formGroupClasses = "form-field-group", autocomplete = Some("organization"),
+        name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
+        errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("line1").value,
+        label = Label(content = HtmlContent(messages("editPage.line1Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
+        name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("line2").value,
+        label = Label(content = HtmlContent(messages("editPage.line2Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
+        name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("line3").value,
+        label = Label(content = HtmlContent(messages("editPage.line3Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
+        name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("town").value,
+        label = Label(content = HtmlContent(messages("editPage.townLabel"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level1"),
+        name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("postcode").value,
+        label = Label(content = HtmlContent(messages("editPage.postcodeLabel.ukMode"))),
+        formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+        name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
+        errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
 }

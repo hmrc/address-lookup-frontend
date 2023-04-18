@@ -24,3 +24,11 @@ nav.hmrc-language-select {
     border: 2px solid #d4351c;
   }
 }
+
+.govuk-back-link{
+  display: none;
+}
+ 
+.js-enabled  .govuk-back-link{
+  display: inline-block;
+}

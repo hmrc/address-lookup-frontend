@@ -13,7 +13,7 @@ import play.api.libs.json.Json
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
   object EnglishContent {
-    val title = "We cannot find any addresses"
+    def title(postcode: String) = s"We cannot find any addresses for $postcode"
 
     def heading(postcode: String) = s"We cannot find any addresses for $postcode"
 
@@ -22,7 +22,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   }
 
   object WelshContent {
-    val title = "Ni allwn ddod o hyd i unrhyw gyfeiriadau"
+    def title(postcode: String) = s"Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer $postcode"
 
     def heading(postcode: String) = s"Ni allwn ddod o hyd i unrhyw gyfeiriadau ar gyfer $postcode"
 
@@ -47,7 +47,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe EnglishContent.title
+        doc.title shouldBe EnglishContent.title(testPostCode)
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=govuk-back-link]") should have(
@@ -81,7 +81,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe EnglishContent.title + " - NAV_TITLE - GOV.UK"
+        doc.title shouldBe EnglishContent.title(testPostCode) + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=govuk-back-link]") should have(
@@ -117,7 +117,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe EnglishContent.title
+        doc.title shouldBe EnglishContent.title(testPostCode)
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=govuk-back-link]") should have(
@@ -153,7 +153,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe WelshContent.title
+        doc.title shouldBe WelshContent.title(testPostCode)
         doc.h1.text() shouldBe WelshContent.heading(testPostCode)
 
         doc.select("a[class=govuk-back-link]") should have(
@@ -198,7 +198,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
 
-        doc.title shouldBe EnglishContent.title
+        doc.title shouldBe EnglishContent.title(testPostCode)
         doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
 
         doc.select("a[class=govuk-back-link]") should not have (

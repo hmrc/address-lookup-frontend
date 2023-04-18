@@ -19,8 +19,10 @@ lazy val root = Project(appName, file("."))
   .settings(
     libraryDependencies ++= AppDependencies.appDependencies,
     retrieveManaged := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+    PlayKeys.playDefaultPort := 9028,
   )
+  
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)

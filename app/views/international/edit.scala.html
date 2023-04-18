@@ -21,7 +21,7 @@
 @import services.ForeignOfficeCountryService
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-select: GovukSelect, page: page_template)
+select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
@@ -66,90 +66,98 @@ select: GovukSelect, page: page_template)
     </h1>
 
     @form(routes.InternationalAddressLookupController.handleEdit(id)) {
-        @textInput(Input(value = editForm("organisation").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.organisationLabel"))),
-            formGroupClasses = "form-field-group", autocomplete = Some("organization"),
-            name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
-            errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-        @textInput(Input(value = editForm("line1").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.line1Label"))),
-            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
-            name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-            errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-        @textInput(Input(value = editForm("line2").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.line2Label"))),
-            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
-            name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-            errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent("DUMMY")))))
-        @textInput(Input(value = editForm("line3").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.line3Label"))),
-            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
-            name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-            errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-        @textInput(Input(value = editForm("town").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.townLabel"))),
-            formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level2"),
-            name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-            errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-        @textInput(Input(value = editForm("postcode").value,
-            label = Label(content = HtmlContent(internationalMessage("editPage.postcodeLabel"))),
-            formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
-            name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
-            errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-
-        @if(journeyData.countryCode.isDefined) {
-
-            @textInput(Input(value =
-                editForm("countryCode").value.flatMap(c => ForeignOfficeCountryService.find(code = c)).map(_.name),
-                attributes = Map("disabled" -> "disabled"),
-                label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
-                formGroupClasses = "form-field-group", autocomplete = Some("country"),
-                name = "countryName", id = "countryName",
-                errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
-
-            <input type="hidden" id="countryCode" name="countryCode" value="@editForm("countryCode").value" />
-        } else {
-
-            @select(components.Select(
-                id = "countryCode",
-                name = "countryCode",
-                label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
-                errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
-                items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
-                    case (k, v) ⇒ SelectItem(
-                        value = Some(k),
-                        text = v,
-                        selected = k == editForm("countryCode").value.getOrElse(""),
-                        attributes = Map("id" -> s"countryCode-$k"))
-                },
-                formGroupClasses = "form-field-group"
-            ))
-
-            <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
-            <script>
-                    accessibleAutocomplete.enhanceSelectElement({
-                        selectElement: document.getElementById("countryCode"),
-                        name: 'countryCodeAutocomplete',
-                        defaultValue: '',
-                        @*
-                          TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
-                          https://github.com/alphagov/accessible-autocomplete/issues/260
-                          When this is fixed the custom validation / onConfirm bypass can be removed
-                        *@
-                        onConfirm: () => {
-                            const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
-                                return c.text === document.getElementById("countryCode").value;
-                            });
-                            const countryCode = matchingOption ? matchingOption.value : undefined;
-                            document.getElementById("countryCode-select").value = countryCode;
-                        }
-                    })
-            </script>
-        }
-
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(content = Text(internationalMessage("editPage.heading")), isPageHeading = false, classes = "govuk-visually-hidden")),
+            html = innerHtml
+        ))
 
         @button(Button(content = HtmlContent(internationalMessage("editPage.submitLabel")),
             name = Some("continue"),
             inputType = Some("submit"), attributes = Map("id" -> "continue")))
     }
+}
+
+@innerHtml = {
+    @textInput(Input(value = editForm("organisation").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.organisationLabel"))),
+        formGroupClasses = "form-field-group", autocomplete = Some("organization"),
+        name = editForm("organisation").name, id = editForm("organisation").name, classes = "govuk-input--width-20",
+        errorMessage = editForm("organisation").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("line1").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.line1Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line1"),
+        name = editForm("line1").name, id = editForm("line1").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line1").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("line2").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.line2Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line2"),
+        name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line2").error.map(fe ⇒ ErrorMessage(content = HtmlContent("DUMMY")))))
+    @textInput(Input(value = editForm("line3").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.line3Label"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-line3"),
+        name = editForm("line3").name, id = editForm("line3").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("line3").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("town").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.townLabel"))),
+        formGroupClasses = s"form-field-group $addressLinesFormGroupErrorClass", autocomplete = Some("address-level1"),
+        name = editForm("town").name, id = editForm("town").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
+        errorMessage = editForm("town").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+    @textInput(Input(value = editForm("postcode").value,
+        label = Label(content = HtmlContent(internationalMessage("editPage.postcodeLabel"))),
+        formGroupClasses = "form-field-group", autocomplete = Some("postal-code"),
+        name = editForm("postcode").name, id = editForm("postcode").name, classes = "govuk-input--width-10",
+        errorMessage = editForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+
+    @if(journeyData.countryCode.isDefined) {
+
+        @textInput(Input(value =
+            editForm("countryCode").value.flatMap(c => ForeignOfficeCountryService.find(code = c)).map(_.name),
+            attributes = Map("disabled" -> "disabled"),
+            label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
+            formGroupClasses = "form-field-group", autocomplete = Some("country"),
+            name = "countryName", id = "countryName",
+            errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+
+        <input type="hidden" id="countryCode" name="countryCode" value="@editForm("countryCode").value" />
+    } else {
+
+    @select(components.Select(
+        id = "countryCode",
+        name = "countryCode",
+        label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
+        errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+        items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
+            case (k, v) ⇒ SelectItem(
+                value = Some(k),
+                text = v,
+                selected = k == editForm("countryCode").value.getOrElse(""),
+                attributes = Map("id" -> s"countryCode-$k"))
+        },
+        formGroupClasses = "form-field-group"
+    ))
+
+
+    <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
+    <script>
+            accessibleAutocomplete.enhanceSelectElement({
+                selectElement: document.getElementById("countryCode"),
+                name: 'countryCodeAutocomplete',
+                defaultValue: '',
+                showNoOptionsFound: false,
+                @*
+                  TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
+                  https://github.com/alphagov/accessible-autocomplete/issues/260
+                  When this is fixed the custom validation / onConfirm bypass can be removed
+                *@
+                onConfirm: () => {
+                    const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
+                        return c.text === document.getElementById("countryCode").value;
+                    });
+                    const countryCode = matchingOption ? matchingOption.value : undefined;
+                    document.getElementById("countryCode-select").value = countryCode;
+                }
+            })
+    </script>
+  }
 }

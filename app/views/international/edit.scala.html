@@ -66,10 +66,7 @@ select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
     </h1>
 
     @form(routes.InternationalAddressLookupController.handleEdit(id)) {
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(content = Text(internationalMessage("editPage.heading")), isPageHeading = false, classes = "govuk-visually-hidden")),
-            html = innerHtml
-        ))
+        @inputHtml
 
         @button(Button(content = HtmlContent(internationalMessage("editPage.submitLabel")),
             name = Some("continue"),
@@ -77,7 +74,7 @@ select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
     }
 }
 
-@innerHtml = {
+@inputHtml = {
     @textInput(Input(value = editForm("organisation").value,
         label = Label(content = HtmlContent(internationalMessage("editPage.organisationLabel"))),
         formGroupClasses = "form-field-group", autocomplete = Some("organization"),

@@ -70,7 +70,7 @@ constants.errorText = There is a problem
 constants.noResults = We could not find a match with
 constants.differentSearch = Try a different name or number
 
-constants.noResultsPageTitle = We cannot find any addresses
+constants.noResultsPageTitle = We cannot find any addresses for
 constants.noResultsPageHeading = We cannot find any addresses for
 constants.noResultsPageEnterManually = Enter the address manually
 constants.noResultsPageDifferentPostcode = Try a different postcode
@@ -173,4 +173,4 @@ international.confirmPage.changeLinkText = Edit address
 international.confirmPage.confirmChangeText = By confirming this change, you agree that the information you have given is complete and correct.
 international.confirmPage.searchAgainLinkText = Search again
 
-phaseBannerHtml = This is a new service – your <a href='$link' class='govuk-link'>feedback</a> will help us to improve it.
+phaseBannerHtml = This is a new service – your <a href="$link" class="govuk-link">feedback</a> will help us to improve it.

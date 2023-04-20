@@ -25,7 +25,7 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("constants.noResultsPageTitle"), None, journeyData) {
+@page(s"${messages("constants.noResultsPageHeading")} $postcode", None, journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{s"${messages("constants.noResultsPageHeading")} $postcode"}

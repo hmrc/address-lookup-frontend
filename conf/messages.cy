@@ -173,4 +173,4 @@ international.confirmPage.changeLinkText = Golygwch gyfeiriad
 international.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydych yn cytuno bod yr wybodaeth a roesoch yn gyflawn ac yn gywir.
 international.confirmPage.searchAgainLinkText = Chwilio eto
 
-phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href='$link' class='govuk-link'>adborth</a> yn ein helpu i’w wella
+phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href="$link" class="govuk-link">adborth</a> yn ein helpu i’w wella

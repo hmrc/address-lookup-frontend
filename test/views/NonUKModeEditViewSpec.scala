@@ -88,5 +88,19 @@ class NonUKModeEditViewSpec extends ViewSpec {
         option("countryCode-AL", "Albanian")
       )
     }
+
+    "the town field should have autocomplete attribute of address-level1" in {
+      val testPage = non_uk_mode_edit(
+        id = testId,
+        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
+        editForm = nonUkEditForm(),
+        countries = Seq("FR" -> "France", "AL" -> "Albanian"),
+        isWelsh = false
+      )
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.getElementById("town").attr("autocomplete") shouldBe "address-level1"
+    
+    }
   }
 }

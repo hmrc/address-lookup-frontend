@@ -92,6 +92,7 @@ constants.notFoundErrorHeading = This page cannot be found
 constants.notFoundErrorBody = Please check that you have entered the correct web address.
 
 constants.error.prefix = Error:
+constants.error = Error
 
 constants.footer.visuallyHiddenText = Support links
 

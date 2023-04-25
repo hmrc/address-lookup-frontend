@@ -68,7 +68,7 @@
           autocomplete = Some("postal-code"),
           classes = "govuk-input--width-10",
           id = lookupForm("postcode").id,
-          errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message)))))
+          errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
             <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
@@ -80,7 +80,7 @@
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
           id = lookupForm("filter").id,
-          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
       @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),

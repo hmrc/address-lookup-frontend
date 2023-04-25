@@ -402,6 +402,25 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
       }
+
+      "Show the default 'postcode not entered' error message" in {
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+
+        val fResponse = buildClientLookupAddress(path = "lookup")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+          .post("")
+
+        val res = await(fResponse)
+        val doc = getDocFromResponse(res)
+
+        res.status shouldBe BAD_REQUEST
+
+        doc.input(LookupPage.postcodeId) should have(
+          errorMessage("Gwall: error.required"),
+          value("")
+        )
+      }
     }
   }
 }

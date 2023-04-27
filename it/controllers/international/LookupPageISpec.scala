@@ -340,6 +340,32 @@ class LookupPageISpec extends IntegrationSpecBase {
         doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
       }
+
+      "Show the default 'filter invalid' error messages" in {
+        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+
+        val filterValue = longFilterValue
+        val fResponse = buildClientLookupAddress(path = s"international/lookup")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+          .post(Map("filter" -> filterValue))
+
+        val res = await(fResponse)
+        val doc = getDocFromResponse(res)
+
+        res.status shouldBe BAD_REQUEST
+
+        val message = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
+
+        doc.errorSummary should have(
+          errorSummaryMessage(LookupPage.filterId, message)
+        )
+
+        doc.input(LookupPage.filterId) should have(
+          errorMessage(s"Gwall: $message"),
+          value(filterValue)
+        )
+      }
     }
   }
 }

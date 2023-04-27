@@ -57,7 +57,7 @@ page: page_template)
 
         @radios(Radios(
             formGroupClasses = "form-group",
-            errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+            errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

@@ -73,7 +73,7 @@
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
           id = lookupForm("filter").id,
-          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message))),
+          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           hint = Some(Hint(content = HtmlContent(internationalMessage("constants.lookupFilterHint"))))))
 
       <p class="govuk-!-margin-bottom-6 govuk-body">

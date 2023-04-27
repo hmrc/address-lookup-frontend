@@ -92,6 +92,7 @@ constants.notFoundErrorHeading = Ni ellir dod o hyd i’r dudalen hon
 constants.notFoundErrorBody = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 
 constants.error.prefix = Gwall:
+constants.error = Gwall
 
 constants.footer.visuallyHiddenText = Dolenni cymorth
 

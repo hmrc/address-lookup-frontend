@@ -153,6 +153,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "editPageLabels": {
         "title": "Enter address",
         "heading": "Enter address",
+        "organisationLabel": "Organisation (optional)",
         "line1Label": "Address line 1",
         "line2Label": "Address line 2 (optional)",
         "line3Label": "Address line 3 (optional)",
@@ -206,6 +207,7 @@ If your service doesn't have Welsh translations you can disable them setting the
       "editPageLabels": {
         "title": "Enter address welsh",
         "heading": "Enter address welsh",
+        "organisationLabel": "Organisation (optional) welsh",
         "line1Label": "Address line 1 welsh",
         "line2Label": "Address line 2 (optional) welsh",
         "line3Label": "Address line 3 (optional) welsh",
@@ -331,6 +333,7 @@ Labels for the "edit" page.
 |----------|-----------|-----------------|----|-------------|
 |`title`|the html->head->title text|Optional|String|`"Enter the address"`|
 |`heading`|the heading to display above the edit form|Optional|String|`"Enter the address"`|
+|`organisationLabel`|the input label for the "organisation" field|Optional|String|`"Organisation (optional)"`|
 |`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Address line 1"`|
 |`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Address line 2 (optional)"`|
 |`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Address line 3 (optional)"`|

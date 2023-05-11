@@ -81,7 +81,10 @@
                   selectElement: document.getElementById("countryCode"),
                   name: 'countryCodeAutocomplete',
                   defaultValue: '',
-                  showNoOptionsFound: false,
+                  tNoResults: () => {
+                    return "cy" === document.getElementsByTagName("html")[0].getAttribute("lang") ?
+                    "Dim canlyniadau wedi’u canfod" : "No results found"
+                  },
                   @*
                     TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
                     https://github.com/alphagov/accessible-autocomplete/issues/260

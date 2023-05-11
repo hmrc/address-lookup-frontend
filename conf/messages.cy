@@ -175,3 +175,4 @@ international.confirmPage.confirmChangeText = Drwy gadarnhau’r newid hwn, rydy
 international.confirmPage.searchAgainLinkText = Chwilio eto
 
 phaseBannerHtml = Mae hwn yn wasanaeth newydd – bydd eich <a href="$link" class="govuk-link">adborth</a> yn ein helpu i’w wella
+country.noResult = Dim canlyniadau wedi’u darganfod

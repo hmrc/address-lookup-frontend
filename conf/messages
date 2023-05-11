@@ -175,3 +175,4 @@ international.confirmPage.confirmChangeText = By confirming this change, you agr
 international.confirmPage.searchAgainLinkText = Search again
 
 phaseBannerHtml = This is a new service – your <a href="$link" class="govuk-link">feedback</a> will help us to improve it.
+country.noResult = No results found

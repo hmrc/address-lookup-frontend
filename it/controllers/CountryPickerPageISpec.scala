@@ -33,6 +33,8 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Select country"
         ))
+        document.getElementById("accessibilityAutocomplete").text() contains "No results found"
+
       }
 
       "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
@@ -55,6 +57,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Dewiswch wlad"
         ))
+        document.getElementById("accessibilityAutocomplete").text() contains "Dim canlyniadau wedi’u darganfod"
       }
     }
 

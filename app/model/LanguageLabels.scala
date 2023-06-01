@@ -25,7 +25,8 @@ case class LanguageLabels(appLevelLabels: Option[AppLevelLabels] = None,
                           editPageLabels: Option[EditPageLabels] = None,
                           confirmPageLabels: Option[ConfirmPageLabels] = None,
                           countryPickerLabels: Option[CountryPickerPageLabels] = None,
-                          international: Option[InternationalLanguageLabels] = None)
+                          international: Option[InternationalLanguageLabels] = None,
+                          otherLabels: Option[JsValue] = None)
 
 case class AppLevelLabels(navTitle: Option[String] = None,
                           phaseBannerHtml: Option[String] = None)
@@ -188,7 +189,8 @@ object LanguageLabelsForMessages {
       .and((__).writeNullable[EditPageLabels])
       .and((__).writeNullable[ConfirmPageLabels])
       .and((__).writeNullable[CountryPickerPageLabels])
-      .and((__).writeNullable[InternationalLanguageLabels])(
+      .and((__).writeNullable[InternationalLanguageLabels])
+      .and((__).writeNullable[JsValue])(
         unlift(LanguageLabels.unapply)
       )
   }

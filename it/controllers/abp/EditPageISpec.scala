@@ -556,7 +556,8 @@ class EditPageISpec extends IntegrationSpecBase {
       stubKeystore(
         session = testJourneyId,
         theData = Json.toJson(journeyDataV2Minimal.copy(
-          config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true))))).as[JsObject], OK)
+          config = journeyDataV2Minimal.config.copy(
+            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true))))).as[JsObject], OK)
 
       val fResponse = buildClientLookupAddress(path = "edit").
         withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
@@ -568,6 +569,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
       document.title shouldBe s"Error: ${messages("editPage.title")}"
       document.h1.first.text() shouldBe messages("editPage.heading")
+      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
+      document.getElementById("line1-error").text() shouldBe s"Error: ${messages("constants.editPageAtLeastOneLineOrTown")}"
+
       document.submitButton.text shouldBe "Continue"
       testElementDoesntExist(res,"countryCode")
 
@@ -588,6 +592,28 @@ class EditPageISpec extends IntegrationSpecBase {
 
       res.status shouldBe BAD_REQUEST
       //testElementExists(res, EditPage.ukEditId)
+    }
+
+    "return 400 if postcode is missing and return uk edit mode page with english text and custom error messages" in {
+      stubKeystore(
+        session = testJourneyId,
+        theData = Json.toJson(journeyDataV2Minimal.copy(
+          config = journeyDataV2Minimal.config.copy(
+            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true)),
+            labels = Some(JourneyLabels(en = Some(LanguageLabels(otherLabels = Some(Json.parse(s"""{"constants.editPageAtLeastOneLineOrTown": "CUSTOM"}""")))))))
+        )).as[JsObject], OK)
+
+      val fResponse = buildClientLookupAddress(path = "edit").
+        withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
+        post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
+      val res = await(fResponse)
+
+      val document = Jsoup.parse(res.body)
+      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
+      document.getElementById("line1-error").text() shouldBe s"Error: CUSTOM"
+      document.submitButton.text shouldBe "Continue"
+
+      res.status shouldBe BAD_REQUEST
     }
 
     "return 400 if postcode is missing and return uk edit mode page with welsh text" in {
@@ -628,6 +654,29 @@ class EditPageISpec extends IntegrationSpecBase {
       res.status shouldBe BAD_REQUEST
       //testElementExists(res, EditPage.ukEditId)
     }
+
+    "return 400 if postcode is missing and return uk edit mode page with welsh text and custom error messages" in {
+      stubKeystore(
+        session = testJourneyId,
+        theData = Json.toJson(journeyDataV2Minimal.copy(
+          config = journeyDataV2Minimal.config.copy(
+            options = journeyDataV2Minimal.config.options.copy(ukMode = Some(true)),
+            labels = Some(JourneyLabels(cy = Some(LanguageLabels(otherLabels = Some(Json.parse(s"""{"constants.editPageAtLeastOneLineOrTown": "W CUSTOM"}""")))))))
+        )).as[JsObject], OK)
+
+      val fResponse = buildClientLookupAddress(path = "edit").
+        withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck").
+        post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
+      val res = await(fResponse)
+
+      val document = Jsoup.parse(res.body)
+      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
+      document.getElementById("line1-error").text() shouldBe s"Gwall: W CUSTOM"
+      document.submitButton.text shouldBe "Yn eich blaen"
+
+      res.status shouldBe BAD_REQUEST
+    }
+
 
     "return 303 if form is valid and redirect to Confirm" in {
       stubKeystore(

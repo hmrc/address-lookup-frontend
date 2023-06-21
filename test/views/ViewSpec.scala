@@ -19,15 +19,16 @@ package views
 import com.codahale.metrics.SharedMetricRegistries
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.LangImplicits
 import play.api.inject.guice.GuiceApplicationBuilder
 
-trait ViewSpec extends WordSpec with Matchers with GuiceOneAppPerSuite with LangImplicits {
-  unitSpec: WordSpec =>
+trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with LangImplicits {
+  unitSpec: AnyWordSpec =>
 
   override implicit lazy val app: Application = {
     SharedMetricRegistries.clear()

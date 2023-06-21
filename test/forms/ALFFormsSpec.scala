@@ -18,14 +18,15 @@ package forms
 
 import com.codahale.metrics.SharedMetricRegistries
 import model.Edit
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.data.validation.{Invalid, Valid}
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 
-class ALFFormsSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
+class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   override implicit lazy val app: Application = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder().build()

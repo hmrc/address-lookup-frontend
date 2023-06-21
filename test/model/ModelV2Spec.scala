@@ -18,14 +18,15 @@ package model
 
 import com.codahale.metrics.SharedMetricRegistries
 import config.FrontendAppConfig
-import org.scalatest.{MustMatchers, WordSpecLike}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import utils.TestConstants._
 
-class ModelV2Spec extends WordSpecLike with MustMatchers with GuiceOneAppPerSuite {
+class ModelV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite {
   override implicit lazy val app: Application = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder().build()

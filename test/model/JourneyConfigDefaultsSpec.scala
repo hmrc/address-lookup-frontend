@@ -16,9 +16,10 @@
 
 package model
 
-import org.scalatest.{MustMatchers, WordSpecLike}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class JourneyConfigDefaultsSpec extends WordSpecLike with MustMatchers {
+class JourneyConfigDefaultsSpec extends AnyWordSpecLike with Matchers {
 
 //  "JourneyConfigDefaultsSpec" should {
 

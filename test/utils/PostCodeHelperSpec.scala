@@ -17,9 +17,10 @@
 package utils
 
 import fixtures.ALFEFixtures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class PostCodeHelperSpec extends WordSpec with MustMatchers with ALFEFixtures {
+class PostCodeHelperSpec extends AnyWordSpec with Matchers with ALFEFixtures {
 
   "displayPostcode (option string)" should {
     "return formatted postcode" in {

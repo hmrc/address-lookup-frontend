@@ -19,8 +19,8 @@ package services
 import address.v2._
 import config.FrontendAppConfig
 import model.ProposedAddress
-import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec

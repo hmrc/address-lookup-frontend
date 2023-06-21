@@ -18,19 +18,18 @@ package forms
 
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
-import model.{CountryPicker, Edit, Lookup, NonAbpLookup, Select}
-import play.api.data.{Form, FormError, Forms}
-import play.api.data.Forms.{default, ignored, mapping, nonEmptyText, optional, text}
+import model._
+import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.{Form, FormError, Forms}
 import play.api.i18n.Messages
-import uk.gov.voa.play.form.Condition
-import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 
 object Helpers {
 
   trait EmptyStringValidator {
     def customErrorTextValidation(message: String) = Forms.of[String](stringFormat(message))
+
     def stringFormat(message: String): Formatter[String] = new Formatter[String] {
 
       private def getNonEmpty(key: String, data: Map[String, String]): Option[String] = data.getOrElse(key, "").trim match {
@@ -38,7 +37,8 @@ object Helpers {
         case entry => Some(entry)
       }
 
-      def bind(key: String, data: Map[String, String]): Either[Seq[FormError],String] = getNonEmpty(key, data).toRight(Seq(FormError(key, message, Nil)))
+      def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = getNonEmpty(key, data).toRight(Seq(FormError(key, message, Nil)))
+
       def unbind(key: String, value: String) = Map(key -> value)
     }
 
@@ -82,15 +82,15 @@ object ALFForms extends EmptyStringValidator {
   val maximumLength: Int = 255
 
   def minimumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
-    if(value.length >= minimumLength) Valid else Invalid(messages(s"constants.errorMin").replace("$min", minimumLength.toString))
+    if (value.length >= minimumLength) Valid else Invalid(messages(s"constants.errorMin").replace("$min", minimumLength.toString))
   )
 
   def maximumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
-    if(value.length <= maximumLength) Valid else Invalid(messages(s"constants.errorMax").replace("$max", maximumLength.toString))
+    if (value.length <= maximumLength) Valid else Invalid(messages(s"constants.errorMax").replace("$max", maximumLength.toString))
   )
 
   def nonEmptyConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
-    if(value.nonEmpty) Valid else Invalid(messages(s"constants.errorRequired"))
+    if (value.nonEmpty) Valid else Invalid(messages(s"constants.errorRequired"))
   )
 
   def selectForm()(implicit messages: Messages) = Form(
@@ -103,23 +103,23 @@ object ALFForms extends EmptyStringValidator {
     )(Select.apply)(Select.unapply)
   )
 
-  val constraintOptString256 = (msg: String)  => new Constraint[Option[String]](Some("length.max"),Seq.empty)(s => if(s.isEmpty || s.get.length < 256) {
+  val constraintOptString256 = (msg: String) => new Constraint[Option[String]](Some("length.max"), Seq.empty)(s => if (s.isEmpty || s.get.length < 256) {
     Valid
   } else {
     Invalid(msg)
-  } )
+  })
 
-  val constraintString256 = (msg: String)  => new Constraint[String](Some("length.max"),Seq.empty)(s => if(s.length < 256) {
+  val constraintString256 = (msg: String) => new Constraint[String](Some("length.max"), Seq.empty)(s => if (s.length < 256) {
     Valid
   } else {
     Invalid(msg)
-  } )
+  })
 
-  val constraintMinLength = (msg: String) => new Constraint[String](Some("length.min"),Seq.empty)(s => if(s.nonEmpty) {
+  val constraintMinLength = (msg: String) => new Constraint[String](Some("length.min"), Seq.empty)(s => if (s.nonEmpty) {
     Valid
   } else {
     Invalid(msg)
-  } )
+  })
 
 
   def isValidPostcode(form: Form[Edit])(implicit messages: Messages): Form[Edit] = {
@@ -133,8 +133,9 @@ object ALFForms extends EmptyStringValidator {
   }
 
   def atLeastOneAddressLineOrTown(message: String = "") = Forms.of[Option[String]](formatter(message))
+
   def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
-    def bind(key: String, data: Map[String, String]): Either[Seq[FormError],Option[String]] = {
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
       if (values.forall(_.isEmpty)) {
         Left(Seq(FormError(key, message, Nil)))
@@ -153,7 +154,7 @@ object ALFForms extends EmptyStringValidator {
       "line2" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
       "line3" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
       "town" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
-      "postcode" -> default(text,""),
+      "postcode" -> default(text, ""),
       "countryCode" -> ignored[String]("GB")
     )(Edit.apply)(Edit.unapply)
   )
@@ -166,7 +167,7 @@ object ALFForms extends EmptyStringValidator {
         "line2" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine2MaxErrorMessage"))),
         "line3" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageAddressLine3MaxErrorMessage"))),
         "town" -> optional(text).verifying(constraintOptString256(messages(s"constants.editPageTownMaxErrorMessage"))),
-        "postcode" -> default(text,""),
+        "postcode" -> default(text, ""),
         "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
       )(Edit.apply)(Edit.unapply)
     )
@@ -185,13 +186,11 @@ object ALFForms extends EmptyStringValidator {
   )
 }
 
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-
 object StopOnFirstFail {
 
   def apply[T](constraints: Constraint[T]*) = Constraint { field: T =>
     constraints.toList dropWhile (_(field) == Valid) match {
-      case Nil             => Valid
+      case Nil => Valid
       case constraint :: _ => constraint(field)
     }
   }

@@ -16,13 +16,10 @@
 
 package model
 
-import address.v2.Country
 import config.FrontendAppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads.min
 import play.api.libs.json._
-
-import CountryFormat._
 
 case class JourneyDataV2(config: JourneyConfigV2,
                          proposals: Option[Seq[ProposedAddress]] = None,
@@ -105,5 +102,5 @@ object TimeoutConfig {
     (JsPath \ "timeoutAmount").format[Int](min(120)) and
       (JsPath \ "timeoutUrl").format[String] and
       (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
-    ) (TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
+    )(TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
 }

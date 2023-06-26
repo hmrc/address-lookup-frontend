@@ -24,8 +24,8 @@ import controllers.testonly.{StubController, StubHelper}
 import fixtures.ALFEFixtures
 import model._
 import org.jsoup.Jsoup
-import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -149,7 +149,7 @@ class StubControllerSpec extends PlaySpec
       when(mockAPIController.initWithConfigV2).thenReturn(Action.async(cc.parsers.json[JourneyConfigV2])(
         _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/begin"))))
 
-      when(mockJourneyRepository.putV2(Matchers.eq("bar"), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockJourneyRepository.putV2(meq("bar"), any())(any(), any()))
         .thenReturn(Future.successful(true))
 
       val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest().withMethod("POST").withFormUrlEncodedBody(

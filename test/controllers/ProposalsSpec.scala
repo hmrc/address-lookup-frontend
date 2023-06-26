@@ -17,9 +17,10 @@
 package controllers
 
 import model.ProposedAddress
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ProposalsSpec extends WordSpec with Matchers {
+class ProposalsSpec extends AnyWordSpec with Matchers {
 
   "proposals" should {
     "naturally sort proposed addresses by addressId" in {

@@ -18,6 +18,8 @@ package itutil
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.Mode.Test
@@ -27,7 +29,7 @@ import play.api.libs.crypto.CookieSigner
 
 import scala.language.postfixOps
 
-trait IntegrationSpecBase extends WordSpec with LoginStub
+trait IntegrationSpecBase extends AnyWordSpec with LoginStub
   with GivenWhenThen
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig with PageContentHelper {
@@ -59,6 +61,7 @@ trait IntegrationSpecBase extends WordSpec with LoginStub
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]
 
   def messages(message: String) = messagesApi.preferred(Seq(Lang("en")))(message)
+
   def messages(lang: Lang, message: String) = messagesApi.preferred(Seq(lang))(message)
 
   override def beforeEach(): Unit = {

@@ -3,15 +3,16 @@ package itutil
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.defaultAwaitTimeout
 
 import scala.concurrent.{Await, Future}
 
 trait PageContentHelper {
-  unitSpec: WordSpec with Matchers =>
+  unitSpec: AnyWordSpec with Matchers =>
 
   implicit class ViewTestDoc(doc: Document) {
     def title: Elements = doc.select("title")
@@ -20,7 +21,7 @@ trait PageContentHelper {
 
     def h2s = doc.select("h2")
 
-    def link(id: String): Elements = doc.select(s"a[id=$id")
+    def link(id: String): Elements = doc.select(s"a[id=$id]")
 
     def submitButton: Elements = doc.select("button[type=submit]")
 
@@ -137,7 +138,7 @@ trait PageContentHelper {
   def errorMessage(message: String): HavePropertyMatcher[Elements, String] =
     new HavePropertyMatcher[Elements, String] {
       def apply(element: Elements) = {
-        val errorMessage = element.parents.select("p[class=govuk-error-message")
+        val errorMessage = element.parents.select("p[class=govuk-error-message]")
 
         HavePropertyMatchResult(
           errorMessage.text() == message,

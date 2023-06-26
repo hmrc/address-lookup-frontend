@@ -158,7 +158,7 @@ class AddressLookupController @Inject()(
             }
           },
           selection => {
-            val updatedJourney = journeyData.copy(countryCode = Some(selection.countryCode))
+            val updatedJourney = journeyData.copy(countryCode = Some(selection.countryCode), selectedAddress = None)
 
             val country = Countries.find(selection.countryCode)
             if (country.isDefined) {

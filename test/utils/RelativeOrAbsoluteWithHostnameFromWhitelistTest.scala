@@ -16,10 +16,11 @@
 
 package utils
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.{Environment, Mode}
 
-class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends WordSpec with Matchers {
+class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends AnyWordSpec with Matchers {
   "RelativeOrAbsoluteWithHostnameFromWhitelistTest" should {
     "return checked url" when {
 

@@ -20,26 +20,25 @@ import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import fixtures.ALFEFixtures
 import model.{JourneyConfigV2, JourneyOptions, TimeoutConfig}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Mode}
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsJson, contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.{Application, Mode}
 import services.JourneyRepository
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.language.postfixOps
 
-abstract class ApiControllerSpecBase extends WordSpec with MockitoSugar  with Matchers with GuiceOneAppPerSuite with ALFEFixtures {
+abstract class ApiControllerSpecBase extends AnyWordSpec with MockitoSugar with Matchers with GuiceOneAppPerSuite with ALFEFixtures {
   val mockJourneyRepository: JourneyRepository = mock[JourneyRepository]
   when(mockJourneyRepository.putV2(any(), any())(any(), any())).thenReturn(Future.successful(true))
 

@@ -29,7 +29,7 @@ import utils.RelativeOrAbsoluteWithHostnameFromAllowlist
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Try}
 
 @Singleton
 class ApiController @Inject()(journeyRepository: JourneyRepository,
@@ -47,6 +47,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
   private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(config.allowedHosts, config.environment)
 
   case class InitFailure(reason: String)
+
   object InitFailure {
     implicit val writes = Json.writes[InitFailure]
   }
@@ -58,11 +59,20 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
     val timeoutKeepAliveUrl = req.body.options.timeoutConfig.flatMap(t => t.timeoutKeepAliveUrl)
     val signoutUrl = req.body.options.signOutHref
 
-    val redirectPolicyResult = timeoutRedirectUrl.map { url => Try { policy.url(url) } }
-    val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try { policy.url(url) } }
-    val signoutPolicyResult = signoutUrl.map { url => Try { policy.url(url) } }
+    val redirectPolicyResult = timeoutRedirectUrl.map { url => Try {
+      policy.url(url)
+    }
+    }
+    val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try {
+      policy.url(url)
+    }
+    }
+    val signoutPolicyResult = signoutUrl.map { url => Try {
+      policy.url(url)
+    }
+    }
 
-   (redirectPolicyResult, keepAlivePolicyResult, signoutPolicyResult) match {
+    (redirectPolicyResult, keepAlivePolicyResult, signoutPolicyResult) match {
       case (Some(Failure(_)), _, _) | (_, Some(Failure(_)), _) | (_, _, Some(Failure(_))) =>
         import InitFailure.writes
         Future.successful(BadRequest(Json.toJson(InitFailure("Config only allows relative or allow listed urls"))))

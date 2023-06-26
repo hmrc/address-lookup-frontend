@@ -17,11 +17,12 @@
 package model
 
 import fixtures.ALFEFixtures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsResultException, Json}
 import services.ForeignOfficeCountryService
 
-class ALFESpec extends WordSpec with MustMatchers with ALFEFixtures {
+class ALFESpec extends AnyWordSpec with Matchers with ALFEFixtures {
 
   "an edit" should {
     "transform to a confirmable address with a formatted postcode when countrycode is GB" in {

@@ -18,11 +18,11 @@ package com.gu.scalatest
 
 import com.gu.jsoup.{ElementSelector, ElementSelectorBuilders, Select}
 import org.jsoup.nodes.Element
-import org.scalatest.MustMatchers
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.words.{IncludeWord, NotWord}
+import org.scalatest.matchers.dsl.{IncludeWord, NotWord}
+import org.scalatest.matchers.must.Matchers
 
-trait JsoupShouldMatchers extends MustMatchers with ElementSelectorBuilders with ElementWords {
+trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with ElementWords {
 
   import org.jsoup.Jsoup.parseBodyFragment
 
@@ -50,7 +50,7 @@ trait JsoupShouldMatchers extends MustMatchers with ElementSelectorBuilders with
 
     def element(selector: ElementSelector) {
       if (selector(left).isEmpty)
-        throw testFailedException(failureMessage('didNotIncludeElementMatchingSelector, left, selector))
+        throw testFailedException(failureMessage(Symbol("didNotIncludeElementMatchingSelector"), left, selector))
     }
 
     def img(selector: ElementSelector = any) {
@@ -74,7 +74,7 @@ trait JsoupShouldMatchers extends MustMatchers with ElementSelectorBuilders with
 
     def include(selector: ElementSelector) {
       if (! selector(left).isEmpty)
-        throw testFailedException(failureMessage('includedElementMatchingSelector, left, selector))
+        throw testFailedException(failureMessage(Symbol("includedElementMatchingSelector"), left, selector))
     }
   }
 

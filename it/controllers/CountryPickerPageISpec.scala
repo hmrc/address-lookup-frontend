@@ -3,6 +3,7 @@ package controllers
 import address.v2.Countries
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.{testCustomCountryPickerPageJourneyConfigV2, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId, testMinimalLevelJourneyConfigV2}
+import model.{ConfirmableAddress, ConfirmableAddressDetails}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
@@ -125,8 +126,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     }
 
     "submitted with a country that has OS data" should {
-      "redirect to the address lookup screen" in {
-        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+      "redirect to the address lookup screen, clearing out any previously saved address data" in {
+        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
+          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some(Countries.GB.code))), OK)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -140,8 +142,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     }
 
     "submitted with a country that we hold non-OS data for" should {
-      "redirect to the manual entry screen" in {
-        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+      "redirect to the manual entry screen, clearing out any previously saved address data" in {
+        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
+          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM"))), OK)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -155,8 +158,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     }
 
     "submitted with a country that we do not hold any data for" should {
-      "redirect to the manual entry screen" in {
-        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+      "redirect to the manual entry screen, clearing out any previously saved address data" in {
+        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
+          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX"))), OK)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")

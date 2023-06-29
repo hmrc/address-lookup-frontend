@@ -66,7 +66,7 @@ select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
     </h1>
 
     @form(routes.InternationalAddressLookupController.handleEdit(id)) {
-        @inputHtml
+        @govukFieldset(Fieldset(html = inputHtml))
 
         @button(Button(content = HtmlContent(internationalMessage("editPage.submitLabel")),
             name = Some("continue"),

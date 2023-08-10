@@ -16,6 +16,7 @@
 
 package controllers
 
+import address.v2.Country
 import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
@@ -53,8 +54,8 @@ class AbpAddressLookupController @Inject()(
                                           )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[(String, String)] =
-    countryService.findAll(welshFlag).map { c => c.code -> c.name }
+  private def countries(welshFlag: Boolean = false): Seq[Country] =
+    countryService.findAll(welshFlag)
 
   // GET  /:id/lookup
   def lookup(id: String, postcode: Option[String] = None, filter: Option[String] = None): Action[AnyContent] = Action.async {
@@ -282,8 +283,8 @@ class AbpAddressLookupController @Inject()(
     Action.async { implicit req =>
       withJourneyV2(id) { journeyData => {
 
-        val allowedSeqCountries = (s: Seq[(String, String)]) =>
-          allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+        val allowedSeqCountries = (cs: Seq[Country]) =>
+          allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
 
         import LanguageLabelsForMessages._
 

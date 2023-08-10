@@ -40,12 +40,17 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   }
 
   "UK in English" should {
-
     "keep reference to UK" in new Scenario {
-      val found = service.find(code = "GB")
-      found.get.name must be ("United Kingdom")
+      val found = service.findAll().filter(_.code == "GB")
+      found.exists(_.name == "United Kingdom") mustBe true
     }
+  }
 
+  "English country list" should {
+    "contain aliases from the aliases file" in new Scenario {
+      val gbs = service.findAll().filter(_.code == "GB")
+      gbs.size mustBe >(1)
+    }
   }
 
   "find all in Welsh" should {
@@ -65,5 +70,12 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       found.get.name must be ("Y Deyrnas Unedig")
     }
 
+  }
+
+  "Welsh country list" should {
+    "contain aliases from the aliases file" in new Scenario {
+      val gbs = service.findAll(welshFlag = true).filter(_.code == "GB")
+      gbs.size mustBe >(1)
+    }
   }
 }

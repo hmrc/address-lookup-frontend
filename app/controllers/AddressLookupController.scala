@@ -16,7 +16,7 @@
 
 package controllers
 
-import address.v2.Countries
+import address.v2.{Countries, Country}
 import config.{ALFCookieNames, FrontendAppConfig}
 import forms.ALFForms._
 import model._
@@ -27,6 +27,7 @@ import services.{CountryService, JourneyRepository}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.RelativeOrAbsoluteWithHostnameFromAllowlist
+import views.ViewHelper
 
 import java.io.File
 import java.net.URI
@@ -60,13 +61,13 @@ class AddressLookupController @Inject()(
                                          country_picker: views.html.country_picker)(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[(String, String)] =
-    countryService.findAll(welshFlag).map { c => c.code -> c.name }
+  private def countries(welshFlag: Boolean = false): Seq[Country] =
+    countryService.findAll(welshFlag)
 
   // GET  /no-journey
   // display an error page when a required journey is not available
-  def noJourney() = Action { implicit req =>
-    implicit val messages = messagesApi.preferred(req)
+  def noJourney(): Action[AnyContent] = Action { implicit req =>
+    implicit val messages: Messages = messagesApi.preferred(req)
     Ok(error_template(messages("no.journey.title.text"), messages("no.journey.heading.text"), ""))
   }
 
@@ -117,8 +118,8 @@ class AddressLookupController @Inject()(
             Redirect(routes.AbpAddressLookupController.lookup(id, None, None))
           }
           else {
-            val allowedSeqCountries = (s: Seq[(String, String)]) =>
-              allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+            val allowedSeqCountries = (cs: Seq[Country]) =>
+              allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
 
             requestWithWelshHeader(isWelsh) {
               Ok(country_picker(id, journeyData, countryPickerForm().fill(CountryPicker("")), isWelsh,
@@ -130,7 +131,7 @@ class AddressLookupController @Inject()(
       }
   }
 
-  def handleCountryPicker(id: String) = Action.async {
+  def handleCountryPicker(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData =>
         import LanguageLabelsForMessages._
@@ -147,8 +148,8 @@ class AddressLookupController @Inject()(
 
         bound.fold(
           errors => {
-            val allowedSeqCountries = (s: Seq[(String, String)]) =>
-              allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+            val allowedSeqCountries = (cs: Seq[Country]) =>
+              allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
 
             None -> {
               requestWithWelshHeader(isWelsh) {
@@ -158,14 +159,15 @@ class AddressLookupController @Inject()(
             }
           },
           selection => {
-            val updatedJourney = journeyData.copy(countryCode = Some(selection.countryCode), selectedAddress = None)
+            val selectedCountryCode = ViewHelper.decodeCountryCode(selection.countryCode)
+            val updatedJourney = journeyData.copy(countryCode = Some(selectedCountryCode), selectedAddress = None)
 
-            val country = Countries.find(selection.countryCode)
+            val country = Countries.find(selectedCountryCode)
             if (country.isDefined) {
               (Some(updatedJourney), Redirect(routes.AbpAddressLookupController.lookup(id)))
             }
             else {
-              val countryWithData = Countries.findCountryWithData(selection.countryCode)
+              val countryWithData = Countries.findCountryWithData(selectedCountryCode)
               if (countryWithData.isDefined) {
                 (Some(updatedJourney), Redirect(routes.InternationalAddressLookupController.lookup(id, None)))
               }
@@ -199,12 +201,12 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
                                       )(implicit val ec: ExecutionContext)
   extends FrontendController(messagesControllerComponents) {
 
-  protected def allowedCountries(countries: Seq[(String, String)], countryCodesOpt: Option[Set[String]]): Seq[(String, String)] = {
+  protected def allowedCountries(countries: Seq[Country], countryCodesOpt: Option[Set[String]]): Seq[Country] = {
     countryCodesOpt match {
       case None => countries
       case Some(countryCodes) =>
         countries filter {
-          case (code, _) => countryCodes.contains(code)
+          case c => countryCodes.contains(c.code)
         }
     }
   }
@@ -215,7 +217,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
     )
   }
 
-  def requestWithWelshHeader(useWelsh: Boolean)(req: => Result) = {
+  def requestWithWelshHeader(useWelsh: Boolean)(req: => Result): Result = {
     req.withCookies(Cookie(ALFCookieNames.useWelsh, useWelsh.toString))
   }
 

@@ -19,10 +19,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import views.html.templates.page_template
 @import services.ForeignOfficeCountryService
+@import address.v2.Country
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
 select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -125,11 +126,11 @@ select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
         label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
         errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
         items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
-            case (k, v) ⇒ SelectItem(
-                value = Some(k),
-                text = v,
-                selected = k == editForm("countryCode").value.getOrElse(""),
-                attributes = Map("id" -> s"countryCode-$k"))
+            case c: Country ⇒ SelectItem(
+                value = Some(c.code),
+                text = c.name,
+                selected = c.code == editForm("countryCode").value.getOrElse(""),
+                attributes = Map("id" -> s"countryCode-${c.code}"))
         },
         formGroupClasses = "form-field-group"
     ))

@@ -16,6 +16,7 @@
 
 package controllers
 
+import address.v2.Country
 import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
@@ -52,8 +53,8 @@ class InternationalAddressLookupController @Inject()(
                                                     )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[(String, String)] =
-    countryService.findAll(welshFlag).map { c => c.code -> c.name }
+  private def countries(welshFlag: Boolean = false): Seq[Country] =
+    countryService.findAll(welshFlag)
 
   def lookup(id: String, filter: Option[String]): Action[AnyContent] = Action.async {
     implicit req =>
@@ -249,8 +250,8 @@ class InternationalAddressLookupController @Inject()(
       withJourneyV2(id) { journeyData => {
         import LanguageLabelsForMessages._
 
-        val allowedSeqCountries = (s: Seq[(String, String)]) =>
-          allowedCountries(s, journeyData.config.options.allowedCountryCodes)
+        val allowedSeqCountries = (cs: Seq[Country]) =>
+          allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
           journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))

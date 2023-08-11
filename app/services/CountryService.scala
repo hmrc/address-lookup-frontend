@@ -61,6 +61,15 @@ class ForeignOfficeCountryService extends CountryService {
 
   private val utfSorter = java.text.Collator.getInstance()
 
+  private def allAliases(aliasFileClasspath: String) =
+    CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream(aliasFileClasspath), "UTF-8"))
+      .allWithOrderedHeaders()._2.sortBy(x => x("countryCode"))
+      .map { x => x("countryCode") -> (x("aliases").split("\\|").map(_.trim).toList) }
+      .map { case (c, as) => c -> as.map(a => Country(c, a)) }
+      .toMap
+  private val allAliasesEN = allAliases("/countryAliasesEN.csv")
+  private val allAliasesCY = allAliases("/countryAliasesCY.csv")
+
   private val allISORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
     .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
     .map(renameFields)
@@ -89,7 +98,10 @@ class ForeignOfficeCountryService extends CountryService {
       .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
-  private val countriesEN = countriesENFull
+  private val countriesEN = countriesENFull.flatMap { country =>
+    if(allAliasesEN.contains(country.code)) country +: allAliasesEN(country.code)
+    else Seq(country)
+  }
 
   private val countriesCYFull: Seq[Country] = {
     SortedMap.from(allISORows ++ allFCDORows ++ allFCDOTRows ++ allWCORows)
@@ -97,7 +109,10 @@ class ForeignOfficeCountryService extends CountryService {
       .toSeq.sortWith{ case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
-  private val countriesCY = countriesCYFull
+  private val countriesCY = countriesCYFull.flatMap { country =>
+    if (allAliasesCY.contains(country.code)) country +: allAliasesCY(country.code)
+    else Seq(country)
+  }
 
   override def findAll(welshFlag: Boolean = false): Seq[Country] =
     if (!welshFlag) countriesEN

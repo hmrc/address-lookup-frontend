@@ -19,11 +19,15 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import views.html.templates.page_template
 @import services.ForeignOfficeCountryService
+@import address.v2.Country
+@import views.ViewHelper
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
-@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[(String, String)], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios, select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
+@(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
+@{
+    def asSelectItem(c: Country) = SelectItem(value = Some(c.code), text = c.name)
+}
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
 
 @titleWithError = @{
@@ -117,13 +121,7 @@ select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
             name = "countryCode",
             label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
             errorMessage = editForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
-            items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
-                case (k, v) ⇒ SelectItem(
-                    value = Some(k),
-                    text = v,
-                    selected = k == editForm("countryCode").value.getOrElse(""),
-                    attributes = Map("id" -> s"countryCode-$k"))
-            },
+            items = ViewHelper.countriesToSelectItems(countries, editForm),
             formGroupClasses = "form-field-group"
         ))
 

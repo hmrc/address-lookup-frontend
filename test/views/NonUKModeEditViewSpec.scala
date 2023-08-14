@@ -16,7 +16,6 @@
 
 package views
 
-import address.v2.Country
 import config.FrontendAppConfig
 import model._
 import forms.ALFForms._
@@ -77,7 +76,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(),
-        countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
+        countries = Seq("FR" -> "France", "AL" -> "Albanian"),
         isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)
@@ -95,7 +94,7 @@ class NonUKModeEditViewSpec extends ViewSpec {
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = nonUkEditForm(),
-        countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
+        countries = Seq("FR" -> "France", "AL" -> "Albanian"),
         isWelsh = false
       )
       val doc: Document = Jsoup.parse(testPage.body)

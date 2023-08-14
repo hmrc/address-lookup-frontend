@@ -112,7 +112,7 @@ class AbpAddressLookupControllerSpec
     val countryService = new CountryService {
       override def findAll(enFlag: Boolean = true) = Seq(Country("GB", "United Kingdom"), Country("DE", "Germany"), Country("FR", "France"))
 
-      override def find(enFlag: Boolean = true, code: String) = findAll().find { case c: Country => c.code == code }
+      override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
     }
 
     val controller = new AbpAddressLookupController(journeyRepository, addressService, auditConnector,

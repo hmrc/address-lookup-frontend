@@ -18,13 +18,15 @@
 @import config.FrontendAppConfig
 @import views.html.templates.page_template
 @import uk.gov.hmrc.govukfrontend.views.html.components
+@import address.v2.Country
+@import views.ViewHelper
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, select: GovukSelect, page: page_template)
 @(id: String,
     journeyData: JourneyDataV2,
     countryPickerForm: Form[CountryPicker],
     isWelsh: Boolean,
-    countries: Seq[(String, String)],
+    countries: Seq[Country],
     message: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
@@ -65,13 +67,7 @@
           name = "countryCode",
           label = Label(content = HtmlContent(messages("countryPickerPage.countryLabel"))),
           errorMessage = countryPickerForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
-          items = Seq(SelectItem(value = Some(""), text = "Select a country")) ++ countries.map {
-              case (k, v) ⇒ SelectItem(
-                  value = Some(k),
-                  text = v,
-                  selected = k == countryPickerForm("countryCode").value.getOrElse(""),
-                  attributes = Map("id" -> s"countryCode-$k"))
-          },
+          items = ViewHelper.countriesToSelectItems(countries, countryPickerForm),
           formGroupClasses = "form-field-group"
       ))
 

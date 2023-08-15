@@ -111,7 +111,7 @@ class InternationalAddressLookupControllerSpec
     val countryService = new CountryService {
       override def findAll(enFlag: Boolean = true) = Seq(Country("GB", "United Kingdom"), Country("DE", "Germany"), Country("FR", "France"))
 
-      override def find(enFlag: Boolean = true, code: String) = findAll().find { case Country(cc, _) => cc == code }
+      override def find(enFlag: Boolean = true, code: String) = findAll().find { case c: Country => c.code == code }
     }
 
     val controller = new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,

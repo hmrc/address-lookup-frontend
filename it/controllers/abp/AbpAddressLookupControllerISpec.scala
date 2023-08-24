@@ -8,13 +8,18 @@ import itutil.config.PageElementConstants._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -26,8 +31,8 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -39,8 +44,8 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -52,8 +57,8 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -68,7 +73,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
   "confirmed" should {
     "return correct address with jid" in {
       val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))
-      stubKeystore(testJourneyId, Json.toJson(configWithConfirmedAddress).as[JsObject], OK)
+      cache.putV2(testJourneyId, configWithConfirmedAddress)
 
       val fResponse = buildClientAPI("v2/confirmed?id=Jid123")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

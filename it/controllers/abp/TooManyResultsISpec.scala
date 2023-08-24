@@ -9,8 +9,14 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object tooManyResultsMessages {
     val title = "No results found"
@@ -57,7 +63,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are enabled in the journey config" when {
         "no filter has been entered" when {
           "the backend service returns too many addresses" in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+            cache.putV2(testJourneyId, journeyDataV2ResultLimit)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB")
@@ -86,8 +92,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
-            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
+//            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+            cache.putV2(testJourneyId, journeyDataV2ResultLimit)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
@@ -119,7 +125,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are not enabled in the journey config" when {
         "no filter has been entered" when {
           "the backend service returns too many addresses " in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
+            cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack)
             stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
             val res = buildClientLookupAddress(path = "select?postcode=AB11+1AB")
@@ -148,8 +154,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
-            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
+//            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
+            cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
 
@@ -186,7 +192,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))),
           pageHeadingStyle = Some("govuk-heading-l"))))
 
-        stubKeystore(testJourneyId, Json.toJson(journeyData), OK)
+          cache.putV2(testJourneyId, journeyData)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 51))
 
         val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB")
@@ -204,10 +210,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns enough addresses to be displayed on the select page" in {
         val addressAmount = 25
 
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = addressAmount))
-        stubKeystoreSave(testJourneyId,
-          Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))), OK)
+        cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount))))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -221,10 +227,10 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(1))
-        stubKeystoreSave(testJourneyId,
-          Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress))), OK)
+        cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress)))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -238,8 +244,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns no addresses and renders the no results found page" in {
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal), OK)
+//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
+        cache.putV2(testJourneyId, journeyDataV2Minimal)
         stubGetAddressFromBE(addressJson = Json.arr())
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB")

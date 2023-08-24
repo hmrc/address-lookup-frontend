@@ -8,13 +8,18 @@ import itutil.config.PageElementConstants._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The lookup page" should {
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "international/lookup?filter=bar")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -26,8 +31,8 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
-      stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-      stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "international/lookup")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

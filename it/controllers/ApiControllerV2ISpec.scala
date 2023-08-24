@@ -6,14 +6,18 @@ import itutil.IntegrationSpecBase
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Environment, Mode}
-import services.IdGenerationService
+import services.{IdGenerationService, JourneyDataV2Cache}
 import model._
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
 import itutil.config.IntegrationTestConstants._
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApiControllerV2ISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val testJourneyFromConfig = JourneyDataV2(
     config = JourneyConfigV2(
@@ -93,7 +97,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           )
         )
 
-        stubKeystoreSave(testJourneyId, Json.toJson(v2Model), OK)
+        cache.putV2(testJourneyId, v2Model)
 
         val res = await(buildClientAPI("v2/init")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -110,7 +114,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
       "return OK with a confirmed address" in {
         val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress))
 
-        stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
+        cache.putV2(testJourneyId, v2Model)
 
         val res = await(buildClientAPI(s"v2/confirmed?id=$testJourneyId")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -125,7 +129,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
       "return NOT FOUND" in {
         val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress))
 
-        stubKeystore(testJourneyId, Json.toJson(v2Model), OK)
+        cache.putV2(testJourneyId, v2Model)
 
         val res = await(buildClientAPI(s"v2/confirmed?id=1234")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

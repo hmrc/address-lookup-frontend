@@ -16,9 +16,10 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.cache.client.HttpCaching
 import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.cache.client.HttpCaching
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AddressLookupFrontendSessionCache @Inject()(val http: HttpClient, frontendAppConfig: FrontendAppConfig) extends HttpCaching {

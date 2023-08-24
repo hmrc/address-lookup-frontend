@@ -9,8 +9,13 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object EnglishContent {
     def title(postcode: String) = s"We cannot find any addresses for $postcode"
@@ -33,8 +38,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   "No results page GET" should {
     "with the default config" should {
       "Render the 'No results' page" in {
-        stubKeystore(testJourneyId, Json.toJson(testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))), OK)
+//        stubKeystore(testJourneyId, Json.toJson(testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))), OK)
+        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
@@ -65,8 +70,8 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")), OK)
-        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")), OK)
+//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")), OK)
+        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
@@ -97,10 +102,10 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")), OK)
-        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")), OK)
+//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
+//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")), OK)
+        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
@@ -131,10 +136,10 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom Welsh elements" in {
-        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")), OK)
-        stubKeystoreSave(testJourneyId, journeyDataV2WithSelectedAddressJson(
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")), OK)
+//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
+//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")), OK)
+        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
@@ -165,22 +170,20 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With the back button disabled in config" should {
       "Render the 'No results' page without a back button" in {
-        val testJson = Json.toJson(
-          journeyDataV2Minimal.copy(
-            JourneyConfigV2(
-              version = 2,
-              options = JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(false)),
-              labels = Some(JourneyLabels(
-                en = Some(LanguageLabels()),
-                cy = Some(LanguageLabels())
-              ))
-            ),
-            countryCode = Some("BM")
-          )
+        val testJson = journeyDataV2Minimal.copy(
+          JourneyConfigV2(
+            version = 2,
+            options = JourneyOptions(continueUrl = testContinueUrl, showBackButtons = Some(false)),
+            labels = Some(JourneyLabels(
+              en = Some(LanguageLabels()),
+              cy = Some(LanguageLabels())
+            ))
+          ),
+          countryCode = Some("BM")
         )
 
-        stubKeystore(testJourneyId, testJson, OK)
-        stubKeystoreSave(testJourneyId, testJson, OK)
+        //        stubKeystore(testJourneyId, testJson, OK)
+        cache.putV2(testJourneyId, testJson)
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
@@ -209,22 +212,20 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "when provided with a pageHeadingStyle option" should {
       "allow the initialising service to override the header size" in {
-        val testJson = Json.toJson(
-          journeyDataV2Minimal.copy(
-            JourneyConfigV2(
-              version = 2,
-              options = JourneyOptions(continueUrl = testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")),
-              labels = Some(JourneyLabels(
-                en = Some(LanguageLabels()),
-                cy = Some(LanguageLabels())
-              ))
-            ),
-            countryCode = Some("BM")
-          )
+        val testJson = journeyDataV2Minimal.copy(
+          JourneyConfigV2(
+            version = 2,
+            options = JourneyOptions(continueUrl = testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")),
+            labels = Some(JourneyLabels(
+              en = Some(LanguageLabels()),
+              cy = Some(LanguageLabels())
+            ))
+          ),
+          countryCode = Some("BM")
         )
 
-        stubKeystore(testJourneyId, testJson, OK)
-        stubKeystoreSave(testJourneyId, testJson, OK)
+//        stubKeystore(testJourneyId, testJson, OK)
+        cache.putV2(testJourneyId, testJson)
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")

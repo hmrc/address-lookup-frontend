@@ -26,8 +26,8 @@ class NotFoundISpec extends IntegrationSpecBase {
 
     "the welsh content header is set and welsh object isn't provided in config" should {
       "render in English" in {
-        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
-        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyConfigV2, OK)
+        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
+        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
 
         val fResponse = buildClientLookupAddress(s"notfound")
           .withHttpHeaders(

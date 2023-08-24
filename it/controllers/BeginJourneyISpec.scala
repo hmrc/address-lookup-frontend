@@ -3,17 +3,22 @@ package controllers
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.{journeyDataV2MinimalUkMode, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId}
 import play.api.http.HeaderNames
-import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.Json
+import play.api.http.Status.SEE_OTHER
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class BeginJourneyISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The begin journey endpoint" when {
     "in uk mode" should {
       "redirect to the lookup page" in {
 
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2MinimalUkMode), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2MinimalUkMode), OK)
+//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2MinimalUkMode), OK)
+        cache.putV2(testJourneyId, journeyDataV2MinimalUkMode)
 
         val fResponse = buildClientLookupAddress(path = s"begin")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -28,8 +33,8 @@ class BeginJourneyISpec extends IntegrationSpecBase {
 
     "in non-uk mode" should {
       "redirect to the country picker page" in {
-        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
+        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"begin")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

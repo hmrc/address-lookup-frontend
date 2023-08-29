@@ -18,6 +18,7 @@ package controllers
 
 
 import address.v2.Country
+import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
 import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
@@ -53,7 +54,7 @@ class AbpAddressLookupControllerSpec
 
   SharedMetricRegistries.clear()
 
-  implicit lazy val materializer = app.materializer
+  implicit lazy val materializer: Materializer = app.materializer
 
   implicit val hc = HeaderCarrier()
 

@@ -8,7 +8,7 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.i18n.Lang
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,7 +33,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages("editPage.title")
         document.h1.first.text() shouldBe messages("editPage.heading")
         document.h1.first.classNames() should contain("govuk-heading-xl")
@@ -73,7 +72,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages(Lang("cy"), "editPage.title")
         document.h1.first.text() shouldBe messages(Lang("cy"), "editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
@@ -92,23 +90,6 @@ class EditPageISpec extends IntegrationSpecBase {
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad"
         ))
-      }
-
-      // TODO - fix this
-      "return non uk edit and not error with showSearchAgainLink and searchAgainLinkText in the json should not error" in {
-        val config = (Json.toJson(journeyDataV2Minimal).as[JsObject] - "editPage") ++
-          Json.obj("editPage" -> Json.obj("showSearchAgainLink" -> true, "searchAgainLinkText" -> "foo"))
-        println(s""">>> config: ${Json.prettyPrint(config)}""")
-        stubKeystore(testJourneyId, Json.toJson(config).as[JsObject], OK)
-
-        val fResponse = buildClientLookupAddress(path = "edit")
-          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck")
-          .get()
-        val res = await(fResponse)
-
-        res.status shouldBe OK
-        //testElementExists(res, EditPage.nonUkEditId)
       }
 
       "allow the initialising service to override the header size" when {
@@ -158,7 +139,6 @@ class EditPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
 
         res.status shouldBe OK
-        //testElementExists(res, EditPage.ukEditId)
       }
 
       "redirect to the UK edit page if country doesn't exist in selected address and AND UK mode is true" in {
@@ -175,7 +155,6 @@ class EditPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
 
         res.status shouldBe OK
-        //testElementExists(res, EditPage.ukEditId)
       }
 
       "redirect to the International edit page if Uk mode is false but selected address in keystore" in {
@@ -187,7 +166,6 @@ class EditPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
 
         res.status shouldBe OK
-        //testElementExists(res, EditPage.nonUkEditId)
       }
     }
 
@@ -211,7 +189,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages(Lang("cy"), "editPage.title")
         document.h1.first.text() shouldBe messages(Lang("cy"), "editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
@@ -246,7 +223,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //        testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title"
         document.h1.first.text() shouldBe "edit-heading"
         document.getElementById("continue").text() shouldBe "edit-submitLabel"
@@ -279,7 +255,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //        testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title"
         document.h1.first.text() shouldBe "edit-heading"
         document.getElementById("continue").text() shouldBe "edit-submitLabel"
@@ -332,7 +307,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title welsh"
         document.h1.first.text() shouldBe "edit-heading welsh"
         document.getElementById("continue").text() shouldBe "edit-submitLabel welsh"
@@ -364,7 +338,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title"
         document.h1.first.text() shouldBe "edit-heading"
         document.getElementById("continue").text() shouldBe "edit-submitLabel"
@@ -417,7 +390,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title welsh"
         document.h1.first.text() shouldBe "edit-heading welsh"
         document.getElementById("continue").text() shouldBe "edit-submitLabel welsh"
@@ -496,7 +468,6 @@ class EditPageISpec extends IntegrationSpecBase {
       ))
 
       res.status shouldBe BAD_REQUEST
-      //testElementExists(res, EditPage.nonUkEditId)
     }
 
     "return 400 if postcode is invalid and return nonUkEdit page with welsh text" in {
@@ -516,7 +487,6 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
 
       document.input("postcode") should have(value("eebb"))
-      //      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Llinell cyfeiriad 1",
@@ -527,7 +497,6 @@ class EditPageISpec extends IntegrationSpecBase {
       ))
 
       res.status shouldBe BAD_REQUEST
-      //testElementExists(res, EditPage.nonUkEditId)
     }
 
     s"return 303 if form is valid and redirect to ${controllers.routes.AbpAddressLookupController.confirm("")}" in {
@@ -572,11 +541,9 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       val document = Jsoup.parse(res.body)
-      //testElementExists(res, EditPage.ukEditId)
 
       document.title shouldBe s"Error: ${messages("editPage.title")}"
       document.h1.first.text() shouldBe messages("editPage.heading")
-      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
       document.getElementById("line1-error").text() shouldBe s"Error: ${messages("constants.editPageAtLeastOneLineOrTown")}"
 
       document.submitButton.text shouldBe "Continue"
@@ -598,7 +565,6 @@ class EditPageISpec extends IntegrationSpecBase {
       ))
 
       res.status shouldBe BAD_REQUEST
-      //testElementExists(res, EditPage.ukEditId)
     }
 
     "return 400 if postcode is missing and return uk edit mode page with english text and custom error messages" in {
@@ -614,7 +580,6 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       val document = Jsoup.parse(res.body)
-      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
       document.getElementById("line1-error").text() shouldBe s"Error: CUSTOM"
       document.submitButton.text shouldBe "Continue"
 
@@ -657,7 +622,6 @@ class EditPageISpec extends IntegrationSpecBase {
       ))
 
       res.status shouldBe BAD_REQUEST
-      //testElementExists(res, EditPage.ukEditId)
     }
 
     "return 400 if postcode is missing and return uk edit mode page with welsh text and custom error messages" in {
@@ -675,7 +639,6 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
 
       val document = Jsoup.parse(res.body)
-      //<p id="line1-error" class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> Enter at least one address line or a town </p>
       document.getElementById("line1-error").text() shouldBe s"Gwall: W CUSTOM"
       document.submitButton.text shouldBe "Yn eich blaen"
 
@@ -688,20 +651,6 @@ class EditPageISpec extends IntegrationSpecBase {
         testJourneyId,
         journeyDataV2Minimal.copy(
           config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)))))
-//
-//      stubKeystore(
-//        testJourneyId,
-//        Json.toJson(journeyDataV2Minimal.copy(
-//          config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))))),
-//        OK
-//      )
-//      cache.putV2(
-//        testJourneyId,
-//        journeyDataV2Minimal.copy(
-//          config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))),
-//          selectedAddress = Some(testConfirmedAddress.copy(id = None))
-//        )
-//      )
 
       val fResponse = buildClientLookupAddress(path = "edit").
         withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck").
@@ -722,7 +671,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //  "technical difficulties" when {
 //    "the welsh content header isn't set and welsh object isn't provided in config" should {
 //      "render in English" in {
-////        stubKeystore(testJourneyId, testMinimalLevelJourneyConfigV2, INTERNAL_SERVER_ERROR)
 //        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 //
 //        val fResponse = buildClientLookupAddress("edit")
@@ -741,8 +689,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to false and welsh object isn't provided in config" should {
 //      "render in English" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
 //
 //        val fResponse = buildClientLookupAddress("edit")
 //          .withHttpHeaders(
@@ -763,9 +709,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to false and welsh object is provided in config" should {
 //      "render in English" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 //
 //        val fResponse = buildClientLookupAddress("edit")
 //          .withHttpHeaders(
@@ -786,9 +729,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to true and welsh object provided in config" should {
 //      "render in Welsh" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
 //
 //        val fResponse = buildClientLookupAddress("edit")
 //          .withHttpHeaders(

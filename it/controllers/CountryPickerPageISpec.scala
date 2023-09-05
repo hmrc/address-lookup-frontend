@@ -19,7 +19,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "provided with default page config" should {
       "render the default content" in {
 
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -43,7 +42,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
       }
 
       "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -68,7 +66,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "provided with custom page config" should {
       "render the custom content" in {
-//        stubKeystore(testJourneyId, testCustomCountryPickerPageJourneyConfigV2, OK)
         cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -90,7 +87,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
       }
 
       "render the custom welsh content where the 'PLAY_LANG' is set to cy" in {
-//        stubKeystore(testJourneyId, testCustomCountryPickerPageJourneyConfigV2Json, OK)
         cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -114,7 +110,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted without a country specified" should {
       "return 400 bad request and display the error" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -131,8 +126,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted with a country that has OS data" should {
       "redirect to the address lookup screen, clearing out any previously saved address data" in {
-//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
-//          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2
           .copy(countryCode = Some(Countries.GB.code)))
 
@@ -148,8 +141,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted with a country that we hold non-OS data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
-//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
-//          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM")))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -164,8 +155,6 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted with a country that we do not hold any data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
-//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2
-//          .copy(selectedAddress = Some(ConfirmableAddress(auditRef = "123", address = ConfirmableAddressDetails(country = Some(Countries.Bermuda)))))), OK)
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX")) )
 
         val fResponse = buildClientLookupAddress(path = s"country-picker")
@@ -177,19 +166,5 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/international/edit"
       }
     }
-
-    //    "submitted with an invalid country code" should {
-    //      "redirect to the manual entry screen" in {
-    //        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-    //        stubKeystoreSave(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
-    //
-    //        val fResponse = buildClientLookupAddress(path = s"country-picker")
-    //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-    //          .post(Map("countryCode" -> Seq("12"), "csrfToken" -> Seq("xxx-ignored-xxx")))
-    //
-    //        val res = await(fResponse)
-    //        res.status shouldBe BAD_REQUEST
-    //      }
-    //    }
   }
 }

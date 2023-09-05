@@ -14,7 +14,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 //import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.libs.json.Json
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SelectPageISpec extends IntegrationSpecBase {
@@ -26,7 +26,6 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount))))
@@ -67,7 +66,6 @@ class SelectPageISpec extends IntegrationSpecBase {
         val addressAmount = 30
 
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2SelectLabels), OK)
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId,
           journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
@@ -110,7 +108,6 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be not shown" when {
       "there are 0 results" in {
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
         cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
@@ -124,7 +121,6 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there is 1 result" in {
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress)))
@@ -140,7 +136,6 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there are 50 results" in {
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
         cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
@@ -158,7 +153,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "the journey was setup with welsh enabled and the welsh cookie is present" in {
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
+
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId,
           journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
@@ -187,7 +182,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyData), OK)
+
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId,
           journeyData.copy(proposals = Some(testProposedAddresses(addressAmount))))
@@ -208,7 +203,6 @@ class SelectPageISpec extends IntegrationSpecBase {
     "Display the select page in welsh" when {
       "no option was selected, welsh is enabled in the journey and the welsh cookie is present" in {
         val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
-//        stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2DefaultWelshLabels), OK)
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels)
 
@@ -227,7 +221,6 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "Redirects to Confirm page if option is selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
-//      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
@@ -246,7 +239,6 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "Returns errors when no option has been selected" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
-//      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
@@ -268,7 +260,6 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
-//      stubKeystore(session = testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
@@ -285,10 +276,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
 //  "technical difficulties" when {
 //    "the welsh content header isn't set and welsh object isn't provided in config" should {
-//      "render in English" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//
+//      "render in English" in {//
 //        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
 //          .withHttpHeaders(
 //            HeaderNames.COOKIE -> sessionCookieWithCSRF,
@@ -307,10 +295,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 //    }
 //
 //    "the welsh content header is set to false and welsh object isn't provided in config" should {
-//      "render in English" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//
+//      "render in English" in {//
 //        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
 //          .withHttpHeaders(
 //            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
@@ -329,12 +314,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 //    }
 //
 //    "the welsh content header is set to false and welsh object is provided in config" should {
-//      "render in English" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet
-//        (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
+//      "render in English" in {//
 //        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
 //          .withHttpHeaders(
 //            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
@@ -354,11 +334,6 @@ class SelectPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to true and welsh object provided in config" should {
 //      "render in Welsh" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet
-//        (allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
 //        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
 //          .get()

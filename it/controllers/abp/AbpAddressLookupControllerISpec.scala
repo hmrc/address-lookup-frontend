@@ -7,9 +7,10 @@ import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants._
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
@@ -18,7 +19,6 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {
-//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
@@ -31,7 +31,6 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
-//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
@@ -44,7 +43,6 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
-//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
@@ -57,7 +55,6 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
-//      stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
       val fResponse = buildClientLookupAddress(path = "lookup")

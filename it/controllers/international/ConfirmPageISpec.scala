@@ -1,6 +1,5 @@
 package controllers.international
 
-import config.ALFCookieNames
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
@@ -8,9 +7,9 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.i18n.Lang
-import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConfirmPageISpec extends IntegrationSpecBase {
@@ -276,7 +275,6 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
   "The confirm page POST" should {
     "use the correct continue url when user clicks Confirm the address" in {
-//      stubKeystore(testJourneyId, testConfigwithAddressNotUkModeAsJsonV2, OK)
       cache.putV2(testJourneyId, testConfigWithAddressNotUkModeV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress)))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm")
@@ -304,9 +302,6 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 //  "technical difficulties" when {
 //    "the welsh content header isn't set and welsh object isn't provided in config" should {
 //      "render in English" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//
 //        val fResponse = buildClientLookupAddress(s"confirm")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
 //          .get()
@@ -323,9 +318,6 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 //    }
 //    "the welsh content header is set to false and welsh object isn't provided in config" should {
 //      "render in English" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//
 //        val fResponse = buildClientLookupAddress(s"confirm")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
 //          .get()
@@ -340,16 +332,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 //        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
 //      }
 //    }
+
 //    "the welsh content header is set to false and welsh object is provided in config" should {
-//      "render in English" in {
-//        val v2Config = Json.toJson(
-//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(
-//            allBooleanSetAndAppropriateOptions = true,
-//            isWelsh = true))
-//
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
+//      "render in English" in {//
 //        val fResponse = buildClientLookupAddress(s"confirm")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
 //          .get()
@@ -366,14 +351,6 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to true and welsh object provided in config" should {
 //      "render in Welsh" in {
-//        val v2Config = Json.toJson(
-//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(
-//            allBooleanSetAndAppropriateOptions = true,
-//            isWelsh = true))
-//
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
 //        val fResponse = buildClientLookupAddress(s"confirm")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
 //          .get()

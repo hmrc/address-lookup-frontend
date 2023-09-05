@@ -38,7 +38,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   "No results page GET" should {
     "with the default config" should {
       "Render the 'No results' page" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
@@ -72,7 +71,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()), OK)
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()))
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
@@ -106,8 +104,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
-//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)), OK)
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)))
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
@@ -142,8 +138,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom Welsh elements" in {
-//        stubKeystore(testJourneyId, journeyDataV2WithSelectedAddressJson(
-//          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)), OK)
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)))
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
@@ -189,7 +183,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           )
         )
 
-//        stubKeystore(testJourneyId, testJson, OK)
         cache.putV2(testJourneyId, testJson)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
@@ -232,7 +225,6 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           )
         )
 
-//        stubKeystore(testJourneyId, testJson, OK)
         cache.putV2(testJourneyId, testJson)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 

@@ -11,16 +11,13 @@ import play.api.Application
 import play.api.Mode.Test
 import play.api.http.HeaderNames
 import play.api.http.Status._
-import play.api.i18n.Lang
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scala.util.Random
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class LookupPageISpec extends IntegrationSpecBase {
   val cache = app.injector.instanceOf[JourneyDataV2Cache]
@@ -43,7 +40,6 @@ class LookupPageISpec extends IntegrationSpecBase {
   "The lookup page" when {
     "when provided with no page config" should {
       "Render the default content" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
@@ -85,7 +81,6 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'postcode not entered' error message" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = "lookup")
@@ -110,7 +105,6 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'invalid postcode' error message" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup")
@@ -135,7 +129,6 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "Show the default 'filter invalid' error messages" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
         val filterValue = longFilterValue
@@ -179,7 +172,6 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with custom content" should {
       "Render the page with custom content" in {
-//        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
         cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
@@ -228,7 +220,6 @@ class LookupPageISpec extends IntegrationSpecBase {
       }
 
       "not display the back button if disabled" in {
-//        stubKeystore(testJourneyId, testDefaultLookupPageJourneyConfigV2, OK)
         cache.putV2(testJourneyId, testDefaultLookupPageJourneyDataV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
@@ -247,7 +238,6 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config with all booleans set to true" should {
       "Render the page correctly with custom elements" in {
-//        stubKeystore(testJourneyId, testCustomLookupPageJourneyConfigV2Json, OK)
         cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
@@ -296,7 +286,6 @@ class LookupPageISpec extends IntegrationSpecBase {
 
     "Provided with config where all the default values are overriden with the default values" should {
       "Render " in {
-//        stubKeystore(testJourneyId, testOtherCustomLookupPageJourneyConfigV2Json, OK)
         cache.putV2(testJourneyId, testOtherCustomLookupPageJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"lookup?postcode=$testPostCode&filter=$testFilterValue")
@@ -332,101 +321,90 @@ class LookupPageISpec extends IntegrationSpecBase {
     }
   }
 
-  "technical difficulties" when {
-    "the welsh content header isn't set and welsh object isn't provided in config" should {
-//      "render in English" in {
-////        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
-//
-//        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe OK
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-    }
-//    "the welsh content header is set to false and welsh object isn't provided in config" should {
-//      "render in English" in {
-////        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, INTERNAL_SERVER_ERROR)
-//        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
-//
-//        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe OK
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-//    }
+  "Show the default 'postcode not entered' error message" in {
+    cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-//    "the welsh content header is set to false and welsh object is provided in config" should {
-//      "render in English" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
-//        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-//    }
+    val fResponse = buildClientLookupAddress(path = "lookup")
+      .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+      .post("")
 
-    "the welsh content header is set to true and welsh object provided in config" should {
-//      "render in Welsh" in {
-//        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-//        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-//
-//        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
-//      }
+    val res = await(fResponse)
+    val doc = getDocFromResponse(res)
 
-      "Show the default 'postcode not entered' error message" in {
-//        stubKeystore(testJourneyId, testMinimalLevelJourneyDataV2Json, OK)
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+    res.status shouldBe BAD_REQUEST
 
-        val fResponse = buildClientLookupAddress(path = "lookup")
-          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
-          .post("")
-
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
-
-        res.status shouldBe BAD_REQUEST
-
-        doc.input(LookupPage.postcodeId) should have(
-          errorMessage("Gwall: error.required"),
-          value("")
-        )
-      }
-    }
+    doc.input(LookupPage.postcodeId) should have(
+      errorMessage("Gwall: error.required"),
+      value("")
+    )
   }
+
+  //  "technical difficulties" when {
+  //    "the welsh content header isn't set and welsh object isn't provided in config" should {
+  //      "render in English" in {
+  //        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+  //
+  //        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+  //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+  //          .get()
+  //
+  //        val res = await(fResponse)
+  //        res.status shouldBe OK
+  //
+  //        val doc = getDocFromResponse(res)
+  //        doc.title shouldBe messages("constants.intServerErrorTitle")
+  //        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+  //        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+  //      }
+  //    }
+  //    "the welsh content header is set to false and welsh object isn't provided in config" should {
+  //      "render in English" in {
+  //        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+  //
+  //        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+  //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+  //          .get()
+  //
+  //        val res = await(fResponse)
+  //        res.status shouldBe OK
+  //
+  //        val doc = getDocFromResponse(res)
+  //        doc.title shouldBe messages("constants.intServerErrorTitle")
+  //        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+  //        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+  //      }
+  //    }
+
+  //    "the welsh content header is set to false and welsh object is provided in config" should {
+  //      "render in English" in {
+  //
+  //        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+  //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
+  //          .get()
+  //
+  //        val res = await(fResponse)
+  //        res.status shouldBe INTERNAL_SERVER_ERROR
+  //
+  //        val doc = getDocFromResponse(res)
+  //        doc.title shouldBe messages("constants.intServerErrorTitle")
+  //        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+  //        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+  //      }
+  //    }
+
+//  "the welsh content header is set to true and welsh object provided in config" should {
+    //      "render in Welsh" in {
+    //        val fResponse = buildClientLookupAddress(s"lookup?postcode=$testPostCode&filter=$testFilterValue")
+    //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+    //          .get()
+    //
+    //        val res = await(fResponse)
+    //        res.status shouldBe INTERNAL_SERVER_ERROR
+    //
+    //        val doc = getDocFromResponse(res)
+    //        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
+    //        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
+    //        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
+    //      }
+    // }
 }

@@ -7,9 +7,9 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.i18n.Lang
-import play.api.libs.json.{JsObject, Json}
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EditPageISpec extends IntegrationSpecBase {
@@ -29,7 +29,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages("international.editPage.title")
         document.h1.first.text() shouldBe messages("international.editPage.heading")
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
@@ -69,7 +68,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
         document.h1.first.text() shouldBe messages(Lang("cy"), "international.editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
@@ -89,21 +87,6 @@ class EditPageISpec extends IntegrationSpecBase {
           "countryName" -> "Gwlad"
         ))
       }
-
-//      "return edit page and not error with showSearchAgainLink and searchAgainLinkText in the json should not error" in {
-//        val config = (Json.toJson(journeyDataV2Minimal.copy(countryCode = Some("BM"))).as[JsObject] - "editPage") ++
-//          Json.obj("editPage" -> Json.obj("showSearchAgainLink" -> true, "searchAgainLinkText" -> "foo"))
-//        stubKeystore(testJourneyId, Json.toJson(config).as[JsObject], OK)
-//
-//        val fResponse = buildClientLookupAddress(path = "international/edit")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
-//            "Csrf-Token" -> "nocheck")
-//          .get()
-//        val res = await(fResponse)
-//
-//        res.status shouldBe OK
-//        //testElementExists(res, EditPage.nonUkEditId)
-//      }
 
       "allow the initialising service to override the header size" in {
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 =
@@ -141,7 +124,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
         document.h1.first.text() shouldBe  messages(Lang("cy"), "international.editPage.heading")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
@@ -261,7 +243,6 @@ class EditPageISpec extends IntegrationSpecBase {
 
         res.status shouldBe OK
         val document = Jsoup.parse(res.body)
-        //testElementExists(res, EditPage.nonUkEditId)
         document.title() shouldBe "edit-title welsh"
         document.h1.first.text() shouldBe "edit-heading welsh"
         document.getElementById("continue").text() shouldBe "edit-submitLabel welsh"
@@ -359,7 +340,6 @@ class EditPageISpec extends IntegrationSpecBase {
       val document = Jsoup.parse(res.body)
 
       document.input("postcode") should have(value("eebb"))
-      //      document.getElementById("postcode-error-summary").text() shouldBe "Nodwch god post sy’n ddilys"
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Cyfeiriad – llinell 1",
@@ -370,11 +350,9 @@ class EditPageISpec extends IntegrationSpecBase {
       ))
 
       res.status shouldBe BAD_REQUEST
-      //testElementExists(res, EditPage.nonUkEditId)
     }
 
     s"return 303 if form is valid and redirect to ${controllers.routes.InternationalAddressLookupController.confirm("")}" in {
-//      stubKeystore(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))), countryCode = Some("BM"))).as[JsObject], OK)
       cache.putV2(
         testJourneyId,
         journeyDataV2Minimal.copy(
@@ -404,9 +382,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //  "technical difficulties" when {
 //    "the welsh content header isn't set and welsh object isn't provided in config" should {
 //      "render in English" in {
-////        stubKeystore(testJourneyId, Json.toJson(testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))), INTERNAL_SERVER_ERROR)
-//        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM")))
-//
 //        val fResponse = buildClientLookupAddress("edit")
 //          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
 //          .get()
@@ -423,9 +398,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 //    "the welsh content header is set to false and welsh object isn't provided in config" should {
 //      "render in English" in {
-////        stubKeystore(testJourneyId, Json.toJson(testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))), INTERNAL_SERVER_ERROR)
-//        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM")))
-//
 //        val fResponse = buildClientLookupAddress("edit")
 //          .withHttpHeaders(
 //            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
@@ -445,10 +417,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 ////    "the welsh content header is set to false and welsh object is provided in config" should {
 ////      "render in English" in {
-////        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-////        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-////        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-////
 ////        val fResponse = buildClientLookupAddress("edit")
 ////          .withHttpHeaders(
 ////            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
@@ -468,10 +436,6 @@ class EditPageISpec extends IntegrationSpecBase {
 //
 ////    "the welsh content header is set to true and welsh object provided in config" should {
 ////      "render in Welsh" in {
-////        val v2Config = Json.toJson(fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = true, isWelsh = true))
-////        stubKeystore(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-////        stubKeystoreSave(testJourneyId, v2Config, INTERNAL_SERVER_ERROR)
-////
 ////        val fResponse = buildClientLookupAddress("edit")
 ////          .withHttpHeaders(
 ////            HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(),

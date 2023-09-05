@@ -92,7 +92,6 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-//            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
             cache.putV2(testJourneyId, journeyDataV2ResultLimit)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
@@ -154,7 +153,6 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-//            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack), OK)
             cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack)
             stubGetAddressFromBEWithFilter(addressJson = Json.arr())
             stubGetAddressFromBE(addressJson = addressResultsListBySize(51))
@@ -210,7 +208,6 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns enough addresses to be displayed on the select page" in {
         val addressAmount = 25
 
-//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = addressAmount))
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount))))
@@ -227,7 +224,6 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
-//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         stubGetAddressFromBE(addressJson = addressResultsListBySize(1))
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress)))
@@ -244,7 +240,6 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns no addresses and renders the no results found page" in {
-//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit), OK)
         cache.putV2(testJourneyId, journeyDataV2Minimal)
         stubGetAddressFromBE(addressJson = Json.arr())
 

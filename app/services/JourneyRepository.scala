@@ -18,16 +18,13 @@ package services
 
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-
-import javax.inject.{Inject, Singleton}
 import model._
-import play.api.libs.json.{JsValue, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.HttpCaching
 import uk.gov.hmrc.mongo.cache.CacheIdType.SimpleCacheId
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,36 +33,6 @@ trait JourneyRepository {
   def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]]
 
   def putV2(sessionId: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
-}
-
-@Singleton
-class KeystoreJourneyRepository @Inject()(cache: HttpCaching,
-                                          frontendAppConfig: FrontendAppConfig) extends JourneyRepository {
-  val keyId = "journey-data"
-
-  override def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
-    fetchCache[JsValue](sessionId).map(_.map(json =>
-      (json \ "config" \ "version").asOpt[Int] match {
-        case Some(_) => json.as[JourneyDataV2]
-        case None => throw new IllegalStateException("V1 is no longer supported")
-      }
-    ))
-  }
-
-  private def fetchCache[A](sessionId: String)(implicit reads: Reads[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[A]] = {
-    for {
-      newCachedDoc <- cache.fetchAndGetEntry[A](cache.defaultSource, sessionId, keyId)
-      cachedDoc <- if (newCachedDoc.isDefined) Future.successful(newCachedDoc) else cache.fetchAndGetEntry[A](cache.defaultSource, keyId, sessionId)
-    } yield cachedDoc
-  }
-
-  override def putV2(sessionId: String, data: JourneyDataV2)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    updateCache(sessionId, data)
-  }
-
-  private def updateCache[A](sessionId: String, data: A)(implicit wts: Writes[A], hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    cache.cache(cache.defaultSource, sessionId, keyId, data) map (_ => true)
-  }
 }
 
 @Singleton

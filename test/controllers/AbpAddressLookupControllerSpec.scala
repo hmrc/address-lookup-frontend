@@ -21,7 +21,7 @@ import address.v2.Country
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
-import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
+import config.FrontendAppConfig
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
@@ -36,7 +36,7 @@ import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
+import services.{AddressService, CountryService, IdGenerationService, JourneyRepository}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.TestConstants.{Lookup => _, _}
@@ -74,7 +74,6 @@ class AbpAddressLookupControllerSpec
 
     val endpoint = "http://localhost:9000"
 
-    val cache = app.injector.instanceOf[AddressLookupFrontendSessionCache]
     val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
     val auditConnector = app.injector.instanceOf[AuditConnector]
 
@@ -91,7 +90,7 @@ class AbpAddressLookupControllerSpec
     val country_picker = app.injector.instanceOf[country_picker]
     val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
 
-    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig) {
+    val journeyRepository = new JourneyRepository {
       override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
         Future.successful(journeyDataV2.get(id))
       }

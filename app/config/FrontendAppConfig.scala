@@ -61,11 +61,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
 
   val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
 
-  def keyStoreUri: String = servicesConfig.baseUrl("keystore")
-
-  def cacheDomain: String = servicesConfig.getConfString("cachable.session-cache.domain",
-    throw new Exception(s"Missing configuration key: cachable.session-cache.domain"))
-
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
   lazy val reportAProblemPartialUrl = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"

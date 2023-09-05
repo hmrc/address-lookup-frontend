@@ -19,7 +19,7 @@ package controllers
 import address.v2.Country
 import com.codahale.metrics.SharedMetricRegistries
 import com.gu.scalatest.JsoupShouldMatchers
-import config.{AddressLookupFrontendSessionCache, FrontendAppConfig}
+import config.FrontendAppConfig
 import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
@@ -34,7 +34,7 @@ import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import play.api.mvc.{Cookie, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{AddressService, CountryService, IdGenerationService, KeystoreJourneyRepository}
+import services.{AddressService, CountryService, IdGenerationService, JourneyRepository}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.TestConstants.{Lookup => _, _}
@@ -72,7 +72,6 @@ class InternationalAddressLookupControllerSpec
 
     val endpoint = "http://localhost:9000"
 
-    val cache = app.injector.instanceOf[AddressLookupFrontendSessionCache]
     val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
     val auditConnector = app.injector.instanceOf[AuditConnector]
 
@@ -88,7 +87,7 @@ class InternationalAddressLookupControllerSpec
     val country_picker = app.injector.instanceOf[country_picker]
     val remoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
 
-    val journeyRepository = new KeystoreJourneyRepository(cache, frontendAppConfig) {
+    val journeyRepository = new JourneyRepository {
       override def getV2(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] = {
         Future.successful(journeyDataV2.get(id))
       }
@@ -115,11 +114,11 @@ class InternationalAddressLookupControllerSpec
     }
 
     val controller = new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
-      frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results,  lookup)
+      frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results, lookup)
 
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]) =
       new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
-        frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results,  lookup) {
+        frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results, lookup) {
         override def handleLookup(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
@@ -337,7 +336,7 @@ class InternationalAddressLookupControllerSpec
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
-      val res = controller.select("foo",  "ZZ11 1ZZ").apply(req)
+      val res = controller.select("foo", "ZZ11 1ZZ").apply(req)
       val html = contentAsString(res).asBodyFragment
       html should include element withName("h1").withValue("Choose your address")
       html should include element withName("input").withAttrValue("type", "radio").withAttrValue("name", "addressId").withAttrValue("value", "GB1234567890")

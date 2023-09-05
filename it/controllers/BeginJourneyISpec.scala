@@ -16,8 +16,6 @@ class BeginJourneyISpec extends IntegrationSpecBase {
   "The begin journey endpoint" when {
     "in uk mode" should {
       "redirect to the lookup page" in {
-
-//        stubKeystore(testJourneyId, Json.toJson(journeyDataV2MinimalUkMode), OK)
         cache.putV2(testJourneyId, journeyDataV2MinimalUkMode)
 
         val fResponse = buildClientLookupAddress(path = s"begin")
@@ -33,7 +31,6 @@ class BeginJourneyISpec extends IntegrationSpecBase {
 
     "in non-uk mode" should {
       "redirect to the country picker page" in {
-//        stubKeystore(testJourneyId, Json.toJson(testJourneyDataWithMinimalJourneyConfigV2), OK)
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
 
         val fResponse = buildClientLookupAddress(path = s"begin")

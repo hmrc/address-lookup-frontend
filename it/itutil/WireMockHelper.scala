@@ -69,31 +69,6 @@ trait WireMockHelper {
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings
 
-  def stubKeystore(session: String, theData: JsValue, status: Int = 200): StubMapping = {
-    val keystoreUrl = s"/keystore/address-lookup-frontend/$session"
-    stubFor(get(urlMatching(keystoreUrl))
-      .willReturn(aResponse()
-        .withStatus(status)
-        .withBody(
-          Json.obj("id" -> session, "data" -> Json.obj(keyId -> theData)).toString()
-        )
-      )
-    )
-  }
-
-  def stubKeystoreSave(session: String, theData: JsValue, status: Int): StubMapping = {
-    val keystoreUrl = s"/keystore/address-lookup-frontend/$session/data/$keyId"
-    stubFor(put(urlMatching(keystoreUrl))
-      .withRequestBody(equalTo(Json.toJson(theData).toString))
-      .willReturn(aResponse()
-        .withStatus(status)
-        .withBody(
-          Json.obj("id" -> session, "data" -> Json.obj(keyId -> theData)).toString()
-        )
-      )
-    )
-  }
-
   def stubGetAddressFromBEWithFilter(postcode: String = IntegrationTestConstants.testPostCode,
                                      expectedStatus: Int = 200,
                                      addressJson: JsValue = AddressRecordConstants.addressRecordSeqJson): StubMapping

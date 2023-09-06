@@ -9,8 +9,13 @@ import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.Json
+import services.JourneyDataV2Cache
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object tooManyResultsMessages {
     val title = "No results found"
@@ -48,18 +53,13 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     val noResultsPageTitle = "We cannot find any addresses for"
   }
 
-  //  val EnglishConstantsUkMode = EnglishConstants(true)
-
-  //  import EnglishConstantsUkMode._
-
   "The 'Too Many Results' page" should {
     "be rendered" when {
       "the back buttons are enabled in the journey config" when {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(countryCode = Some("BM"))), OK)
-            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(countryCode = Some("BM"))), OK)
-            //stubGetAddressFromBEWithFilter(addressJson = Json.arr())
+            cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
+
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
             val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
@@ -90,9 +90,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are not enabled in the journey config" when {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
-            stubKeystore(testJourneyId, Json.toJson(journeyDataV2SelectLabelsNoBack.copy(countryCode = Some("BM"))), OK)
-            stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(countryCode = Some("BM"))), OK)
-//            stubGetAddressFromBEWithFilter(addressJson = Json.arr())
+            cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack.copy(countryCode = Some("BM")))
+
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
             val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
@@ -127,7 +126,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))),
           pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM"))
 
-        stubKeystore(testJourneyId, Json.toJson(journeyData), OK)
+        cache.putV2(testJourneyId, journeyData)
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 51), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
@@ -145,10 +144,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns enough addresses to be displayed on the select page" in {
         val addressAmount = 25
 
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(countryCode = Some("BM"))), OK)
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = addressAmount), countryCode = "BM")
-        stubKeystoreSave(testJourneyId,
-          Json.toJson(journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))), OK)
+        cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -162,10 +160,9 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(countryCode = Some("BM"))), OK)
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(1), countryCode = "BM")
-        stubKeystoreSave(testJourneyId,
-          Json.toJson(journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress), countryCode = Some("BM"))), OK)
+        cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress), countryCode = Some("BM")))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -179,8 +176,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns no addresses and renders the no results found page" in {
-        stubKeystore(testJourneyId, Json.toJson(journeyDataV2ResultLimit.copy(countryCode = Some("BM"))), OK)
-        stubKeystoreSave(testJourneyId, Json.toJson(journeyDataV2Minimal.copy(countryCode = Some("BM"))), OK)
+        cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.arr(), countryCode = "BM")
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")

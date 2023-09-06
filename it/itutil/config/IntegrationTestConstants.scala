@@ -2,7 +2,7 @@ package itutil.config
 
 import java.util.UUID
 import itutil.config.IntegrationTestConstants._
-import model._
+import model.{LanguageLabels, _}
 import play.api.libs.json._
 import address.v2.Country
 import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
@@ -397,7 +397,7 @@ object IntegrationTestConstants {
     )
   )
 
-  val testMinimalLevelJourneyConfigV2 = Json.toJson(testMinimalLevelJourneyDataV2).as[JsValue]
+  val testMinimalLevelJourneyDataV2Json = Json.toJson(testMinimalLevelJourneyDataV2).as[JsValue]
 
   val testDefaultLookupPageJourneyDataV2 = JourneyDataV2(
     config = JourneyConfigV2(
@@ -620,11 +620,17 @@ object IntegrationTestConstants {
   def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
                                            selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress, countryCode: Option[String] = None) =
     Json.toJson(
-      JourneyDataV2(
-        journeyConfigV2,
-        selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress)),
-        countryCode = countryCode
-      ))
+      journeyDataV2WithSelectedAddress(journeyConfigV2, selectedAddress, countryCode))
+
+  def journeyDataV2WithSelectedAddress(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
+                                       selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress,
+                                       countryCode: Option[String] = None): JourneyDataV2 = {
+    JourneyDataV2(
+      journeyConfigV2,
+      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress)),
+      countryCode = countryCode
+    )
+  }
 
   val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
   val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true))))
@@ -712,7 +718,7 @@ object IntegrationTestConstants {
 
   val journeyDataV2SelectLabelsNoBack: JourneyDataV2 = journeyDataV2SelectLabels.copy(config = journeyDataV2SelectLabels.config.copy(options = journeyDataV2SelectLabels.config.options.copy(showBackButtons = Some(false))))
 
-  def testCustomCountryPickerPageJourneyConfigV2 = Json.toJson(JourneyDataV2(
+  val testCustomCountryPickerPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
       options = JourneyOptions(continueUrl = "testContinueUrl"),
@@ -739,7 +745,9 @@ object IntegrationTestConstants {
         ))
       ))
     )
-  )).as[JsValue]
+  )
+
+  def testCustomCountryPickerPageJourneyConfigV2Json = Json.toJson(testCustomCountryPickerPageJourneyConfigV2).as[JsValue]
 }
 
 

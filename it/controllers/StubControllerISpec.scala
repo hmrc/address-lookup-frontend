@@ -38,14 +38,6 @@ class  StubControllerISpec extends IntegrationSpecBase {
 
   s"${controllers.testonly.routes.StubController.submitStubForNewJourneyV2.url}" should {
     "return 303 and redirect to the begin endpoint" in {
-      val basicJDataForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
-          version = 2,
-          options = JourneyOptions(continueUrl = "testContinueUrl")
-      )))
-      val updatedContinueUrlForBasicJourney = Json.toJson(JourneyDataV2(JourneyConfigV2(
-        version = 2,
-        options = JourneyOptions(continueUrl = s"/lookup-address/test-only/end-of-journey/$testJourneyId")
-      )))
       val basicJourney =
         """{
           |  "version": 2,
@@ -54,8 +46,6 @@ class  StubControllerISpec extends IntegrationSpecBase {
           |     }
           |
           |}""".stripMargin
-      stubKeystoreSave(testJourneyId, basicJDataForBasicJourney, OK)
-      stubKeystoreSave(testJourneyId, updatedContinueUrlForBasicJourney, OK)
 
       val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

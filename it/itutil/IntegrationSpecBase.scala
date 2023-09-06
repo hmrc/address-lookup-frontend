@@ -29,10 +29,18 @@ import play.api.libs.crypto.CookieSigner
 
 import scala.language.postfixOps
 
-trait IntegrationSpecBase extends AnyWordSpec with LoginStub
+trait IntegrationSpecBase extends AnyWordSpec
+  with LoginStub
   with GivenWhenThen
-  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
-  with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll with FakeAppConfig with PageContentHelper {
+  with GuiceOneServerPerSuite
+  with ScalaFutures
+  with IntegrationPatience
+  with Matchers
+  with WireMockHelper
+  with BeforeAndAfterEach
+  with BeforeAndAfterAll
+  with FakeAppConfig
+  with PageContentHelper {
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}

@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.concurrent.duration.Duration
 
 trait AppConfig {
   val analyticsToken: String
@@ -42,6 +43,8 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   private def loadConfig(key: String) = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   val appName: String = config.get[String]("appName")
+  val cacheTtl: Duration = config.get[Duration]("mongodb.ttl")
+
   val contactFormServiceIdentifier = "AddressLookupFrontend"
   val homeUrl = "http://www.hmrc.gov.uk"
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
@@ -58,11 +61,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
 
   val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
 
-  def keyStoreUri: String = servicesConfig.baseUrl("keystore")
-
-  def cacheDomain: String = servicesConfig.getConfString("cachable.session-cache.domain",
-    throw new Exception(s"Missing configuration key: cachable.session-cache.domain"))
-
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
   lazy val reportAProblemPartialUrl = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
@@ -77,8 +75,8 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   }
 
   def langToLanguage(langCode: String): Language = langCode match {
-    case "en" ⇒ En
-    case "cy" ⇒ Cy
+    case "en" => En
+    case "cy" => Cy
     case _ => En
   }
 }

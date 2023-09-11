@@ -2,17 +2,18 @@ package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants.testJourneyId
-import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.{Application, Environment, Mode}
 import services.IdGenerationService
 
-class  StubControllerISpec extends IntegrationSpecBase {
+import java.util.UUID
+
+class StubControllerISpec extends IntegrationSpecBase {
+
+  val testJourneyId = UUID.randomUUID().toString
 
   object MockIdGenerationService extends IdGenerationService {
     override def uuid: String = testJourneyId
@@ -54,7 +55,7 @@ class  StubControllerISpec extends IntegrationSpecBase {
 
       val response = await(res)
       response.status shouldBe SEE_OTHER
-      response.header(HeaderNames.LOCATION).get shouldBe "http://localhost:9028/lookup-address/Jid123/begin"
+      response.header(HeaderNames.LOCATION).get shouldBe s"http://localhost:9028/lookup-address/$testJourneyId/begin"
 
     }
   }

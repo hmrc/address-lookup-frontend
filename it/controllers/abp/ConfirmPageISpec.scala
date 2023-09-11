@@ -10,6 +10,7 @@ import play.api.i18n.Lang
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConfirmPageISpec extends IntegrationSpecBase {
@@ -18,13 +19,14 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
   "The confirm page GET" should {
     "pre-pop with an address and all elements are correct for an empty journey config model" in {
-
+      val testJourneyId = UUID.randomUUID().toString
       val json = journeyDataV2WithSelectedAddress(
+        testJourneyId,
         JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
 
       cache.putV2(testJourneyId, json)
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
@@ -55,24 +57,28 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "redirect to the lookup page if no selected address exists in keystore" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
       val res = await(fResponse)
       res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/lookup"
+      res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/lookup"
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as TRUE for page" in {
+      val testJourneyId = UUID.randomUUID().toString
       val json = journeyDataV2WithSelectedAddress(
+        testJourneyId,
         fullDefaultJourneyConfigModelV2WithAllBooleansSet(true)
       )
+
       cache.putV2(testJourneyId, json)
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRF,
           "Csrf-Token" -> "nocheck"
@@ -109,13 +115,15 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as FALSE for page" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(
         testJourneyId,
         journeyDataV2WithSelectedAddress(
+          testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         ))
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(
           HeaderNames.COOKIE -> sessionCookieWithCSRF,
           "Csrf-Token" -> "nocheck"
@@ -150,15 +158,17 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for almost full journey config model (missing field in confirm page) with all booleans as FALSE for page" in {
+      val testJourneyId = UUID.randomUUID().toString
       val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
 
       cache.putV2(
         testJourneyId,
         journeyDataV2WithSelectedAddress(
+          testJourneyId,
           jc.copy(labels = journeyV2Labels(None))
         ))
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
@@ -187,7 +197,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for a minimal Welsh journey config model" in {
+      val testJourneyId = UUID.randomUUID().toString
       val json = journeyDataV2WithSelectedAddress(
+        testJourneyId,
         JourneyConfigV2(
           version = 2,
           options = JourneyOptions(continueUrl = testContinueUrl),
@@ -195,7 +207,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
       cache.putV2(testJourneyId, json)
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
@@ -224,10 +236,12 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "pre-pop with an address and all elements are correct for FULL Welsh journey config model with all booleans as FALSE for page" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        testJourneyId,
         fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = false, isWelsh = true)))
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
@@ -257,10 +271,12 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "allow the initialising service to override the header size" in {
-      cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 =
-        JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))))
+      val testJourneyId = UUID.randomUUID().toString
+      cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        testJourneyId,
+        journeyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))))
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
           "Csrf-Token" -> "nocheck")
         .get()
@@ -274,9 +290,10 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
   "The confirm page POST" should {
     "use the correct continue url when user clicks Confirm the address" in {
-      cache.putV2(testJourneyId, testConfigWithAddressNotUkModeV2)
+      val testJourneyId = UUID.randomUUID().toString
+      cache.putV2(testJourneyId, testConfigWithAddressNotUkModeV2(testJourneyId))
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
@@ -286,15 +303,16 @@ class ConfirmPageISpec extends IntegrationSpecBase {
     }
 
     "should redirect to the confirm page if incorrect data in keystore" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
 
-      val fResponse = buildClientLookupAddress(path = "confirm")
+      val fResponse = buildClientLookupAddress(path = "confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
       val res = await(fResponse)
       res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/confirm"
+      res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/confirm"
     }
   }
 

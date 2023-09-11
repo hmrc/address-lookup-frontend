@@ -11,6 +11,7 @@ import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
@@ -19,9 +20,10 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar")
+      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -31,9 +33,10 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB")
+      val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -43,9 +46,10 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "lookup?filter=bar")
+      val fResponse = buildClientLookupAddress(path = "lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -55,9 +59,10 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "lookup")
+      val fResponse = buildClientLookupAddress(path = "lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -69,10 +74,11 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
   "confirmed" should {
     "return correct address with jid" in {
-      val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress))
+      val testJourneyId = UUID.randomUUID().toString
+      val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress(testJourneyId)))
       cache.putV2(testJourneyId, configWithConfirmedAddress)
 
-      val fResponse = buildClientAPI("v2/confirmed?id=Jid123")
+      val fResponse = buildClientAPI(s"v2/confirmed?id=$testJourneyId")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
@@ -80,7 +86,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
       res.status shouldBe OK
       res.json shouldBe Json.toJson(ConfirmedResponseAddress(
-        auditRef = testAuditRef,
+        auditRef = testJourneyId,
         id = Some(testAddressIdRaw),
         address = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
       )

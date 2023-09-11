@@ -2,13 +2,14 @@ package controllers
 
 import address.v2.Countries
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants.{testCustomCountryPickerPageJourneyConfigV2, testJourneyDataWithMinimalJourneyConfigV2, testJourneyId, testMinimalLevelJourneyDataV2}
+import itutil.config.IntegrationTestConstants.{testCustomCountryPickerPageJourneyConfigV2, testJourneyDataWithMinimalJourneyConfigV2, testMinimalLevelJourneyDataV2}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CountryPickerPageISpec extends IntegrationSpecBase {
@@ -18,10 +19,10 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
   "The country picker page" when {
     "provided with default page config" should {
       "render the default content" in {
-
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -42,9 +43,10 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
       }
 
       "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
           .get()
 
@@ -66,9 +68,10 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "provided with custom page config" should {
       "render the custom content" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -87,9 +90,10 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
       }
 
       "render the custom welsh content where the 'PLAY_LANG' is set to cy" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
           .get()
 
@@ -110,9 +114,10 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted without a country specified" should {
       "return 400 bad request and display the error" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
@@ -126,44 +131,47 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
     "submitted with a country that has OS data" should {
       "redirect to the address lookup screen, clearing out any previously saved address data" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2
           .copy(countryCode = Some(Countries.GB.code)))
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("GB"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
         val res = await(fResponse)
         res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/lookup"
+        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/lookup"
       }
     }
 
     "submitted with a country that we hold non-OS data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM")))
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("BM"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
         val res = await(fResponse)
         res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/international/lookup"
+        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/lookup"
       }
     }
 
     "submitted with a country that we do not hold any data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
-        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX")) )
+        val testJourneyId = UUID.randomUUID().toString
+        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX")))
 
-        val fResponse = buildClientLookupAddress(path = s"country-picker")
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("XX"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
         val res = await(fResponse)
         res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe "/lookup-address/Jid123/international/edit"
+        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/edit"
       }
     }
   }

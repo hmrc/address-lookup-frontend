@@ -8,6 +8,7 @@ import play.api.http.Status._
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
@@ -16,9 +17,10 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
 
   "The lookup page" should {
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "international/lookup?filter=bar")
+      val fResponse = buildClientLookupAddress(path = "international/lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)
@@ -28,9 +30,10 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
     }
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
+      val testJourneyId = UUID.randomUUID().toString
       cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
 
-      val fResponse = buildClientLookupAddress(path = "international/lookup")
+      val fResponse = buildClientLookupAddress(path = "international/lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
       val res = await(fResponse)

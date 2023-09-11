@@ -12,14 +12,14 @@ import scala.language.postfixOps
 
 object IntegrationTestConstants {
   val testApiVersion = 2
-  val testJourneyId = "Jid123"
+//  val testJourneyId = "Jid123"
   val testCsrfToken = () => UUID.randomUUID().toString
 
 
   val testContinueUrl = "test-continue-url"
   val testPostCode = "AB11 1AB"
   val testFilterValue = "bar"
-  val testAuditRef = testJourneyId
+//  val testAuditRef = testJourneyId
   val testAddressIdRaw = "addressId"
   val testAddressId = Some(testAddressIdRaw)
   val testAddressLine1 = "1 High Street"
@@ -41,13 +41,13 @@ object IntegrationTestConstants {
       s"Region 1").toList,
     Some("City 1"), Some("Postcode 1"), Some(Country("BM", "Bermuda")))
 
-  val testConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testUKAddress)
-  val testInternationalConfirmedAddress = ConfirmableAddress(testAuditRef, Some("id1"), None, None, None, None, testInternationalAddress)
+  def testConfirmedAddress(testAuditRef: String) = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testUKAddress)
+  def testInternationalConfirmedAddress(testAuditRef: String) = ConfirmableAddress(testAuditRef, Some("id1"), None, None, None, None, testInternationalAddress)
 
   val testConfirmedResponseAddressDetails = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressTown)), Some(testPostCode), Some(Country("GB", "United Kingdom")))
-  val testConfirmedResponseAddress = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
+  def testConfirmedResponseAddress(testAuditRef: String) = ConfirmedResponseAddress(testAuditRef, testAddressId, testConfirmedResponseAddressDetails)
 
-  val testFullNonUKConfirmedAddress = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testFullNonUKAddress)
+  def testFullNonUKConfirmedAddress(testAuditRef: String) = ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, testFullNonUKAddress)
 
   def testProposedAddresses(amount: Int): Seq[ProposedAddress] = (1 to amount) map { _ =>
     ProposedAddress(
@@ -81,8 +81,8 @@ object IntegrationTestConstants {
     )
   }
 
-  val journeyDataV1FullJson: JsValue = Json.parse(
-    """
+  def journeyDataV1FullJson(testAuditRef: String): JsValue = Json.parse(
+    s"""
       |{
       |   "config":{
       |      "continueUrl":"continueUrl",
@@ -183,7 +183,7 @@ object IntegrationTestConstants {
       |      }
       |   ],
       |   "selectedAddress":{
-      |      "auditRef":"Jid123",
+      |      "auditRef":"$testAuditRef",
       |      "id":"1",
       |      "address":{
       |         "lines":[
@@ -199,7 +199,7 @@ object IntegrationTestConstants {
       |      }
       |   },
       |   "confirmedAddress":{
-      |      "auditRef":"Jid123",
+      |      "auditRef":"$testAuditRef",
       |      "id":"1",
       |      "address":{
       |         "lines":[
@@ -360,12 +360,11 @@ object IntegrationTestConstants {
   lazy val journeyDataV2Full: JourneyDataV2 = journeyDataV2FullJson.as[JourneyDataV2]
 
   val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
-  val testConfigWithFullNonUKAddressV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress))
+  def testConfigWithFullNonUKAddressV2(testAuditRef: String) = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress(testAuditRef)))
   val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(continueUrl = testContinueUrl, ukMode = Some(false)))
 
-  val testConfigWithAddressNotUkModeV2 = testConfigWithFullNonUKAddressV2.copy(config = testConfigNotUkModeV2)
-
-  val testConfigwithAddressNotUkModeAsJsonV2 = Json.toJson(testConfigWithAddressNotUkModeV2)
+  def testConfigWithAddressNotUkModeV2(testAuditRef: String) = testConfigWithFullNonUKAddressV2(testAuditRef).copy(config = testConfigNotUkModeV2)
+  def testConfigwithAddressNotUkModeAsJsonV2(testAuditRef: String) = Json.toJson(testConfigWithAddressNotUkModeV2(testAuditRef))
   val testConfigDefaultAsJsonV2 = Json.toJson(testJourneyDataWithMinimalJourneyConfigV2).as[JsObject]
 
   val fullSelectPageConfigV2 = SelectPageConfig(
@@ -617,12 +616,12 @@ object IntegrationTestConstants {
         journeyConfig
       ))
 
-  def journeyDataV2WithSelectedAddressJson(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
+  def journeyDataV2WithSelectedAddressJson(testAuditRef: String, journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
                                            selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress, countryCode: Option[String] = None) =
     Json.toJson(
-      journeyDataV2WithSelectedAddress(journeyConfigV2, selectedAddress, countryCode))
+      journeyDataV2WithSelectedAddress(testAuditRef, journeyConfigV2, selectedAddress, countryCode))
 
-  def journeyDataV2WithSelectedAddress(journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
+  def journeyDataV2WithSelectedAddress(testAuditRef: String, journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
                                        selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress,
                                        countryCode: Option[String] = None): JourneyDataV2 = {
     JourneyDataV2(

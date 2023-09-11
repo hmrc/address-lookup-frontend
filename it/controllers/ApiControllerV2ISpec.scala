@@ -13,6 +13,8 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import itutil.config.IntegrationTestConstants._
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApiControllerV2ISpec extends IntegrationSpecBase {
@@ -72,7 +74,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
   )
 
   object MockIdGenerationService extends IdGenerationService {
-    override def uuid: String = testJourneyId
+    override def uuid: String = "newJourney"
   }
 
   override implicit lazy val app: Application = {
@@ -97,14 +99,14 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           )
         )
 
-        cache.putV2(testJourneyId, v2Model)
+//        cache.putV2(testJourneyId, v2Model)
 
         val res = await(buildClientAPI("v2/init")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Json.toJson(v2Model.config)))
 
         res.status shouldBe ACCEPTED
-        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/$testJourneyId/begin")
+        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/newJourney/begin")
       }
     }
   }
@@ -112,7 +114,8 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
   "/api/v2/confirmed" when {
     "provided with a valid journey ID" should {
       "return OK with a confirmed address" in {
-        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress))
+        val testJourneyId = UUID.randomUUID().toString
+        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
 
         cache.putV2(testJourneyId, v2Model)
 
@@ -121,13 +124,14 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
           .get())
 
         res.status shouldBe OK
-        Json.parse(res.body) shouldBe Json.toJson(testConfirmedResponseAddress)
+        Json.parse(res.body) shouldBe Json.toJson(testConfirmedResponseAddress(testJourneyId))
       }
     }
 
     "provided with an invalid journey ID" should {
       "return NOT FOUND" in {
-        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress))
+        val testJourneyId = UUID.randomUUID().toString
+        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
 
         cache.putV2(testJourneyId, v2Model)
 

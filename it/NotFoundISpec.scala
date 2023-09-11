@@ -4,12 +4,15 @@ import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.i18n.Lang
 
+import java.util.UUID
+
 class NotFoundISpec extends IntegrationSpecBase {
 
   "Not Found" when {
     "the welsh content header isn't set and welsh object isn't provided in config" should {
       "render in English" in {
-        val fResponse = buildClientLookupAddress(s"notfound")
+        val testJourneyId = UUID.randomUUID().toString
+        val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -25,7 +28,8 @@ class NotFoundISpec extends IntegrationSpecBase {
 
     "the welsh content header is set and welsh object isn't provided in config" should {
       "render in English" in {
-        val fResponse = buildClientLookupAddress(s"notfound")
+        val testJourneyId = UUID.randomUUID().toString
+        val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
           .withHttpHeaders(
             HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
             "Csrf-Token" -> "nocheck"
@@ -44,7 +48,8 @@ class NotFoundISpec extends IntegrationSpecBase {
 
     "the welsh content header is set and welsh object is provided in config" should {
       "render in English" in {
-        val fResponse = buildClientLookupAddress(s"notfound")
+        val testJourneyId = UUID.randomUUID().toString
+        val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
@@ -61,7 +66,8 @@ class NotFoundISpec extends IntegrationSpecBase {
 
     "the welsh content header is set and welsh object provided in config" should {
       "render in Welsh" in {
-        val fResponse = buildClientLookupAddress(s"notfound")
+        val testJourneyId = UUID.randomUUID().toString
+        val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 

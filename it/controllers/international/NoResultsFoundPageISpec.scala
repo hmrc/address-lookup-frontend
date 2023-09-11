@@ -11,6 +11,8 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
@@ -38,22 +40,23 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   "No results page GET" should {
     "with the default config" should {
       "Render the 'No results' page" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(
+          path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
 
+        val res = await(fResponse)
         res.status shouldBe OK
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
+        val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishContent.title(testFilterValue)
         doc.h1.text() shouldBe EnglishContent.heading(testFilterValue)
-
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
@@ -69,22 +72,25 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")))
+        val testJourneyId = UUID.randomUUID().toString
+        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
+          journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")))
+
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
 
+        val res = await(fResponse)
         res.status shouldBe OK
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
+        val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishContent.title(testFilterValue) + " - NAV_TITLE - GOV.UK"
         doc.h1.text() shouldBe EnglishContent.heading(testFilterValue)
-
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
@@ -100,23 +106,24 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom English elements" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
 
+        val res = await(fResponse)
         res.status shouldBe OK
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
+        val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishContent.title(testFilterValue)
         doc.h1.text() shouldBe EnglishContent.heading(testFilterValue)
-
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
         )
@@ -132,23 +139,25 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom Welsh elements" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")))
+
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
 
+        val res = await(fResponse)
         res.status shouldBe OK
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
+        val doc = getDocFromResponse(res)
         doc.title shouldBe WelshContent.title(testFilterValue)
         doc.h1.text() shouldBe WelshContent.heading(testFilterValue)
-
         doc.select("a[class=govuk-back-link]") should have(
           text("Yn ôl")
         )
@@ -164,6 +173,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With the back button disabled in config" should {
       "Render the 'No results' page without a back button" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testJson = journeyDataV2Minimal.copy(
           JourneyConfigV2(
             version = 2,
@@ -179,17 +189,17 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId, testJson)
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(
+          path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
-        val doc = getDocFromResponse(res)
 
+        val res = await(fResponse)
         res.status shouldBe OK
 
+        val doc = getDocFromResponse(res)
         doc.title shouldBe EnglishContent.title(testFilterValue)
         doc.h1.text() shouldBe EnglishContent.heading(testFilterValue)
-
         doc.select("a[class=govuk-back-link]") should not have (
           text("Back")
           )
@@ -205,6 +215,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "when provided with a pageHeadingStyle option" should {
       "allow the initialising service to override the header size" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testJson = journeyDataV2Minimal.copy(
           JourneyConfigV2(
             version = 2,
@@ -220,13 +231,14 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId, testJson)
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue")
+        val fResponse = buildClientLookupAddress(
+          path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val res = await(fResponse)
-
         res.status shouldBe OK
+
         val document = Jsoup.parse(res.body)
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }

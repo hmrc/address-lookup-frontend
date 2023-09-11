@@ -55,7 +55,7 @@ trait WireMockHelper {
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClientLookupAddress(path: String, journeyID: String = "Jid123") =
+  def buildClientLookupAddress(path: String, journeyID: String) =
     ws.url(s"http://localhost:$port/lookup-address/$journeyID/$path").withFollowRedirects(false)
 
   def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)

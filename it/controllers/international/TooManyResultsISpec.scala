@@ -11,6 +11,8 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
@@ -58,11 +60,12 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are enabled in the journey config" when {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
+            val testJourneyId = UUID.randomUUID().toString
             cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
 
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
-            val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+            val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
@@ -90,11 +93,12 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the back buttons are not enabled in the journey config" when {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
+            val testJourneyId = UUID.randomUUID().toString
             cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack.copy(countryCode = Some("BM")))
 
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
-            val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+            val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
@@ -121,6 +125,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
     "allow the initialising service to override the header size" when {
       "provided with a pageHeadingStyle option" in {
+        val testJourneyId = UUID.randomUUID().toString
         val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
           testContinueUrl,
           selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))),
@@ -129,7 +134,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         cache.putV2(testJourneyId, journeyData)
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 51), countryCode = "BM")
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -143,12 +148,13 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     "not be rendered" when {
       "the backend service returns enough addresses to be displayed on the select page" in {
         val addressAmount = 25
+        val testJourneyId = UUID.randomUUID().toString
 
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = addressAmount), countryCode = "BM")
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -160,26 +166,27 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(1), countryCode = "BM")
         cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress), countryCode = Some("BM")))
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         val completedResponse = await(res)
-
         completedResponse.status shouldBe SEE_OTHER
         completedResponse.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/confirm"
 
       }
 
       "the backend service returns no addresses and renders the no results found page" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
         stubGetAddressByCountry(addressJson = Json.arr(), countryCode = "BM")
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 

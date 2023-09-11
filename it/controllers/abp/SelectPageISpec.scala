@@ -10,6 +10,8 @@ import org.jsoup.Jsoup
 import play.api.i18n.Lang
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 //import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 //import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
@@ -24,13 +26,15 @@ class SelectPageISpec extends IntegrationSpecBase {
   "The select page GET" should {
     "be shown with default text" when {
       "there is a result list between 2 and 50 results" in {
+        val testJourneyId = UUID.randomUUID().toString
+
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount))))
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -63,6 +67,7 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be shown with configured text" when {
       "there is a result list between 2 and 50 results" in {
+        val testJourneyId = UUID.randomUUID().toString
         val addressAmount = 30
 
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
@@ -70,7 +75,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId,
           journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -108,10 +113,11 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be not shown" when {
       "there are 0 results" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
         cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -121,11 +127,12 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there is 1 result" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
         cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress)))
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress(testJourneyId))))
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -136,10 +143,11 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
       "there are 50 results" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
         cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -151,6 +159,7 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
     "be shown with welsh content" when {
       "the journey was setup with welsh enabled and the welsh cookie is present" in {
+        val testJourneyId = UUID.randomUUID().toString
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
 
@@ -158,7 +167,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId,
           journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
 
-        val res = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(
             HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"),
             "Csrf-Token" -> "nocheck")
@@ -174,7 +183,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
     "allow the initialising service to override the header size" when {
       "provided with a pageHeadingStyle option" in {
-
+        val testJourneyId = UUID.randomUUID().toString
         val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
           testContinueUrl,
           pageHeadingStyle = Some("govuk-heading-l"),
@@ -187,7 +196,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId,
           journeyData.copy(proposals = Some(testProposedAddresses(addressAmount))))
 
-        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB")
+        val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -202,11 +211,12 @@ class SelectPageISpec extends IntegrationSpecBase {
   "The select page POST" should {
     "Display the select page in welsh" when {
       "no option was selected, welsh is enabled in the journey and the welsh cookie is present" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
         stubGetAddressFromBE(addressJson = testResultsList)
         cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels)
 
-        val res = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
+        val res = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .post(Map(
             "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -220,6 +230,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
     }
     "Redirects to Confirm page if option is selected" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
@@ -228,7 +239,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         testId => testId.as[String]
       }
 
-      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -238,11 +249,12 @@ class SelectPageISpec extends IntegrationSpecBase {
       res.status shouldBe SEE_OTHER
     }
     "Returns errors when no option has been selected" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
-      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -259,11 +271,12 @@ class SelectPageISpec extends IntegrationSpecBase {
       )
     }
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
       stubGetAddressFromBE(addressJson = testResultsList)
       cache.putV2(testJourneyId, journeyDataV2ResultLimit)
 
-      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode")
+      val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),

@@ -13,6 +13,7 @@ import uk.gov.hmrc.mongo.cache.CacheIdType.SimpleCacheId
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, FiniteDuration}
@@ -37,6 +38,7 @@ class JourneyRepositoryISpec extends AnyWordSpec with ScalaFutures with Matchers
   "getV2" should {
     "return a v2 model" when {
       "a v2 model is stored" in {
+        val testJourneyId = UUID.randomUUID().toString
         //                             record key             key in data      data in data
         // record key: 123456789
         // record data:

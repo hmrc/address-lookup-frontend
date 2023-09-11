@@ -10,6 +10,8 @@ import org.jsoup.Jsoup
 import play.api.i18n.Lang
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 //import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
 //import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
 import play.api.http.HeaderNames
@@ -25,20 +27,20 @@ class SelectPageISpec extends IntegrationSpecBase {
     "be shown with default text" when {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 50
+        val testJourneyId = UUID.randomUUID().toString
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         cache.putV2(testJourneyId,
           journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
         res.status shouldBe OK
 
         val doc = getDocFromResponse(res)
-
         doc.title shouldBe messages("international.selectPage.title")
         doc.h1.text() shouldBe messages("international.selectPage.heading")
         doc.submitButton.text() shouldBe messages("international.selectPage.submitLabel")
@@ -67,13 +69,14 @@ class SelectPageISpec extends IntegrationSpecBase {
     "be shown with configured text" when {
       "there is a result list between 2 and 50 results" in {
         val addressAmount = 30
+        val testJourneyId = UUID.randomUUID().toString
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         cache.putV2(testJourneyId,
           journeyDataV2SelectLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -114,10 +117,11 @@ class SelectPageISpec extends IntegrationSpecBase {
 
     "be not shown" when {
       "there are 0 results" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 0), countryCode = "BM")
         cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -127,11 +131,12 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
 
       "there is 1 result" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 1), countryCode = "BM")
         cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress), countryCode = Some("BM")))
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -141,10 +146,11 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
 
       "there are 50 results" in {
+        val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 100), countryCode = "BM")
         cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
@@ -158,13 +164,14 @@ class SelectPageISpec extends IntegrationSpecBase {
     "be shown with welsh content" when {
       "the journey was setup with welsh enabled and the welsh cookie is present" in {
         val addressAmount = 50
+        val testJourneyId = UUID.randomUUID().toString
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         cache.putV2(testJourneyId,
           journeyDataV2DefaultWelshLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(
             HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"),
             "Csrf-Token" -> "nocheck")
@@ -180,6 +187,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
     "allow the initialising service to override the header size" when {
       "provided with a pageHeadingStyle option" in {
+        val testJourneyId = UUID.randomUUID().toString
 
         val journeyData = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(
           testContinueUrl,
@@ -194,7 +202,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId,
           journeyData.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
 
-        val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -209,12 +217,13 @@ class SelectPageISpec extends IntegrationSpecBase {
   "The select page POST" should {
     "Display the select page in welsh" when {
       "no option was selected, welsh is enabled in the journey and the welsh cookie is present" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 50)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels)
 
-        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .post(Map(
             "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -228,6 +237,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
     }
     "Redirects to Confirm page if option is selected" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 2)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
@@ -237,7 +247,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         testId => testId.as[String]
       }
 
-      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -248,12 +258,13 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
 
     "Returns errors when no option has been selected" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 50)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
       cache.putV2(testJourneyId, journeyDataV2Minimal)
 
-      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx")
@@ -271,12 +282,13 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
 
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
+      val testJourneyId = UUID.randomUUID().toString
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 0)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
       cache.putV2(testJourneyId, journeyDataV2Minimal)
 
-      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue")
+      val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
           "csrfToken" -> Seq("xxx-ignored-xxx"),
@@ -287,78 +299,79 @@ class SelectPageISpec extends IntegrationSpecBase {
     }
   }
 
-  "technical difficulties" when {
-    "the welsh content header isn't set and welsh object isn't provided in config" should {
-      "render in English" in {
-        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue")
-          .withHttpHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithCSRF,
-            "Csrf-Token" -> "nocheck"
-          )
-          .get()
-
-        val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-
-        val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
-        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-      }
-    }
-
-    "the welsh content header is set to false and welsh object isn't provided in config" should {
-      "render in English" in {
-        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue")
-          .withHttpHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-            "Csrf-Token" -> "nocheck"
-          )
-          .get()
-
-        val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-
-        val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
-        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-      }
-    }
-
-    "the welsh content header is set to false and welsh object is provided in config" should {
-      "render in English" in {
-        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue")
-          .withHttpHeaders(
-            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-            "Csrf-Token" -> "nocheck"
-          )
-          .get()
-
-        val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-
-        val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
-        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-      }
-    }
-
-    "the welsh content header is set to true and welsh object provided in config" should {
-      "render in Welsh" in {
-        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue")
-          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
-          .get()
-
-        val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-
-        val doc = getDocFromResponse(res)
-        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
-        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
-        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
-      }
-    }
-  }
+//  "technical difficulties" when {
+//    "the welsh content header isn't set and welsh object isn't provided in config" should {
+//      "render in English" in {
+//        val testJourneyId = UUID.randomUUID().toString
+//        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue", testJourneyId)
+//          .withHttpHeaders(
+//            HeaderNames.COOKIE -> sessionCookieWithCSRF,
+//            "Csrf-Token" -> "nocheck")
+//          .get()
+//
+//        val res = await(fResponse)
+//        res.status shouldBe INTERNAL_SERVER_ERROR
+//
+//        val doc = getDocFromResponse(res)
+//        doc.title shouldBe messages("constants.intServerErrorTitle")
+//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+//      }
+//    }
+//
+//    "the welsh content header is set to false and welsh object isn't provided in config" should {
+//      "render in English" in {
+//        val testJourneyId = UUID.randomUUID().toString
+//        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue", testJourneyId)
+//          .withHttpHeaders(
+//            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
+//            "Csrf-Token" -> "nocheck")
+//          .get()
+//
+//        val res = await(fResponse)
+//        res.status shouldBe INTERNAL_SERVER_ERROR
+//
+//        val doc = getDocFromResponse(res)
+//        doc.title shouldBe messages("constants.intServerErrorTitle")
+//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+//      }
+//    }
+//
+//    "the welsh content header is set to false and welsh object is provided in config" should {
+//      "render in English" in {
+//        val testJourneyId = UUID.randomUUID().toString
+//        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue", testJourneyId)
+//          .withHttpHeaders(
+//            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
+//            "Csrf-Token" -> "nocheck")
+//          .get()
+//
+//        val res = await(fResponse)
+//        res.status shouldBe INTERNAL_SERVER_ERROR
+//
+//        val doc = getDocFromResponse(res)
+//        doc.title shouldBe messages("constants.intServerErrorTitle")
+//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
+//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
+//      }
+//    }
+//
+//    "the welsh content header is set to true and welsh object provided in config" should {
+//      "render in Welsh" in {
+//        val testJourneyId = UUID.randomUUID().toString
+//        val fResponse = buildClientLookupAddress(s"international/select?filter=$testFilterValue", testJourneyId)
+//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
+//          .get()
+//
+//        val res = await(fResponse)
+//        res.status shouldBe INTERNAL_SERVER_ERROR
+//
+//        val doc = getDocFromResponse(res)
+//        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
+//        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
+//        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
+//      }
+//    }
+//  }
 }

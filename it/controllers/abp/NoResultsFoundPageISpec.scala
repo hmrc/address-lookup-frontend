@@ -11,6 +11,8 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
@@ -38,10 +40,11 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
   "No results page GET" should {
     "with the default config" should {
       "Render the 'No results' page" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -71,10 +74,14 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with all booleans set to true" should {
       "Render the page with expected custom English elements" in {
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()))
+        val testJourneyId = UUID.randomUUID().toString
+        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
+          journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()))
+
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -104,11 +111,14 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom English elements" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)))
+
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -138,11 +148,14 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom Welsh elements" in {
+        val testJourneyId = UUID.randomUUID().toString
         cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+          testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true)))
+
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -172,6 +185,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "With the back button disabled in config" should {
       "Render the 'No results' page without a back button" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testJson = journeyDataV2Minimal.copy(
           JourneyConfigV2(
             version = 2,
@@ -186,7 +200,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId, testJson)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
         val res = await(fResponse)
@@ -214,6 +228,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
     "when provided with a pageHeadingStyle option" should {
       "allow the initialising service to override the header size" in {
+        val testJourneyId = UUID.randomUUID().toString
         val testJson = journeyDataV2Minimal.copy(
           JourneyConfigV2(
             version = 2,
@@ -228,7 +243,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         cache.putV2(testJourneyId, testJson)
         stubGetAddressFromBE(addressJson = Json.toJson(Json.arr()))
 
-        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode")
+        val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 

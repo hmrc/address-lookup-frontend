@@ -117,7 +117,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         val testJourneyId = UUID.randomUUID().toString
         val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
 
-        cache.putV2(testJourneyId, v2Model)
+        await(cache.putV2(testJourneyId, v2Model))
 
         val res = await(buildClientAPI(s"v2/confirmed?id=$testJourneyId")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -133,7 +133,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         val testJourneyId = UUID.randomUUID().toString
         val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
 
-        cache.putV2(testJourneyId, v2Model)
+        await(cache.putV2(testJourneyId, v2Model))
 
         val res = await(buildClientAPI(s"v2/confirmed?id=1234")
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

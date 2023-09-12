@@ -61,7 +61,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
             val testJourneyId = UUID.randomUUID().toString
-            cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
+            await(cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM"))))
 
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
@@ -94,7 +94,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         "a filter has been entered" when {
           "the backend returns too many addresses" in {
             val testJourneyId = UUID.randomUUID().toString
-            cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack.copy(countryCode = Some("BM")))
+            await(cache.putV2(testJourneyId, journeyDataV2SelectLabelsNoBack.copy(countryCode = Some("BM"))))
 
             stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(51), countryCode = "BM")
 
@@ -131,7 +131,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))),
           pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM"))
 
-        cache.putV2(testJourneyId, journeyData)
+        await(cache.putV2(testJourneyId, journeyData))
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 51), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
@@ -151,8 +151,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         val testJourneyId = UUID.randomUUID().toString
 
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = addressAmount), countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -168,8 +168,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
       "the backend service returns 1 address and redirects to the confirm page" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(1), countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -183,7 +183,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
       "the backend service returns no addresses and renders the no results found page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM"))))
         stubGetAddressByCountry(addressJson = Json.arr(), countryCode = "BM")
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)

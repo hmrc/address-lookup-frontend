@@ -20,7 +20,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "provided with default page config" should {
       "render the default content" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -44,7 +44,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
       "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
@@ -69,7 +69,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "provided with custom page config" should {
       "render the custom content" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -91,7 +91,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
       "render the custom welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
@@ -115,7 +115,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted without a country specified" should {
       "return 400 bad request and display the error" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -132,8 +132,8 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted with a country that has OS data" should {
       "redirect to the address lookup screen, clearing out any previously saved address data" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2
-          .copy(countryCode = Some(Countries.GB.code)))
+        await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2
+          .copy(countryCode = Some(Countries.GB.code))))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -148,7 +148,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted with a country that we hold non-OS data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -163,7 +163,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
     "submitted with a country that we do not hold any data for" should {
       "redirect to the manual entry screen, clearing out any previously saved address data" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX")))
+        await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2.copy(countryCode = Some("XX"))))
 
         val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

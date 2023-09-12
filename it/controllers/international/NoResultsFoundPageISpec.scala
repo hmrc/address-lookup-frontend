@@ -41,7 +41,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
     "with the default config" should {
       "Render the 'No results' page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some("BM"))))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(
@@ -73,9 +73,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
     "With full journey config model with all booleans set to true" should {
       "Render the page with expected custom English elements" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM")))
+          journeyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(), countryCode = Some("BM"))))
 
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
@@ -107,9 +107,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom English elements" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM")))
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false), countryCode = Some("BM"))))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(path = s"international/select?${LookupPage.filterId}=$testFilterValue", testJourneyId)
@@ -140,9 +140,9 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
     "With full journey config model with top level config set to None all booleans set to true" should {
       "Render the page with expected custom Welsh elements" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM")))
+          fullDefaultJourneyConfigModelV2WithAllBooleansSet(false, isWelsh = true), countryCode = Some("BM"))))
 
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
@@ -186,7 +186,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           countryCode = Some("BM")
         )
 
-        cache.putV2(testJourneyId, testJson)
+        await(cache.putV2(testJourneyId, testJson))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(
@@ -228,7 +228,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           countryCode = Some("BM")
         )
 
-        cache.putV2(testJourneyId, testJson)
+        await(cache.putV2(testJourneyId, testJson))
         stubGetAddressByCountry(addressJson = Json.toJson(Json.arr()), countryCode = "BM")
 
         val fResponse = buildClientLookupAddress(

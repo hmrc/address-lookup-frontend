@@ -24,7 +24,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         testJourneyId,
         JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
 
-      cache.putV2(testJourneyId, json)
+      await(cache.putV2(testJourneyId, json))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -59,7 +59,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
     "redirect to the international lookup page if no selected address exists in keystore" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
+      await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -77,7 +77,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         fullDefaultJourneyConfigModelV2WithAllBooleansSet(true)
       )
 
-      cache.putV2(testJourneyId, json)
+      await(cache.putV2(testJourneyId, json))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(
@@ -120,13 +120,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as FALSE for page" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(
+      await(cache.putV2(
         testJourneyId,
         journeyDataV2WithSelectedAddress(
           testJourneyId,
           fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         )
-      )
+      ))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(
@@ -169,12 +169,12 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       val testJourneyId = UUID.randomUUID().toString
       val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
 
-      cache.putV2(
+      await(cache.putV2(
         testJourneyId,
         journeyDataV2WithSelectedAddress(
           testJourneyId,
           jc.copy(labels = journeyV2Labels(None))
-        ))
+        )))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -216,7 +216,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
           options = JourneyOptions(continueUrl = testContinueUrl),
           labels = Some(JourneyLabels(cy = Some(LanguageLabels())))))
 
-      cache.putV2(testJourneyId, json)
+      await(cache.putV2(testJourneyId, json))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
@@ -249,9 +249,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
     "pre-pop with an address and all elements are correct for FULL Welsh journey config model with all booleans as FALSE for page" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+      await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
         testJourneyId,
-        fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = false, isWelsh = true)))
+        fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions = false, isWelsh = true))))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
@@ -286,9 +286,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
     "allow the initialising service to override the header size" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+      await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
         testJourneyId,
-        journeyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))))
+        journeyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))))))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
@@ -306,8 +306,8 @@ class ConfirmPageISpec extends IntegrationSpecBase {
   "The confirm page POST" should {
     "use the correct continue url when user clicks Confirm the address" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testConfigWithAddressNotUkModeV2(testJourneyId).copy(
-        confirmedAddress = Some(testFullNonUKConfirmedAddress(testJourneyId))))
+      await(cache.putV2(testJourneyId, testConfigWithAddressNotUkModeV2(testJourneyId).copy(
+        confirmedAddress = Some(testFullNonUKConfirmedAddress(testJourneyId)))))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -320,7 +320,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
     "should redirect to the confirm page if incorrect data in keystore" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
+      await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2))
 
       val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -21,7 +21,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
   "The lookup page" should {
     "pre-pop the postcode and filter on the view when they are passed in as query parameters and drop selected address on load" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -34,7 +34,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
     "pre-pop the postcode only on the view when it is passed in as a query parameters" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -47,7 +47,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -60,7 +60,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -76,7 +76,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
     "return correct address with jid" in {
       val testJourneyId = UUID.randomUUID().toString
       val configWithConfirmedAddress = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testFullNonUKConfirmedAddress(testJourneyId)))
-      cache.putV2(testJourneyId, configWithConfirmedAddress)
+      await(cache.putV2(testJourneyId, configWithConfirmedAddress))
 
       val fResponse = buildClientAPI(s"v2/confirmed?id=$testJourneyId")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

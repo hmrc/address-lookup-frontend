@@ -18,7 +18,7 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
   "The lookup page" should {
     "pre-pop the filter only on the view when it is passed in as a query parameters" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "international/lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -31,7 +31,7 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
 
     "not pre-pop the filter or postcode fields when no query parameters are used " in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+      await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
       val fResponse = buildClientLookupAddress(path = "international/lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

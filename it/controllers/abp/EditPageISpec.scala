@@ -24,7 +24,7 @@ class EditPageISpec extends IntegrationSpecBase {
     "when provided with no page config for english and welsh" should {
       "return Non UK edit page if UK mode is false" in {
         val testJourneyId = UUID.randomUUID().toString
-        await(await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(testJourneyId))))
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(testJourneyId)))
 
         val fResponse = buildClientLookupAddress(path = "edit", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,

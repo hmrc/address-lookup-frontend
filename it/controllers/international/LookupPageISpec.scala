@@ -42,7 +42,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     "when provided with no page config" should {
       "Render the default content" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -79,7 +79,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
       "Show the default 'filter invalid' error messages" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
         val filterValue = longFilterValue
         val fResponse = buildClientLookupAddress(path = s"international/lookup", testJourneyId)
@@ -107,9 +107,9 @@ class LookupPageISpec extends IntegrationSpecBase {
     "when provided with a pageHeadingStyle option" should {
       "allow the initialising service to override the header size" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          journeyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l")))))
+          journeyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))))))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -125,7 +125,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     "Provided with custom content" should {
       "Render the page with custom content" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -170,7 +170,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
       "not display the back button if disabled" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testDefaultLookupPageJourneyDataV2)
+        await(cache.putV2(testJourneyId, testDefaultLookupPageJourneyDataV2))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -189,7 +189,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     "Provided with config with all booleans set to true" should {
       "Render the page correctly with custom elements" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testCustomLookupPageJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -234,7 +234,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     "Provided with config where all the default values are overriden with the default values" should {
       "Render " in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testOtherCustomLookupPageJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testOtherCustomLookupPageJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -271,7 +271,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
   "Show the default 'filter invalid' error messages" in {
     val testJourneyId = UUID.randomUUID().toString
-    cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2)
+    await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
     val filterValue = longFilterValue
     val fResponse = buildClientLookupAddress(path = s"international/lookup", testJourneyId)

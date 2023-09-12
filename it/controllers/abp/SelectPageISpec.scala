@@ -31,8 +31,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
         stubGetAddressFromBE(addressJson = testResultsList)
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount))))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(proposals = Some(testProposedAddresses(addressAmount)))))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -72,8 +72,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
         stubGetAddressFromBE(addressJson = testResultsList)
-        cache.putV2(testJourneyId,
-          journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2SelectLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -115,7 +115,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 0 results" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 0))
-        cache.putV2(testJourneyId, journeyDataV2ResultLimit)
+        await(cache.putV2(testJourneyId, journeyDataV2ResultLimit))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -129,8 +129,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there is 1 result" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 1))
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress(testJourneyId))))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testConfirmedAddress(testJourneyId)))))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -145,7 +145,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 50 results" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressFromBE(addressJson = addressResultsListBySize(numberOfRepeats = 100))
-        cache.putV2(testJourneyId, journeyDataV2ResultLimit)
+        await(cache.putV2(testJourneyId, journeyDataV2ResultLimit))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -164,8 +164,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressFromBE(addressJson = testResultsList)
-        cache.putV2(testJourneyId,
-          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount))))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testProposedAddresses(addressAmount)))))
 
         val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(
@@ -193,8 +193,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressFromBE(addressJson = testResultsList)
-        cache.putV2(testJourneyId,
-          journeyData.copy(proposals = Some(testProposedAddresses(addressAmount))))
+        await(cache.putV2(testJourneyId,
+          journeyData.copy(proposals = Some(testProposedAddresses(addressAmount)))))
 
         val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -214,7 +214,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testJourneyId = UUID.randomUUID().toString
         val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
         stubGetAddressFromBE(addressJson = testResultsList)
-        cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels)
+        await(cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels))
 
         val res = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
@@ -233,7 +233,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
       stubGetAddressFromBE(addressJson = testResultsList)
-      cache.putV2(testJourneyId, journeyDataV2ResultLimit)
+      await(cache.putV2(testJourneyId, journeyDataV2ResultLimit))
 
       val testIds = (testResultsList \\ "id").map {
         testId => testId.as[String]
@@ -252,7 +252,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
       stubGetAddressFromBE(addressJson = testResultsList)
-      cache.putV2(testJourneyId, journeyDataV2ResultLimit)
+      await(cache.putV2(testJourneyId, journeyDataV2ResultLimit))
 
       val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -274,7 +274,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
       stubGetAddressFromBE(addressJson = testResultsList)
-      cache.putV2(testJourneyId, journeyDataV2ResultLimit)
+      await(cache.putV2(testJourneyId, journeyDataV2ResultLimit))
 
       val fRes = buildClientLookupAddress(path = s"select?postcode=$testPostCode", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

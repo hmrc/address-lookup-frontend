@@ -31,8 +31,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -73,8 +73,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2SelectLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2SelectLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -119,7 +119,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 0 results" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 0), countryCode = "BM")
-        cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -133,8 +133,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there is 1 result" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 1), countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimit.copy(selectedAddress = Some(testInternationalConfirmedAddress(testJourneyId)), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -148,7 +148,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       "there are 50 results" in {
         val testJourneyId = UUID.randomUUID().toString
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = 100), countryCode = "BM")
-        cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, journeyDataV2ResultLimit.copy(countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -168,8 +168,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(
@@ -199,8 +199,8 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-        cache.putV2(testJourneyId,
-          journeyData.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId,
+          journeyData.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -221,7 +221,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 50)
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-        cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels)
+        await(cache.putV2(testJourneyId, journeyDataV2DefaultWelshLabels))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (getSessionCookie(Map("csrfToken" -> testCsrfToken())) + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
@@ -241,7 +241,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 2)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-      cache.putV2(testJourneyId, journeyDataV2Minimal)
+      await(cache.putV2(testJourneyId, journeyDataV2Minimal))
 
       val testIds = (testResultsList \\ "id").map {
         testId => testId.as[String]
@@ -262,7 +262,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 50)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-      cache.putV2(testJourneyId, journeyDataV2Minimal)
+      await(cache.putV2(testJourneyId, journeyDataV2Minimal))
 
       val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -286,7 +286,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = 0)
 
       stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
-      cache.putV2(testJourneyId, journeyDataV2Minimal)
+      await(cache.putV2(testJourneyId, journeyDataV2Minimal))
 
       val fRes = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

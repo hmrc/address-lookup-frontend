@@ -21,7 +21,7 @@ class EditPageISpec extends IntegrationSpecBase {
     "when provided with no page config for english and welsh" should {
       "return edit page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(testJourneyId, countryCode = Some("BM")))
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(testJourneyId, countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
@@ -61,7 +61,7 @@ class EditPageISpec extends IntegrationSpecBase {
           testJourneyId,
           jc.copy(labels = Some(jc.labels.get.copy(cy = Some(LanguageLabels())))), countryCode = Some("BM"))
 
-        cache.putV2(testJourneyId, configWIthWelshEmptyBlock)
+        await(cache.putV2(testJourneyId, configWIthWelshEmptyBlock))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(
@@ -95,10 +95,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
       "allow the initialising service to override the header size" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
           journeyConfigV2 = JourneyConfigV2(
-            2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM")))
+            2, JourneyOptions(testContinueUrl, pageHeadingStyle = Some("govuk-heading-l"))), countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
@@ -121,7 +121,7 @@ class EditPageISpec extends IntegrationSpecBase {
           testJourneyId,
           jc.copy(labels = Some(jc.labels.get.copy(cy = Some(LanguageLabels())))), countryCode = Some("BM"))
 
-        cache.putV2(testJourneyId, configWIthWelshEmptyBlock)
+        await(cache.putV2(testJourneyId, configWIthWelshEmptyBlock))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(
@@ -158,9 +158,9 @@ class EditPageISpec extends IntegrationSpecBase {
     "provided with custom content" should {
       "return edit page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          journeyDataV2EditLabels(Some(false)).config, countryCode = Some("BM")))
+          journeyDataV2EditLabels(Some(false)).config, countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -193,9 +193,9 @@ class EditPageISpec extends IntegrationSpecBase {
 
       "return edit page WITH NO 'PLAY_LANG' set" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
+        await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(
           testJourneyId,
-          journeyDataV2EditLabels(Some(false)).config, countryCode = Some("BM")))
+          journeyDataV2EditLabels(Some(false)).config, countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(Map("csrfToken" -> testCsrfToken())),
@@ -251,7 +251,7 @@ class EditPageISpec extends IntegrationSpecBase {
                 ))
               ))))), countryCode = Some("BM"))
 
-        cache.putV2(testJourneyId, configWithWelsh)
+        await(cache.putV2(testJourneyId, configWithWelsh))
 
         val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
           .withHttpHeaders(
@@ -288,7 +288,8 @@ class EditPageISpec extends IntegrationSpecBase {
   "handleEdit" should {
     "return 400 if all fields are missing and return edit page with english text" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(testJourneyId, journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))), countryCode = Some("BM")))
+      await(cache.putV2(testJourneyId, journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(
+        options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))), countryCode = Some("BM"))))
 
       val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -308,12 +309,12 @@ class EditPageISpec extends IntegrationSpecBase {
 
     "return 400 if all fields are missing and return edit page with welsh text" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(
+      await(cache.putV2(
         testJourneyId,
         journeyDataV2Minimal.copy(
           config = journeyDataV2Minimal.config.copy(
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
-            labels = Some(JourneyLabels(cy = Some(LanguageLabels())))), countryCode = Some("BM")))
+            labels = Some(JourneyLabels(cy = Some(LanguageLabels())))), countryCode = Some("BM"))))
 
       val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId).
         withHttpHeaders(
@@ -348,12 +349,12 @@ class EditPageISpec extends IntegrationSpecBase {
 
     "return 400 if postcode is invalid and return edit page with welsh text" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(
+      await(cache.putV2(
         testJourneyId,
         journeyDataV2Minimal.copy(
           config = journeyDataV2Minimal.config.copy(
             options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false)),
-            labels = Some(JourneyLabels(cy = Some(LanguageLabels())))), countryCode = Some("BM")))
+            labels = Some(JourneyLabels(cy = Some(LanguageLabels())))), countryCode = Some("BM"))))
 
       val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId).
         withHttpHeaders(
@@ -378,13 +379,13 @@ class EditPageISpec extends IntegrationSpecBase {
 
     s"return 303 if form is valid and redirect to ${controllers.routes.InternationalAddressLookupController.confirm("")}" in {
       val testJourneyId = UUID.randomUUID().toString
-      cache.putV2(
+      await(cache.putV2(
         testJourneyId,
         journeyDataV2Minimal.copy(
           config = journeyDataV2Minimal.config.copy(options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))),
           selectedAddress = Some(testConfirmedAddress(testJourneyId).copy(id = None)),
           countryCode = Some("BM")
-        ))
+        )))
 
       val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -18,7 +18,7 @@ class BeginJourneyISpec extends IntegrationSpecBase {
     "in uk mode" should {
       "redirect to the lookup page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, journeyDataV2MinimalUkMode)
+        await(cache.putV2(testJourneyId, journeyDataV2MinimalUkMode))
 
         val fResponse = buildClientLookupAddress(path = s"begin", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -34,7 +34,7 @@ class BeginJourneyISpec extends IntegrationSpecBase {
     "in non-uk mode" should {
       "redirect to the country picker page" in {
         val testJourneyId = UUID.randomUUID().toString
-        cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2)
+        await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2))
 
         val fResponse = buildClientLookupAddress(path = s"begin", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

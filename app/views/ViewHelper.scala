@@ -21,17 +21,22 @@ import play.api.data.Form
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
 object ViewHelper {
-  def countryToSelectItem(c: Country, form: Form[_]): SelectItem = {
+  def countryToSelectItem(c: Country, form: Form[_]): SelectItem =
+    countryToSelectItem(c).copy(selected = c.code == form("countryCode").value.getOrElse(""))
+
+  def countryToSelectItem(c: Country): SelectItem =
     SelectItem(
       value = Some(encodeCountryCode(c)),
       text = c.name,
-      selected = c.code == form("countryCode").value.getOrElse(""),
-      attributes = Map("id" -> s"countryCode-${c.code}"))
-  }
+      selected = false,
+      attributes = Map("id" -> encodeCountryCode(c))
+    )
 
   def countriesToSelectItems(cs: Seq[Country], form: Form[_]): Seq[SelectItem] = {
-    SelectItem(Some(""), "Select a country") +: cs.map(c => countryToSelectItem(c, form))
+    SelectItem(Some(""), "Select a country") +: countriesToSelectItems(cs)
   }
+
+  def countriesToSelectItems(cs:Seq[Country]): Seq[SelectItem] = cs.map(c => countryToSelectItem(c))
 
   private val countryCodeEncodingChar = "-"
   def encodeCountryCode(c: Country): String = s"${c.code}${countryCodeEncodingChar}${c.name}"

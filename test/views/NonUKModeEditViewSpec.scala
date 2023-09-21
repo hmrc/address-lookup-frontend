@@ -85,8 +85,8 @@ class NonUKModeEditViewSpec extends ViewSpec {
       doc.testElementExists("countryCode")
       doc.getDropList("countryCode").select("option").size() shouldBe 3
       doc.getDropList("countryCode") should have(
-        option("countryCode-FR", "France"),
-        option("countryCode-AL", "Albanian")
+        option("FR-France", "France"),
+        option("AL-Albanian", "Albanian")
       )
     }
 

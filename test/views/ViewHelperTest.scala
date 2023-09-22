@@ -45,8 +45,10 @@ class ViewHelperTest extends AnyWordSpec with GuiceOneAppPerSuite with Matchers 
     }
 
     "encodeCountryCode predictably" in {
-      val encoded = ViewHelper.encodeCountryCode(allCountries.find(_.code == "GB").get)
-      encoded shouldBe allCountries.find(_.code == "GB").map(gb => s"GB-United Kingdom").getOrElse("GB_NOT_FOUND")
+      val gb = allCountries.find(_.code == "GB")
+      val encoded = ViewHelper.encodeCountryCode(gb.get)
+      encoded should not contain " "
+      encoded shouldBe gb.map(gb => s"GB-United_Kingdom").getOrElse("GB_NOT_FOUND")
     }
 
     "decodeCountryCode predictably" in {

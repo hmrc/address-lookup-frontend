@@ -25,7 +25,6 @@ import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[JourneyDataV2Cache])
@@ -40,7 +39,7 @@ class JourneyDataV2Repository @Inject()(mongoComponent: MongoComponent, config: 
   mongoComponent = mongoComponent,
   collectionName = config.appName,
   replaceIndexes = true,
-  ttl = Duration("5 minutes"),
+  ttl = config.cacheTtl,
   timestampSupport = new CurrentTimestampSupport(),
   cacheIdType = SimpleCacheId
 )(ec) {

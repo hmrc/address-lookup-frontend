@@ -288,5 +288,5 @@ class SelectPageISpec extends IntegrationSpecBase {
       val res = await(fRes)
       res.status shouldBe SEE_OTHER
     }
-  }s
+  }
 }

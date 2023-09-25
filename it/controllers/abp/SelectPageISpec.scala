@@ -229,6 +229,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         doc.title shouldBe s"Gwall: ${messages(Lang("cy"), "selectPage.title")}"
       }
     }
+
     "Redirects to Confirm page if option is selected" in {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 2)
@@ -248,6 +249,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val res = await(fRes)
       res.status shouldBe SEE_OTHER
     }
+
     "Returns errors when no option has been selected" in {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 50)
@@ -270,6 +272,7 @@ class SelectPageISpec extends IntegrationSpecBase {
         errorSummaryMessage(SelectPage.addressId, message)
       )
     }
+
     "Redirect to Lookup page if there are no data or incorrect data is posted" in {
       val testJourneyId = UUID.randomUUID().toString
       val testResultsList = addressResultsListBySize(numberOfRepeats = 0)
@@ -285,80 +288,5 @@ class SelectPageISpec extends IntegrationSpecBase {
       val res = await(fRes)
       res.status shouldBe SEE_OTHER
     }
-  }
-
-//  "technical difficulties" when {
-//    "the welsh content header isn't set and welsh object isn't provided in config" should {
-//      "render in English" in {//
-//        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
-//          .withHttpHeaders(
-//            HeaderNames.COOKIE -> sessionCookieWithCSRF,
-//            "Csrf-Token" -> "nocheck"
-//          )
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-//    }
-//
-//    "the welsh content header is set to false and welsh object isn't provided in config" should {
-//      "render in English" in {//
-//        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
-//          .withHttpHeaders(
-//            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-//            "Csrf-Token" -> "nocheck"
-//          )
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-//    }
-//
-//    "the welsh content header is set to false and welsh object is provided in config" should {
-//      "render in English" in {//
-//        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
-//          .withHttpHeaders(
-//            HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false),
-//            "Csrf-Token" -> "nocheck"
-//          )
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages("constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages("constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
-//      }
-//    }
-//
-//    "the welsh content header is set to true and welsh object provided in config" should {
-//      "render in Welsh" in {
-//        val fResponse = buildClientLookupAddress(s"select?postcode=$testPostCode")
-//          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val res = await(fResponse)
-//        res.status shouldBe INTERNAL_SERVER_ERROR
-//
-//        val doc = getDocFromResponse(res)
-//        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
-//        doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
-//        doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
-//      }
-//    }
-//  }
+  }s
 }

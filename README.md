@@ -476,6 +476,12 @@ sm --start YOUR_SERVICE -r --appendArgs '{
 
 ### Running the Application
 
+Ensure that mongo is running. If you don't have mongodb installed locally you can run it in docker using the following command:
+
+`docker run -d --rm --name mongodb -p 27017-27019:27017-27019 mongo:4`
+
+Start the required services using the following SM profile:
+
 `sm --start ADDRESS_LOOKUP_SERVICES; sm --stop ADDRESS_LOOKUP_FRONTEND`
 
 run with

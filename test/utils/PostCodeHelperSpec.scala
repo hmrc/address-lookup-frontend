@@ -38,4 +38,9 @@ class PostCodeHelperSpec extends AnyWordSpec with Matchers with ALFEFixtures {
       PostcodeHelper.displayPostcode("fbbfjebfje") mustBe ""
     }
   }
+  "displayPostcode string for edge case postcode 'GIR 0AA'" should {
+    "return formatted postcode" in {
+      PostcodeHelper.displayPostcode("GIR 0AA") mustBe "GIR 0AA"
+    }
+  }
 }

@@ -1,0 +1,163 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import com.codahale.metrics.SharedMetricRegistries
+import controllers.api.ApiController
+import itutil.IntegrationSpecBase
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Application, Environment, Mode}
+import services.{IdGenerationService, JourneyDataV2Cache}
+import model._
+import play.api.http.HeaderNames
+import play.api.http.Status._
+import play.api.libs.json.Json
+import itutil.config.IntegrationTestConstants._
+import uk.gov.hmrc.http.HeaderCarrier
+
+import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class ApiControllerV2ISpec extends IntegrationSpecBase {
+  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  val testJourneyFromConfig = JourneyDataV2(
+    config = JourneyConfigV2(
+      version = testApiVersion,
+      options = JourneyOptions(continueUrl = "/api/confirmed", homeNavHref = Some("http://www.hmrc.gov.uk/"), phaseFeedbackLink = Some("#"), showPhaseBanner = Some(false), alphaPhase = Some(false), showBackButtons = Some(true), includeHMRCBranding = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50), showSearchAgainLink = Some(true))), confirmPageConfig = Some(ConfirmPageConfig(
+                showSearchAgainLink = Some(true),
+                showSubHeadingAndInfo = Some(false),
+                showChangeLink = Some(true),
+                showConfirmChangeText = Some(false)
+              ))),
+      labels = Some(JourneyLabels(
+        en = Some(LanguageLabels(
+          appLevelLabels = Some(AppLevelLabels(navTitle = Some("Address Lookup"))),
+          lookupPageLabels = Some(LookupPageLabels(
+            title = Some("Lookup Address"),
+            heading = Some("Your Address"),
+            filterLabel = Some("Building name or number"),
+            postcodeLabel = Some("Postcode"),
+            submitLabel = Some("Find my address"),
+            noResultsFoundMessage = Some("Sorry, we couldn't find anything for that postcode."),
+            resultLimitExceededMessage = Some("There were too many results. Please add additional details to limit the number of results.")
+          )),
+          selectPageLabels = Some(SelectPageLabels(
+            title = Some("Select Address"),
+            heading = Some("Select Address"),
+            proposalListLabel = Some("Please select one of the following addresses"),
+            submitLabel = Some("Next"),
+            searchAgainLinkText = Some("Search again")
+          )),
+          confirmPageLabels = Some(ConfirmPageLabels(
+            title = Some("Confirm Address"),
+            heading = Some("Confirm Address"),
+            infoSubheading = Some("Your selected address"),
+            infoMessage = Some("This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."),
+            submitLabel = Some("Confirm"),
+            searchAgainLinkText = Some("Search again")
+          )),
+          editPageLabels = Some(EditPageLabels(
+            title = Some("Edit Address"),
+            heading = Some("Edit Address"),
+            line1Label = Some("Line 1"),
+            line2Label = Some("Line 2"),
+            line3Label = Some("Line 3"),
+            townLabel = Some("Town"),
+            postcodeLabel = Some("Postcode"),
+            countryLabel = Some("Country"),
+            submitLabel = Some("Next")
+          ))
+        ))
+      ))
+    )
+  )
+
+  object MockIdGenerationService extends IdGenerationService {
+    override def uuid: String = "newJourney"
+  }
+
+  override implicit lazy val app: Application = {
+    SharedMetricRegistries.clear()
+    
+    new GuiceApplicationBuilder()
+      .in(Environment.simple(mode = Mode.Dev))
+      .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
+      .configure(fakeConfig())
+      .build
+  }
+
+  lazy val addressLookupEndpoint = app.injector.instanceOf[ApiController].addressLookupEndpoint
+
+  "/api/v2/init" when {
+    "provided with valid JourneyDataV2 Json" should {
+      "return ACCEPTED with a url in the Location header" in {
+        val v2Model = JourneyDataV2(
+          config = JourneyConfigV2(
+            version = testApiVersion,
+            options = JourneyOptions(continueUrl = testContinueUrl)
+          )
+        )
+
+//        cache.putV2(testJourneyId, v2Model)
+
+        val res = await(buildClientAPI("v2/init")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .post(Json.toJson(v2Model.config)))
+
+        res.status shouldBe ACCEPTED
+        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/newJourney/begin")
+      }
+    }
+  }
+
+  "/api/v2/confirmed" when {
+    "provided with a valid journey ID" should {
+      "return OK with a confirmed address" in {
+        val testJourneyId = UUID.randomUUID().toString
+        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
+
+        await(cache.putV2(testJourneyId, v2Model))
+
+        val res = await(buildClientAPI(s"v2/confirmed?id=$testJourneyId")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get())
+
+        res.status shouldBe OK
+        Json.parse(res.body) shouldBe Json.toJson(testConfirmedResponseAddress(testJourneyId))
+      }
+    }
+
+    "provided with an invalid journey ID" should {
+      "return NOT FOUND" in {
+        val testJourneyId = UUID.randomUUID().toString
+        val v2Model = testJourneyDataWithMinimalJourneyConfigV2.copy(confirmedAddress = Some(testConfirmedAddress(testJourneyId)))
+
+        await(cache.putV2(testJourneyId, v2Model))
+
+        val res = await(buildClientAPI(s"v2/confirmed?id=1234")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get())
+
+        res.status shouldBe NOT_FOUND
+      }
+    }
+  }
+
+}

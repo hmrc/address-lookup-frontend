@@ -1,38 +1,30 @@
-import sbt.Keys._
-import sbt._
-import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
+import uk.gov.hmrc.DefaultBuildSettings
 
-val appName: String = AppDependencies.appName
+ThisBuild / majorVersion := 2
+ThisBuild / scalaVersion := "2.13.12"
 
-lazy val root = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
-  .settings(majorVersion := 2)
-  .settings(scalaSettings: _*)
-  .settings(scalaVersion := "2.13.10")
-  .settings(defaultSettings(): _*)
+val appName = "address-lookup-frontend"
+
+lazy val microservice = Project(appName, file("."))
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
-    libraryDependencies ++= AppDependencies.appDependencies,
-    retrieveManaged := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    PlayKeys.playDefaultPort := 9028,
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    TwirlKeys.templateImports ++= Seq(
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.govukfrontend.views.html.components._"
+    ),
+    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"
   )
-  
-  .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(
-    IntegrationTest / Keys.fork := false,
-    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / javaOptions += "-Dlogger.resource=logback-test.xml",
-    IntegrationTest / parallelExecution := false)
+  .settings(PlayKeys.playDefaultPort := 9028)
   .settings(resolvers += Resolver.jcenterRepo)
 
-TwirlKeys.templateImports ++= Seq(
-  "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-  "uk.gov.hmrc.govukfrontend.views.html.components._"
-)
+lazy val it = project.in(file("it"))
+  .enablePlugins(play.sbt.PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(
+    libraryDependencies ++= AppDependencies.it,
+    Test / javaOptions += "-Dlogger.resource=logback-test.xml",
+    Test / parallelExecution := false
+  )
+  .settings(DefaultBuildSettings.itSettings())

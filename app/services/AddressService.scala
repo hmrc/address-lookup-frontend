@@ -39,7 +39,7 @@ trait AddressService {
 }
 
 @Singleton
-class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient)(implicit val
+class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient, countryService: CountryService)(implicit val
 ec: ExecutionContext) extends AddressService {
 
   val endpoint = frontendAppConfig.addressReputationEndpoint
@@ -100,7 +100,7 @@ ec: ExecutionContext) extends AddressService {
               s"${addr.city.getOrElse("")}",
               s"${addr.region.getOrElse("")}"
             ).filter(_.nonEmpty).toList,
-            ForeignOfficeCountryService.find(code = countryCode).get
+            countryService.find(code = countryCode).get
           )
         }
 

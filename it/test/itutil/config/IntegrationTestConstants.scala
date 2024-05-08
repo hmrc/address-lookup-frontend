@@ -79,7 +79,7 @@ object IntegrationTestConstants {
     )
   }
 
-  def testInternationalProposedAddresses(amount: Int, countryCode: String = "GB"): Seq[ProposedAddress] = (1 to amount) map { n =>
+  def testInternationalProposedAddresses(amount: Int, country: Country = Country("GB", "United Kingdom")): Seq[ProposedAddress] = (1 to amount) map { n =>
     ProposedAddress(
       addressId = s"id$n",
       uprn = None,
@@ -93,7 +93,7 @@ object IntegrationTestConstants {
         s"City $n",
         s"Region $n").toList,
       town = Some(s"City $n"),
-      country =  ForeignOfficeCountryService.find(code = countryCode).get
+      country = country
     )
   }
 

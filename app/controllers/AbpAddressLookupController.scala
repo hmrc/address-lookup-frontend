@@ -411,7 +411,7 @@ class AbpAddressLookupController @Inject()(
               (
                 Some(
                   journeyData.copy(
-                    selectedAddress = Some(edit.toConfirmableAddress(id))
+                    selectedAddress = Some(edit.toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
                   )
                 ),
                 requestWithWelshHeader(isWelsh) {
@@ -448,7 +448,7 @@ class AbpAddressLookupController @Inject()(
               (
                 Some(
                   journeyData.copy(
-                    selectedAddress = Some(edit.toConfirmableAddress(id))
+                    selectedAddress = Some(edit.toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
                   )
                 ),
                 requestWithWelshHeader(isWelsh) {

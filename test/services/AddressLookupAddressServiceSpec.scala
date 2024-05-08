@@ -45,7 +45,12 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     when(httpClient.POST[LookupAddressByPostcode, List[AddressRecord]](anyString(), any(), any())(any(), any(), any()
       , any())).thenReturn(Future.successful(resp))
 
-    val service = new AddressLookupAddressService(frontendAppConfig, httpClient) {
+
+    val english = new EnglishCountryNamesDataSource()
+    val welsh = new WelshCountryNamesDataSource(english)
+    val fco = new ForeignOfficeCountryService(english, welsh)
+
+    val service = new AddressLookupAddressService(frontendAppConfig, httpClient, fco) {
       override val endpoint = end
     }
   }

@@ -18,11 +18,12 @@
 @import model._
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import views.html.templates.page_template
-@import services.ForeignOfficeCountryService
 @import address.v2.Country
 @import views.ViewHelper
+@import services.CountryService
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios, select: GovukSelect, page: page_template, govukFieldset: GovukFieldset)
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios, select: GovukSelect, page: page_template, govukFieldset: GovukFieldset, countryService: CountryService)
+
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @{
@@ -106,7 +107,7 @@
     @if(journeyData.countryCode.isDefined) {
 
         @textInput(Input(value =
-            editForm("countryCode").value.flatMap(c => ForeignOfficeCountryService.find(code = c)).map(_.name),
+            editForm("countryCode").value.flatMap(c => countryService.find(isWelsh, code = c)).map(_.name),
             attributes = Map("disabled" -> "disabled"),
             label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
             formGroupClasses = "form-field-group", autocomplete = Some("country"),

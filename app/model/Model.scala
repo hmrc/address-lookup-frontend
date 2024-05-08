@@ -42,7 +42,7 @@ case class Edit(organisation: Option[String],
                 postcode: String,
                 countryCode: String = "GB") {
 
-  def toConfirmableAddress(auditRef: String): ConfirmableAddress =
+  def toConfirmableAddress(auditRef: String, findCountry: String => Option[Country]): ConfirmableAddress =
     ConfirmableAddress(
       auditRef,
       None,
@@ -54,7 +54,7 @@ case class Edit(organisation: Option[String],
         if (postcode.isEmpty) None
         else if (countryCode == "GB") Postcode.cleanupPostcode(postcode).map(_.toString)
         else Some(postcode),
-        ForeignOfficeCountryService.find(code = countryCode)
+        findCountry(countryCode)
       )
     )
 }
@@ -67,9 +67,7 @@ case class ProposedAddress(addressId: String,
                            postcode: Option[String],
                            town: Option[String],
                            lines: List[String] = List.empty,
-                           country: Country = ForeignOfficeCountryService
-                             .find(code = "GB")
-                             .getOrElse(Country("GB", "United Kingdom")),
+                           country: Country = Country("GB", "United Kingdom"),
                            poBox: Option[String] = None) {
 
   def toConfirmableAddress(auditRef: String): ConfirmableAddress =
@@ -107,7 +105,7 @@ case class ConfirmableAddressDetails(
   lines: Seq[String] = Seq(),
   town: Option[String] = None,
   postcode: Option[String] = None,
-  country: Option[Country] = ForeignOfficeCountryService.find(code = "GB"),
+  country: Option[Country] = Some(Country("GB", "United Kingdom")),
   poBox: Option[String] = None
 ) {
 

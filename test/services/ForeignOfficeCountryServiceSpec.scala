@@ -16,6 +16,7 @@
 
 package services
 
+import address.v2.Country
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -24,7 +25,9 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
   class Scenario {
     SharedMetricRegistries.clear()
-    val service = new ForeignOfficeCountryService
+    val english = new EnglishCountryNamesDataSource()
+    val welsh = new WelshCountryNamesDataSource(english)
+    val service = new ForeignOfficeCountryService(english, welsh)
   }
 
   "find all in English" should {
@@ -76,6 +79,12 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     "contain aliases from the aliases file" in new Scenario {
       val gbs = service.findAll(welshFlag = true).filter(_.code == "GB")
       gbs.size mustBe >(1)
+    }
+
+    "merge country lists from gov.wales and wco" in new Scenario {
+      val usa = service.findAll(welshFlag = true).filter(_.code == "US")
+      usa.size mustBe > (1)
+      usa.head mustBe Country("US", "Yr Unol Daleithiau")
     }
   }
 }

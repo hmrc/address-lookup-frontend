@@ -11,7 +11,8 @@ object AppDependencies {
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30" % "1.6.0",
     "uk.gov.hmrc" %% "play-conditional-form-mapping-play-30" % "2.0.0",
     "com.github.tototoshi" %% "scala-csv" % "1.3.10",
-    "com.amazonaws" % "aws-java-sdk-s3" % "1.12.470"
+    "net.ruippeixotog" %% "scala-scraper" % "3.1.1",
+    "uk.gov.hmrc.objectstore" %% "object-store-client-play-30" % "2.0.0"
   ).map(_.withSources())
 
   def test: Seq[ModuleID] = Seq(

@@ -37,6 +37,7 @@ class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: 
     () => Try{
       logger.info("Gov Wales data update started")
       dataSource.updateCache()
+      dataSource.retrieveAndStoreData()
       logger.info("Gov Wales data update finished")
     }
   }(ec)

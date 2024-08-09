@@ -17,21 +17,32 @@
 package services
 
 import address.v2.Country
-import com.amazonaws.services.s3.AmazonS3
 import com.github.tototoshi.csv.CSVReader
+import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
+import org.apache.pekko.stream.Materializer
+import org.htmlunit.TextPage
+import org.htmlunit.html.{HtmlAnchor, HtmlPage}
 import play.api.Logger
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.objectstore.client.Path
+import uk.gov.hmrc.objectstore.client.play.Implicits._
+import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.SortedMap
+import scala.concurrent.ExecutionContext
 import scala.io.{BufferedSource, Source}
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource {
 
-  protected val mutable: java.util.Deque[S3Cache] = new java.util.concurrent.ConcurrentLinkedDeque()
-  mutable.add(S3Cache("", Source.fromInputStream(getClass.getResourceAsStream("/welsh-country-names.csv"), "UTF-8")))
+  protected val mutable: java.util.Deque[CachedData] = new java.util.concurrent.ConcurrentLinkedDeque()
+  mutable.add(CachedData("", Source.fromInputStream(getClass.getResourceAsStream("/welsh-country-names.csv"), "UTF-8")))
 
   def updateCache(): Unit = {}
+
+  def retrieveAndStoreData(): Unit = {}
 
   private val allAliasesCY = allAliases("/countryAliasesCY.csv")
 
@@ -40,18 +51,18 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     .groupBy(_("Country"))
     .view.mapValues(v => v.head)
 
-  private def allGovWalesRows(govWalesData: BufferedSource) = CSVReader.open(govWalesData)
+  private def allGovWalesRows(govWalesData: Source) = CSVReader.open(govWalesData)
     .allWithOrderedHeaders._2.sortBy(x => x("Cod gwlad (Country code)"))
     .groupBy(_("Cod gwlad (Country code)"))
     .view.mapValues(v => v.head)
     .map { case (k, m) => k -> Map("Country" -> m("Cod gwlad (Country code)"), "Name" -> m("Enw yn Gymraeg (Name in Welsh)")) }
 
-  private def countriesCYFull(govWalesData: BufferedSource): Seq[Country] =
+  private def countriesCYFull(govWalesData: Source): Seq[Country] =
     SortedMap.from(english.allISORows ++ english.allFCDORows ++ english.allFCDOTRows ++ allWCORows ++ allGovWalesRows(govWalesData))
       .map(Country.apply)
       .toSeq.sortWith { case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
 
-  protected def countriesWithAliases(govWalesData: BufferedSource) = {
+  protected def countriesWithAliases(govWalesData: Source) = {
     countriesCYFull(govWalesData).flatMap { country =>
       if (allAliasesCY.contains(country.code)) country +: allAliasesCY(country.code)
       else Seq(country)
@@ -63,51 +74,87 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 
 
 @Singleton
-class WelshCountryS3DataSource  @Inject() (englishCountryNamesDataSource: EnglishCountryNamesDataSource, client: AmazonS3, bucket: String, key: String) extends WelshCountryNamesDataSource(englishCountryNamesDataSource) {
+class WelshCountryNamesObjectStoreDataSource  @Inject() (englishCountryNamesDataSource: EnglishCountryNamesDataSource, objectStore: PlayObjectStoreClient, implicit val ec: ExecutionContext,
+                                                         implicit val materializer: Materializer) extends WelshCountryNamesDataSource(englishCountryNamesDataSource) {
   val logger = Logger(this.getClass)
 
-  def cache: Option[S3Cache] = {
-    val head = mutable.peekFirst()
-    Option(head)
+  private val objectStorePath = Path.Directory("govwales").file("country-names.csv")
+
+  override def retrieveAndStoreData: Unit = {
+    try {
+      val browser = new HtmlUnitBrowser()
+      val x = browser.underlying.getPage[HtmlPage]("https://www.vocalink.com/tools/modulus-checking/")
+
+      var count = 0
+      var link: Option[HtmlAnchor] = None
+
+      while (count < 60 && link.isEmpty) {
+        link = Try {
+          x.getAnchorByText("Modulus weight table data")
+        }.toOption
+        count = count + 1
+
+        try {
+          // This is blocking but usually completes on the first try
+          Thread.sleep(500)
+        }
+      }
+
+      val download = link.get.click[TextPage]();
+      implicit val hc = new HeaderCarrier();
+
+      val data = Source.fromString(download.getContent)
+      val csv = CSVReader.open(data)
+
+      // Check the integrity of the data file before caching it
+      if (csv.allWithHeaders().length > 1) {
+          mutable.addFirst(CachedData("", data))
+          if (mutable.size() > 1) mutable.removeLast()
+          logger.info("Refreshed welsh country name data from third party source")
+
+          objectStore.putObject(
+            path = objectStorePath, content = download.getContent, contentType = Some("text/plain")
+          ).onComplete {
+            case Failure(e) => logger.error("Could not write welsh country name data to object-store", e)
+            case Success(_) => logger.info("Wrote welsh country name data to object-store successfully")
+          }
+      }
+      else {
+        logger.info(s"Error parsing welsh country name data from third party, unexpected file contents")
+      }
+
+    } catch {
+      case e: Exception => logger.error("Welsh country name data retrieval and storage failed", e)
+    }
   }
 
   override def updateCache(): Unit = {
     try {
-      fetchDataFromAmazon match {
-        case Some(c) =>
-          mutable.addFirst(c)
-          if (mutable.size() > 1) {
-            mutable.removeLast()
-          }
+      implicit val hc = new HeaderCarrier();
 
-          countriesCY = countriesWithAliases(mutable.peekFirst().data)
-        }
+      import uk.gov.hmrc.objectstore.client.play.Implicits.InMemoryReads._
+
+      objectStore.getObject[String](objectStorePath).map {
+        case Some(obj) =>
+          val data = Source.fromString(obj.content)
+          val csv = CSVReader.open(data)
+
+          if (csv.allWithHeaders().length > 1) {
+            mutable.addFirst(CachedData("", data))
+            if (mutable.size() > 1) mutable.removeLast()
+            logger.info("Refreshed welsh country name data cache from object-store")
+          }
+          else {
+            logger.info(s"Error parsing welsh country name data cache from object-store, unexpected file contents")
+          }
+        case None => logger.info("Did not find welsh country name data in object-store (it may not have been initialised yet)")
+      }
+
     } catch {
       case e: Exception =>
-        logger.error("Cache initialisation failed", e)
+        logger.error("Welsh country name data cache initialisation failed", e)
     }
   }
-
-  private def fetchDataFromAmazon: Option[S3Cache] = {
-    val remoteMd5 = getMetadata("MD5")
-    val localMd5 = if (cache == null || cache.isEmpty) "" else cache.get.checksum
-    if (remoteMd5 != localMd5) {
-      logger.info("New Welsh country data available - will refresh cache")
-      val file = client.getObject(bucket, key)
-      Some(S3Cache(remoteMd5, Source.fromInputStream(file.getObjectContent)))
-    } else {
-      logger.info("No new Welsh country data available - cache will not be refreshed")
-      None
-    }
-  }
-
-  private def getMetadata: Map[String, String] = {
-    val metadata = client.getObjectMetadata(bucket, key)
-    val eTag = metadata.getETag
-    val uploadTime = metadata.getUserMetadata.get("upload-datetime")
-    Map[String, String]("upload-datetime" -> uploadTime, "MD5" -> eTag)
-  }
-
 }
 
-case class S3Cache(checksum: String, data: BufferedSource)
+case class CachedData(checksum: String, data: Source)

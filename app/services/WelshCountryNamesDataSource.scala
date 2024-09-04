@@ -20,7 +20,6 @@ import address.v2.Country
 import com.github.tototoshi.csv.CSVReader
 import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.apache.pekko.stream.Materializer
-import org.htmlunit.TextPage
 import org.htmlunit.html.{HtmlAnchor, HtmlPage}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,8 +30,9 @@ import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.SortedMap
 import scala.concurrent.ExecutionContext
-import scala.io.{BufferedSource, Source}
-import scala.util.{Failure, Success, Try}
+import scala.io.Source
+import scala.jdk.javaapi.CollectionConverters.asScala
+import scala.util.{Failure, Success};
 
 @Singleton
 class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource {
@@ -83,15 +83,13 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (englishCountryNamesData
   override def retrieveAndStoreData: Unit = {
     try {
       val browser = new HtmlUnitBrowser()
-      val x = browser.underlying.getPage[HtmlPage]("https://www.vocalink.com/tools/modulus-checking/")
+      val x = browser.underlying.getPage[HtmlPage]("https://www.gov.wales/bydtermcymru/international-place-names")
 
       var count = 0
       var link: Option[HtmlAnchor] = None
 
       while (count < 60 && link.isEmpty) {
-        link = Try {
-          x.getAnchorByText("Modulus weight table data")
-        }.toOption
+        link = asScala(x.getAnchors).toSeq.find(a => a.asNormalizedText().startsWith("Enwau gwledydd"))
         count = count + 1
 
         try {
@@ -100,10 +98,10 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (englishCountryNamesData
         }
       }
 
-      val download = link.get.click[TextPage]();
+      val download = link.get.click[HtmlPage]();
       implicit val hc = new HeaderCarrier();
 
-      val data = Source.fromString(download.getContent)
+      val data = Source.fromString("")
       val csv = CSVReader.open(data)
 
       // Check the integrity of the data file before caching it
@@ -113,7 +111,7 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (englishCountryNamesData
           logger.info("Refreshed welsh country name data from third party source")
 
           objectStore.putObject(
-            path = objectStorePath, content = download.getContent, contentType = Some("text/plain")
+            path = objectStorePath, content = "", contentType = Some("text/plain")
           ).onComplete {
             case Failure(e) => logger.error("Could not write welsh country name data to object-store", e)
             case Success(_) => logger.info("Wrote welsh country name data to object-store successfully")
@@ -124,7 +122,8 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (englishCountryNamesData
       }
 
     } catch {
-      case e: Exception => logger.error("Welsh country name data retrieval and storage failed", e)
+      case e: Exception =>
+        logger.error("Welsh country name data retrieval and storage failed", e)
     }
   }
 

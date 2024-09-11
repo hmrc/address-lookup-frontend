@@ -25,7 +25,7 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 @Singleton
-class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: WelshCountryNamesDataSource, ec: ExecutionContext) {
+class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: WelshCountryNamesDataSource)(implicit ec: ExecutionContext) {
   val logger = Logger(this.getClass)
 
   val delay: FiniteDuration = config.getOptional[Int]("microservice.services.gov-wales.cache-schedule.initial-delay").map(_.seconds)
@@ -34,11 +34,15 @@ class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: 
     .getOrElse(throw new IllegalArgumentException("microservice.services.gov-wales.cache-schedule.interval"))
 
   GovWalesCacheUpdateScheduler.system.getScheduler.scheduleAtFixedRate(delay, interval){
-    () => Try{
+    () => Try {
       logger.info("Gov Wales data update started")
-      dataSource.updateCache()
-      dataSource.retrieveAndStoreData()
-      logger.info("Gov Wales data update finished")
+
+      for {
+        _ <- dataSource.updateCache()
+        _ <- dataSource.retrieveAndStoreData()
+      } yield {
+        logger.info("Gov Wales data update finished")
+      }
     }
   }(ec)
 }

@@ -19,7 +19,7 @@ import controllers.RemoteMessagesApiProvider
 import org.apache.pekko.stream.Materializer
 import play.api.libs.concurrent.PekkoGuiceSupport
 import play.api.{Configuration, Environment, Logger}
-import services.{EnglishCountryNamesDataSource, GovWalesCacheUpdateScheduler, WelshCountryNamesDataSource, WelshCountryNamesObjectStoreDataSource}
+import services._
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import javax.inject.Singleton
@@ -47,7 +47,20 @@ class Module(env: Environment, playConfig: Configuration) extends AbstractModule
       new WelshCountryNamesDataSource(english)
     } else {
       logger.info(s"Using gov-wales country data from object-store")
-      new WelshCountryNamesObjectStoreDataSource(english, objectStore, ec, mat)
+
+      val proxyHost: Option[String] = playConfig.getOptional[String]("proxy.host")
+      val proxyPort: Option[Int] = playConfig.getOptional[Int]("proxy.port")
+      val proxyUsername: Option[String] = playConfig.getOptional[String]("proxy.username")
+      val proxyPassword: Option[String] = playConfig.getOptional[String]("proxy.password")
+
+      val proxyConfig: Option[ExtendedProxyConfig] = for {
+        pHost <- proxyHost
+        pPort <- proxyPort
+        pUserName <- proxyUsername
+        pPassword <- proxyPassword
+      } yield new ExtendedProxyConfig(pHost, pPort, "https", pUserName, pPassword)
+
+      new WelshCountryNamesObjectStoreDataSource(english, objectStore, proxyConfig, ec, mat)
     }
   }
 }

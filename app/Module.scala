@@ -36,7 +36,7 @@ class Module(env: Environment, playConfig: Configuration) extends AbstractModule
   @Singleton
   private def provideWelshCountryNamesDataSource(english: EnglishCountryNamesDataSource,
                                                  objectStore: PlayObjectStoreClient,
-                                                 ec: ExecutionContext, mat: Materializer) = {
+                                                 ec: ExecutionContext, mat: Materializer): WelshCountryNamesDataSource = {
     val logger = Logger(this.getClass)
 
     val useLocal =

@@ -20,8 +20,8 @@ import address.v2.Country
 import com.github.tototoshi.csv.CSVReader
 import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.apache.pekko.stream.Materializer
-import org.htmlunit.{DefaultCredentialsProvider, UnexpectedPage}
 import org.htmlunit.html.{HtmlAnchor, HtmlPage}
+import org.htmlunit.{ProxyConfig, UnexpectedPage}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.objectstore.client.Path
@@ -88,7 +88,7 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 @Singleton
 class WelshCountryNamesObjectStoreDataSource  @Inject() (
     englishCountryNamesDataSource: EnglishCountryNamesDataSource, objectStore: PlayObjectStoreClient,
-    proxyConfig: Option[ExtendedProxyConfig], implicit val ec: ExecutionContext, implicit val materializer: Materializer)
+    proxyConfig: Option[ProxyConfig], implicit val ec: ExecutionContext, implicit val materializer: Materializer)
   extends WelshCountryNamesDataSource(englishCountryNamesDataSource) {
 
   val logger = Logger(this.getClass)
@@ -98,12 +98,6 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
   override def retrieveAndStoreData: Future[Unit] = {
     try {
       val browser = new HtmlUnitBrowser(proxy = proxyConfig)
-
-      if (proxyConfig.isDefined) {
-        val credentialsProvider = browser.underlying.getCredentialsProvider.asInstanceOf[DefaultCredentialsProvider]
-        credentialsProvider.addCredentials(proxyConfig.get.username, proxyConfig.get.password.toCharArray)
-      }
-
       val page = browser.underlying.getPage[HtmlPage](
         "https://www.gov.wales/bydtermcymru/international-place-names")
 

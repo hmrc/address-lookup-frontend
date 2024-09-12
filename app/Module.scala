@@ -17,6 +17,7 @@
 import com.google.inject.{AbstractModule, Provides}
 import controllers.RemoteMessagesApiProvider
 import org.apache.pekko.stream.Materializer
+import org.htmlunit.ProxyConfig
 import play.api.libs.concurrent.PekkoGuiceSupport
 import play.api.{Configuration, Environment, Logger}
 import services._
@@ -44,21 +45,17 @@ class Module(env: Environment, playConfig: Configuration) extends AbstractModule
 
     if (useLocal) {
       logger.info(s"Using local gov-wales country data")
-      new WelshCountryNamesDataSource(english)
+      new WelshCountryNamesDataSource(english)  
     } else {
       logger.info(s"Using gov-wales country data from object-store")
 
       val proxyHost: Option[String] = playConfig.getOptional[String]("proxy.host")
       val proxyPort: Option[Int] = playConfig.getOptional[Int]("proxy.port")
-      val proxyUsername: Option[String] = playConfig.getOptional[String]("proxy.username")
-      val proxyPassword: Option[String] = playConfig.getOptional[String]("proxy.password")
 
-      val proxyConfig: Option[ExtendedProxyConfig] = for {
+      val proxyConfig: Option[ProxyConfig] = for {
         pHost <- proxyHost
         pPort <- proxyPort
-        pUserName <- proxyUsername
-        pPassword <- proxyPassword
-      } yield new ExtendedProxyConfig(pHost, pPort, "https", pUserName, pPassword)
+      } yield new ProxyConfig(pHost, pPort, "https")
 
       new WelshCountryNamesObjectStoreDataSource(english, objectStore, proxyConfig, ec, mat)
     }

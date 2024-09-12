@@ -16,6 +16,7 @@
 
 package controllers.international
 
+import address.v2.Country
 import controllers.routes
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
@@ -168,7 +169,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         stubGetAddressByCountry(addressJson = internationalAddressResultsListBySize(numberOfRepeats = addressAmount), countryCode = "BM")
         await(cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
+          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

@@ -16,6 +16,7 @@
 
 package controllers.international
 
+import address.v2.Country
 import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
@@ -48,7 +49,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         await(cache.putV2(testJourneyId,
-          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
+          journeyDataV2ResultLimit.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -90,7 +91,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         await(cache.putV2(testJourneyId,
-          journeyDataV2SelectLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
+          journeyDataV2SelectLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
@@ -185,7 +186,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         await(cache.putV2(testJourneyId,
-          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
+          journeyDataV2DefaultWelshLabels.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
 
         val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(
@@ -216,7 +217,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
         await(cache.putV2(testJourneyId,
-          journeyData.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, "BM")), countryCode = Some("BM"))))
+          journeyData.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
 
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")

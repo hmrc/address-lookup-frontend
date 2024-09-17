@@ -55,7 +55,7 @@ class Module(env: Environment, playConfig: Configuration) extends AbstractModule
       val proxyConfig: Option[ProxyConfig] = for {
         pHost <- proxyHost
         pPort <- proxyPort
-      } yield new ProxyConfig(pHost, pPort, "https")
+      } yield new ProxyConfig(pHost, pPort, "http")
 
       new WelshCountryNamesObjectStoreDataSource(english, objectStore, proxyConfig, ec, mat)
     }

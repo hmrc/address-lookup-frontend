@@ -1,8 +1,4 @@
 # Add all the application routes to the app.routes file
 ->         /lookup-address            app.Routes
 ->         /api                       api.Routes
-
-GET         /ping/ping                      @health.HealthController.ping
-
-# Re-enable the /ping endpoint
-GET         /ping                          controllers.PingController.ping
+->         /                          health.Routes

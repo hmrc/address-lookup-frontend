@@ -84,7 +84,6 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     countriesWithAliases(mutable.peekFirst().data)
 }
 
-
 @Singleton
 class WelshCountryNamesObjectStoreDataSource  @Inject() (
     englishCountryNamesDataSource: EnglishCountryNamesDataSource, objectStore: PlayObjectStoreClient,
@@ -98,6 +97,10 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
   override def retrieveAndStoreData: Future[Unit] = {
     try {
       val browser = new HtmlUnitBrowser(proxy = proxyConfig)
+      browser.underlying.setJavaScriptErrorListener(new WarnLoggingJavascriptErrorListener)
+      browser.underlying.getOptions.setThrowExceptionOnFailingStatusCode(false);
+      browser.underlying.getOptions.setThrowExceptionOnScriptError(false);
+
       val page = browser.underlying.getPage[HtmlPage](
         "https://www.gov.wales/bydtermcymru/international-place-names")
 

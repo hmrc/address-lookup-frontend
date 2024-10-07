@@ -170,6 +170,9 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
             logger.info(s"Error parsing welsh country name data cache from object-store, unexpected file contents")
           }
         case None => logger.info("Did not find welsh country name data in object-store (it may not have been initialised yet)")
+      }.recoverWith { case e =>
+        logger.error("Could not read welsh country name from object-store", e)
+        Future.successful()
       }
 
     } catch {

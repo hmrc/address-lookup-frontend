@@ -52,7 +52,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         document.getElementById("continue").text() shouldBe "Continue"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "countryCode" -> "Select country"
+          "countryCode" -> "Select country or territory"
         ))
         document.getElementById("accessibilityAutocomplete").text() contains "No results found"
 

@@ -46,7 +46,7 @@ constants.editPagePostcodeErrorMessage = Enter a valid postcode
 constants.editPageCountryErrorMessage = Enter the country of the address
 constants.editPageAtLeastOneLineOrTown = Enter at least one address line or a town
 
-constants.countryPickerPageCountryErrorMessage = Enter country of the address
+constants.countryPickerPageCountryErrorMessage = Enter country or territory of the address
 
 constants.errorRequired = Select an address
 constants.errorMin = Minimum length is $min
@@ -96,9 +96,9 @@ constants.error = Error
 
 constants.footer.visuallyHiddenText = Support links
 
-countryPickerPage.title = Select your country
-countryPickerPage.heading = Select your country
-countryPickerPage.countryLabel = Select country
+countryPickerPage.title = Select your country or territory
+countryPickerPage.heading = Select your country or territory
+countryPickerPage.countryLabel = Select country or territory
 countryPickerPage.submitLabel = Continue
 
 confirmPage.title = Review and confirm
@@ -119,7 +119,7 @@ editPage.line3Label = Address line 3
 editPage.townLabel = Town or city
 editPage.postcodeLabel = Postcode (optional)
 editPage.postcodeLabel.ukMode = UK postcode (optional)
-editPage.countryLabel = Country
+editPage.countryLabel = Country or territory
 editPage.submitLabel = Continue
 
 lookupPage.title = Find your address
@@ -162,7 +162,7 @@ international.editPage.line2Label = Address line 2
 international.editPage.line3Label = Address line 3
 international.editPage.townLabel = Town or city
 international.editPage.postcodeLabel = Postcode (optional)
-international.editPage.countryLabel = Country
+international.editPage.countryLabel = Country or territory
 international.editPage.submitLabel = Continue
 
 international.confirmPage.title = Review and confirm

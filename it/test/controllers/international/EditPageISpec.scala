@@ -66,7 +66,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line3" -> "Address line 3",
           "town" -> "Town or city",
           "postcode" -> "Postcode (optional)",
-          "countryName" -> "Country"
+          "countryName" -> "Country or territory"
         ))
       }
 
@@ -320,7 +320,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "line3" -> "Address line 3",
         "town" -> "Town or city",
         "postcode" -> "Postcode (optional)",
-        "countryName" -> "Country"))
+        "countryName" -> "Country or territory"))
     }
 
     "return 400 if all fields are missing and return edit page with welsh text" in {

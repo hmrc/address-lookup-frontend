@@ -70,13 +70,13 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         res.status shouldBe OK
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Dewiswch eich gwlad"
-        document.getElementById("pageHeading").text() shouldBe "Dewiswch eich gwlad"
+        document.title() shouldBe "Dewiswch eich gwlad neu diriogaeth"
+        document.getElementById("pageHeading").text() shouldBe "Dewiswch eich gwlad neu diriogaeth"
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
         document.getElementById("continue").text() shouldBe "Yn eich blaen"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "countryCode" -> "Dewiswch wlad"
+          "countryCode" -> "Dewiswch gwlad neu diriogaeth"
         ))
         document.getElementById("accessibilityAutocomplete").text() contains "Dim canlyniadau wedi’u darganfod"
       }

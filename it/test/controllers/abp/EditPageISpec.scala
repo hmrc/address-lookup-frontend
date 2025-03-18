@@ -108,7 +108,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "line3" -> "Llinell cyfeiriad 3",
           "town" -> "Tref/dinas",
           "postcode" -> "Cod post (dewisol)",
-          "countryCode" -> "Gwlad"
+          "countryCode" -> "Gwlad neu diriogaeth"
         ))
       }
 

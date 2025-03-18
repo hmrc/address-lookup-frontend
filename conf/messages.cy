@@ -46,7 +46,7 @@ constants.editPagePostcodeErrorMessage = Nodwch god post dilys
 constants.editPageCountryErrorMessage = Nodwch wlad y cyfeiriad
 constants.editPageAtLeastOneLineOrTown = Nodwch o leiaf un llinell cyfeiriad neu dref
 
-constants.countryPickerPageCountryErrorMessage = Nodwch wlad y cyfeiriad
+constants.countryPickerPageCountryErrorMessage = Nodwch wlad neu diriogaeth y cyfeiriad
 
 constants.errorRequired = Dewiswch gyfeiriad
 constants.errorMin = $min yw’r isafswm hyd
@@ -96,9 +96,9 @@ constants.error = Gwall
 
 constants.footer.visuallyHiddenText = Dolenni cymorth
 
-countryPickerPage.title = Dewiswch eich gwlad
-countryPickerPage.heading = Dewiswch eich gwlad
-countryPickerPage.countryLabel = Dewiswch wlad
+countryPickerPage.title = Dewiswch eich gwlad neu diriogaeth
+countryPickerPage.heading = Dewiswch eich gwlad neu diriogaeth
+countryPickerPage.countryLabel = Dewiswch gwlad neu diriogaeth
 countryPickerPage.submitLabel = Yn eich blaen
 
 confirmPage.title = Cadarnhewch gyfeiriad
@@ -119,7 +119,7 @@ editPage.line3Label = Llinell cyfeiriad 3
 editPage.townLabel = Tref/dinas
 editPage.postcodeLabel = Cod post (dewisol)
 editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
-editPage.countryLabel = Gwlad
+editPage.countryLabel = Gwlad neu diriogaeth
 editPage.submitLabel = Yn eich blaen
 
 lookupPage.title = Dod o hyd i gyfeiriad
@@ -162,7 +162,7 @@ international.editPage.line2Label = Cyfeiriad – llinell 2
 international.editPage.line3Label = Cyfeiriad – llinell 3
 international.editPage.townLabel = Tref/dinas
 international.editPage.postcodeLabel = Cod post (dewisol)
-international.editPage.countryLabel = Gwlad
+international.editPage.countryLabel = Gwlad neu diriogaeth
 international.editPage.submitLabel = Yn eich blaen
 
 international.confirmPage.title = Adolygu a chadarnhau

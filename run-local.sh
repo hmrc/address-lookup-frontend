@@ -1,0 +1,1 @@
+sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"

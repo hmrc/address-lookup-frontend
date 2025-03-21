@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,29 @@
 
 package config
 
-import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
-import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.concurrent.duration.Duration
-
-trait AppConfig {
-  val analyticsToken: String
-  val analyticsHost: String
-  val reportAProblemPartialUrl: String
-  val reportAProblemNonJSUrl: String
-
-  def languageMap: Map[String, Lang]
-
-  def buildReportAProblemPartialUrl(service: Option[String]): String
-
-  def buildReportAProblemNonJSUrl(service: Option[String]): String
-}
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig, val environment: Environment) {
-  private def loadConfig(key: String) = config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   val appName: String = config.get[String]("appName")
   val cacheTtl: Duration = config.get[Duration]("mongodb.ttl")
 
-  val contactFormServiceIdentifier = "AddressLookupFrontend"
-  val homeUrl = "http://www.hmrc.gov.uk"
-  val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
-  val apiVersion2 = 2
+  val contactFrontendHost: Option[String] = config.getOptional[String]("contact-frontend.host")
 
-  val addressLookupEndpoint = servicesConfig.baseUrl("address-lookup-frontend")
-  val addressReputationEndpoint = servicesConfig.baseUrl("address-reputation")
-  val allowedHosts = config.underlying.getStringList("microservice.hosts.allowList").asScala.toSet
+  val contactFormServiceIdentifier = "AddressLookupFrontend"
+  val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
+
+  val addressLookupEndpoint: String = servicesConfig.baseUrl("address-lookup-frontend")
+  val addressReputationEndpoint: String = servicesConfig.baseUrl("address-reputation")
+  val allowedHosts: Set[String] = config.underlying.getStringList("microservice.hosts.allowList").asScala.toSet
 
   val languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -60,19 +46,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   )
 
   val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
-
-  lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  lazy val reportAProblemPartialUrl = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl = s"/contact/report-technical-problem?service=$contactFormServiceIdentifier"
-
-  def buildReportAProblemPartialUrl(service: Option[String]): String = {
-    s"/contact/problem_reports_ajax?service=${service.getOrElse(contactFormServiceIdentifier)}"
-  }
-
-  def buildReportAProblemNonJSUrl(service: Option[String]): String = {
-    s"/contact/report-technical-problem?service=${service.getOrElse(contactFormServiceIdentifier)}"
-  }
 
   def langToLanguage(langCode: String): Language = langCode match {
     case "en" => En

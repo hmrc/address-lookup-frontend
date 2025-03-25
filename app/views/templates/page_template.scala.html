@@ -14,18 +14,18 @@
  * limitations under the License.
  *@
 
-@import config.{FooterLinks, FrontendAppConfig}
+@import config.FrontendAppConfig
 @import model.JourneyDataV2
-@import java.net.URI
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Footer
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Meta
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
+
+@import java.net.URI
 
 @this(govukLayout: GovukLayout, footer: GovukFooter, banner: HmrcBanner, help: HmrcReportTechnicalIssue,
 form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, govukBackLink: GovukBackLink, languageSwitch:
 HmrcLanguageSelect, errorSummary: GovukErrorSummary, phaseBanner: GovukPhaseBanner, timeoutDialog: HmrcTimeoutDialog,
 header: HmrcHeader, standardFooter: HmrcStandardFooter)
+
 @(title: String, form: Option[Form[_]], journeyData: JourneyDataV2)(content: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
     @userAction = @{
@@ -132,9 +132,7 @@ header: HmrcHeader, standardFooter: HmrcStandardFooter)
 
         @help(ReportTechnicalIssue(
             serviceCode = resolvedJourneyConfig.options.deskProServiceName.getOrElse(appConfig.contactFormServiceIdentifier),
-            language = messages.lang.code match {
-                case "en" => En
-                case "cy" => Cy
-            }
+            language = if(messages.lang.code == "cy") Cy else En,
+            baseUrl = appConfig.contactFrontendHost
         ))
     }

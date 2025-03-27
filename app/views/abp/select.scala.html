@@ -14,12 +14,21 @@
  * limitations under the License.
  *@
 
-@import model.{Select => ModelSelect, _}
 @import config.FrontendAppConfig
-@import views.html.templates.page_template
+@import model.{Select => ModelSelect, _}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels._
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
+@import views.html.templates.Layout
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-page: page_template)
+@this(
+        form: FormWithCSRF,
+        textarea: GovukTextarea,
+        button: GovukButton,
+        textInput: GovukInput,
+        radios: GovukRadios,
+        page: Layout,
+        govukErrorSummary: GovukErrorSummary
+)
 @(id: String, journeyData: JourneyDataV2, selectForm: Form[ModelSelect], proposals: Proposals, formattedPostcode: String, filter: Option[String], firstSearch: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
@@ -37,6 +46,7 @@ page: page_template)
 @page(titleWithError, Some(selectForm), journeyData) {
 
     @if(filter.isDefined && !firstSearch) {
+
         <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{messages("selectPage.headingWithPostcode")} @{formattedPostcode}</h1>
         <div class="form-field">
             <p class="govuk-body" id="no-results">
@@ -51,13 +61,17 @@ page: page_template)
     }
 
     @form(controllers.routes.AbpAddressLookupController.handleSelect(id, filter, formattedPostcode)) {
+        @if(selectForm.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(selectForm))
+        }
+
         <p class="govuk-!-margin-bottom-6 govuk-body">
             <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(formattedPostcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
         </p>
 
         @radios(Radios(
-            formGroupClasses = "form-group",
-            errorMessage = selectForm("addressId").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
+            formGroup = FormGroup(classes = Some("form-group")),
+            errorMessage = selectForm("addressId").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
@@ -66,14 +80,14 @@ page: page_template)
                 ))
             )),
             items = proposals.proposals match {
-                case Some(ps) ⇒ ps.zipWithIndex.map { case (p, idx) ⇒
+                case Some(ps) => ps.zipWithIndex.map { case (p, idx) =>
                     RadioItem(
                         content = HtmlContent(p.toDescription),
                         value = Some(p.addressId),
                         id = if (idx == 0) Some("addressId") else Some(s"addressId-$idx"),
                         checked = selectForm(s"${p.addressId}").value.isDefined)
                 }
-            case None ⇒ Seq.empty
+            case None => Seq.empty
         }))
 
         @if(resolvedConf.options.selectPageConfig.showSearchAgainLink) {

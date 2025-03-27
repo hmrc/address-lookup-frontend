@@ -14,14 +14,25 @@
  * limitations under the License.
  *@
 
-@import model._
-@import config.FrontendAppConfig
-@import views.html.templates.page_template
-@import uk.gov.hmrc.govukfrontend.views.html.components
 @import address.v2.Country
+@import config.FrontendAppConfig
+@import model._
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.govukfrontend.views.viewmodels._
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
 @import views.ViewHelper
+@import views.html.templates.Layout
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, select: GovukSelect, page: page_template)
+@this(
+        form: FormWithCSRF,
+        textarea: GovukTextarea,
+        button: GovukButton,
+        select: GovukSelect,
+        govukErrorSummary: GovukErrorSummary,
+        page: Layout)
+
+
 @(id: String,
     journeyData: JourneyDataV2,
     countryPickerForm: Form[CountryPicker],
@@ -48,6 +59,10 @@
 @page(titleWithError, Some(countryPickerForm), journeyData) {
 
   @form(routes.AddressLookupController.handleCountryPicker(id)) {
+      @if(countryPickerForm.errors.nonEmpty) {
+          @govukErrorSummary(ErrorSummary().withFormErrorsAsText(countryPickerForm))
+      }
+
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @messages("countryPickerPage.heading")
       </h1>
@@ -66,32 +81,10 @@
           id = "countryCode",
           name = "countryCode",
           label = Label(content = HtmlContent(messages("countryPickerPage.countryLabel"))),
-          errorMessage = countryPickerForm("countryCode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
+          errorMessage = countryPickerForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           items = ViewHelper.countriesToSelectItems(countries, countryPickerForm),
-          formGroupClasses = "form-field-group"
-      ))
-
-      <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
-      <script id="accessibilityAutocomplete">
-              accessibleAutocomplete.enhanceSelectElement({
-                  selectElement: document.getElementById("countryCode"),
-                  name: 'countryCodeAutocomplete',
-                  defaultValue: '',
-                  tNoResults: () => '@messages("country.noResult")' ,
-                  @*
-                    TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
-                    https://github.com/alphagov/accessible-autocomplete/issues/260
-                    When this is fixed the custom validation / onConfirm bypass can be removed
-                  *@
-                  onConfirm: () => {
-                      const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
-                          return c.text === document.getElementById("countryCode").value;
-                      });
-                      const countryCode = matchingOption ? matchingOption.value : undefined;
-                      document.getElementById("countryCode-select").value = countryCode;
-                  }
-              })
-      </script>
+          formGroup = FormGroup(classes = Some("form-field-group"))
+      ).asAccessibleAutocomplete())
 
       @button(Button(content = HtmlContent(messages("countryPickerPage.submitLabel")),
           name=Some("continue"),

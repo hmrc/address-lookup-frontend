@@ -485,7 +485,7 @@ Start the required services using the following SM profile:
 `sm2 --start ADDRESS_LOOKUP_SERVICES; sm2 --stop ADDRESS_LOOKUP_FRONTEND`
 
 run with
-`sbt "run 9028 -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"` (when in the address-lookup-frontend folder)
+`sbt "run 9028 -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes"` (when in the address-lookup-frontend folder)
 
 go to [localhost:9028/lookup-address/test-only/v2/test-setup](http://localhost:9028/lookup-address/test-only/v2/test-setup)<!-- @IGNORE PREVIOUS: link --> if not running from another service
 

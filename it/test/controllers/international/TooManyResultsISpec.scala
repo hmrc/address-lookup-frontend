@@ -96,7 +96,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
             doc.title shouldBe tooManyResultsMessages.title
             doc.h1.text shouldBe tooManyResultsMessages.heading1
-            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
             doc.link("enterManual") should have(

@@ -1,0 +1,85 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import model.JourneyDataV2
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+
+@this(
+        hmrcStandardPage: HmrcStandardPage,
+        standardBetaBanner: StandardBetaBanner,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
+        hmrcReportTechnicalIssueHelper : HmrcReportTechnicalIssueHelper
+)
+
+
+@(pageTitle: String, form: Option[Form[_]], journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
+
+@resolvedJourneyConfig = @{
+    journeyData.resolveConfigV2(appConfig)
+}
+
+@content = {
+    @contentBlock
+    @hmrcReportTechnicalIssueHelper()
+}
+
+@fullTitle = @{
+    if (messages.isDefinedAt("navTitle")) s"$pageTitle - ${messages("navTitle")} - GOV.UK"
+    else pageTitle
+}
+
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        pageTitle = Some(fullTitle),
+        serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
+        serviceURLs = ServiceURLs(
+            serviceUrl = Some(resolvedJourneyConfig.options.serviceHref.getOrElse("")),
+            signOutUrl = resolvedJourneyConfig.options.signOutHref
+        ),
+        banners = {
+            if (resolvedJourneyConfig.options.showPhaseBanner) {
+                Banners(
+                    phaseBanner = Some(
+                        PhaseBanner(
+                            tag = Some(Tag(
+                                content = HtmlContent(resolvedJourneyConfig.options.phase)
+                            )),
+                            content = uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent(
+                                messages("phaseBannerHtml").replace("$link", resolvedJourneyConfig.options.phaseFeedbackLink)
+                            )
+                        )
+                    )
+                )
+            }
+            else {
+                Banners(phaseBanner = None)
+            }
+        },
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(autocompleteCss()),
+            additionalScriptsBlock = Some(autocompleteJavascript())
+        ),
+        isWelshTranslationAvailable = true,
+        backLink = {
+            if (resolvedJourneyConfig.options.showBackButtons) Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
+            else None
+        }
+    )
+)(content)

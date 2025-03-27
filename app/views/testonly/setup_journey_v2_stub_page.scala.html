@@ -32,7 +32,15 @@
     @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
         <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
 
-        @textarea(Textarea(name = "journeyConfig", id = "journeyConfig", rows = 15, value = stubForm("journeyConfig").value))
+        @textarea(
+            Textarea(
+                name = "journeyConfig",
+                id = "journeyConfig",
+                label = Label(content = Text("Journey Config")),
+                rows = 15,
+                value = stubForm("journeyConfig").value
+            )
+        )
 
         @button(Button(name = Some("continue"), inputType = Some("submit"), content = HtmlContent("Start New Journey")))
     }

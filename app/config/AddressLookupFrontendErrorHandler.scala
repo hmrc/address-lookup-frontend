@@ -17,34 +17,40 @@
 package config
 
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddressLookupFrontendErrorHandler @Inject()(val messagesApi: MessagesApi,
                                                   implicit val frontendAppConfig: FrontendAppConfig,
+                                                  val ec: ExecutionContext,
                                                   error_template: views.html.error_template) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
     val messages = implicitly[Messages]
 
+    Future.successful(
     error_template(
       title = messages("constants.intServerErrorTitle"),
       heading = messages("constants.intServerErrorTitle"),
       message = messages("constants.intServerErrorTryAgain")
     )
+    )
   }
 
-  override def notFoundTemplate(implicit request: Request[_]): Html = {
+  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] = {
     val messages = implicitly[Messages]
 
+    Future.successful(
     error_template(
       title = messages("constants.notFoundErrorTitle"),
       heading = messages("constants.notFoundErrorHeading"),
       message = messages("constants.notFoundErrorBody")
+    )
     )
   }
 

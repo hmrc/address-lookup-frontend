@@ -20,7 +20,7 @@
 
 @this(govukLayout: GovukLayout, standardFooter: HmrcStandardFooter)
 
-@(title: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(title: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
 
 @head = {
     <!--[if lte IE 8]><link href=' @controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->

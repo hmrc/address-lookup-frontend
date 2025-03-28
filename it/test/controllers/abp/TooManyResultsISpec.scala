@@ -97,7 +97,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             )
             doc.title shouldBe tooManyResultsMessages.title
             doc.h1.text shouldBe tooManyResultsMessages.heading1
-            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
@@ -128,7 +128,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             )
             doc.title shouldBe tooManyResultsMessages.title
             doc.h1.text shouldBe tooManyResultsMessages.heading2
-            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
@@ -160,7 +160,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             )
             doc.title shouldBe tooManyResultsMessages.title
             doc.h1.text shouldBe tooManyResultsMessages.heading1
-            doc.paras.not(".language-select").get(1).text shouldBe tooManyResultsMessages.line1
+            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
             doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
             doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
             doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button

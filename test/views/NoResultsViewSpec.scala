@@ -28,9 +28,9 @@ import views.html.abp.no_results
 class NoResultsViewSpec extends ViewSpec {
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val no_results = app.injector.instanceOf[no_results]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val no_results: no_results = app.injector.instanceOf[no_results]
   implicit val lang: Lang = Lang("en")
 
 

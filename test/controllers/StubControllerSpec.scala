@@ -23,9 +23,11 @@ import controllers.api.ApiController
 import controllers.testonly.{StubController, StubHelper}
 import fixtures.ALFEFixtures
 import model._
+import org.apache.pekko.stream.Materializer
 import org.jsoup.Jsoup
-import org.mockito.Mockito._
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -49,8 +51,8 @@ class StubControllerSpec extends PlaySpec
 
   SharedMetricRegistries.clear()
 
-  implicit val hc = HeaderCarrier()
-  implicit lazy val materializer = app.materializer
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val materializer: Materializer = app.materializer
   val titleForV2StubPage = "Stub For starting new journey in ALF with V2 config"
 
   "StubHelper getJourneyIDFromURL" should {
@@ -95,13 +97,13 @@ class StubControllerSpec extends PlaySpec
     }
   }
 
-  val mockJourneyRepository = mock[JourneyRepository]
-  val mockAPIController = mock[ApiController]
+  val mockJourneyRepository: JourneyRepository = mock[JourneyRepository]
+  val mockAPIController: ApiController = mock[ApiController]
 
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val components = app.injector.instanceOf[MessagesControllerComponents]
+  val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val components: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-  val setup_journey_v2_stub_page = app.injector.instanceOf[setup_journey_v2_stub_page]
+  val setup_journey_v2_stub_page: setup_journey_v2_stub_page = app.injector.instanceOf[setup_journey_v2_stub_page]
 
   class Setup {
     val controller = new StubController(mockAPIController, mockJourneyRepository, frontendAppConfig, components, setup_journey_v2_stub_page)
@@ -112,9 +114,9 @@ class StubControllerSpec extends PlaySpec
 
   "showStubPageForJourneyInitV2" should {
     "return 200" in new Setup {
-      val res = controller.showStubPageForJourneyInitV2()(FakeRequest())
+      val res: Future[Result] = controller.showStubPageForJourneyInitV2()(FakeRequest())
       status(res) mustBe OK
-      val doc = Jsoup.parse(contentAsString(res))
+      val doc: Document = Jsoup.parse(contentAsString(res))
       doc.getElementsByTag("title").first().text() mustBe titleForV2StubPage
 
       Json.parse(doc.getElementById("journeyConfig").text()) mustBe Json.parse(

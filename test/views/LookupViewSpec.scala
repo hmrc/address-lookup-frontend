@@ -22,9 +22,9 @@ import views.html.abp.lookup
 
 class LookupViewSpec extends ViewSpec {
 
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val frontendConfig = app.injector.instanceOf[FrontendAppConfig]
-  val lookup = app.injector.instanceOf[lookup]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val frontendConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup: lookup = app.injector.instanceOf[lookup]
 
   "Lookup view page" should {
     //TODO: Exercise form logic - see BAVFEFE for inspiration

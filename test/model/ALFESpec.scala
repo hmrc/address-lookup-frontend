@@ -21,7 +21,6 @@ import fixtures.ALFEFixtures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsResultException, Json}
-import services.ForeignOfficeCountryService
 
 class ALFESpec extends AnyWordSpec with Matchers with ALFEFixtures {
 

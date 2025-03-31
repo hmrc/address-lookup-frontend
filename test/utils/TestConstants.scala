@@ -16,12 +16,12 @@
 
 package utils
 
-import java.util.UUID
-
+import address.v2.Country
 import controllers.Proposals
 import model._
 import play.api.libs.json.{JsValue, Json}
-import address.v2.Country
+
+import java.util.UUID
 
 object TestConstants {
   val testJourneyId: String = UUID.randomUUID().toString

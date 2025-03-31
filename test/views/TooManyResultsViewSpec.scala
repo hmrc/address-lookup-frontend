@@ -27,9 +27,9 @@ import utils.TestConstants._
 import views.html.abp.too_many_results
 
 class TooManyResultsViewSpec extends ViewSpec {
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit private val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit private val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit private val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   implicit private val lang: Lang = Lang("en")
 
   private val too_many_results = app.injector.instanceOf[too_many_results]
@@ -54,7 +54,7 @@ class TooManyResultsViewSpec extends ViewSpec {
   "The 'Too Many Results' page" when {
 
     "the back buttons are enabled in the journey config" should {
-      val doc = render(showBackButtons = true)
+      val doc = render()
 
       "not display back button" in {
         doc.getBackLinkText should not be empty
@@ -78,7 +78,7 @@ class TooManyResultsViewSpec extends ViewSpec {
     }
 
     "when not firstLookup" should {
-      val doc = render(firstLookup = false)
+      val doc = render()
 
       "render cannot find text" in {
         doc.getH1ElementAsText shouldBe tooManyResultsMessages.cannotFindText

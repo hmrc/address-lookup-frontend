@@ -25,7 +25,8 @@
         standardBetaBanner: StandardBetaBanner,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
-        hmrcReportTechnicalIssueHelper : HmrcReportTechnicalIssueHelper
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
 
@@ -44,6 +45,22 @@
     if (messages.isDefinedAt("navTitle")) s"$pageTitle - ${messages("navTitle")} - GOV.UK"
     else pageTitle
 }
+
+@combinedAdditionalHead = {
+    @resolvedJourneyConfig.options.timeoutConfig.map(t =>
+        hmrcTimeoutDialogHelper(
+            countdown = Some(120),
+            title = None,
+            keepAliveUrl = t.timeoutKeepAliveUrl.orElse(Some("/lookup-address/renewSession")),
+            timeout = Some(t.timeoutAmount),
+            signOutUrl = s"/lookup-address/destroySession?timeoutUrl=${t.timeoutUrl}"
+        )
+    )
+
+    @autocompleteCss()
+}
+
+
 
 @hmrcStandardPage(
     HmrcStandardPageParams(
@@ -74,13 +91,14 @@
             }
         },
         templateOverrides = TemplateOverrides(
-            additionalHeadBlock = Some(autocompleteCss()),
+            additionalHeadBlock = Some(combinedAdditionalHead),
             additionalScriptsBlock = Some(autocompleteJavascript())
         ),
         isWelshTranslationAvailable = true,
         backLink = {
             if (resolvedJourneyConfig.options.showBackButtons) Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
             else None
-        }
+        },
+
     )
 )(content)

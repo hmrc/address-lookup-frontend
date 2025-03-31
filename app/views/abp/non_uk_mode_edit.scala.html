@@ -20,10 +20,23 @@
 @import services.CountryService
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.govukfrontend.views.viewmodels._
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
 @import views.ViewHelper
 @import views.html.templates.Layout
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios, select: GovukSelect, page: Layout, govukFieldset: GovukFieldset, countryService: CountryService)
+@this(
+        form: FormWithCSRF,
+        textarea: GovukTextarea,
+        button: GovukButton,
+        textInput: GovukInput,
+        radios: GovukRadios,
+        select: GovukSelect,
+        page: Layout,
+        govukFieldset: GovukFieldset,
+        countryService: CountryService,
+        govukErrorSummary: GovukErrorSummary
+)
+
 
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
@@ -57,7 +70,11 @@
 
 @page(titleWithError, Some(editForm), journeyData) {
 
-    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
+    @if(editForm.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(editForm))
+    }
+
+      <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{messages("editPage.heading")}
     </h1>
 

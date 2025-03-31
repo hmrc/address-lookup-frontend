@@ -125,7 +125,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def lookupPageLabelsWrites = {
+  implicit def lookupPageLabelsWrites: OWrites[LookupPageLabels] = {
     (__ \ "lookupPage.title").writeNullable[String]
       .and((__ \ "lookupPage.title.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.heading").writeNullable[String])
@@ -142,7 +142,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def editPageLabelsWrites = {
+  implicit def editPageLabelsWrites: OWrites[EditPageLabels] = {
     (__ \ "editPage.title").writeNullable[String]
       .and((__ \ "editPage.heading").writeNullable[String])
       .and((__ \ "editPage.line1Label").writeNullable[String])

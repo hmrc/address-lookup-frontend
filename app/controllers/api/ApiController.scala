@@ -21,8 +21,8 @@ import controllers.AlfController
 import forms.ALFForms
 import model._
 import play.api.Logger
-import play.api.libs.json.Json
-import play.api.mvc.MessagesControllerComponents
+import play.api.libs.json.{Json, OWrites}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
 import services.{IdGenerationService, JourneyRepository}
 import utils.RelativeOrAbsoluteWithHostnameFromAllowlist
@@ -39,20 +39,20 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
                              (override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, controllerComponents) {
 
-  val logger = Logger(this.getClass)
-  val addressLookupEndpoint = config.addressLookupEndpoint
+  val logger: Logger = Logger(this.getClass)
+  val addressLookupEndpoint: String = config.addressLookupEndpoint
 
-  protected def uuid: String = idGenerationService.uuid
+  private def uuid: String = idGenerationService.uuid
 
   private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(config.allowedHosts, config.environment)
 
   case class InitFailure(reason: String)
 
   object InitFailure {
-    implicit val writes = Json.writes[InitFailure]
+    implicit val writes: OWrites[InitFailure] = Json.writes[InitFailure]
   }
 
-  def initWithConfigV2 = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
+  def initWithConfigV2: Action[JourneyConfigV2] = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
     val id = uuid
 
     val timeoutRedirectUrl = req.body.options.timeoutConfig.map(t => t.timeoutUrl)
@@ -82,7 +82,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
     }
   }
 
-  def confirmedV2 = Action.async { implicit req =>
+  def confirmedV2: Action[AnyContent] = Action.async { implicit req =>
     ALFForms.confirmedForm.bindFromRequest().fold(
       _ => Future.successful(BadRequest),
       confirmed => {

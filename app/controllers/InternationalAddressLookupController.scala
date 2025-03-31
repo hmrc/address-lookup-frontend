@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
 import model._
-import play.api.i18n.{Lang, Messages}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
@@ -53,11 +53,10 @@ class InternationalAddressLookupController @Inject()(
                                                     )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[Country] =
+  private def countries(welshFlag: Boolean): Seq[Country] =
     countryService.findAll(welshFlag)
 
-  def lookup(id: String, filter: Option[String]): Action[AnyContent] = Action.async {
-    implicit req =>
+  def lookup(id: String, filter: Option[String]): Action[AnyContent] = Action.async { implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
           import LanguageLabelsForMessages._
@@ -68,9 +67,6 @@ class InternationalAddressLookupController @Inject()(
           implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
           val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
           val formPrePopped = nonAbpLookupForm()(messages).fill(NonAbpLookup(filter.getOrElse("")))
 
           requestWithWelshHeader(isWelsh) {
@@ -82,7 +78,7 @@ class InternationalAddressLookupController @Inject()(
       }
   }
 
-  def postLookup(id: String) = Action.async {
+  def postLookup(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
@@ -96,7 +92,7 @@ class InternationalAddressLookupController @Inject()(
 
           val isWelsh = getWelshContent(journeyData)
 
-          nonAbpLookupForm
+          nonAbpLookupForm()
             .bindFromRequest()
             .fold(
               errors => requestWithWelshHeader(isWelsh) {
@@ -104,6 +100,8 @@ class InternationalAddressLookupController @Inject()(
               },
               lookup => Redirect(routes.InternationalAddressLookupController.select(id, lookup.filter))
             )
+
+        case None => Redirect(routes.AddressLookupController.noJourney())
       }
   }
 
@@ -186,8 +184,6 @@ class InternationalAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
-
         val bound = selectForm().bindFromRequest()
 
         bound.fold(
@@ -259,8 +255,6 @@ class InternationalAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] = if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
         val defaultAddress = addressOrEmpty(journeyData.selectedAddress, journeyData.countryCode.getOrElse(""))
         (None, requestWithWelshHeader(isWelsh) {
           Ok(
@@ -298,8 +292,6 @@ class InternationalAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         val validatedForm =
           isValidPostcode(nonUkEditForm().bindFromRequest())
@@ -348,9 +340,6 @@ class InternationalAddressLookupController @Inject()(
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
       val isWelsh = getWelshContent(journeyData)
-      implicit val permittedLangs: Seq[Lang] =
-        if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
       val isUKMode = journeyData.config.options.isUkMode
 
       journeyData.selectedAddress
@@ -379,16 +368,8 @@ class InternationalAddressLookupController @Inject()(
   def handleConfirm(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData => {
-        import LanguageLabelsForMessages._
-
-        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
-
-        implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         if (journeyData.selectedAddress.isDefined) {
           val jd =

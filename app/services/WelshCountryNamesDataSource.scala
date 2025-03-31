@@ -22,7 +22,7 @@ import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.apache.pekko.stream.Materializer
 import org.htmlunit.html.{HtmlAnchor, HtmlPage}
 import org.htmlunit.{ProxyConfig, UnexpectedPage}
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.objectstore.client.Path
 import uk.gov.hmrc.objectstore.client.play.Implicits._
@@ -35,8 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
 import scala.jdk.javaapi.CollectionConverters.asScala
 
-
-
 @Singleton
 class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource {
 
@@ -46,24 +44,22 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 
   protected val mutable: java.util.Deque[CachedData] = new java.util.concurrent.ConcurrentLinkedDeque()
 
-  val localData = streamToString(getClass.getResourceAsStream("/welsh-country-names.csv"))
+  private val localData: String = streamToString(getClass.getResourceAsStream("/welsh-country-names.csv"))
   mutable.add(CachedData("", localData))
 
-  def isCacheReady: Boolean = Option(mutable.peekFirst()).isDefined
+  def updateCache(): Future[Unit] = Future successful()
 
-  def updateCache(): Future[Unit] = Future.successful()
-
-  def retrieveAndStoreData(): Future[Unit] = Future.successful()
+  def retrieveAndStoreData(): Future[Unit] = Future successful()
 
   private val allAliasesCY = allAliases("/countryAliasesCY.csv")
 
   private val allWCORows = CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/wco-countries.csv"), "UTF-8"))
-    .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+    .allWithOrderedHeaders()._2.sortBy(x => x("Country"))
     .groupBy(_("Country"))
     .view.mapValues(v => v.head)
 
   private def allGovWalesRows(govWalesData: String) = CSVReader.open(Source.fromString(govWalesData))
-    .allWithOrderedHeaders._2.sortBy(x => x("Cod gwlad (Country code)"))
+    .allWithOrderedHeaders()._2.sortBy(x => x("Cod gwlad (Country code)"))
     .groupBy(_("Cod gwlad (Country code)"))
     .view.mapValues(v => v.head)
     .map { case (k, m) => k -> Map("Country" -> m("Cod gwlad (Country code)"), "Name" -> m("Enw yn Gymraeg (Name in Welsh)")) }
@@ -73,7 +69,7 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
       .map(Country.apply)
       .toSeq.sortWith { case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
 
-  protected def countriesWithAliases(govWalesData: String) = {
+  private def countriesWithAliases(govWalesData: String) = {
     countriesCYFull(govWalesData).flatMap { country =>
       if (allAliasesCY.contains(country.code)) country +: allAliasesCY(country.code)
       else Seq(country)
@@ -88,33 +84,34 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 class WelshCountryNamesObjectStoreDataSource  @Inject() (
     englishCountryNamesDataSource: EnglishCountryNamesDataSource, objectStore: PlayObjectStoreClient,
     proxyConfig: Option[ProxyConfig], implicit val ec: ExecutionContext, implicit val materializer: Materializer)
-  extends WelshCountryNamesDataSource(englishCountryNamesDataSource) {
-
-  val logger = Logger(this.getClass)
+  extends WelshCountryNamesDataSource(englishCountryNamesDataSource) with Logging {
 
   private val objectStorePath = Path.Directory("govwales").file("country-names.csv")
 
-  override def retrieveAndStoreData: Future[Unit] = {
+  override def retrieveAndStoreData(): Future[Unit] = {
     try {
-      val browser = new HtmlUnitBrowser(proxy = proxyConfig)
+      val browser: HtmlUnitBrowser = new HtmlUnitBrowser(proxy = proxyConfig)
       browser.underlying.setJavaScriptErrorListener(new WarnLoggingJavascriptErrorListener)
-      browser.underlying.getOptions.setThrowExceptionOnFailingStatusCode(false);
-      browser.underlying.getOptions.setThrowExceptionOnScriptError(false);
+      browser.underlying.getOptions.setThrowExceptionOnFailingStatusCode(false)
+      browser.underlying.getOptions.setThrowExceptionOnScriptError(false)
 
-      val page = browser.underlying.getPage[HtmlPage](
+      val page: HtmlPage = browser.underlying.getPage[HtmlPage](
         "https://www.gov.wales/bydtermcymru/international-place-names")
 
-      var count = 0
+      var count: Int = 0
       var link: Option[HtmlAnchor] = None
+
 
       while (count < 60 && link.isEmpty) {
         link = asScala(page.getAnchors).toSeq.find(a => a.asNormalizedText().startsWith("Enwau gwledydd"))
         count = count + 1
 
-        try {
-          // This is blocking but usually completes on the first try
-          Thread.sleep(500)
-        }
+        // This is blocking but usually completes on the first try
+        Thread.sleep(500)
+      }
+
+      if (link.isEmpty) {
+        logger.error("[retrieveAndStoreData] - Failed to find the link after 60 attempts")
       }
 
       val href = s"https://www.gov.wales/${link.get.getHrefAttribute}"
@@ -130,30 +127,31 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
       if (csv.allWithHeaders().length > 1) {
           mutable.addFirst(CachedData("", content))
           if (mutable.size() > 1) mutable.removeLast()
-          logger.info("Refreshed welsh country name data from third party source")
+
+          logger.info("[retrieveAndStoreData] - Refreshed welsh country name data from third party source")
 
           objectStore.putObject(path = objectStorePath, content, contentType = Some("text/plain"))
-            .map(_ => logger.info("Wrote welsh country name data to object-store successfully"))
+            .map(_ => logger.info("[retrieveAndStoreData] - Wrote welsh country name data to object-store successfully"))
             .recoverWith { case e =>
-              logger.error("Could not write welsh country name data to object-store", e)
-              Future.successful()
+              logger.error("[retrieveAndStoreData] - Could not write welsh country name data to object-store", e)
+              Future successful()
             }
       }
       else {
-        logger.info(s"Error parsing welsh country name data from third party, unexpected file contents")
-        Future.successful()
+        logger.error(s"[retrieveAndStoreData] - Error parsing welsh country name data from third party, unexpected file contents")
+        Future successful()
       }
 
     } catch {
       case e: Exception =>
-        logger.error("Welsh country name data retrieval and storage failed", e)
-        Future.successful()
+        logger.error("[retrieveAndStoreData] - Welsh country name data retrieval and storage failed", e)
+        Future successful()
     }
   }
 
   override def updateCache(): Future[Unit] = {
     try {
-      implicit val hc = new HeaderCarrier();
+      implicit val hc: HeaderCarrier = new HeaderCarrier()
 
       import uk.gov.hmrc.objectstore.client.play.Implicits.InMemoryReads._
 
@@ -164,21 +162,22 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
           if (csv.allWithHeaders().length > 1) {
             mutable.addFirst(CachedData("", obj.content))
             if (mutable.size() > 1) mutable.removeLast()
-            logger.info("Refreshed welsh country name data cache from object-store")
+            logger.info("[updateCache] - Refreshed welsh country name data cache from object-store")
           }
           else {
-            logger.info(s"Error parsing welsh country name data cache from object-store, unexpected file contents")
+            logger.error("[updateCache] - Error parsing welsh country name data cache from object-store, unexpected file contents")
           }
-        case None => logger.info("Did not find welsh country name data in object-store (it may not have been initialised yet)")
+        case None =>
+          logger.warn("[updateCache] - Did not find welsh country name data in object-store (it may not have been initialised yet)")
       }.recoverWith { case e =>
-        logger.error("Could not read welsh country name from object-store", e)
-        Future.successful()
+        logger.error("[updateCache] - Could not read welsh country name from object-store", e)
+        Future successful()
       }
 
     } catch {
       case e: Exception =>
-        logger.error("Welsh country name data cache initialisation failed", e)
-        Future.successful()
+        logger.error("[updateCache] - Welsh country name data cache initialisation failed", e)
+        Future successful()
     }
   }
 }

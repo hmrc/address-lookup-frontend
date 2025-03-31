@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
 import model._
-import play.api.i18n.{Lang, Messages}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AddressService, CountryService, JourneyRepository}
@@ -54,7 +54,7 @@ class AbpAddressLookupController @Inject()(
                                           )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[Country] =
+  private def countries(welshFlag: Boolean): Seq[Country] =
     countryService.findAll(welshFlag)
 
   // GET  /:id/lookup
@@ -70,8 +70,6 @@ class AbpAddressLookupController @Inject()(
           implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
           val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
           val isUKMode = journeyData.config.options.isUkMode
           val formPrePopped = lookupForm(isUKMode)(messages).fill(
@@ -100,8 +98,6 @@ class AbpAddressLookupController @Inject()(
           implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
           val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
           val isUKMode = journeyData.config.options.isUkMode
 
@@ -215,7 +211,6 @@ class AbpAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
 
         val isUKMode = journeyData.config.options.isUkMode
         val bound = selectForm().bindFromRequest()
@@ -294,9 +289,6 @@ class AbpAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
         val isUKMode = journeyData.config.options.isUkMode
 
         if (isUKMode) {
@@ -383,10 +375,8 @@ class AbpAddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
         val isUKMode = journeyData.config.options.isUkMode
+
         if (isUKMode) {
           val validatedForm = isValidPostcode(ukEditForm().bindFromRequest())
 
@@ -425,9 +415,6 @@ class AbpAddressLookupController @Inject()(
 
           validatedForm.fold(
             errors => {
-
-              //val pretendErrors =
-
               (None, requestWithWelshHeader(isWelsh) {
                 BadRequest(
                   non_uk_mode_edit(
@@ -472,9 +459,6 @@ class AbpAddressLookupController @Inject()(
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
       val isWelsh = getWelshContent(journeyData)
-      implicit val permittedLangs: Seq[Lang] =
-        if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
       val isUKMode = journeyData.config.options.isUkMode
 
       journeyData.selectedAddress
@@ -503,16 +487,8 @@ class AbpAddressLookupController @Inject()(
   def handleConfirm(id: String): Action[AnyContent] = Action.async {
     implicit req =>
       withJourneyV2(id) { journeyData => {
-        import LanguageLabelsForMessages._
-
-        val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
-
-        implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val permittedLangs: Seq[Lang] =
-          if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
         if (journeyData.selectedAddress.isDefined) {
           val jd =

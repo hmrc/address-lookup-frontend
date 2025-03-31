@@ -20,7 +20,7 @@ import address.v2.{Countries, Country}
 import config.{ALFCookieNames, FrontendAppConfig}
 import forms.ALFForms._
 import model._
-import play.api.i18n.{Lang, Messages}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{CountryService, JourneyRepository}
@@ -61,7 +61,7 @@ class AddressLookupController @Inject()(
                                          country_picker: views.html.country_picker)(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
-  private def countries(welshFlag: Boolean = false): Seq[Country] =
+  private def countries(welshFlag: Boolean): Seq[Country] =
     countryService.findAll(welshFlag)
 
   // GET  /no-journey
@@ -75,18 +75,10 @@ class AddressLookupController @Inject()(
     implicit req =>
       journeyRepository.getV2(id).map {
         case Some(journeyData) =>
-          import LanguageLabelsForMessages._
 
-          val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-            journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
-
-          implicit val messages: Messages = remoteMessagesApi.preferred(req)
-
-          val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
 
           val isUKMode = journeyData.config.options.isUkMode
+
           if (isUKMode) {
             Redirect(routes.AbpAddressLookupController.lookup(id, None, None))
           }
@@ -110,10 +102,8 @@ class AddressLookupController @Inject()(
           implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
           val isWelsh = getWelshContent(journeyData)
-          implicit val permittedLangs: Seq[Lang] =
-            if (isWelsh) Seq(Lang("cy")) else Seq(Lang("en"))
-
           val isUKMode = journeyData.config.options.isUkMode
+
           if (isUKMode) {
             Redirect(routes.AbpAddressLookupController.lookup(id, None, None))
           }
@@ -142,8 +132,6 @@ class AddressLookupController @Inject()(
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
-        implicit val lang: Lang = if (isWelsh) Lang("cy") else Lang("en")
-
         val bound = countryPickerForm().bindFromRequest()
 
         bound.fold(
@@ -183,7 +171,7 @@ class AddressLookupController @Inject()(
 
   //   GET /renewSession
   def renewSession: Action[AnyContent] =
-    Action { implicit req =>
+    Action { _ =>
       Ok.sendFile(new File("conf/renewSession.jpg")).as("image/jpeg")
     }
 
@@ -191,8 +179,7 @@ class AddressLookupController @Inject()(
   private val policy = new RelativeOrAbsoluteWithHostnameFromAllowlist(frontendAppConfig.allowedHosts, frontendAppConfig.environment)
 
   def destroySession(timeoutUrl: RedirectUrl): Action[AnyContent] = Action {
-    implicit req =>
-      Redirect(policy.url(timeoutUrl)).withNewSession
+    _ => Redirect(policy.url(timeoutUrl)).withNewSession
   }
 }
 
@@ -205,9 +192,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
     countryCodesOpt match {
       case None => countries
       case Some(countryCodes) =>
-        countries filter {
-          case c => countryCodes.contains(c.code)
-        }
+        countries filter (c => countryCodes.contains(c.code))
     }
   }
 
@@ -234,8 +219,6 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
   protected def withJourneyV2(id: String, noJourney: Result = Redirect(routes.AddressLookupController.noJourney()))
                              (action: JourneyDataV2 => (Option[JourneyDataV2], Result))
                              (implicit request: Request[AnyContent]): Future[Result] = {
-    //    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
     journeyRepository.getV2(id).flatMap {
       case Some(journeyData) =>
         val outcome = action(journeyData)

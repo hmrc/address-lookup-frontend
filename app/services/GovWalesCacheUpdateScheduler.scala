@@ -17,7 +17,7 @@
 package services
 
 import org.apache.pekko.actor.ActorSystem
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Logging}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -25,12 +25,15 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 @Singleton
-class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: WelshCountryNamesDataSource)(implicit ec: ExecutionContext) {
-  val logger = Logger(this.getClass)
+class GovWalesCacheUpdateScheduler @Inject()(
+                                              config: Configuration,
+                                              dataSource: WelshCountryNamesDataSource
+                                            )(implicit ec: ExecutionContext) extends Logging {
 
-  val delay: FiniteDuration = config.getOptional[Int]("microservice.services.gov-wales.cache-schedule.initial-delay").map(_.seconds)
+  private val delay: FiniteDuration = config.getOptional[Int]("microservice.services.gov-wales.cache-schedule.initial-delay").map(_.seconds)
     .getOrElse(throw new IllegalArgumentException("microservice.services.gov-wales.cache-schedule.initial-delay not set"))
-  val interval: FiniteDuration = config.getOptional[Int]("microservice.services.gov-wales.cache-schedule.interval").map(_.seconds)
+
+  private val interval: FiniteDuration = config.getOptional[Int]("microservice.services.gov-wales.cache-schedule.interval").map(_.seconds)
     .getOrElse(throw new IllegalArgumentException("microservice.services.gov-wales.cache-schedule.interval"))
 
   GovWalesCacheUpdateScheduler.system.getScheduler.scheduleAtFixedRate(delay, interval){
@@ -48,5 +51,5 @@ class GovWalesCacheUpdateScheduler @Inject()(config: Configuration, dataSource: 
 }
 
 object GovWalesCacheUpdateScheduler {
-  val system: ActorSystem = ActorSystem("gov-wales-check-actor-system")
+  private val system: ActorSystem = ActorSystem("gov-wales-check-actor-system")
 }

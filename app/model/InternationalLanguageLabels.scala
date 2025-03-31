@@ -88,7 +88,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalLookupPageLabelsWrites = {
+  implicit def internationalLookupPageLabelsWrites: OWrites[InternationalLookupPageLabels] = {
     (__ \ "international.lookupPage.title").writeNullable[String]
       .and((__ \ "international.lookupPage.heading").writeNullable[String])
       .and((__ \ "international.lookupPage.afterHeadingText").writeNullable[String])
@@ -101,7 +101,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalEditPageLabelsWrites = {
+  implicit def internationalEditPageLabelsWrites: OWrites[InternationalEditPageLabels] = {
     (__ \ "international.editPage.title").writeNullable[String]
       .and((__ \ "international.editPage.heading").writeNullable[String])
       .and((__ \ "international.editPage.line1Label").writeNullable[String])

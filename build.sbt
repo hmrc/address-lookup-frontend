@@ -23,6 +23,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 9028)
   .settings(resolvers += Resolver.jcenterRepo)
+  .settings(CodeCoverageSettings.settings *)
 
 lazy val it = project.in(file("it"))
   .enablePlugins(play.sbt.PlayScala)

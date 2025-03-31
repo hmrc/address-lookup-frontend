@@ -21,10 +21,8 @@ import play.api.data.Form
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
 object ViewHelper {
-  def countryToSelectItem(c: Country, form: Form[_]): SelectItem =
-    countryToSelectItem(c).copy(selected = c.code == form("countryCode").value.getOrElse(""))
 
-  def countryToSelectItem(c: Country): SelectItem =
+  private def countryToSelectItem(c: Country): SelectItem =
     SelectItem(
       value = Some(encodeCountryCode(c)),
       text = c.name,

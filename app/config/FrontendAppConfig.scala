@@ -18,7 +18,6 @@ package config
 
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -31,8 +30,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   val appName: String = config.get[String]("appName")
   val cacheTtl: Duration = config.get[Duration]("mongodb.ttl")
 
-  val contactFrontendHost: Option[String] = config.getOptional[String]("contact-frontend.host")
-
   val contactFormServiceIdentifier = "AddressLookupFrontend"
   val feedbackUrl = "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=ALF"
 
@@ -44,14 +41,6 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
-
-  val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
-
-  def langToLanguage(langCode: String): Language = langCode match {
-    case "en" => En
-    case "cy" => Cy
-    case _ => En
-  }
 }
 
 object ALFCookieNames {

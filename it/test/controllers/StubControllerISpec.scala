@@ -41,7 +41,7 @@ class StubControllerISpec extends IntegrationSpecBase {
       .in(Environment.simple(mode = Mode.Dev))
       .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
       .configure(fakeConfig("play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"))
-      .build
+      .build()
   }
 
   s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2.url}" should {

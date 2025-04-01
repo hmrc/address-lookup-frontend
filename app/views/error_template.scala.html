@@ -14,29 +14,43 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
-@import views.html.templates.Layout
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+
 
 @this(
-        govukLayout: GovukLayout,
-        standardFooter: HmrcStandardFooter,
-        page: Layout
+        hmrcStandardPage: HmrcStandardPage,
+        standardBetaBanner: StandardBetaBanner,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
 
 @(title: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
 
-@fullTitle = @{
-    if (messages.isDefinedAt("navTitle")) s"$title - ${messages("navTitle")} - GOV.UK"
-    else title
+@combinedAdditionalHead = {
+    @hmrcTimeoutDialogHelper(signOutUrl = controllers.auth.routes.SignOutController.signOut().url)
+    @autocompleteCss()
 }
 
-@govukLayout(
-    pageTitle = Some(fullTitle),
-    headBlock = None,
-    scriptsBlock = None,
-    footerBlock = Some(standardFooter())) {
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        pageTitle = Some(title),
+        serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
+        serviceURLs = ServiceURLs(serviceUrl = None),
+        banners = Banners(displayHmrcBanner = true),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(combinedAdditionalHead),
+            additionalScriptsBlock = Some(autocompleteJavascript())
+        ),
+        isWelshTranslationAvailable = true,
+        backLink = Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
 
+    )
+) {
     <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
     <p class="govuk-body">@{Text(message).asHtml}</p>
 }

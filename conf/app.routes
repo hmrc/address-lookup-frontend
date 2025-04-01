@@ -27,7 +27,10 @@ GET  /renewSession               @controllers.AddressLookupController.renewSessi
 GET  /destroySession             @controllers.AddressLookupController.destroySession(timeoutUrl: uk.gov.hmrc.play.bootstrap.binders.RedirectUrl)
 
 # Other
-GET  /language/:lang        @controllers.LanguageController.switchToLanguage(lang: String)
+GET  /language/:lang             @controllers.LanguageController.switchToLanguage(lang: String)
+GET  /sign-out                   @controllers.auth.SignOutController.signOut()
+
 
 ->         /hmrc-frontend            hmrcfrontend.Routes
 GET        /assets/*file             controllers.Assets.at(path = "/public", file)
+

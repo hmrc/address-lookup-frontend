@@ -26,8 +26,7 @@ import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-class
-Module(env: Environment, playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
+class Module(env: Environment, playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
 
   override def configure(): Unit = {
     bind(classOf[RemoteMessagesApiProvider])

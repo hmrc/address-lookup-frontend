@@ -207,7 +207,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
       Cookie(
         name = ALFCookieNames.useWelsh,
         value = useWelsh.toString,
-        httpOnly = false,
+        httpOnly = true,
         sameSite = Some(Cookie.SameSite.Lax)
       )
     )

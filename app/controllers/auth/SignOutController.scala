@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.auth
 
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-trait AlfI18nSupport {
-  def messagesApi: MessagesApi
+import javax.inject.{Inject, Singleton}
 
-  implicit def request2Messages(implicit permittedLangs: Seq[Lang]): Messages = messagesApi.preferred(permittedLangs)
+@Singleton
+class SignOutController @Inject() (mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+
+  val signOut: Action[AnyContent] = Action { _ =>
+    Redirect("https://www.gov.uk").withNewSession
+  }
+
 }

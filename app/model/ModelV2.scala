@@ -27,7 +27,7 @@ case class JourneyDataV2(config: JourneyConfigV2,
                          confirmedAddress: Option[ConfirmableAddress] = None,
                          countryCode: Option[String] = None) {
 
-  def resolveConfigV2(appConfig: FrontendAppConfig) = ResolvedJourneyConfigV2(config, appConfig)
+  def resolveConfigV2(appConfig: FrontendAppConfig): ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(config, appConfig)
 
   val welshEnabled
   : Boolean = !config.requestedVersion.contains(1) && !(config.options.disableTranslations.isDefined && (config

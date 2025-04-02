@@ -17,13 +17,10 @@
 package services
 
 import address.v2.Country
-import com.github.tototoshi.csv._
 import com.google.inject.ImplementedBy
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import javax.inject.{Inject, Singleton}
-import scala.collection.immutable.SortedMap
-import scala.io.Source
 
 @ImplementedBy(classOf[ForeignOfficeCountryService])
 trait CountryService {
@@ -36,7 +33,7 @@ trait CountryService {
 
 @Singleton
 class ForeignOfficeCountryService @Inject() (english: EnglishCountryNamesDataSource, welsh: WelshCountryNamesDataSource) extends CountryService {
-  implicit val fcoCountryFormat = Json.format[FcoCountry]
+  implicit val fcoCountryFormat: OFormat[FcoCountry] = Json.format[FcoCountry]
 
   override def findAll(welshFlag: Boolean = false): Seq[Country] =
     if (!welshFlag) english.countriesEN

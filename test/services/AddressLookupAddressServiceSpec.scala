@@ -19,8 +19,8 @@ package services
 import address.v2._
 import config.FrontendAppConfig
 import model.ProposedAddress
-import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -36,11 +36,11 @@ import scala.util.Random
 class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
 
   class Scenario(resp: List[AddressRecord]) {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
     val end = "http://localhost:42"
 
-    val httpClient = mock[HttpClient]
-    val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+    val httpClient: HttpClient = mock[HttpClient]
+    val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
     when(httpClient.POST[LookupAddressByPostcode, List[AddressRecord]](anyString(), any(), any())(any(), any(), any()
       , any())).thenReturn(Future.successful(resp))
@@ -50,8 +50,8 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     val welsh = new WelshCountryNamesDataSource(english)
     val fco = new ForeignOfficeCountryService(english, welsh)
 
-    val service = new AddressLookupAddressService(frontendAppConfig, httpClient, fco) {
-      override val endpoint = end
+    val service: AddressLookupAddressService = new AddressLookupAddressService(frontendAppConfig, httpClient, fco) {
+      override val endpoint: String = end
     }
   }
 
@@ -82,8 +82,8 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }
 
     "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
-      val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-      val listOfOrgs = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.organisation).flatten
+      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      val listOfOrgs: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.organisation).flatten
 
       listOfLines mustBe Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
 
@@ -91,7 +91,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     }
 
     "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
-      val listOfLines = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
 
       listOfLines mustBe Seq(
         "Flat 1 The Curtains Up Comeragh Road",
@@ -149,7 +149,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
   private val oneAddress = someAddresses(1, addr(Some("GB"))(1000L))
 
-  private def someAddresses(num: Int = 1, addr: AddressRecord): List[AddressRecord] = {
+  private def someAddresses(num: Int, addr: AddressRecord): List[AddressRecord] = {
     (0 to num).map { i =>
       addr
     }.toList

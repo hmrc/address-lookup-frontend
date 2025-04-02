@@ -16,10 +16,10 @@
 
 package controllers.api
 
-import org.apache.pekko.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import fixtures.ALFEFixtures
 import model.{JourneyConfigV2, JourneyOptions, TimeoutConfig}
+import org.apache.pekko.stream.Materializer
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers
@@ -30,7 +30,7 @@ import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import play.api.{Application, Mode}
 import services.JourneyRepository
 
@@ -136,7 +136,6 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
 
       val result = init(journeyOptions)
 
-      val c = contentAsString(result)
       status(result) shouldBe Status.ACCEPTED
     }
 

@@ -14,11 +14,19 @@
  * limitations under the License.
  *@
 
-@import model._
 @import config.FrontendAppConfig
-@import views.html.templates.page_template
+@import model._
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
+@import views.html.templates.Layout
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, page: page_template)
+@this(
+        form: FormWithCSRF,
+        textarea: GovukTextarea,
+        button: GovukButton,
+        textInput: GovukInput,
+        govukErrorSummary: GovukErrorSummary,
+        page: Layout)
+
 @(id: String,
     journeyData: JourneyDataV2,
     lookupForm: Form[Lookup],
@@ -45,6 +53,11 @@
 @page(titleWithError, Some(lookupForm), journeyData) {
 
   @form(routes.AbpAddressLookupController.postLookup(id)) {
+
+      @if(lookupForm.errors.nonEmpty) {
+          @govukErrorSummary(ErrorSummary().withFormErrorsAsText(lookupForm))
+      }
+
       <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{if(isUKMode) messages("lookupPage.heading.ukMode") else messages("lookupPage.heading")}
       </h1>
@@ -68,7 +81,7 @@
           autocomplete = Some("postal-code"),
           classes = "govuk-input--width-10",
           id = lookupForm("postcode").id,
-          errorMessage = lookupForm("postcode").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
+          errorMessage = lookupForm("postcode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
 
         <p class="govuk-!-margin-bottom-6 govuk-body">
             <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
@@ -80,7 +93,7 @@
           value = lookupForm("filter").value,
           classes = "govuk-input--width-20",
           id = lookupForm("filter").id,
-          errorMessage = lookupForm("filter").error.map(fe ⇒ ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
+          errorMessage = lookupForm("filter").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
 
       @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),

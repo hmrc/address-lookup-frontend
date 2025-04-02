@@ -22,8 +22,9 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
+import play.api.data.Form
 import play.api.data.validation.{Invalid, Valid}
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 
 class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -32,17 +33,17 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     new GuiceApplicationBuilder().build()
   }
 
-  val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages = messagesApi.preferred(Seq(Lang("en")))
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
 
-  val editFormNonuk = ALFForms.nonUkEditForm()
-  val editFormNonukWelsh = ALFForms.nonUkEditForm()
-  val editFormUk = ALFForms.ukEditForm()
-  val editFormUkWelsh = ALFForms.ukEditForm()
+  val editFormNonuk: Form[Edit] = ALFForms.nonUkEditForm()
+  val editFormNonukWelsh: Form[Edit] = ALFForms.nonUkEditForm()
+  val editFormUk: Form[Edit] = ALFForms.ukEditForm()
+  val editFormUkWelsh: Form[Edit] = ALFForms.ukEditForm()
 
-  val chars257 = List.fill(257)("A").reduce(_ + _)
-  val chars256 = List.fill(256)("A").reduce(_ + _)
-  val chars255 = List.fill(255)("A").reduce(_ + _)
+  val chars257: String = List.fill(257)("A").reduce(_ + _)
+  val chars256: String = List.fill(256)("A").reduce(_ + _)
+  val chars255: String = List.fill(255)("A").reduce(_ + _)
 
   "ukEditForm" should {
     "return no errors with valid data" in {
@@ -161,7 +162,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
       // #Scenario: UK Address no postcode
       s" accept a UK address with no postcode where for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, "", "GB"))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, ""))).hasErrors mustBe false
       }
       // #Scenario Outline: UK Address with Invalid PostCode
       Seq(
@@ -173,7 +174,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         ("case 6","SW778 2BH")).foreach {
         case (caseNum, postcode) =>
           s"not accept a UK address with an invalid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode, "GB"))).hasErrors mustBe true
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors mustBe true
           }
       }
 
@@ -187,7 +188,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         ("case 6","B11 6HJ")).foreach{
         case  (caseNum,postcode) =>
           s"accept a UK address with a valid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode, "GB"))).hasErrors mustBe false
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors mustBe false
           }
       }
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {

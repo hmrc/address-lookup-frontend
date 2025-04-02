@@ -16,21 +16,21 @@
 
 package itutil
 
+import itutil.config.IntegrationTestConstants._
+import play.api.libs.crypto.CookieSigner
+import play.api.libs.ws.WSCookie
+import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
+import uk.gov.hmrc.http.SessionKeys
+
 import java.net.{URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.util.UUID
-
-import itutil.config.IntegrationTestConstants._
-import play.api.libs.ws.WSCookie
-import play.api.libs.crypto.CookieSigner
-import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
-import uk.gov.hmrc.http.SessionKeys
 
 trait LoginStub extends SessionCookieBaker {
   val SessionId         = s"stubbed-${UUID.randomUUID}"
   val invalidSessionId  = s"FAKE_PRF::NON-COMPSDOJ OMSDDf"
 
-  private def cookieData(additionalData: Map[String, String], sessionId: String = SessionId): Map[String, String] = {
+  private def cookieData(additionalData: Map[String, String], sessionId: String): Map[String, String] = {
     Map(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.lastRequestTimestamp -> new java.util.Date().getTime.toString

@@ -30,20 +30,20 @@ class EnglishCountryNamesDataSource extends CountryNamesDataSource {
 
   val allISORows: MapView[String, Map[String, String]] =
     CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/iso-countries.csv"), "UTF-8"))
-      .allWithOrderedHeaders._2.sortBy(x => x("alpha_2_code"))
+      .allWithOrderedHeaders()._2.sortBy(x => x("alpha_2_code"))
       .map(renameFields)
       .groupBy(_("Country")).view
       .mapValues(v => v.head)
 
   val allFCDORows: MapView[String, Map[String, String]] =
     CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_countries.csv"), "UTF-8"))
-      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .allWithOrderedHeaders()._2.sortBy(x => x("Country"))
       .groupBy(_("Country")).view
       .mapValues(v => v.head)
 
   val allFCDOTRows: MapView[String, Map[String, String]] =
     CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream("/fcdo_territories.csv"), "UTF-8"))
-      .allWithOrderedHeaders._2.sortBy(x => x("Country"))
+      .allWithOrderedHeaders()._2.sortBy(x => x("Country"))
       .filterNot(m => m("Country") == "Not applicable")
       .groupBy(_("Country")).view
       .mapValues(v => v.head)
@@ -54,7 +54,7 @@ class EnglishCountryNamesDataSource extends CountryNamesDataSource {
       .toSeq.sortWith { case (a, b) => utfSorter.compare(a.name, b.name) < 0 }
   }
 
-  val countriesEN = countriesENFull.flatMap { country =>
+  val countriesEN: Seq[Country] = countriesENFull.flatMap { country =>
     if (allAliasesEN.contains(country.code)) country +: allAliasesEN(country.code)
     else Seq(country)
   }

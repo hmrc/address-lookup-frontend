@@ -14,46 +14,43 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import config.FooterLinks
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 
-@this(govukLayout: GovukLayout, standardFooter: HmrcStandardFooter)
 
-@(title: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@this(
+        hmrcStandardPage: HmrcStandardPage,
+        standardBetaBanner: StandardBetaBanner,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+)
 
-@head = {
-    <!--[if lte IE 8]><link href=' @controllers.routes.Assets.at("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if gt IE 8]><!--> <link href='@controllers.routes.Assets.at("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
-    <link href='@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.css")' media="screen" rel="stylesheet" type="text/css" />
+
+@(title: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
+
+@combinedAdditionalHead = {
+    @hmrcTimeoutDialogHelper(signOutUrl = controllers.auth.routes.SignOutController.signOut().url)
+    @autocompleteCss()
 }
 
-@scriptElem = {
-    <script src='@controllers.routes.Assets.at("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.at("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script>
-        window.onpageshow = function (event) {
-            const disabledButton = document.querySelector('button[disabled]');
-            if(disabledButton) {
-                disabledButton.disabled = false
-            };
-        };
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        pageTitle = Some(title),
+        serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
+        serviceURLs = ServiceURLs(serviceUrl = None),
+        banners = Banners(displayHmrcBanner = true),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(combinedAdditionalHead),
+            additionalScriptsBlock = Some(autocompleteJavascript())
+        ),
+        isWelshTranslationAvailable = true,
+        backLink = Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
 
-        window.GOVUKFrontend.initAll();
-    </script>
-}
-
-@fullTitle = @{
-    if (messages.isDefinedAt("navTitle")) s"$title - ${messages("navTitle")} - GOV.UK"
-    else title
-}
-
-@govukLayout(
-    pageTitle = Some(fullTitle),
-    headBlock = Some(head),
-    scriptsBlock = Some(scriptElem),
-    footerBlock = Some(standardFooter())) {
-
+    )
+) {
     <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
     <p class="govuk-body">@{Text(message).asHtml}</p>
 }

@@ -15,12 +15,13 @@
  *@
 
 @import config.FrontendAppConfig
-@import views.html.templates.page_template
-@import model.JourneyDataV2
-@import model.JourneyOptions
-@import model.JourneyConfigV2
+@import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
+@import views.html.helper.{form, textarea}
+@import views.html.templates.Layout
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, page: page_template)
+@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, page: Layout)
+
+
 @(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @dummyJourney = @{
@@ -32,7 +33,15 @@
     @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
         <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>
 
-        @textarea(Textarea(name = "journeyConfig", id = "journeyConfig", rows = 15, value = stubForm("journeyConfig").value))
+        @textarea(
+            Textarea(
+                name = "journeyConfig",
+                id = "journeyConfig",
+                label = Label(content = Text("Journey Config")),
+                rows = 15,
+                value = stubForm("journeyConfig").value
+            )
+        )
 
         @button(Button(name = Some("continue"), inputType = Some("submit"), content = HtmlContent("Start New Journey")))
     }

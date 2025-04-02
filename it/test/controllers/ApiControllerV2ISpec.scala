@@ -100,7 +100,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
       .in(Environment.simple(mode = Mode.Dev))
       .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
       .configure(fakeConfig())
-      .build
+      .build()
   }
 
   lazy val addressLookupEndpoint = app.injector.instanceOf[ApiController].addressLookupEndpoint

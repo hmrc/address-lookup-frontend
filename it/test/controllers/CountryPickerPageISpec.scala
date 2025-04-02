@@ -54,7 +54,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Select country or territory"
         ))
-        document.getElementById("accessibilityAutocomplete").text() contains "No results found"
+        document.getElementById("countryCode").text() contains "No results found"
 
       }
 
@@ -78,7 +78,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Dewiswch gwlad neu diriogaeth"
         ))
-        document.getElementById("accessibilityAutocomplete").text() contains "Dim canlyniadau wedi’u darganfod"
+        document.getElementById("countryCode").text() contains "Dim canlyniadau wedi’u darganfod"
       }
     }
 

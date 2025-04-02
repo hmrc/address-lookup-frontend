@@ -18,8 +18,8 @@ package views
 
 import address.v2.Country
 import config.FrontendAppConfig
-import model._
 import forms.ALFForms._
+import model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, MessagesApi}
@@ -55,13 +55,13 @@ class UKModeEditViewSpec extends ViewSpec {
   }
 
   implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val lookup = app.injector.instanceOf[lookup]
-  val select = app.injector.instanceOf[select]
-  val uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val lookup: lookup = app.injector.instanceOf[lookup]
+  val select: select = app.injector.instanceOf[select]
+  val uk_mode_edit: uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
 
-  val configWithoutLabels = fullV2JourneyConfig.copy(
+  val configWithoutLabels: JourneyConfigV2 = fullV2JourneyConfig.copy(
     options = fullV2JourneyOptions.copy(ukMode = Some(false)),
     labels = Some(JourneyLabels(
       en = Some(fullV2LanguageLabelsEn.copy(editPageLabels = None))

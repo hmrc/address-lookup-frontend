@@ -28,7 +28,7 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 
 trait IntegrationSpecBase extends AnyWordSpec
   with LoginStub
@@ -46,7 +46,7 @@ trait IntegrationSpecBase extends AnyWordSpec
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}
 
-  implicit val defaultTimeout: FiniteDuration = 10 seconds
+  implicit val defaultTimeout: FiniteDuration = 30 seconds
 
   implicit def extractAwait[A](future: Future[A]): A = await[A](future)
 
@@ -55,8 +55,8 @@ trait IntegrationSpecBase extends AnyWordSpec
   // Convenience to avoid having to wrap andThen() parameters in Future.successful
   implicit def liftFuture[A](v: A): Future[A] = Future.successful(v)
 
-  val mockHost = WireMockHelper.wiremockHost
-  val mockPort = WireMockHelper.wiremockPort
+  val mockHost: String = WireMockHelper.wiremockHost
+  val mockPort: Int = WireMockHelper.wiremockPort
 
   implicit override lazy val app: Application = {
     SharedMetricRegistries.clear()
@@ -66,12 +66,12 @@ trait IntegrationSpecBase extends AnyWordSpec
       .build()
   }
 
-  val cookieSigner = app.injector.instanceOf[CookieSigner]
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+  val cookieSigner: CookieSigner = app.injector.instanceOf[CookieSigner]
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  def messages(message: String) = messagesApi.preferred(Seq(Lang("en")))(message)
+  def messages(message: String): String = messagesApi.preferred(Seq(Lang("en")))(message)
 
-  def messages(lang: Lang, message: String) = messagesApi.preferred(Seq(lang))(message)
+  def messages(lang: Lang, message: String): String = messagesApi.preferred(Seq(lang))(message)
 
   override def beforeEach(): Unit = {
     resetWiremock()

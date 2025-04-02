@@ -22,6 +22,8 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers.dsl.{IncludeWord, NotWord}
 import org.scalatest.matchers.must.Matchers
 
+import scala.language.implicitConversions
+
 trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with ElementWords {
 
   import org.jsoup.Jsoup.parseBodyFragment
@@ -30,7 +32,7 @@ trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with Ele
 
   protected val self = any
 
-  implicit def string2AsBodyFragment(s: String) = new {
+  implicit def string2AsBodyFragment(s: String): Object {def asBodyFragment: Element} = new {
     def asBodyFragment: Element = parseBodyFragment(s).body
   }
 
@@ -48,31 +50,31 @@ trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with Ele
 
   private[scalatest] final class ResultOfIncludeWord(left: Element) {
 
-    def element(selector: ElementSelector) {
+    def element(selector: ElementSelector): Unit = {
       if (selector(left).isEmpty)
         throw testFailedException(failureMessage(Symbol("didNotIncludeElementMatchingSelector"), left, selector))
     }
 
-    def img(selector: ElementSelector = any) {
+    def img(selector: ElementSelector = any): Unit = {
       element(selector.withName("img"))
     }
 
-    def video(selector: ElementSelector = any) {
+    def video(selector: ElementSelector = any): Unit = {
       element(selector.withName("video"))
     }
 
-    def td(selector: ElementSelector = any) {
+    def td(selector: ElementSelector = any): Unit = {
       element(selector.withName("td"))
     }
 
-    def th(selector: ElementSelector = any) {
+    def th(selector: ElementSelector = any): Unit = {
       element(selector.withName("th"))
     }
   }
 
   private[scalatest] final class ResultOfNotWord(left: Element) {
 
-    def include(selector: ElementSelector) {
+    def include(selector: ElementSelector): Unit = {
       if (! selector(left).isEmpty)
         throw testFailedException(failureMessage(Symbol("includedElementMatchingSelector"), left, selector))
     }
@@ -82,15 +84,15 @@ trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with Ele
     val fileNames = List("RicherHtmlTest.scala")
     val temp = new RuntimeException
     val stackDepth = temp.getStackTrace.takeWhile(sTraceElem =>
-      fileNames.exists(_ == sTraceElem.getFileName) || sTraceElem.getMethodName == "testFailedException").length
+      fileNames.contains(sTraceElem.getFileName) || sTraceElem.getMethodName == "testFailedException").length
     // TODO as far as my current understanding goes, stackDepth + 1 is just voodoo which appears to work
     new TestFailedException(message, stackDepth + 1)
   }
 
   private[scalatest] def failureMessage(key: Symbol, left: Element, expected: ElementSelector) =
     "%s %s %s".format(left, key match {
-      case 'includedElementMatchingSelector => "included an element"
-      case 'didNotIncludeElementMatchingSelector => "did not include an element"
+      case Symbol("includedElementMatchingSelector") => "included an element"
+      case Symbol("didNotIncludeElementMatchingSelector") => "did not include an element"
     }, expected)
 
 }
@@ -105,16 +107,16 @@ trait ElementWords { this: JsoupShouldMatchers =>
     def apply(selector: ElementSelector = any): ElementSelector
   }
 
-  val element = new ElementWord {
-    def apply(selector: ElementSelector) = selector
+  val element: ElementWord = new ElementWord {
+    def apply(selector: ElementSelector): ElementSelector = selector
   }
 
-  val img = new ElementWord {
-    def apply(selector: ElementSelector) = selector.withName("img")
+  val img: ElementWord = new ElementWord {
+    def apply(selector: ElementSelector): ElementSelector = selector.withName("img")
   }
 
-  val video = new ElementWord {
-    def apply(selector: ElementSelector) = selector.withName("video")
+  val video: ElementWord = new ElementWord {
+    def apply(selector: ElementSelector): ElementSelector = selector.withName("video")
   }
 
 }

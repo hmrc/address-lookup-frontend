@@ -14,11 +14,16 @@
  * limitations under the License.
  *@
 
-@import model._
 @import config.FrontendAppConfig
-@import views.html.templates.page_template
+@import model._
+@import views.html.templates.Layout
 
-@this(button: GovukButton, page: page_template)
+@this(
+        button: GovukButton,
+        page: Layout,
+        govukErrorSummary: GovukErrorSummary
+)
+
 @(id: String, journeyData: JourneyDataV2, formattedPostcode: String, filter: Option[String], firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{

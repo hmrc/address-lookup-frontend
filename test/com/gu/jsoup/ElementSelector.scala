@@ -16,9 +16,10 @@
 
 package com.gu.jsoup
 
-import scala.jdk.CollectionConverters._
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+
+import scala.jdk.CollectionConverters._
 
 
 sealed trait ElementSelector extends ElementSelectorBuilders {

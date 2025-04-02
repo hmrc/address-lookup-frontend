@@ -18,7 +18,6 @@ package model
 
 import forms.Postcode
 import play.api.libs.json._
-import services.ForeignOfficeCountryService
 import address.v2.Country
 import utils.PostcodeHelper
 
@@ -134,17 +133,17 @@ object CountryFormat {
 
 object ConfirmableAddressDetails {
   import CountryFormat._
-  implicit val confirmableAddressDetailsFormat =
+  implicit val confirmableAddressDetailsFormat: OFormat[ConfirmableAddressDetails] =
     Json.format[ConfirmableAddressDetails]
 }
 
 object ConfirmableAddress {
-  implicit val confirmableAddressFormat = Json.format[ConfirmableAddress]
+  implicit val confirmableAddressFormat: OFormat[ConfirmableAddress] = Json.format[ConfirmableAddress]
 }
 
 object ProposedAddress {
   import CountryFormat._
-  implicit val proposedAddressFormat = Json.format[ProposedAddress]
+  implicit val proposedAddressFormat: OFormat[ProposedAddress] = Json.format[ProposedAddress]
 
   def apply(addressId: String, uprn: Option[Long], parentUprn: Option[Long], usrn: Option[Long],
             organisation: Option[String], postcode: String, town: String): ProposedAddress =

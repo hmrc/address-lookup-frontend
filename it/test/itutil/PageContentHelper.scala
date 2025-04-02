@@ -197,7 +197,7 @@ trait PageContentHelper {
     val doc = getDocFromResponse(response)
 //    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
     testElementDoesntExist(response, "govuk-phase-banner")
-    doc.select(".govuk-link").last().attr("href") should include ("/contact/report-technical-problem?newTab=true&service=AddressLookupFrontend")
+    doc.select(".govuk-link").last().attr("href") should include ("/contact/report-technical-problem?service=AddressLookupFrontend")
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
 

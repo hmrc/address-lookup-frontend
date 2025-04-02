@@ -40,8 +40,8 @@ class StubControllerISpec extends IntegrationSpecBase {
     new GuiceApplicationBuilder()
       .in(Environment.simple(mode = Mode.Dev))
       .bindings(bind[IdGenerationService].toInstance(MockIdGenerationService))
-      .configure(fakeConfig("application.router" -> "testOnlyDoNotUseInAppConf.Routes"))
-      .build
+      .configure(fakeConfig("play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"))
+      .build()
   }
 
   s"${controllers.testonly.routes.StubController.showStubPageForJourneyInitV2.url}" should {

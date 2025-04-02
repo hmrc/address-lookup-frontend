@@ -203,7 +203,14 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
   }
 
   def requestWithWelshHeader(useWelsh: Boolean)(req: => Result): Result = {
-    req.withCookies(Cookie(ALFCookieNames.useWelsh, useWelsh.toString))
+    req.withCookies(
+      Cookie(
+        name = ALFCookieNames.useWelsh,
+        value = useWelsh.toString,
+        httpOnly = false,
+        sameSite = Some(Cookie.SameSite.Lax)
+      )
+    )
   }
 
   protected def urlWithQuery(url: String, appendQuery: String): URI = {

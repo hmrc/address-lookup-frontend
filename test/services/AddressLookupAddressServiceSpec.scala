@@ -17,7 +17,7 @@
 package services
 
 import address.v2._
-import config.FrontendAppConfig
+import connectors.AddressReputationConnector
 import model.ProposedAddress
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -26,7 +26,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import services.AddressReputationFormats._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,95 +36,7 @@ import scala.util.Random
 
 class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
 
-  class Scenario(resp: List[AddressRecord]) {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-    val end = "http://localhost:42"
-
-    val httpClient: HttpClient = mock[HttpClient]
-    val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-    when(httpClient.POST[LookupAddressByPostcode, List[AddressRecord]](anyString(), any(), any())(any(), any(), any()
-      , any())).thenReturn(Future.successful(resp))
-
-
-    val english = new EnglishCountryNamesDataSource()
-    val welsh = new WelshCountryNamesDataSource(english)
-    val fco = new ForeignOfficeCountryService(english, welsh)
-
-    val service: AddressLookupAddressService = new AddressLookupAddressService(frontendAppConfig, httpClient, fco) {
-      override val endpoint: String = end
-    }
-  }
-
-  "find" should {
-
-    "find addresses by postcode & isukMode == false" in new Scenario(oneAddress) {
-      service.find("ZZ11 1ZZ", isukMode = false).futureValue must be(toProposals(oneAddress))
-    }
-
-    "map UK to GB & isukMode == false" in new Scenario(List(addr(Some("UK"))(1000L))) {
-      service.find("ZZ11 1ZZ", isukMode = false).futureValue.head.country.code must be("GB")
-    }
-
-    "return multiple addresses with diverse country codes when isukMode == false" in new Scenario(
-      manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
-      service.find("ZZ11 1ZZ", isukMode = false).futureValue.map(a => a.country.code) must contain("foo")
-    }
-
-    "return no addresses where ukMode == true and all addresses are non UK addresses" in new Scenario(
-      manyAddresses(2)(Some("foobar"))) {
-      service.find("ZZ11 1ZZ", isukMode = true).futureValue.headOption must be(None)
-    }
-
-    "return 2 addresses where ukMode == true and 2 out of 3 addresses are UK" in new Scenario(
-      manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
-
-      service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(a => a.country.code) mustBe Seq("GB", "GB")
-    }
-
-    "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
-      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-      val listOfOrgs: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.organisation).flatten
-
-      listOfLines mustBe Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
-
-      listOfOrgs mustBe Seq("malvern-organisation")
-    }
-
-    "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
-      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-
-      listOfLines mustBe Seq(
-        "Flat 1 The Curtains Up Comeragh Road",
-        "Flat 2 The Curtains Up Comeragh Road",
-        "Flat 1 70 Comeragh Road",
-        "72a Comeragh Road",
-        "Flat 1 74 Comeragh Road",
-        "Flat 2 74 Comeragh Road",
-        "Flat B 78 Comeragh Road"
-      )
-    }
-
-    "sort the dodgy addresses without failing" in new Scenario(dodgyAddressess) {
-      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-    }
-
-    "sort the suspect addresses without failing" in new Scenario(suspectAddresses) {
-      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-    }
-
-    "sort the questionable addresses without failing" in new Scenario(questionableAddresses) {
-      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-    }
-
-    "sort the dubious addresses without failing" in new Scenario(dubiousAddresses) {
-      service.find("SK15 2BT", isukMode = true).futureValue.map(pa => pa.lines.mkString(" "))
-    }
-  }
-
-  import services.AddressReputationFormats._
-
-  private val dodgyAddressess = Json.parse(Source.fromResource("dodgy.json").mkString).as[List[AddressRecord]]
+  private val dodgyAddresses = Json.parse(Source.fromResource("dodgy.json").mkString).as[List[AddressRecord]]
   private val suspectAddresses = Json.parse(Source.fromResource("suspect.json").mkString).as[List[AddressRecord]]
   private val questionableAddresses = Json.parse(Source.fromResource("questionable.json").mkString)
                                           .as[List[AddressRecord]]
@@ -150,7 +63,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   private val oneAddress = someAddresses(1, addr(Some("GB"))(1000L))
 
   private def someAddresses(num: Int, addr: AddressRecord): List[AddressRecord] = {
-    (0 to num).map { i =>
+    (0 to num).map { _ =>
       addr
     }.toList
   }
@@ -193,6 +106,87 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
         addr.address.lines,
         addr.address.country
       )
+    }
+  }
+
+  class Scenario(resp: List[AddressRecord]) {
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    val end = "http://localhost:42"
+
+    val english = new EnglishCountryNamesDataSource()
+    val welsh = new WelshCountryNamesDataSource(english)
+    val fco = new ForeignOfficeCountryService(english, welsh)
+
+    val connector: AddressReputationConnector = mock[AddressReputationConnector]
+
+    when(connector.findByPostcode(anyString(), any())(any())).thenReturn(Future.successful(resp))
+
+    val service: AddressLookupAddressService = new AddressLookupAddressService(connector, fco)
+  }
+
+  "find" should {
+
+    "find addresses by postcode & isUkMode == false" in new Scenario(oneAddress) {
+      service.find("ZZ11 1ZZ", isUkMode = false).futureValue must be(toProposals(oneAddress))
+    }
+
+    "map UK to GB & isUkMode == false" in new Scenario(List(addr(Some("UK"))(1000L))) {
+      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.head.country.code must be("GB")
+    }
+
+    "return multiple addresses with diverse country codes when isUkMode == false" in new Scenario(
+      manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
+      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.map(a => a.country.code) must contain("foo")
+    }
+
+    "return no addresses where ukMode == true and all addresses are non UK addresses" in new Scenario(
+      manyAddresses(2)(Some("foobar"))) {
+      service.find("ZZ11 1ZZ", isUkMode = true).futureValue.headOption must be(None)
+    }
+
+    "return 2 addresses where ukMode == true and 2 out of 3 addresses are UK" in new Scenario(
+      manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
+
+      service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(a => a.country.code) mustBe Seq("GB", "GB")
+    }
+
+    "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
+      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+      val listOfOrgs: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.flatMap(pa => pa.organisation)
+
+      listOfLines mustBe Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
+
+      listOfOrgs mustBe Seq("malvern-organisation")
+    }
+
+    "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
+      val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+
+      listOfLines mustBe Seq(
+        "Flat 1 The Curtains Up Comeragh Road",
+        "Flat 2 The Curtains Up Comeragh Road",
+        "Flat 1 70 Comeragh Road",
+        "72a Comeragh Road",
+        "Flat 1 74 Comeragh Road",
+        "Flat 2 74 Comeragh Road",
+        "Flat B 78 Comeragh Road"
+      )
+    }
+
+    "sort the dodgy addresses without failing" in new Scenario(dodgyAddresses) {
+      service.find("SK15 2BT", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+    }
+
+    "sort the suspect addresses without failing" in new Scenario(suspectAddresses) {
+      service.find("SK15 2BT", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+    }
+
+    "sort the questionable addresses without failing" in new Scenario(questionableAddresses) {
+      service.find("SK15 2BT", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
+    }
+
+    "sort the dubious addresses without failing" in new Scenario(dubiousAddresses) {
+      service.find("SK15 2BT", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
     }
   }
 }

@@ -18,13 +18,11 @@ package services
 
 import address.v2._
 import com.google.inject.ImplementedBy
-import config.FrontendAppConfig
-import forms.Postcode
+import connectors.AddressReputationConnector
 import model.ProposedAddress
+import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{Format, Json, Writes}
-import services.AddressReputationFormats._
-import uk.gov.hmrc.http.HttpReadsInstances.readFromJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,22 +30,19 @@ import scala.util.Try
 
 @ImplementedBy(classOf[AddressLookupAddressService])
 trait AddressService {
-  def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier)
+  def find(postcode: String, filter: Option[String] = None, isUkMode: Boolean)(implicit hc: HeaderCarrier)
   : Future[Seq[ProposedAddress]]
 
   def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]]
 }
 
 @Singleton
-class AddressLookupAddressService @Inject()(frontendAppConfig: FrontendAppConfig, http: HttpClient, countryService: CountryService)(implicit val
+class AddressLookupAddressService @Inject()(addressReputationConnector: AddressReputationConnector, countryService: CountryService)(implicit val
 ec: ExecutionContext) extends AddressService {
-
-  val endpoint = frontendAppConfig.addressReputationEndpoint
-
-  override def find(postcode: String, filter: Option[String] = None, isukMode: Boolean)(implicit hc: HeaderCarrier)
+  
+  override def find(postcode: String, filter: Option[String] = None, isUkMode: Boolean)(implicit hc: HeaderCarrier)
   : Future[Seq[ProposedAddress]] = {
-    val lookupAddressByPostcode = LookupAddressByPostcode(Postcode.cleanupPostcode(postcode).get.toString, filter)
-    http.POST[LookupAddressByPostcode, List[AddressRecord]](s"$endpoint/lookup", lookupAddressByPostcode)
+    addressReputationConnector.findByPostcode(postcode, filter)
       .map { found =>
         val results = found.map { addr =>
           ProposedAddress(
@@ -63,7 +58,7 @@ ec: ExecutionContext) extends AddressService {
             else addr.address.country,
             addr.poBox
           )
-        }.filterNot(a => isukMode && a.country.code != "GB")
+        }.filterNot(a => isUkMode && a.country.code != "GB")
 
         results.sortWith((a, b) => {
           def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
@@ -80,10 +75,7 @@ ec: ExecutionContext) extends AddressService {
   }
 
   def findByCountry(countryCode: String, filter: String)(implicit hc: HeaderCarrier): Future[Seq[ProposedAddress]] = {
-    val endpoint = frontendAppConfig.addressReputationEndpoint
-    val lookupAddressByCountry = LookupAddressByCountry(filter)
-
-    http.POST[LookupAddressByCountry, List[NonUkAddressRecord]](s"$endpoint/country/$countryCode/lookup", lookupAddressByCountry)
+    addressReputationConnector.findByCountry(countryCode, filter)
       .map { found =>
         val results = found.map { addr =>
           ProposedAddress(

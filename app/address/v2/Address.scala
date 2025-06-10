@@ -16,10 +16,11 @@
 
 package address.v2
 
-import java.util.regex.Pattern
-
-import com.fasterxml.jackson.annotation.JsonIgnore
 import address.v1
+import com.fasterxml.jackson.annotation.JsonIgnore
+import play.api.libs.json.{Json, OFormat}
+
+import java.util.regex.Pattern
 
 /**
   * Address typically represents a postal address.
@@ -66,6 +67,8 @@ case class Address(lines: List[String],
 
 
 object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
+
   val maxLineLength = 35
   val danglingLetter: Pattern = Pattern.compile(".* [A-Z0-9]$")
 

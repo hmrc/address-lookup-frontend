@@ -16,6 +16,12 @@
 
 package address.v2
 
+import play.api.libs.json.{Json, OFormat}
+
 case class NonUkAddressRecord(id: String, number: Option[String], street: Option[String], unit: Option[String],
                           city: Option[String], district: Option[String], region: Option[String],
                           postcode: Option[String])
+
+object NonUkAddressRecord {
+  implicit val format: OFormat[NonUkAddressRecord] = Json.format[NonUkAddressRecord]
+}

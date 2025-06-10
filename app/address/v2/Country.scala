@@ -17,6 +17,7 @@
 package address.v2
 
 import address.v1
+import play.api.libs.json.{Json, OFormat}
 
 /** Represents a country as per ISO3166. */
 case class Country(code: String, name: String) {
@@ -30,6 +31,8 @@ case class Country(code: String, name: String) {
 }
 
 object Country {
+  implicit val format: OFormat[Country] = Json.format[Country]
+
   def apply(codeCountryMap: (String, Map[String, String])): Country = codeCountryMap match {
     case (code, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
   }

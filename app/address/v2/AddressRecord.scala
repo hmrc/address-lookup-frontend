@@ -16,13 +16,18 @@
 
 package address.v2
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import address.v1
+import com.fasterxml.jackson.annotation.JsonIgnore
+import play.api.libs.json.{Json, OFormat}
 
 
 case class LocalCustodian(code: Int, name: String) {
 
   def asV1 = v1.LocalCustodian(code, name)
+}
+
+object LocalCustodian {
+  implicit val format: OFormat[LocalCustodian] = Json.format[LocalCustodian]
 }
 
 
@@ -67,4 +72,8 @@ case class AddressRecord(
   def logicalStateValue: Option[LogicalState] = logicalState.flatMap(v => Option(LogicalState.valueOf(v)))
 
   def streetClassificationValue: Option[StreetClassification] = streetClassification.flatMap(v => Option(StreetClassification.valueOf(v)))
+}
+
+object AddressRecord {
+  implicit val format: OFormat[AddressRecord] = Json.format[AddressRecord]
 }

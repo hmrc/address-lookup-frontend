@@ -35,10 +35,10 @@ constants.forPostcode = am y cod post
 constants.postcodeLabel.ukMode = Cod post yn y DU (dewisol)
 constants.postcodeLabel = Cod post (dewisol)
 
-constants.editPageAddressLine1MaxErrorMessage = Mae angen i linell gyntaf y cyfeiriad fod yn llai na 256 o gymeriadau
-constants.editPageAddressLine2MaxErrorMessage = Mae angen i ail linell y cyfeiriad fod yn llai na 256 o gymeriadau
-constants.editPageAddressLine3MaxErrorMessage = Mae angen i drydedd linell y cyfeiriad fod yn llai na 256 o gymeriadau
-constants.editPageTownMaxErrorMessage = Mae angen i’r dref neu’r ddinas fod yn llai na 256 o gymeriadau
+constants.editPageAddressLine1MaxErrorMessage = Mae angen i linell gyntaf y cyfeiriad fod yn llai na {0} o gymeriadau
+constants.editPageAddressLine2MaxErrorMessage = Mae angen i ail linell y cyfeiriad fod yn llai na {0} o gymeriadau
+constants.editPageAddressLine3MaxErrorMessage = Mae angen i drydedd linell y cyfeiriad fod yn llai na {0} o gymeriadau
+constants.editPageTownMaxErrorMessage = Mae angen i’r dref neu’r ddinas fod yn llai na {0} o gymeriadau
 constants.editPageAddressLine1MinErrorMessage = Nodwch linell gyntaf y cyfeiriad
 constants.editPageTownMinErrorMessage = Nodwch y dref neu’r ddinas
 constants.editPagePostcodeErrorMessage.ukMode = Nodwch god post yn y DU sy’n ddilys

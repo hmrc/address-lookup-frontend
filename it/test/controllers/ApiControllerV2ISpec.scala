@@ -133,11 +133,10 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
             version = testApiVersion,
             options = JourneyOptions(continueUrl = testContinueUrl, manualAddressEntryConfig = Some(
               ManualAddressEntryConfig(
-                strictValidation = true,
-                line1MaxLength = 40,
-                line2MaxLength = 50,
-                line3MaxLength = 60,
-                townMaxLength = 70
+                line1MaxLength = 50,
+                line2MaxLength = 60,
+                line3MaxLength = 70,
+                townMaxLength = 80
               )
             ))
           )

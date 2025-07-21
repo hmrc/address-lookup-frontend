@@ -18,7 +18,7 @@ package model
 
 import config.FrontendAppConfig
 import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads.min
+import play.api.libs.json.Reads.{min, max}
 import play.api.libs.json._
 
 case class JourneyDataV2(config: JourneyConfigV2,
@@ -71,11 +71,10 @@ case class ConfirmPageConfig(showSearchAgainLink: Option[Boolean] = None,
                              showChangeLink: Option[Boolean] = None,
                              showConfirmChangeText: Option[Boolean] = None)
 
-case class ManualAddressEntryConfig(strictValidation: Boolean = false,
-                                    line1MaxLength: Int = 35, //limit only used if strictValidation=`true`
-                                    line2MaxLength: Int = 35, //limit only used if strictValidation=`true`
-                                    line3MaxLength: Int = 35, //limit only used if strictValidation=`true`
-                                    townMaxLength: Int = 35)  //limit only used if strictValidation=`true`
+case class ManualAddressEntryConfig(line1MaxLength: Int = ManualAddressEntryConfig.defaultMax,
+                                    line2MaxLength: Int = ManualAddressEntryConfig.defaultMax,
+                                    line3MaxLength: Int = ManualAddressEntryConfig.defaultMax,
+                                    townMaxLength: Int = ManualAddressEntryConfig.defaultMax)
 
 case class TimeoutConfig(timeoutAmount: Int,
                          timeoutUrl: String,
@@ -108,7 +107,20 @@ object SelectPageConfig {
 }
 
 object ManualAddressEntryConfig {
-  implicit val format: Format[ManualAddressEntryConfig] = Json.format[ManualAddressEntryConfig]
+
+  val defaultMax: Int = 255
+  private val minLength: Int = 35
+
+  val constraints: Reads[Int] = min(minLength) ~> max(defaultMax)
+
+  implicit val reads: Reads[ManualAddressEntryConfig] = (
+    (__ \ "line1MaxLength").readWithDefault[Int](defaultMax)(constraints) and
+      (__ \ "line2MaxLength").readWithDefault[Int](defaultMax)(constraints) and
+      (__ \ "line3MaxLength").readWithDefault[Int](defaultMax)(constraints) and
+      (__ \ "townMaxLength").readWithDefault[Int](defaultMax)(constraints)
+  )(ManualAddressEntryConfig.apply _)
+
+  implicit val writes: Writes[ManualAddressEntryConfig] = Json.writes[ManualAddressEntryConfig]
 }
 
 object ConfirmPageConfig {

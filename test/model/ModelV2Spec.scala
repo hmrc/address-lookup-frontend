@@ -102,6 +102,57 @@ class ModelV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite
     }
   }
 
+  "Manual Address Entry Config" when {
+
+    "deserializing from JSON" should {
+
+      "fail to read if a value is smaller than the minimum allowed (35)" in {
+        Json.fromJson[ManualAddressEntryConfig](Json.obj(
+          "line1MaxLength" -> 34,
+          "line2MaxLength" -> 60,
+          "line3MaxLength" -> 70,
+          "townMaxLength" -> 80
+        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.min", 35))
+      }
+
+      "fail to read if a value is greater than the max allowed (255)" in {
+        Json.fromJson[ManualAddressEntryConfig](Json.obj(
+          "line1MaxLength" -> 256,
+          "line2MaxLength" -> 60,
+          "line3MaxLength" -> 70,
+          "townMaxLength" -> 80
+        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.max", 255))
+      }
+
+      "read successfully from max json" in {
+        Json.fromJson[ManualAddressEntryConfig](Json.obj(
+          "line1MaxLength" -> 50,
+          "line2MaxLength" -> 60,
+          "line3MaxLength" -> 70,
+          "townMaxLength" -> 80
+        )) mustBe JsSuccess(ManualAddressEntryConfig(
+          line1MaxLength = 50,
+          line2MaxLength = 60,
+          line3MaxLength = 70,
+          townMaxLength = 80
+        ))
+      }
+
+      "read successfully from minimal json" in {
+        Json.fromJson[ManualAddressEntryConfig](emptyJson) mustBe JsSuccess(ManualAddressEntryConfig())
+      }
+    }
+
+    "serialize to json" in {
+      Json.toJson(ManualAddressEntryConfig()) mustBe Json.obj(
+        "line1MaxLength" -> ManualAddressEntryConfig.defaultMax,
+        "line2MaxLength" -> ManualAddressEntryConfig.defaultMax,
+        "line3MaxLength" -> ManualAddressEntryConfig.defaultMax,
+        "townMaxLength" -> ManualAddressEntryConfig.defaultMax
+      )
+    }
+  }
+
   "TimeoutConfig" should {
     "fail to read from json with timeout amount missing" in {
       Json.fromJson[TimeoutConfig](timeoutConfigLessThanMinJson) mustBe JsError(JsPath \ "timeoutAmount", JsonValidationError("error.min", 120))

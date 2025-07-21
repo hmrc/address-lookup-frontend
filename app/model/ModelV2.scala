@@ -39,15 +39,24 @@ case class JourneyConfigV2(version: Int,
                            labels: Option[JourneyLabels] = None, //messages
                            requestedVersion: Option[Int] = None)
 
-case class JourneyOptions(continueUrl: String, homeNavHref: Option[String] = None, signOutHref: Option[String] = None,
-                          accessibilityFooterUrl: Option[String] = None, phaseFeedbackLink: Option[String] = None,
-                          deskProServiceName: Option[String] = None, showPhaseBanner: Option[Boolean] = None,
-                          alphaPhase: Option[Boolean] = None, showBackButtons: Option[Boolean] = None,
-                          disableTranslations: Option[Boolean] = None, includeHMRCBranding: Option[Boolean] = None,
-                          ukMode: Option[Boolean] = None, allowedCountryCodes: Option[Set[String]] = None,
+case class JourneyOptions(continueUrl: String,
+                          homeNavHref: Option[String] = None,
+                          signOutHref: Option[String] = None,
+                          accessibilityFooterUrl: Option[String] = None,
+                          phaseFeedbackLink: Option[String] = None,
+                          deskProServiceName: Option[String] = None,
+                          showPhaseBanner: Option[Boolean] = None,
+                          alphaPhase: Option[Boolean] = None,
+                          showBackButtons: Option[Boolean] = None,
+                          disableTranslations: Option[Boolean] = None,
+                          includeHMRCBranding: Option[Boolean] = None,
+                          ukMode: Option[Boolean] = None,
+                          allowedCountryCodes: Option[Set[String]] = None,
                           selectPageConfig: Option[SelectPageConfig] = None,
                           confirmPageConfig: Option[ConfirmPageConfig] = None,
-                          timeoutConfig: Option[TimeoutConfig] = None, serviceHref: Option[String] = None,
+                          manualAddressEntryConfig: Option[ManualAddressEntryConfig] = None,
+                          timeoutConfig: Option[TimeoutConfig] = None,
+                          serviceHref: Option[String] = None,
                           pageHeadingStyle: Option[String] = None) {
 
   val isUkMode: Boolean = ukMode contains true
@@ -61,6 +70,12 @@ case class ConfirmPageConfig(showSearchAgainLink: Option[Boolean] = None,
                              showSubHeadingAndInfo: Option[Boolean] = None,
                              showChangeLink: Option[Boolean] = None,
                              showConfirmChangeText: Option[Boolean] = None)
+
+case class ManualAddressEntryConfig(strictValidation: Boolean = false,
+                                    line1MaxLength: Int = 35, //limit only used if strictValidation=`true`
+                                    line2MaxLength: Int = 35, //limit only used if strictValidation=`true`
+                                    line3MaxLength: Int = 35, //limit only used if strictValidation=`true`
+                                    townMaxLength: Int = 35)  //limit only used if strictValidation=`true`
 
 case class TimeoutConfig(timeoutAmount: Int,
                          timeoutUrl: String,
@@ -90,6 +105,10 @@ object JourneyOptions {
 
 object SelectPageConfig {
   implicit val format: Format[SelectPageConfig] = Json.format[SelectPageConfig]
+}
+
+object ManualAddressEntryConfig {
+  implicit val format: Format[ManualAddressEntryConfig] = Json.format[ManualAddressEntryConfig]
 }
 
 object ConfirmPageConfig {

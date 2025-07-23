@@ -101,6 +101,12 @@ If your service doesn't have Welsh translations you can disable them setting the
       "showSearchAgainLink": false,
       "showConfirmChangeText": true
     },
+    "manualAddressEntryConfig": {
+      "line1MaxLength": 255,
+      "line2MaxLength": 255,
+      "line3MaxLength": 255,
+      "townMaxLength": 255
+    },
     "timeoutConfig": {
       "timeoutAmount": 900,
       "timeoutUrl": "/timeout-uri",
@@ -260,6 +266,18 @@ Configuration of the "confirm" page, in which the user is requested to confirm a
 |`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
 |`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
 |`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
+
+#### Manual Address Entry Configuration JSON object (Optional)
+
+Provides configuration for the manual address entry page, currently this supports setting max lengths for the address lines that are different from the 255 default.
+The manual address entry page configuration is a nested JSON object inside the journey configuration under the `manualAddressEntryConfig` property.
+
+| Field name       | Description                                                          | Optional/Required | Type | Default value |
+|------------------|----------------------------------------------------------------------|-------------------|------|---------------|
+| `line1MaxLength` | Max Length for Line 1 of the Address (must be between 35 and 255)    | Optional          | Int  | 255           |
+| `line2MaxLength` | Max Length for Line 2 of the Address (must be between 35 and 255)    | Optional          | Int  | 255           |
+| `line3MaxLength` | Max Length for Line 3 of the Address (must be between 35 and 255)    | Optional          | Int  | 255           |
+| `townMaxLength`  | Max Length for Town/City of the Address (must be between 35 and 255) | Optional          | Int  | 255           |
 
 #### Timeout Configuration JSON object (Optional)
 

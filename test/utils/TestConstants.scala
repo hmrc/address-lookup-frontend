@@ -152,9 +152,11 @@ object TestConstants {
 
   val fullV2ConfirmPageConfig = Some(ConfirmPageConfig(Confirm.showSearchAgainLink, Confirm.showSubHeading, Confirm.showChangeLink, Confirm.showConfirmChangeLink))
 
+  val fullV2ManualAddressEntryConfig = Some(ManualAddressEntryConfig())
+
   val fullV2TimeoutConfig = Some(TimeoutConfig(testTimeoutAmount, testTimeoutUrl, testTimeoutKeepAliveUrl))
 
-  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons, testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig, fullV2TimeoutConfig)
+  val fullV2JourneyOptions = JourneyOptions(testContinueUrl, testHomeNavRef, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskproServiceName, testShowPhaseBanner, testAlphaPhase, testDisableTranslations, testShowBackButtons, testIncludeHmrcBranding, testUkMode, testAllowedCountryCodes, fullV2SelectPageConfig, fullV2ConfirmPageConfig, fullV2ManualAddressEntryConfig, fullV2TimeoutConfig)
 
   val fullV2LanguageLabelsEn = LanguageLabels(
     appLevelLabels = fullV2AppLabels,
@@ -207,7 +209,7 @@ object TestConstants {
 
   val selectPageConfigMinimal = SelectPageConfig(None, None)
 
-  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
@@ -232,11 +234,12 @@ object TestConstants {
                                     testAllowedCountryCodes: Option[Set[String]] = testAllowedCountryCodes,
                                     testSelectPage: Option[SelectPageConfig] = fullV2SelectPageConfig,
                                     testTimeoutConfig: Option[TimeoutConfig] = fullV2TimeoutConfig,
+                                    testManualAddressEntryConfig: Option[ManualAddressEntryConfig] = fullV2ManualAddressEntryConfig,
                                     testConfirmPageConfig: Option[ConfirmPageConfig] = confirmPageConfigFull,
                                     testLabels: Option[JourneyLabels] = fullV2JourneyLabelsEn
                                    ): JourneyDataV2 = {
 
-    val journeyOptions = JourneyOptions(testContinueUrl, testHomeNavHref, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskProServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons, testDisableTranslations, testIncludeHMRCBranding, testUkMode, testAllowedCountryCodes, testSelectPage, testConfirmPageConfig, testTimeoutConfig)
+    val journeyOptions = JourneyOptions(testContinueUrl, testHomeNavHref, testSignOutHref, testAccessibilityFooterUrl, testPhaseFeedbackLink, testDeskProServiceName, testShowPhaseBanner, testAlphaPhase, testShowBackButtons, testDisableTranslations, testIncludeHMRCBranding, testUkMode, testAllowedCountryCodes, testSelectPage, testConfirmPageConfig, testManualAddressEntryConfig, testTimeoutConfig)
 
     JourneyDataV2(
       JourneyConfigV2(

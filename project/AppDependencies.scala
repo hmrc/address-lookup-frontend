@@ -2,9 +2,9 @@ import play.sbt.PlayImport.*
 import sbt.*
 
 object AppDependencies {
-  private val bootstrapPlayVersion = "9.13.0"
-  private val hmrcFrontendPlayVersion = "12.5.0"
-  private val hmrcMongoPlayVersion = "2.6.0"
+  private val bootstrapPlayVersion = "9.18.0"
+  private val hmrcFrontendPlayVersion = "12.7.0"
+  private val hmrcMongoPlayVersion = "2.7.0"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -20,12 +20,12 @@ object AppDependencies {
   def test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"   % bootstrapPlayVersion  % Test,
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"  % hmrcMongoPlayVersion  % Test,
-    "org.jsoup"          % "jsoup"                    % "1.20.1"              % Test,
+    "org.jsoup"          % "jsoup"                    % "1.21.1"              % Test,
   )
 
   def it: Seq[sbt.ModuleID] = Seq(
-    "com.fasterxml.jackson.core"     % "jackson-databind"     % "2.19.0" % Test,
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala" % "2.19.0" % Test
+    "com.fasterxml.jackson.core"     % "jackson-databind"     % "2.19.2" % Test,
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala" % "2.19.2" % Test
   )
 
 }

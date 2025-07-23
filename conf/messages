@@ -35,10 +35,10 @@ constants.forPostcode = for postcode
 constants.postcodeLabel.ukMode = UK postcode (optional)
 constants.postcodeLabel = Postcode (optional)
 
-constants.editPageAddressLine1MaxErrorMessage = The first address line needs to be fewer than 256 characters
-constants.editPageAddressLine2MaxErrorMessage = The second address line needs to be fewer than 256 characters
-constants.editPageAddressLine3MaxErrorMessage = The third address line needs to be fewer than 256 characters
-constants.editPageTownMaxErrorMessage = The town or city needs to be fewer than 256 characters
+constants.editPageAddressLine1MaxErrorMessage = The first address line needs to be fewer than {0} characters
+constants.editPageAddressLine2MaxErrorMessage = The second address line needs to be fewer than {0} characters
+constants.editPageAddressLine3MaxErrorMessage = The third address line needs to be fewer than {0} characters
+constants.editPageTownMaxErrorMessage = The town or city needs to be fewer than {0} characters
 constants.editPageAddressLine1MinErrorMessage = Enter the first line of address
 constants.editPageTownMinErrorMessage = Enter the town or city
 constants.editPagePostcodeErrorMessage.ukMode = Enter a valid UK postcode

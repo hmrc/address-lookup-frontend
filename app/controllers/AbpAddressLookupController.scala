@@ -299,7 +299,7 @@ class AbpAddressLookupController @Inject()(
               uk_mode_edit(
                 id,
                 journeyData,
-                ukEditForm().fill(editAddress),
+                ukEditForm(journeyData.config.options.manualAddressEntryConfig).fill(editAddress),
                 allowedSeqCountries(Seq.empty),
                 isWelsh,
                 isUKMode
@@ -313,7 +313,7 @@ class AbpAddressLookupController @Inject()(
               non_uk_mode_edit(
                 id,
                 journeyData,
-                nonUkEditForm().fill(defaultAddress),
+                nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).fill(defaultAddress),
                 allowedSeqCountries(countries(isWelsh)),
                 isWelsh = isWelsh,
                 isUKMode = isUKMode
@@ -378,7 +378,7 @@ class AbpAddressLookupController @Inject()(
         val isUKMode = journeyData.config.options.isUkMode
 
         if (isUKMode) {
-          val validatedForm = isValidPostcode(ukEditForm().bindFromRequest())
+          val validatedForm = isValidPostcode(ukEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
 
           validatedForm.fold(
             errors =>
@@ -411,7 +411,7 @@ class AbpAddressLookupController @Inject()(
           )
         } else {
           val validatedForm =
-            isValidPostcode(nonUkEditForm().bindFromRequest())
+            isValidPostcode(nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
 
           validatedForm.fold(
             errors => {

@@ -17,12 +17,12 @@
 package forms
 
 import com.codahale.metrics.SharedMetricRegistries
-import model.Edit
+import model.{Edit, ManualAddressEntryConfig}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.data.validation.{Invalid, Valid}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -41,9 +41,9 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val editFormUk: Form[Edit] = ALFForms.ukEditForm()
   val editFormUkWelsh: Form[Edit] = ALFForms.ukEditForm()
 
-  val chars257: String = List.fill(257)("A").reduce(_ + _)
-  val chars256: String = List.fill(256)("A").reduce(_ + _)
-  val chars255: String = List.fill(255)("A").reduce(_ + _)
+  val chars257: String = "A" * 257
+  val chars256: String = "A" * 256
+  val chars255: String = "A" * 255
 
   "ukEditForm" should {
     "return no errors with valid data" in {
@@ -131,6 +131,67 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     "isvalidPostCode should  accept international address with valid postcode because country is defaulted to GB" in {
       ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
     }
+    "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
+
+      val line1Limit = 50
+      val line2Limit = 60
+      val line3Limit = 70
+      val townLimit = 80
+
+      val config = ManualAddressEntryConfig(line1Limit, line2Limit, line3Limit, townLimit)
+
+      "the limits are exceeded" should {
+        "return an error for each field over the limit" in {
+
+          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+
+          val data = Map(
+            "line1"       -> ("A" * (line1Limit + 1)),
+            "line2"       -> ("A" * (line2Limit + 1)),
+            "line3"       -> ("A" * (line3Limit + 1)),
+            "town"        -> ("A" * (townLimit + 1)),
+            "postcode"    -> "ZZ11ZZ",
+            "countryCode" -> "GB"
+          )
+
+          val boundForm = form.bind(data)
+
+          boundForm.hasErrors mustBe true
+          boundForm.errors.head mustBe FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit))
+          boundForm.errors(1) mustBe FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit))
+          boundForm.errors(2) mustBe FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit))
+          boundForm.errors(3) mustBe FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit))
+        }
+      }
+
+      "the limits are NOT exceeded (valid)" should {
+        "return bound form with no errors" in {
+
+          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+
+          val data = Map(
+            "line1"       -> ("A" * line1Limit),
+            "line2"       -> ("A" * line2Limit),
+            "line3"       -> ("A" * line3Limit),
+            "town"        -> ("A" * townLimit),
+            "postcode"    -> "ZZ11ZZ",
+            "countryCode" -> "GB"
+          )
+
+          val boundForm = form.bind(data)
+
+          boundForm.hasErrors mustBe false
+          boundForm.value mustBe Some(Edit(
+            organisation = None,
+            line1 = Some("A" * line1Limit),
+            line2 = Some("A" * line2Limit),
+            line3 = Some("A" * line3Limit),
+            town = Some("A" * townLimit),
+            postcode = "ZZ11ZZ"
+          ))
+        }
+      }
+    }
   }
 
   "nonUkEditForm" should {
@@ -152,6 +213,66 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "fudgebarwizz123")
 
       editFormNonuk.bind(data).hasErrors mustBe true
+    }
+    "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
+
+      val line1Limit = 50
+      val line2Limit = 60
+      val line3Limit = 70
+      val townLimit = 80
+
+      val config = ManualAddressEntryConfig(line1Limit, line2Limit, line3Limit, townLimit)
+
+      "the limits are exceeded" should {
+        "return an error for each field over the limit" in {
+
+          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+
+          val data = Map(
+            "line1"       -> ("A" * (line1Limit + 1)),
+            "line2"       -> ("A" * (line2Limit + 1)),
+            "line3"       -> ("A" * (line3Limit + 1)),
+            "town"        -> ("A" * (townLimit + 1)),
+            "countryCode" -> "FR"
+          )
+
+          val boundForm = form.bind(data)
+
+          boundForm.hasErrors mustBe true
+          boundForm.errors.head mustBe FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit))
+          boundForm.errors(1) mustBe FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit))
+          boundForm.errors(2) mustBe FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit))
+          boundForm.errors(3) mustBe FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit))
+        }
+      }
+
+      "the limits are NOT exceeded (valid)" should {
+        "return bound form with no errors" in {
+
+          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+
+          val data = Map(
+            "line1"       -> ("A" * line1Limit),
+            "line2"       -> ("A" * line2Limit),
+            "line3"       -> ("A" * line3Limit),
+            "town"        -> ("A" * townLimit),
+            "countryCode" -> "FR"
+          )
+
+          val boundForm = form.bind(data)
+
+          boundForm.hasErrors mustBe false
+          boundForm.value mustBe Some(Edit(
+            organisation = None,
+            line1 = Some("A" * line1Limit),
+            line2 = Some("A" * line2Limit),
+            line3 = Some("A" * line3Limit),
+            town = Some("A" * townLimit),
+            postcode = "",
+            countryCode = "FR"
+          ))
+        }
+      }
     }
   }
 
@@ -302,15 +423,15 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     }
   }
 
-  "constraintString256" should {
-    "return invalid for string > 256" in {
-      ALFForms.constraintString256("foo")(chars257) mustBe Invalid("foo")
+  "constraintStringMaxLength" should {
+    "return invalid for string > maxLength" in {
+      ALFForms.constraintStringMaxLength("foo", 256)(chars257) mustBe Invalid("foo", 256)
     }
-    "return Invalid for string = 256" in {
-      ALFForms.constraintString256("foo")(chars256)  mustBe Invalid("foo")
+    "return valid for string = maxLength" in {
+      ALFForms.constraintStringMaxLength("foo", 256)(chars256)  mustBe Valid
     }
-    "return Valid for string < 256" in  {
-      ALFForms.constraintString256("foo")(chars255)  mustBe Valid
+    "return Valid for string < maxLength" in  {
+      ALFForms.constraintStringMaxLength("foo", 256)(chars255)  mustBe Valid
     }
   }
 

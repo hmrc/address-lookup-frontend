@@ -125,6 +125,33 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
         res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/newJourney/begin")
       }
     }
+
+    "provided with valid JourneyDataV2 Json that includes the ManualAddressEntryConfig options" should {
+      "return ACCEPTED with a url in the Location header" in {
+        val v2Model = JourneyDataV2(
+          config = JourneyConfigV2(
+            version = testApiVersion,
+            options = JourneyOptions(continueUrl = testContinueUrl, manualAddressEntryConfig = Some(
+              ManualAddressEntryConfig(
+                line1MaxLength = 50,
+                line2MaxLength = 60,
+                line3MaxLength = 70,
+                townMaxLength = 80
+              )
+            ))
+          )
+        )
+
+        val res = await(buildClientAPI("v2/init")
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .post(Json.toJson(v2Model.config)))
+
+        res.status shouldBe ACCEPTED
+        res.header(HeaderNames.LOCATION) should contain(s"$addressLookupEndpoint/lookup-address/newJourney/begin")
+
+        await(cache.getV2(MockIdGenerationService.uuid)) shouldBe Some(v2Model)
+      }
+    }
   }
 
   "/api/v2/confirmed" when {

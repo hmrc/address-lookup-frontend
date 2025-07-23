@@ -261,7 +261,7 @@ class InternationalAddressLookupController @Inject()(
             edit(
               id,
               journeyData,
-              nonUkEditForm().fill(defaultAddress),
+              nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).fill(defaultAddress),
               allowedSeqCountries(countries(isWelsh)),
               isWelsh = isWelsh
             )
@@ -294,7 +294,7 @@ class InternationalAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
 
         val validatedForm =
-          isValidPostcode(nonUkEditForm().bindFromRequest())
+          isValidPostcode(nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
 
         validatedForm.fold(
           errors => {

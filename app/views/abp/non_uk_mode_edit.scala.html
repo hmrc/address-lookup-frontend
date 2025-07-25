@@ -102,7 +102,7 @@
         label = Label(content = HtmlContent(messages("editPage.line2Label"))),
         formGroup = FormGroup(classes = Some(s"form-field-group $addressLinesFormGroupErrorClass")), autocomplete = Some("address-line2"),
         name = editForm("line2").name, id = editForm("line2").name, classes = s"govuk-input--width-20 $addressLinesInputErrorClass",
-        errorMessage = editForm("line2").error.map(fe => ErrorMessage(content = HtmlContent("DUMMY"), visuallyHiddenText = Some(messages("constants.error"))))))
+        errorMessage = editForm("line2").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
     @textInput(Input(value = editForm("line3").value,
         label = Label(content = HtmlContent(messages("editPage.line3Label"))),
         formGroup = FormGroup(classes = Some(s"form-field-group $addressLinesFormGroupErrorClass")), autocomplete = Some("address-line3"),

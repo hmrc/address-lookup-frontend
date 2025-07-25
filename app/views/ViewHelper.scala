@@ -18,6 +18,7 @@ package views
 
 import address.v2.Country
 import play.api.data.Form
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
 object ViewHelper {
@@ -30,9 +31,8 @@ object ViewHelper {
       attributes = Map("id" -> encodeCountryCode(c))
     )
 
-  def countriesToSelectItems(cs: Seq[Country], form: Form[_]): Seq[SelectItem] = {
-    SelectItem(Some(""), "Select a country") +: countriesToSelectItems(cs)
-  }
+  def countriesToSelectItems(cs: Seq[Country], form: Form[_])(implicit messages: Messages): Seq[SelectItem] =
+    SelectItem(Some(""), messages("countryPickerPage.countryLabel")) +: countriesToSelectItems(cs)
 
   def countriesToSelectItems(cs:Seq[Country]): Seq[SelectItem] = cs.map(c => countryToSelectItem(c))
 

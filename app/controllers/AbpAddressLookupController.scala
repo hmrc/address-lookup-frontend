@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import utils.PostcodeHelper
+import views.ViewHelper
 import views.html.abp.{lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 import javax.inject.{Inject, Singleton}
@@ -431,17 +432,20 @@ class AbpAddressLookupController @Inject()(
                 )
               })
             },
-            edit =>
+            edit => {
+              val countryCode = ViewHelper.decodeCountryCode(edit.countryCode)
               (
                 Some(
                   journeyData.copy(
-                    selectedAddress = Some(edit.toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
+                    countryCode = Some(countryCode),
+                    selectedAddress = Some(edit.copy(countryCode = countryCode).toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
                   )
                 ),
                 requestWithWelshHeader(isWelsh) {
                   Redirect(routes.AbpAddressLookupController.confirm(id))
                 }
               )
+            }
           )
         }
       }

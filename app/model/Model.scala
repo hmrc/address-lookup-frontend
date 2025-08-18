@@ -122,7 +122,7 @@ case class ConfirmableAddressDetails(
       lines.lift(2),
       town,
       PostcodeHelper.displayPostcode(postcode),
-      country.map(_.code).get
+      country.map(_.code).getOrElse("GB")
     )
   }
 }

@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels._
 @import views.ViewHelper
 @import views.html.templates.Layout
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
 select: GovukSelect, page: Layout, govukFieldset: GovukFieldset, countryService: CountryService)
@@ -128,30 +129,8 @@ select: GovukSelect, page: Layout, govukFieldset: GovukFieldset, countryService:
         label = Label(content = HtmlContent(internationalMessage("editPage.countryLabel"))),
         errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
         items = ViewHelper.countriesToSelectItems(countries, editForm),
-        formGroup = FormGroup(classes = Some("form-field-group"))
-    ))
-
-
-    <script src="@controllers.routes.Assets.at("accessible-autocomplete-2.0.2.min.js")" ></script>
-    <script>
-            accessibleAutocomplete.enhanceSelectElement({
-                selectElement: document.getElementById("countryCode"),
-                name: 'countryCodeAutocomplete',
-                defaultValue: '',
-                showNoOptionsFound: false,
-                @*
-                  TF-640: Had to override the onConfirm function to include custom validation for countries because null / undefined values are not handled by the Autocomplete form:
-                  https://github.com/alphagov/accessible-autocomplete/issues/260
-                  When this is fixed the custom validation / onConfirm bypass can be removed
-                *@
-                onConfirm: () => {
-                    const matchingOption = Array.from(document.querySelectorAll("#countryCode-select > option")).find(function (c) {
-                        return c.text === document.getElementById("countryCode").value;
-                    });
-                    const countryCode = matchingOption ? matchingOption.value : undefined;
-                    document.getElementById("countryCode-select").value = countryCode;
-                }
-            })
-    </script>
+        formGroup = FormGroup(classes = Some("form-field-group")),
+        value = editForm("countryCode").value
+    ).asAccessibleAutocomplete())
   }
 }

@@ -753,6 +753,37 @@ class AbpAddressLookupControllerSpec
       status(res) must be(303)
     }
 
+    "return 303 when country code is not set for journey and is submitted by the User from the Edit page" in new Scenario(
+      journeyDataV2 = Map("foo" -> basicJourneyV2().copy(countryCode = None))
+    ) {
+      val res: Future[Result] = controller.handleEdit("foo").apply(
+        req.withFormUrlEncodedBody(editFormConstructor(Edit(
+          organisation = None,
+          line1 = Some("foo"),
+          line2 = Some("bar"),
+          line3 = Some("wizz"),
+          town = Some("bar"),
+          postcode = "",
+          countryCode = "GB-UnitedKingdom"
+        )): _*))
+      status(res) must be(303)
+
+      await(journeyRepository.getV2("foo")) mustBe Some(basicJourneyV2().copy(
+        countryCode = Some("GB"),
+        selectedAddress = Some(ConfirmableAddress(
+          auditRef = "foo",
+          id = None,
+          address = ConfirmableAddressDetails(
+            organisation = None,
+            lines = List("foo", "bar", "wizz"),
+            town = Some("bar"),
+            postcode = None,
+            country = Some(Country("GB", "United Kingdom"))
+          )
+        ))
+      ))
+    }
+
     "return a 303 with request containing valid data but blank postcode and countryCode when ukMode == true" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(Some(true)))
     ) {

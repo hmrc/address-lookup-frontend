@@ -65,9 +65,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(selectForm))
         }
 
-        <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(formattedPostcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
-        </p>
+        @if(resolvedConf.options.selectPageConfig.showEnterAddressManuallyLink) {
+            <p class="govuk-!-margin-bottom-6 govuk-body">
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, Some(formattedPostcode))}" id="editAddress">@{messages("selectPage.editAddressLinkText")}</a>
+            </p>
+        }
 
         @radios(Radios(
             formGroup = FormGroup(classes = Some("form-group")),
@@ -89,6 +91,26 @@
                 }
             case None => Seq.empty
         }))
+
+        @if(resolvedConf.options.selectPageConfig.showNoneOfTheseOption) {
+            <div class="govuk-radios__divider">@messages("selectPage.optionsDivider")</div>
+            @radios(Radios(
+                    formGroup = FormGroup(classes = Some("form-group")),
+                    errorMessage = selectForm("addressId").error.map(fe => ErrorMessage(content = HtmlContent(""))),
+                    name = "addressId",
+                    fieldset = Some(Fieldset(
+                        legend = Some(Legend(
+                        content = HtmlContent(""),
+                        classes = "govuk-visually-hidden"
+                    ))
+                )),
+                items = Seq(RadioItem(
+                            content = HtmlContent(messages("selectPage.noneOfThese")),
+                            value = Some("none"),
+                            id = Some("addressId-none"),
+                            checked = selectForm("none").value.isDefined))
+            ))
+        }
 
         @if(resolvedConf.options.selectPageConfig.showSearchAgainLink) {
             <p class="govuk-!-margin-bottom-7">

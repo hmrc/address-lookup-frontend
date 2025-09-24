@@ -64,7 +64,8 @@ case class JourneyOptions(continueUrl: String,
 }
 
 case class SelectPageConfig(proposalListLimit: Option[Int] = Some(100),
-                            showSearchAgainLink: Option[Boolean] = None)
+                            showSearchAgainLink: Option[Boolean] = None,
+                            showNoneOfTheseOption: Option[Boolean] = None)
 
 case class ConfirmPageConfig(showSearchAgainLink: Option[Boolean] = None,
                              showSubHeadingAndInfo: Option[Boolean] = None,

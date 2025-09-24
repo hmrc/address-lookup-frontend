@@ -43,7 +43,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val includeHMRCBranding: Boolean = journeyOptions.includeHMRCBranding.getOrElse(true)
   val isUkMode: Boolean = journeyOptions.ukMode.contains(true)
   val allowedCountryCodes: Option[Set[String]] = journeyOptions.allowedCountryCodes
-  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig()))
+  val selectPageConfig: ResolvedSelectPageConfig = ResolvedSelectPageConfig(journeyOptions.selectPageConfig.getOrElse(SelectPageConfig(
+    showNoneOfTheseOption = Some(appConfig.showNoneOfTheseOptionOnSelectPage))))
   val confirmPageConfig: ResolvedConfirmPageConfig = ResolvedConfirmPageConfig(journeyOptions.confirmPageConfig.getOrElse(ConfirmPageConfig()))
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
 
@@ -53,6 +54,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {
   val proposalListLimit: Option[Int] = selectPageConfig.proposalListLimit
   val showSearchAgainLink: Boolean = selectPageConfig.showSearchAgainLink.getOrElse(false)
+  val showNoneOfTheseOption: Boolean = selectPageConfig.showNoneOfTheseOption.getOrElse(false)
+  val showEnterAddressManuallyLink: Boolean = !showNoneOfTheseOption
 }
 
 case class ResolvedConfirmPageConfig(confirmPageConfig: ConfirmPageConfig) {

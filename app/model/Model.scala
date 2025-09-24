@@ -31,7 +31,9 @@ case class Timeout(timeoutAmount: Int,
                    timeoutUrl: String,
                    timeoutKeepAliveUrl: Option[String])
 
-case class Select(addressId: String)
+case class Select(addressId: String) {
+  def noneOfTheseOptionSelected: Boolean = addressId == "none"
+}
 
 case class Edit(organisation: Option[String],
                 line1: Option[String],

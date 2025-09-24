@@ -81,6 +81,47 @@ class SelectPageISpec extends IntegrationSpecBase {
           }
         }
       }
+
+      "there is a result list between 2 and 50 results and also show none of these option" in {
+        val addressAmount = 50
+        val testJourneyId = UUID.randomUUID().toString
+        val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
+
+        stubGetAddressByCountry(addressJson = testResultsList, countryCode = "BM")
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimitWithNoneOfTheseOption.copy(proposals = Some(testInternationalProposedAddresses(addressAmount, Country("BM", "Bermuda"))), countryCode = Some("BM"))))
+
+        val res = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+
+        res.status shouldBe OK
+
+        val doc = getDocFromResponse(res)
+        doc.title shouldBe messages("international.selectPage.title")
+        doc.h1.text() shouldBe messages("international.selectPage.heading")
+        doc.submitButton.text() shouldBe messages("international.selectPage.submitLabel")
+        doc.link("editAddress") should have(
+          href(""),
+          text("")
+        )
+        doc.select("#addressId-none + label").text() shouldBe messages("international.selectPage.noneOfThese")
+
+        val testIds = (testResultsList \\ "id").map {
+          testId => testId.as[String]
+        }
+
+        testIds.zipWithIndex.foreach {
+          case (id, idx) => {
+            val i = idx + 1
+            val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
+            doc.radio(fieldId) should have(
+              value(id),
+              label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
+            )
+          }
+        }
+      }
     }
 
     "be shown with configured text" when {

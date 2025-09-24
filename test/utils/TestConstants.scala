@@ -673,6 +673,23 @@ object TestConstants {
       )
     )
 
+  val testSelectPageConfigWithNoneOfTheseOption =
+    JourneyDataV2(
+      config = JourneyConfigV2(
+        version = 2,
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true), Some(true)))),
+        labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
+          title = Some("testTitle"),
+          heading = Some("testHeading"),
+          headingWithPostcode = Some("testHeadingWithPostcode "),
+          proposalListLabel = Some("testProposalListLabel"),
+          submitLabel = Some("testSubmitLabel"),
+          searchAgainLinkText = Some("testSearchAgainLinkText"),
+          editAddressLinkText = Some("testEditAddressLinkText")
+        ))))))
+      )
+    )
+
   val testSelectPageConfigWelshEmpty =
     JourneyDataV2(
       config = JourneyConfigV2(

@@ -45,6 +45,8 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with L
 
     val getH1ElementAsText: String = doc.getElementsByTag("h1").text()
 
+    val getEditAddressLinkAsText: String = doc.select("#editAddress").text()
+
     val getH2ElementAsText: String = doc.getElementsByTag("h2").text()
 
     val getFirstH2ElementAsText: String = doc.getElementsByTag("h2").first().text()

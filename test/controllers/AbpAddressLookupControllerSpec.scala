@@ -407,6 +407,14 @@ class AbpAddressLookupControllerSpec
       header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.confirm("foo").url))
     }
 
+    "redirect to edit page when none of these option is selected" in new Scenario(
+      journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
+    ) {
+      val res: Future[Result] = controller.handleSelect("foo", None, testPostCode).apply(req.withFormUrlEncodedBody("addressId" -> "none"))
+      status(res) must be(303)
+      header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.edit("foo", Some(testPostCode)).url))
+    }
+
     "redirect to select page when an address hasn't been selected" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2(None).copy(proposals = Some(Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "AA1 BB2", "some-town")))))
     ) {

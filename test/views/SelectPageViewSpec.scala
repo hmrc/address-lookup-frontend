@@ -72,6 +72,30 @@ class SelectPageViewSpec extends ViewSpec {
       }
     }
 
+    "render the edit address link" when {
+      "the config is provided as false for show none of these option" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+        doc.getEditAddressLinkAsText shouldBe messages("selectPage.editAddressLinkText")
+      }
+    }
+
+    "not render the edit address link" when {
+      "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
+        doc.getEditAddressLinkAsText shouldBe Content.empty
+      }
+    }
+
+    "render the none of these option" when {
+      "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
+        doc.select("#addressId-none + label").text() shouldBe messages("selectPage.noneOfThese")
+      }
+    }
+
+    "not render the none of these option" when {
+      "the config is provided as false for show none of these option" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+        doc.select("#addressId-none + label").text() shouldBe Content.empty
+      }
+    }
+
     "not render the back button" when {
       "the config is provided as false for back links" in new Setup(testJourneyDataNoBackButtons, testProposal, testLookup, firstSearch = true) {
         doc.getBackLinkText shouldBe Content.empty

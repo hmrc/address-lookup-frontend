@@ -204,6 +204,11 @@ class InternationalAddressLookupController @Inject()(
           },
           selection => {
             journeyData.proposals match {
+              case Some(_) if selection.noneOfTheseOptionSelected =>
+                val journeyDataWithConfirmableAddress = journeyData.copy(
+                  selectedAddress = None
+                )
+                (Some(journeyDataWithConfirmableAddress), Redirect(routes.InternationalAddressLookupController.edit(id)))
               case Some(props) => {
                 props.find(_.addressId == selection.addressId) match {
                   case Some(addr) =>

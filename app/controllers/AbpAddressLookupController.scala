@@ -236,7 +236,12 @@ class AbpAddressLookupController @Inject()(
           },
           selection => {
             journeyData.proposals match {
-              case Some(props) => {
+              case Some(_) if selection.noneOfTheseOptionSelected =>
+                val journeyDataWithConfirmableAddress = journeyData.copy(
+                  selectedAddress = None
+                )
+                (Some(journeyDataWithConfirmableAddress), Redirect(routes.AbpAddressLookupController.edit(id, Some(postcode))))
+              case Some(props) =>
                 props.find(_.addressId == selection.addressId) match {
                   case Some(addr) =>
                     val journeyDataWithConfirmableAddress = journeyData.copy(
@@ -265,7 +270,6 @@ class AbpAddressLookupController @Inject()(
                       )
                     })
                 }
-              }
               case None =>
                 (None, Redirect(routes.AbpAddressLookupController.lookup(id)))
             }

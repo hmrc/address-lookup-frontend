@@ -16,6 +16,7 @@
 
 package controllers.abp
 
+import com.codahale.metrics.SharedMetricRegistries
 import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
@@ -23,7 +24,10 @@ import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
 import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
+import play.api.Application
+import play.api.Mode.Test
 import play.api.i18n.Lang
+import play.api.inject.guice.GuiceApplicationBuilder
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -65,6 +69,46 @@ class SelectPageISpec extends IntegrationSpecBase {
           href(routes.AbpAddressLookupController.edit(id = testJourneyId, lookUpPostCode = Some(testPostCode)).url),
           text(messages("selectPage.editAddressLinkText"))
         )
+
+        val testIds = (testResultsList \\ "id").map {
+          testId => testId.as[String]
+        }
+
+        testIds.foreach {
+          id => {
+            val fieldId = (s"addressId")
+            doc.radio(fieldId) should have(
+              value(id),
+              label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
+            )
+          }
+        }
+      }
+      "there is a result list between 2 and 50 results and also show none of these option" in {
+        val testJourneyId = UUID.randomUUID().toString
+
+        val addressAmount = 50
+        val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
+        stubGetAddressFromBE(addressJson = testResultsList)
+        await(cache.putV2(testJourneyId,
+          journeyDataV2ResultLimitWithNoneOfTheseOption.copy(proposals = Some(testProposedAddresses(addressAmount)))))
+
+        val res = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+
+        res.status shouldBe OK
+
+        val doc = getDocFromResponse(res)
+
+        doc.title shouldBe messages("selectPage.title")
+        doc.h1.text() shouldBe messages("selectPage.heading")
+        doc.submitButton.text() shouldBe messages("selectPage.submitLabel")
+        doc.link("editAddress") should have(
+          href(""),
+          text("")
+        )
+        doc.select("#addressId-none + label").text() shouldBe messages("selectPage.noneOfThese")
 
         val testIds = (testResultsList \\ "id").map {
           testId => testId.as[String]

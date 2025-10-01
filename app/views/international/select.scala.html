@@ -59,12 +59,15 @@
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">@{internationalMessage("selectPage.heading")}</h1>
 
     @form(controllers.routes.InternationalAddressLookupController.handleSelect(id, filter)) {
-        <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{internationalMessage("selectPage.editAddressLinkText")}</a>
-        </p>
+
+        @if(resolvedConf.options.selectPageConfig.showEnterAddressManuallyLink) {
+            <p class="govuk-!-margin-bottom-6 govuk-body">
+                <a class="govuk-link" href="@{routes.InternationalAddressLookupController.edit(id)}" id="editAddress">@{internationalMessage("selectPage.editAddressLinkText")}</a>
+            </p>
+        }
 
         @radios(Radios(
-            formGroup = FormGroup(classes = Some("form-group")),
+            formGroup = FormGroup(classes = Some("form-group govuk-!-margin-bottom-2")),
             errorMessage = selectForm("addressId").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
             name = "addressId",
             fieldset = Some(Fieldset(
@@ -83,6 +86,26 @@
                 }
             case None => Seq.empty
         }))
+
+        @if(resolvedConf.options.selectPageConfig.showNoneOfTheseOption) {
+            <div class="govuk-radios__divider">@internationalMessage("selectPage.optionsDivider")</div>
+            @radios(Radios(
+                    formGroup = FormGroup(classes = Some("form-group")),
+                    errorMessage = selectForm("addressId").error.map(fe => ErrorMessage(content = HtmlContent(""))),
+                    name = "addressId",
+                    fieldset = Some(Fieldset(
+                        legend = Some(Legend(
+                        content = HtmlContent(""),
+                        classes = "govuk-visually-hidden"
+                    ))
+                )),
+                items = Seq(RadioItem(
+                            content = HtmlContent(internationalMessage("selectPage.noneOfThese")),
+                            value = Some("none"),
+                            id = Some("addressId-none"),
+                            checked = selectForm("none").value.isDefined))
+            ))
+        }
 
         @if(resolvedConf.options.selectPageConfig.showSearchAgainLink) {
             <p class="govuk-!-margin-bottom-7">

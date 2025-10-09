@@ -58,11 +58,19 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     .groupBy(_("Country"))
     .view.mapValues(v => v.head)
 
-  private def allGovWalesRows(govWalesData: String) = CSVReader.open(Source.fromString(govWalesData))
-    .allWithOrderedHeaders()._2.sortBy(x => x("Cod gwlad (Country code)"))
-    .groupBy(_("Cod gwlad (Country code)"))
-    .view.mapValues(v => v.head)
-    .map { case (k, m) => k -> Map("Country" -> m("Cod gwlad (Country code)"), "Name" -> m("Enw yn Gymraeg (Name in Welsh)")) }
+  private def allGovWalesRows(govWalesData: String) = {
+    //There was a bug introduced where the Welsh Government published a CSV that had `Column1,Column2,...` at the top of the file
+    //This code pre-reads the CSV to find the actual header row and then re-reads it from there
+    val lines = Source.fromString(govWalesData).getLines().toList
+    val headerIdx = lines.indexWhere(_.contains("Cod gwlad (Country code)"))
+    val csvContent = lines.drop(headerIdx).mkString("\n")
+    val reader = CSVReader.open(Source.fromString(csvContent))
+    reader.allWithOrderedHeaders()._2
+      .sortBy(x => x("Cod gwlad (Country code)"))
+      .groupBy(_("Cod gwlad (Country code)"))
+      .view.mapValues(v => v.head)
+      .map { case (k, m) => k -> Map("Country" -> m("Cod gwlad (Country code)"), "Name" -> m("Enw yn Gymraeg (Name in Welsh)")) }
+  }
 
   private def countriesCYFull(govWalesData: String): Seq[Country] =
     SortedMap.from(english.allISORows ++ english.allFCDORows ++ english.allFCDOTRows ++ allWCORows ++ allGovWalesRows(govWalesData))

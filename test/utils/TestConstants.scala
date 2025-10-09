@@ -660,7 +660,7 @@ object TestConstants {
     JourneyDataV2(
       config = JourneyConfigV2(
         version = 2,
-        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true)))),
+        options = JourneyOptions(continueUrl = "testContinueUrl", showBackButtons = Some(true), selectPageConfig = Some(SelectPageConfig(Some(10), Some(true))), accessibilityFooterUrl = Some("/a11y/url")),
         labels = Some(JourneyLabels(en = Some(LanguageLabels(selectPageLabels = Some(SelectPageLabels(
           title = Some("testTitle"),
           heading = Some("testHeading"),

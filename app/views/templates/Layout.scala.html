@@ -68,7 +68,8 @@
         serviceName = if(messages.isDefinedAt("navTitle")) Some(messages("navTitle")) else None,
         serviceURLs = ServiceURLs(
             serviceUrl = Some(resolvedJourneyConfig.options.serviceHref.getOrElse("")),
-            signOutUrl = resolvedJourneyConfig.options.signOutHref
+            signOutUrl = resolvedJourneyConfig.options.signOutHref,
+            accessibilityStatementUrl = resolvedJourneyConfig.options.accessibilityFooterUrl
         ),
         banners = {
             if (resolvedJourneyConfig.options.showPhaseBanner) {

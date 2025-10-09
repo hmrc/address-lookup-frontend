@@ -62,6 +62,11 @@ class SelectPageViewSpec extends ViewSpec {
   }
 
   "Select Page" should {
+
+    "render the a11y link in the footer" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+      doc.select("ul.govuk-footer__inline-list li:nth-of-type(2) a").attr("href") shouldBe "/a11y/url"
+    }
+
     "render the back button" when {
       "the config is provided as true for back links" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getBackLinkText shouldBe messages("constants.back")

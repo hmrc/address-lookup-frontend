@@ -36,7 +36,7 @@ import scala.io.Source
 import scala.jdk.javaapi.CollectionConverters.asScala
 
 @Singleton
-class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource {
+class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource with Logging {
 
   protected def streamToString(stream: InputStream): String = {
     Source.fromInputStream(stream).getLines().toList.mkString("\n")
@@ -62,6 +62,9 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     //There was a bug introduced where the Welsh Government published a CSV that had `Column1,Column2,...` at the top of the file
     //This code pre-reads the CSV to find the actual header row and then re-reads it from there
     val lines = Source.fromString(govWalesData).getLines().toList
+
+    logger.info("[allGovWalesRows] - Sample of govWalesData retrieved:\n" + lines.take(5).mkString("\n"))
+
     val headerIdx = lines.indexWhere(_.contains("Cod gwlad (Country code)"))
     val csvContent = lines.drop(headerIdx).mkString("\n")
     val reader = CSVReader.open(Source.fromString(csvContent))

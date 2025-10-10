@@ -17,7 +17,7 @@
 package services
 
 import address.v2.Country
-import com.github.tototoshi.csv.CSVReader
+import com.github.tototoshi.csv.{CSVFormat, CSVReader, DefaultCSVFormat}
 import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.apache.pekko.stream.Materializer
 import org.htmlunit.html.{HtmlAnchor, HtmlPage}
@@ -36,7 +36,7 @@ import scala.io.Source
 import scala.jdk.javaapi.CollectionConverters.asScala
 
 @Singleton
-class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource {
+class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource with Logging {
 
   protected def streamToString(stream: InputStream): String = {
     Source.fromInputStream(stream).getLines().toList.mkString("\n")
@@ -58,13 +58,28 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     .groupBy(_("Country"))
     .view.mapValues(v => v.head)
 
-  private def allGovWalesRows(govWalesData: String) = {
+  private[services] def allGovWalesRows(govWalesData: String) = {
     //There was a bug introduced where the Welsh Government published a CSV that had `Column1,Column2,...` at the top of the file
-    //This code pre-reads the CSV to find the actual header row and then re-reads it from there
+    //This code pre-reads the CSV to find the actual header row and then re-reads it from there. It also now caters for both ',' and ';' delimiters
+
     val lines = Source.fromString(govWalesData).getLines().toList
+    logger.debug("[allGovWalesRows] - Sample of govWalesData retrieved:\n" + lines.take(5).mkString("\n"))
+
+    //Find index of header row
     val headerIdx = lines.indexWhere(_.contains("Cod gwlad (Country code)"))
+
+    //work out delimiter due to Welsh Gov switching between comma and semicolon. This logic is crude but effective, and safer
+    //than just mass replacing one-delimiter with another
+    val commaCount = lines(headerIdx).count(_ == ',')
+    val semicolonCount = lines(headerIdx).count(_ == ';')
+    val parserFormat: CSVFormat = if(commaCount > semicolonCount) CSVFormat.defaultCSVFormat else {
+      new DefaultCSVFormat {
+        override val delimiter: Char = ';'
+      }
+    }
+
     val csvContent = lines.drop(headerIdx).mkString("\n")
-    val reader = CSVReader.open(Source.fromString(csvContent))
+    val reader = CSVReader.open(Source.fromString(csvContent))(parserFormat)
     reader.allWithOrderedHeaders()._2
       .sortBy(x => x("Cod gwlad (Country code)"))
       .groupBy(_("Cod gwlad (Country code)"))

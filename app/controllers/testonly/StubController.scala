@@ -18,8 +18,7 @@ package controllers.testonly
 
 import config.FrontendAppConfig
 import controllers.api.ApiController
-import javax.inject.{Inject, Singleton}
-import model._
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyLabels, JourneyOptions}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.I18nSupport
@@ -30,6 +29,7 @@ import services.JourneyRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.testonly.setup_journey_v2_stub_page
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 object TestSetupForm {
@@ -37,8 +37,8 @@ object TestSetupForm {
 }
 
 object StubHelper {
-  val regexPatternForId = """(?<=lookup-address\/)(.*)(?=/begin)""".r
-  val getJourneyIDFromURL = (url: String) =>
+  private val regexPatternForId = """(?<=lookup-address\/)(.*)(?=/begin)""".r
+  val getJourneyIDFromURL: String => String = (url: String) =>
     regexPatternForId
       .findFirstIn(url)
       .getOrElse(throw new Exception("id not in url"))

@@ -16,6 +16,7 @@
 
 package model
 
+import model.v2.JourneyLabels
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json._
 
@@ -86,7 +87,6 @@ case class CountryPickerPageLabels(title: Option[String] = None,
                                    submitLabel: Option[String] = None)
 
 object LanguageLabels {
-  import InternationalLanguageLabels._
 
   implicit val appLevelWrites: Writes[AppLevelLabels] = Json.writes[AppLevelLabels]
   implicit val selectPageWrites: Writes[SelectPageLabels] = Json.writes[SelectPageLabels]

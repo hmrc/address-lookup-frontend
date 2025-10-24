@@ -19,10 +19,11 @@ package forms
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
 import model._
+import model.v2.ManualAddressEntryConfig
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{FieldMapping, Form, FormError, Forms}
 import play.api.i18n.Messages
 
 object Helpers {
@@ -117,7 +118,7 @@ object ALFForms extends EmptyStringValidator {
       Invalid(msg, max)
     })
 
-  val constraintMinLength = (msg: String) => new Constraint[String](Some("length.min"), Seq.empty)(s => if (s.nonEmpty) {
+  val constraintMinLength: String => Constraint[String] = (msg: String) => new Constraint[String](Some("length.min"), Seq.empty)(s => if (s.nonEmpty) {
     Valid
   } else {
     Invalid(msg)
@@ -129,14 +130,14 @@ object ALFForms extends EmptyStringValidator {
     val postcode = form("postcode").value.getOrElse("")
 
     (isGB, postcode) match {
-      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messages(s"constants.editPagePostcodeErrorMessage"))
+      case (true, p) if p.nonEmpty && Postcode.cleanupPostcode(postcode).isEmpty => form.withError("postcode", messages(s"constants.editPagePostcodeErrorMessage"))
       case _ => form
     }
   }
 
-  def atLeastOneAddressLineOrTown(message: String = "") = Forms.of[Option[String]](formatter(message))
+  private def atLeastOneAddressLineOrTown(message: String = ""): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message))
 
-  def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
+  private def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
       if (values.forall(_.isEmpty)) {
@@ -152,19 +153,19 @@ object ALFForms extends EmptyStringValidator {
   def ukEditForm(optConfig: Option[ManualAddressEntryConfig] = None)(implicit messages: Messages): Form[Edit] = {
     val config = optConfig getOrElse ManualAddressEntryConfig()
     Form(
-    mapping(
-      "organisation" -> optional(text),
-      "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength)),
-      "line2" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength)),
-      "line3" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength)),
-      "town" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength)),
-      "postcode" -> default(text, ""),
-      "countryCode" -> ignored[String]("GB")
-    )(Edit.apply)(Edit.unapply)
-  )
+      mapping(
+        "organisation" -> optional(text),
+        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength)),
+        "line2" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength)),
+        "line3" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength)),
+        "town" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength)),
+        "postcode" -> default(text, ""),
+        "countryCode" -> ignored[String]("GB")
+      )(Edit.apply)(Edit.unapply)
+    )
   }
 
-  def nonUkEditForm(optConfig: Option[ManualAddressEntryConfig] = None)(implicit messages: Messages) = {
+  def nonUkEditForm(optConfig: Option[ManualAddressEntryConfig] = None)(implicit messages: Messages): Form[Edit] = {
     val config = optConfig getOrElse ManualAddressEntryConfig()
     Form(
       mapping(

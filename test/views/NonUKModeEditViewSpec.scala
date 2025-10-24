@@ -19,7 +19,7 @@ package views
 import address.v2.Country
 import config.FrontendAppConfig
 import forms.ALFForms._
-import model._
+import model.v2.{JourneyConfigV2, JourneyLabels}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, MessagesApi}

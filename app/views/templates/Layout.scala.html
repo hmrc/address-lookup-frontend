@@ -15,10 +15,10 @@
  *@
 
 @import config.FrontendAppConfig
-@import model.JourneyDataV2
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import model.v2.JourneyDataV2
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
@@ -28,7 +28,6 @@
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
-
 
 @(pageTitle: String, form: Option[Form[_]], journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
 
@@ -47,20 +46,18 @@
 }
 
 @combinedAdditionalHead = {
-    @resolvedJourneyConfig.options.timeoutConfig.map(t =>
+    @resolvedJourneyConfig.options.timeoutConfig.map( timeoutConfig =>
         hmrcTimeoutDialogHelper(
             countdown = Some(120),
             title = None,
-            keepAliveUrl = t.timeoutKeepAliveUrl.orElse(Some("/lookup-address/renewSession")),
-            timeout = Some(t.timeoutAmount),
-            signOutUrl = s"/lookup-address/destroySession?timeoutUrl=${t.timeoutUrl}"
+            keepAliveUrl = timeoutConfig.timeoutKeepAliveUrl.orElse(Some("/lookup-address/renewSession")),
+            timeout = Some(timeoutConfig.timeoutAmount),
+            signOutUrl = s"/lookup-address/destroySession?timeoutUrl=${timeoutConfig.timeoutUrl}"
         )
     )
 
     @autocompleteCss()
 }
-
-
 
 @hmrcStandardPage(
     HmrcStandardPageParams(

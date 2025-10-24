@@ -20,6 +20,7 @@ import address.v2.{Countries, Country}
 import config.{ALFCookieNames, FrontendAppConfig}
 import forms.ALFForms._
 import model._
+import model.v2.JourneyDataV2
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._

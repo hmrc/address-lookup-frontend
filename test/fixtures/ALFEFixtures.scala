@@ -17,6 +17,7 @@
 package fixtures
 
 import model._
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyLabels, JourneyOptions}
 
 
 trait ALFEFixtures {

@@ -23,9 +23,19 @@
 @import views.ViewHelper
 @import views.html.templates.Layout
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import model.v2.JourneyDataV2
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput, radios: GovukRadios,
-select: GovukSelect, page: Layout, govukFieldset: GovukFieldset, countryService: CountryService)
+@this(
+        form: FormWithCSRF,
+        textarea: GovukTextarea,
+        button: GovukButton,
+        textInput: GovukInput,
+        radios: GovukRadios,
+        select: GovukSelect,
+        page: Layout,
+        govukFieldset: GovukFieldset,
+        countryService: CountryService
+)
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{

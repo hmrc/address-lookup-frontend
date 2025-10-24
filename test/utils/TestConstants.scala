@@ -19,6 +19,7 @@ package utils
 import address.v2.Country
 import controllers.Proposals
 import model._
+import model.v2._
 import play.api.libs.json.{JsValue, Json}
 
 import java.util.UUID

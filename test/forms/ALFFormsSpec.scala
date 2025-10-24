@@ -17,13 +17,14 @@
 package forms
 
 import com.codahale.metrics.SharedMetricRegistries
-import model.{Edit, ManualAddressEntryConfig}
+import model.Edit
+import model.v2.ManualAddressEntryConfig
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.data.{Form, FormError}
 import play.api.data.validation.{Invalid, Valid}
+import play.api.data.{Form, FormError}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -190,6 +191,13 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
             postcode = "ZZ11ZZ"
           ))
         }
+      }
+    }
+    
+    "error" when {
+      
+      "either line1, town or postcode are missing" in {
+        
       }
     }
   }

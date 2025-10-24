@@ -16,13 +16,14 @@
 
 @import address.v2.Country
 @import config.FrontendAppConfig
-@import model._
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.govukfrontend.views.viewmodels._
 @import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
 @import views.ViewHelper
 @import views.html.templates.Layout
+@import model.v2.JourneyDataV2
+@import model.CountryPicker
 
 @this(
         form: FormWithCSRF,
@@ -31,7 +32,6 @@
         select: GovukSelect,
         govukErrorSummary: GovukErrorSummary,
         page: Layout)
-
 
 @(id: String,
     journeyData: JourneyDataV2,

@@ -17,7 +17,7 @@
 package views
 
 import config.FrontendAppConfig
-import model._
+import model.v2.ConfirmPageConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, Messages, MessagesApi}

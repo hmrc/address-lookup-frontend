@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
 import model._
+import model.v2.{JourneyDataV2, SelectPageConfig}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._

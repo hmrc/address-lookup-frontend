@@ -18,6 +18,7 @@ package model
 
 import address.v2.Country
 import fixtures.ALFEFixtures
+import model.v2.JourneyConfigV2
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsResultException, Json}

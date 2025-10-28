@@ -21,7 +21,7 @@ import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.LookupPage
-import model.{JourneyConfigV2, JourneyOptions}
+import model.v2.{JourneyConfigV2, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.Application
 import play.api.Mode.Test

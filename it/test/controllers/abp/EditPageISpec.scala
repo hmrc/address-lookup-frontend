@@ -20,6 +20,7 @@ import address.v2.Country
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
+import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -64,10 +65,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "Organisation (optional)",
-          "line1" -> "Address line 1",
-          "line2" -> "Address line 2",
-          "line3" -> "Address line 3",
-          "town" -> "Town or city",
+          "line1" -> "Address line 1 (optional)",
+          "line2" -> "Address line 2 (optional)",
+          "line3" -> "Address line 3 (optional)",
+          "town" -> "Town or city (optional)",
           "postcode" -> "Postcode (optional)",
           "countryCode" -> "Country or territory"
         ))
@@ -103,10 +104,10 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2",
-          "line3" -> "Llinell cyfeiriad 3",
-          "town" -> "Tref/dinas",
+          "line1" -> "Llinell cyfeiriad 1 (dewisol)",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+          "town" -> "Tref/dinas (dewisol)",
           "postcode" -> "Cod post (dewisol)",
           "countryCode" -> "Gwlad neu diriogaeth"
         ))
@@ -233,10 +234,10 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "line1" -> "Llinell cyfeiriad 1",
-          "line2" -> "Llinell cyfeiriad 2",
-          "line3" -> "Llinell cyfeiriad 3",
-          "town" -> "Tref/dinas",
+          "line1" -> "Llinell cyfeiriad 1 (dewisol)",
+          "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+          "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+          "town" -> "Tref/dinas (dewisol)",
           "postcode" -> "Cod post (dewisol)"
         ))
 
@@ -270,12 +271,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel",
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode",
+          "organisation" -> "edit-organisationLabel (optional)",
+          "line1" -> "Custom Line1 (optional)",
+          "line2" -> "Custom Line2 (optional)",
+          "line3" -> "Custom Line3 (optional)",
+          "town" -> "Custom Town (optional)",
+          "postcode" -> "Custom Postcode (optional)",
           "countryCode" -> "Custom Country"
         ))
       }
@@ -306,12 +307,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel",
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode"
+          "organisation" -> "edit-organisationLabel (optional)",
+          "line1" -> "Custom Line1 (optional)",
+          "line2" -> "Custom Line2 (optional)",
+          "line3" -> "Custom Line3 (optional)",
+          "town" -> "Custom Town (optional)",
+          "postcode" -> "Custom Postcode (optional)"
         ))
       }
 
@@ -361,12 +362,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel welsh",
-          "line1" -> "Custom Line1 welsh",
-          "line2" -> "Custom Line2 welsh",
-          "line3" -> "Custom Line3 welsh",
-          "town" -> "Custom Town welsh",
-          "postcode" -> "Custom Postcode welsh"
+          "organisation" -> "edit-organisationLabel welsh (dewisol)",
+          "line1" -> "Custom Line1 welsh (dewisol)",
+          "line2" -> "Custom Line2 welsh (dewisol)",
+          "line3" -> "Custom Line3 welsh (dewisol)",
+          "town" -> "Custom Town welsh (dewisol)",
+          "postcode" -> "Custom Postcode welsh (dewisol)"
         ))
       }
 
@@ -396,12 +397,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel",
-          "line1" -> "Custom Line1",
-          "line2" -> "Custom Line2",
-          "line3" -> "Custom Line3",
-          "town" -> "Custom Town",
-          "postcode" -> "Custom Postcode"
+          "organisation" -> "edit-organisationLabel (optional)",
+          "line1" -> "Custom Line1 (optional)",
+          "line2" -> "Custom Line2 (optional)",
+          "line3" -> "Custom Line3 (optional)",
+          "town" -> "Custom Town (optional)",
+          "postcode" -> "Custom Postcode (optional)"
         ))
       }
 
@@ -451,12 +452,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel welsh",
-          "line1" -> "Custom Line1 welsh",
-          "line2" -> "Custom Line2 welsh",
-          "line3" -> "Custom Line3 welsh",
-          "town" -> "Custom Town welsh",
-          "postcode" -> "Custom Postcode welsh",
+          "organisation" -> "edit-organisationLabel welsh (dewisol)",
+          "line1" -> "Custom Line1 welsh (dewisol)",
+          "line2" -> "Custom Line2 welsh (dewisol)",
+          "line3" -> "Custom Line3 welsh (dewisol)",
+          "town" -> "Custom Town welsh (dewisol)",
+          "postcode" -> "Custom Postcode welsh (dewisol)",
           "countryCode" -> "Custom Country welsh"
         ))
       }
@@ -477,10 +478,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "organisation" -> "Organisation (optional)",
-        "line1" -> "Address line 1",
-        "line2" -> "Address line 2",
-        "line3" -> "Address line 3",
-        "town" -> "Town or city",
+        "line1" -> "Address line 1 (optional)",
+        "line2" -> "Address line 2 (optional)",
+        "line3" -> "Address line 3 (optional)",
+        "town" -> "Town or city (optional)",
         "postcode" -> "Postcode (optional)",
         "countryCode" -> "Country or territory"))
     }
@@ -513,10 +514,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have(value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas",
+        "line1" -> "Llinell cyfeiriad 1 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas (dewisol)",
         "postcode" -> "Cod post (dewisol)"
       ))
 
@@ -544,10 +545,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have(value("eebb"))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas",
+        "line1" -> "Llinell cyfeiriad 1 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas (dewisol)",
         "postcode" -> "Cod post (dewisol)"
       ))
 
@@ -616,10 +617,10 @@ class EditPageISpec extends IntegrationSpecBase {
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "organisation" -> "Organisation (optional)",
-        "line1" -> "Address line 1",
-        "line2" -> "Address line 2",
-        "line3" -> "Address line 3",
-        "town" -> "Town or city",
+        "line1" -> "Address line 1 (optional)",
+        "line2" -> "Address line 2 (optional)",
+        "line3" -> "Address line 3 (optional)",
+        "town" -> "Town or city (optional)",
         "postcode" -> "UK postcode (optional)"
       ))
 
@@ -677,10 +678,10 @@ class EditPageISpec extends IntegrationSpecBase {
       document.input("postcode") should have(value(""))
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-        "line1" -> "Llinell cyfeiriad 1",
-        "line2" -> "Llinell cyfeiriad 2",
-        "line3" -> "Llinell cyfeiriad 3",
-        "town" -> "Tref/dinas",
+        "line1" -> "Llinell cyfeiriad 1 (dewisol)",
+        "line2" -> "Llinell cyfeiriad 2 (dewisol)",
+        "line3" -> "Llinell cyfeiriad 3 (dewisol)",
+        "town" -> "Tref/dinas (dewisol)",
         "postcode" -> "Cod post y DU (dewisol)"
       ))
 

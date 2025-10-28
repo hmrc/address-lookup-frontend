@@ -19,6 +19,7 @@ package controllers.international
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
+import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -30,7 +31,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EditPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The edit page" should {

@@ -69,13 +69,19 @@
     }
 }
     
+@generateLabel(key: String) = @{
+    if(key == "postcode" && isUKMode) {
+        s"editPage.postcodeLabel.ukMode"
+    } else s"editPage.${key}Label"
+}
+    
 @textField(formKey: String, autocompleteLabel: String, width:Int = 20, addressErrorClass: Boolean = false, isMandatory: MandatoryFieldsConfigModel => Boolean) = {
     @textInput(
         Input(
             value = editForm(formKey).value,
             label = Label(
                 content = HtmlContent(
-                    messages(s"editPage.${formKey}Label") + (if(
+                    messages(generateLabel(formKey)) + (if(
                         journeyData.config.options.manualAddressEntryConfig.flatMap(_.mandatoryFields.map(isMandatory)).forall(_ == false)
                     ) s" ${messages("editPage.optional")}" else "")
                 )

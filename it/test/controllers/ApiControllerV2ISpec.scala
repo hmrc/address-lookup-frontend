@@ -19,15 +19,16 @@ package controllers
 import com.codahale.metrics.SharedMetricRegistries
 import controllers.api.ApiController
 import itutil.IntegrationSpecBase
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.{Application, Environment, Mode}
-import services.{IdGenerationService, JourneyDataV2Cache}
+import itutil.config.IntegrationTestConstants._
 import model._
+import model.v2._
 import play.api.http.HeaderNames
 import play.api.http.Status._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import itutil.config.IntegrationTestConstants._
+import play.api.{Application, Environment, Mode}
+import services.{IdGenerationService, JourneyDataV2Cache}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
@@ -40,12 +41,22 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
   val testJourneyFromConfig = JourneyDataV2(
     config = JourneyConfigV2(
       version = testApiVersion,
-      options = JourneyOptions(continueUrl = "/api/confirmed", homeNavHref = Some("http://www.hmrc.gov.uk/"), phaseFeedbackLink = Some("#"), showPhaseBanner = Some(false), alphaPhase = Some(false), showBackButtons = Some(true), includeHMRCBranding = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50), showSearchAgainLink = Some(true))), confirmPageConfig = Some(ConfirmPageConfig(
-                showSearchAgainLink = Some(true),
-                showSubHeadingAndInfo = Some(false),
-                showChangeLink = Some(true),
-                showConfirmChangeText = Some(false)
-              ))),
+      options = JourneyOptions(
+        continueUrl = "/api/confirmed",
+        homeNavHref = Some("http://www.hmrc.gov.uk/"),
+        phaseFeedbackLink = Some("#"),
+        showPhaseBanner = Some(false),
+        alphaPhase = Some(false),
+        showBackButtons = Some(true),
+        includeHMRCBranding = Some(true),
+        selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50), showSearchAgainLink = Some(true))),
+        confirmPageConfig = Some(ConfirmPageConfig(
+          showSearchAgainLink = Some(true),
+          showSubHeadingAndInfo = Some(false),
+          showChangeLink = Some(true),
+          showConfirmChangeText = Some(false)
+        ))
+      ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(navTitle = Some("Address Lookup"))),

@@ -20,11 +20,11 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, OWrites, Reads, __}
 
 case class MandatoryFieldsConfigModel(
-                                       addressLine1: Boolean,
-                                       addressLine2: Boolean,
-                                       addressLine3: Boolean,
-                                       postcode: Boolean,
-                                       town: Boolean
+                                       addressLine1: Boolean = false,
+                                       addressLine2: Boolean = false,
+                                       addressLine3: Boolean = false,
+                                       postcode: Boolean = false,
+                                       town: Boolean = false
                                      )
 
 object MandatoryFieldsConfigModel {

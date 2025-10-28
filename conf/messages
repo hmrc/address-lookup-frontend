@@ -27,6 +27,8 @@ footer.privacy.url = /help/privacy
 footer.termsConditions.text = Terms and conditions
 footer.termsConditions.url = /help/terms-and-conditions
 
+common.error.fieldRequired = This field is required
+
 constants.home = Home
 constants.back = Back
 constants.signOut = Sign out

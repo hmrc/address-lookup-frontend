@@ -27,6 +27,8 @@ footer.privacy.url = /help/privacy
 footer.termsConditions.text = Telerau ac Amodau
 footer.termsConditions.url = /help/terms-and-conditions
 
+common.error.fieldRequired = Mae angen llenwi’r blwch hwn
+
 constants.home = Cartref
 constants.back = Yn ôl
 constants.signOut = Allgofnodi

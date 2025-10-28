@@ -17,8 +17,9 @@
 package forms
 
 import com.codahale.metrics.SharedMetricRegistries
+import forms.ALFForms.editForm
 import model.Edit
-import model.v2.ManualAddressEntryConfig
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -279,6 +280,58 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
             postcode = "",
             countryCode = "FR"
           ))
+        }
+      }
+    }
+  }
+  
+  "editForm" should {
+    
+    "return no errors with valid data when none of the fields are mandatory and line 1 is given" in {
+      val data = Map(
+        "line1" -> "foo1"
+      )
+      
+      val form = editForm(isUkMode = true)
+      
+      form.bind(data).hasErrors mustBe false
+    }
+    
+    "return no errors with valid data when none of the fields are mandatory and town is given" in {
+      val data = Map(
+        "town" -> "Some Town"
+      )
+      
+      val form = editForm(isUkMode = true)
+      
+      form.bind(data).hasErrors mustBe false
+    }
+    
+    "return an error for each missing line when they are set to mandatory" which {
+      case class Data(testingLine: String, data: Map[String, String], modelMap: MandatoryFieldsConfigModel => MandatoryFieldsConfigModel)
+      
+      val testData = Seq(
+        Data("line1", Map("town" -> "Some Town"), _.copy(addressLine1 = true)),
+        Data("line2", Map("line1" -> "line1"), _.copy(addressLine2 = true)),
+        Data("line3", Map("line1" -> "line1"), _.copy(addressLine3 = true)),
+        Data("postcode", Map("line1" -> "line1"), _.copy(postcode = true)),
+        Data("town", Map("line1" -> "line1"), _.copy(town = true))
+      )
+      
+      val allFalseModel = MandatoryFieldsConfigModel(
+        addressLine1 = false, addressLine2 = false, addressLine3 = false, postcode = false, town = false
+      )
+      
+      testData.foreach { data =>
+        s"testing ${data.testingLine} errors if missing when set to mandatory" in {
+          val settingsModel = Some(ManualAddressEntryConfig(
+            mandatoryFields = Some(data.modelMap(allFalseModel))
+          ))
+          val form = editForm(settingsModel, isUkMode = true)
+          val result = form.bind(data.data)
+          
+          result.hasErrors mustBe true
+          result.errors.length mustBe 1
         }
       }
     }

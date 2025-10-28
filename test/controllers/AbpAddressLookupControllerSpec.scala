@@ -86,6 +86,7 @@ class AbpAddressLookupControllerSpec
     val confirm: confirm = app.injector.instanceOf[confirm]
     val no_results: no_results = app.injector.instanceOf[no_results]
     val too_many_results: too_many_results = app.injector.instanceOf[too_many_results]
+    val address_mode_edit: address_mode_edit = app.injector.instanceOf[address_mode_edit]
     val error_template: error_template = app.injector.instanceOf[error_template]
     val country_picker: country_picker = app.injector.instanceOf[country_picker]
     val remoteMessagesApiProvider: RemoteMessagesApiProvider = app.injector.instanceOf[RemoteMessagesApiProvider]
@@ -117,12 +118,12 @@ class AbpAddressLookupControllerSpec
 
     val controller = new AbpAddressLookupController(journeyRepository, addressService, auditConnector,
       frontendAppConfig, components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm,
-      no_results, too_many_results)
+      no_results, too_many_results, address_mode_edit)
 
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]): AbpAddressLookupController =
       new AbpAddressLookupController(journeyRepository, addressService, auditConnector, frontendAppConfig,
         components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
-        too_many_results) {
+        too_many_results, address_mode_edit) {
         override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, postCode: String, filter: Option[String], firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
@@ -172,7 +173,9 @@ class AbpAddressLookupControllerSpec
   //  }
 
   "lookup" should {
+    
     "isWelsh is false" should {
+      
       "return a form which permits input of building name/number and postcode and should pre pop values" in new Scenario(
         journeyDataV2 = Map("foo" -> basicJourneyV2())
       ) {

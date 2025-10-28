@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, EventTypes}
 import utils.PostcodeHelper
 import views.ViewHelper
-import views.html.abp.{lookup, non_uk_mode_edit, select, uk_mode_edit}
+import views.html.abp.{address_mode_edit, lookup, non_uk_mode_edit, select, uk_mode_edit}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +52,8 @@ class AbpAddressLookupController @Inject()(
                                             non_uk_mode_edit: non_uk_mode_edit,
                                             confirm: views.html.abp.confirm,
                                             no_results: views.html.abp.no_results,
-                                            too_many_results: views.html.abp.too_many_results
+                                            too_many_results: views.html.abp.too_many_results,
+                                            address_mode_edit: address_mode_edit
                                           )(override implicit val ec: ExecutionContext)
   extends AlfController(journeyRepository, messagesControllerComponents) {
 
@@ -290,45 +291,39 @@ class AbpAddressLookupController @Inject()(
         import LanguageLabelsForMessages._
 
         val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+          journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj()))
+        )
 
         implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
         val isWelsh = getWelshContent(journeyData)
         val isUKMode = journeyData.config.options.isUkMode
 
-        if (isUKMode) {
-          val editAddress = addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
-
-          (None, requestWithWelshHeader(isWelsh) {
-            Ok(
-              uk_mode_edit(
-                id,
-                journeyData,
-                ukEditForm(journeyData.config.options.manualAddressEntryConfig).fill(editAddress),
-                allowedSeqCountries(Seq.empty),
-                isWelsh,
-                isUKMode
-              )
-            )
-          })
+        val editAddress = if (isUKMode) {
+          addressOrDefault(journeyData.selectedAddress, lookUpPostCode)
         } else {
-          val defaultAddress = addressOrEmpty(journeyData.selectedAddress, lookUpPostCode, journeyData.countryCode)
-          (None, requestWithWelshHeader(isWelsh) {
-            Ok(
-              non_uk_mode_edit(
-                id,
-                journeyData,
-                nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).fill(defaultAddress),
-                allowedSeqCountries(countries(isWelsh)),
-                isWelsh = isWelsh,
-                isUKMode = isUKMode
-              )
-            )
-          })
+          addressOrEmpty(journeyData.selectedAddress, lookUpPostCode, journeyData.countryCode)
         }
-      }
-      }
+
+        val allowedCountriesToUse: Seq[Country] = if (isUKMode) {
+          allowedSeqCountries(Seq.empty[Country])
+        } else {
+          allowedSeqCountries(countries(isWelsh))
+        }
+
+        (None, requestWithWelshHeader(isWelsh) {
+          Ok(
+            address_mode_edit(
+              id,
+              journeyData,
+              editForm(journeyData.config.options.manualAddressEntryConfig, isUKMode).fill(editAddress),
+              allowedCountriesToUse,
+              isWelsh,
+              isUKMode
+            )
+          )
+        })
+      }}
     }
 
   private[controllers] def addressOrDefault(oAddr: Option[ConfirmableAddress],
@@ -383,78 +378,46 @@ class AbpAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
         val isUKMode = journeyData.config.options.isUkMode
 
-        if (isUKMode) {
-          val validatedForm = isValidPostcode(ukEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
-
-          validatedForm.fold(
-            errors =>
-              (None, requestWithWelshHeader(isWelsh) {
-                BadRequest(
-                  uk_mode_edit(
-                    id,
-                    journeyData,
-                    errors,
-                    allowedCountries(
-                      countries(isWelsh),
-                      journeyData.config.options.allowedCountryCodes
-                    ),
-                    isWelsh,
-                    isUKMode
-                  )
+        val validatedForm = isValidPostcode(editForm(journeyData.config.options.manualAddressEntryConfig, isUKMode).bindFromRequest())
+        
+        validatedForm.fold(
+          errors =>
+            (None, requestWithWelshHeader(isWelsh) {
+              BadRequest(
+                address_mode_edit(
+                  id,
+                  journeyData,
+                  errors,
+                  allowedCountries(
+                    countries(isWelsh),
+                    journeyData.config.options.allowedCountryCodes
+                  ),
+                  isWelsh, isUKMode
                 )
-              }),
-            edit =>
-              (
-                Some(
-                  journeyData.copy(
-                    selectedAddress = Some(edit.toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
-                  )
-                ),
-                requestWithWelshHeader(isWelsh) {
-                  Redirect(routes.AbpAddressLookupController.confirm(id))
-                }
               )
-          )
-        } else {
-          val validatedForm =
-            isValidPostcode(nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
-
-          validatedForm.fold(
-            errors => {
-              (None, requestWithWelshHeader(isWelsh) {
-                BadRequest(
-                  non_uk_mode_edit(
-                    id,
-                    journeyData,
-                    errors,
-                    allowedCountries(
-                      countries(isWelsh),
-                      journeyData.config.options.allowedCountryCodes
-                    ),
-                    isWelsh = isWelsh,
-                    isUKMode = isUKMode
-                  )
-                )
-              })
-            },
-            edit => {
+            }),
+          edit => {
+            val journeyDataByMode = if(isUKMode) {
+              journeyData.copy(
+                selectedAddress = Some(edit.toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
+              )
+            } else {
               val countryCode = ViewHelper.decodeCountryCode(edit.countryCode)
-              (
-                Some(
-                  journeyData.copy(
-                    countryCode = Some(countryCode),
-                    selectedAddress = Some(edit.copy(countryCode = countryCode).toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
-                  )
-                ),
-                requestWithWelshHeader(isWelsh) {
-                  Redirect(routes.AbpAddressLookupController.confirm(id))
-                }
+              journeyData.copy(
+                countryCode = Some(countryCode),
+                selectedAddress = Some(edit.copy(countryCode = countryCode).toConfirmableAddress(id, c => countryService.find(isWelsh, c)))
               )
             }
-          )
-        }
-      }
-      }
+          
+            (
+              Some(journeyDataByMode),
+              requestWithWelshHeader(isWelsh) {
+                Redirect(routes.AbpAddressLookupController.confirm(id))
+              }
+            )
+          }
+        )
+      }}
   }
 
   // GET  /:id/confirm

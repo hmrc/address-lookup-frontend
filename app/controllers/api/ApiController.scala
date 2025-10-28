@@ -61,16 +61,13 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
 
     val redirectPolicyResult = timeoutRedirectUrl.map { url => Try {
       policy.url(url)
-    }
-    }
+    }}
     val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try {
       policy.url(url)
-    }
-    }
+    }}
     val signoutPolicyResult = signOutUrl.map { url => Try {
       policy.url(url)
-    }
-    }
+    }}
 
     (redirectPolicyResult, keepAlivePolicyResult, signoutPolicyResult) match {
       case (Some(Failure(_)), _, _) | (_, Some(Failure(_)), _) | (_, _, Some(Failure(_))) =>

@@ -1,4 +1,20 @@
 /*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,9 +42,9 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.TestConstants._
-import views.html.abp.{lookup, select, uk_mode_edit}
+import views.html.abp.{address_mode_edit, lookup, select}
 
-class UKModeEditViewSpec extends ViewSpec {
+class AddressModeEditViewSpec extends ViewSpec {
 
   object defaultContent {
     val title = "Enter address - navTitle - GOV.UK"
@@ -59,7 +75,7 @@ class UKModeEditViewSpec extends ViewSpec {
   implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   val lookup: lookup = app.injector.instanceOf[lookup]
   val select: select = app.injector.instanceOf[select]
-  val uk_mode_edit: uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
+  val address_mode_edit: address_mode_edit = app.injector.instanceOf[address_mode_edit]
 
   val configWithoutLabels: JourneyConfigV2 = fullV2JourneyConfig.copy(
     options = fullV2JourneyOptions.copy(ukMode = Some(false)),
@@ -71,17 +87,54 @@ class UKModeEditViewSpec extends ViewSpec {
     implicit val lang: Lang = Lang("en")
 
     "the town field should have autocomplete attribute of address-level1" in {
-      val testPage = uk_mode_edit(
+      val testPage = address_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
         editForm = ukEditForm(),
         countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
-        isWelsh = false
+        isWelsh = false,
+        isUKMode = true
       )
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getElementById("town").attr("autocomplete") shouldBe "address-level1"
-    
+    }
+  }
+
+  "Non UK Mode Page" should {
+    implicit val lang: Lang = Lang("en")
+
+    "map each country onto the autocomplete field" in {
+      val testPage = address_mode_edit(
+        id = testId,
+        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
+        editForm = nonUkEditForm(),
+        countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
+        isWelsh = false,
+        isUKMode = false
+      )
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.testElementExists("countryCode")
+      doc.getDropList("countryCode").select("option").size() shouldBe 3
+      doc.getDropList("countryCode") should have(
+        option("FR-France", "France"),
+        option("AL-Albanian", "Albanian")
+      )
+    }
+
+    "the town field should have autocomplete attribute of address-level1" in {
+      val testPage = address_mode_edit(
+        id = testId,
+        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
+        editForm = nonUkEditForm(),
+        countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
+        isWelsh = false,
+        isUKMode = false
+      )
+      val doc: Document = Jsoup.parse(testPage.body)
+
+      doc.getElementById("town").attr("autocomplete") shouldBe "address-level1"
     }
   }
 }

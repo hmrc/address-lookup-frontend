@@ -19,7 +19,7 @@ package forms
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
 import model._
-import model.v2.ManualAddressEntryConfig
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -176,6 +176,48 @@ object ALFForms extends EmptyStringValidator {
         "town" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength)),
         "postcode" -> default(text, ""),
         "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
+      )(Edit.apply)(Edit.unapply)
+    )
+  }
+
+  def editForm(optConfig: Option[ManualAddressEntryConfig] = None, isUkMode: Boolean)(implicit messages: Messages): Form[Edit] = {
+    val config = optConfig getOrElse ManualAddressEntryConfig()
+
+    val countryCodeMapping = if (isUkMode) {
+      "countryCode" -> ignored[String]("GB")
+    } else {
+      "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
+    }
+    
+    def checkIfMandatory(input: Option[String], mandatoryCheck: MandatoryFieldsConfigModel => Boolean) = {
+      if (optConfig.flatMap(_.mandatoryFields.map(mandatoryCheck)).contains(true)) {
+        input.nonEmpty
+      } else true
+    }
+
+    Form(
+      mapping(
+        "organisation" -> optional(text),
+        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"))
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength))
+          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine1)),
+        "line2" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength))
+          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine2)),
+        "line3" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength))
+          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine3)),
+        "town" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength))
+          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.town)),
+        "postcode" -> default(text, "").verifying(
+          "common.error.fieldRequired",
+          input => checkIfMandatory(
+            if(input == "") None else Some(input),
+            _.postcode
+          )
+        ),
+        countryCodeMapping
       )(Edit.apply)(Edit.unapply)
     )
   }

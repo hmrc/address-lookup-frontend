@@ -24,7 +24,8 @@ case class ManualAddressEntryConfig(
                                      line1MaxLength: Int = ManualAddressEntryConfig.defaultMax,
                                      line2MaxLength: Int = ManualAddressEntryConfig.defaultMax,
                                      line3MaxLength: Int = ManualAddressEntryConfig.defaultMax,
-                                     townMaxLength: Int = ManualAddressEntryConfig.defaultMax
+                                     townMaxLength: Int = ManualAddressEntryConfig.defaultMax,
+                                     mandatoryFields: Option[MandatoryFieldsConfigModel] = None
                                    )
 
 object ManualAddressEntryConfig {
@@ -38,7 +39,8 @@ object ManualAddressEntryConfig {
     (__ \ "line1MaxLength").readWithDefault[Int](defaultMax)(constraints) and
       (__ \ "line2MaxLength").readWithDefault[Int](defaultMax)(constraints) and
       (__ \ "line3MaxLength").readWithDefault[Int](defaultMax)(constraints) and
-      (__ \ "townMaxLength").readWithDefault[Int](defaultMax)(constraints)
+      (__ \ "townMaxLength").readWithDefault[Int](defaultMax)(constraints) and
+      (__ \ "mandatoryFields").readNullable[MandatoryFieldsConfigModel]
   )(ManualAddressEntryConfig.apply _)
 
   implicit val writes: Writes[ManualAddressEntryConfig] = Json.writes[ManualAddressEntryConfig]

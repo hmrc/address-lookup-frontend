@@ -114,15 +114,16 @@ confirmPage.searchAgainLinkText = Search again
 
 editPage.title = Enter your address
 editPage.heading = Enter your address
-editPage.organisationLabel = Organisation (optional)
+editPage.organisationLabel = Organisation
 editPage.line1Label = Address line 1
 editPage.line2Label = Address line 2
 editPage.line3Label = Address line 3
 editPage.townLabel = Town or city
-editPage.postcodeLabel = Postcode (optional)
-editPage.postcodeLabel.ukMode = UK postcode (optional)
+editPage.postcodeLabel = Postcode
+editPage.postcodeLabel.ukMode = UK postcode
 editPage.countryLabel = Country or territory
 editPage.submitLabel = Continue
+editPage.optional = (optional)
 
 lookupPage.title = Find your address
 lookupPage.title.ukMode = Find your UK address

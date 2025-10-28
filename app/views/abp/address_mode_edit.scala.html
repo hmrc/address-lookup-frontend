@@ -25,6 +25,7 @@
 @import views.ViewHelper
 @import views.html.templates.Layout
 @import model.v2.JourneyDataV2
+@import model.v2.MandatoryFieldsConfigModel
 
 @this(
         form: FormWithCSRF,
@@ -38,7 +39,6 @@
         countryService: CountryService,
         govukErrorSummary: GovukErrorSummary
 )
-
 @(id: String, journeyData: JourneyDataV2, editForm: Form[Edit], countries: Seq[Country], isWelsh: Boolean, isUKMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
@@ -69,11 +69,17 @@
     }
 }
     
-@textField(formKey: String, autocompleteLabel: String, width:Int = 20, addressErrorClass: Boolean = false) = {
+@textField(formKey: String, autocompleteLabel: String, width:Int = 20, addressErrorClass: Boolean = false, isMandatory: MandatoryFieldsConfigModel => Boolean) = {
     @textInput(
         Input(
             value = editForm(formKey).value,
-            label = Label(content = HtmlContent(messages(s"editPage.${formKey}Label"))),
+            label = Label(
+                content = HtmlContent(
+                    messages(s"editPage.${formKey}Label") + (if(
+                        journeyData.config.options.manualAddressEntryConfig.flatMap(_.mandatoryFields.map(isMandatory)).forall(_ == false)
+                    ) s" ${messages("editPage.optional")}" else "")
+                )
+            ),
             formGroup = FormGroup(classes = Some("form-field-group")),
             autocomplete = Some(autocompleteLabel),
             name = editForm(formKey).name,
@@ -107,12 +113,12 @@
 }
     
 @inputHtml = {
-    @textField("organisation", "organisation")
-    @textField("line1", "address-line1", addressErrorClass = true)
-    @textField("line2", "address-line2", addressErrorClass = true)
-    @textField("line3", "address-line3", addressErrorClass = true)
-    @textField("town", "address-level1", addressErrorClass = true)
-    @textField("postcode", "postal-code", width = 10)
+    @textField("organisation", "organisation", isMandatory = _ => false)
+    @textField("line1", "address-line1", addressErrorClass = true, isMandatory = _.addressLine1)
+    @textField("line2", "address-line2", addressErrorClass = true, isMandatory = _.addressLine2)
+    @textField("line3", "address-line3", addressErrorClass = true, isMandatory = _.addressLine3)
+    @textField("town", "address-level1", addressErrorClass = true, isMandatory = _.town)
+    @textField("postcode", "postal-code", width = 10, isMandatory = _.postcode)
     
     @if(!isUKMode) {
         @if(journeyData.countryCode.isDefined) {

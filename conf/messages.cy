@@ -114,15 +114,16 @@ confirmPage.searchAgainLinkText = Chwilio eto
 
 editPage.title = Nodwch eich cyfeiriad
 editPage.heading = Nodwch eich cyfeiriad
-editPage.organisationLabel = Sefydliad (dewisol)
+editPage.organisationLabel = Sefydliad
 editPage.line1Label = Llinell cyfeiriad 1
 editPage.line2Label = Llinell cyfeiriad 2
 editPage.line3Label = Llinell cyfeiriad 3
 editPage.townLabel = Tref/dinas
-editPage.postcodeLabel = Cod post (dewisol)
-editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
+editPage.postcodeLabel = Cod post
+editPage.postcodeLabel.ukMode = Cod post y DU
 editPage.countryLabel = Gwlad neu diriogaeth
 editPage.submitLabel = Yn eich blaen
+editPage.optional = (dewisol)
 
 lookupPage.title = Dod o hyd i gyfeiriad
 lookupPage.title.ukMode = Dod o hyd i’ch cyfeiriad yn y DU

@@ -124,6 +124,24 @@ class MandatoryFieldsConfigModelSpec extends AnyWordSpecLike with Matchers {
 
         Json.fromJson[MandatoryFieldsConfigModel](json) mustBe JsSuccess(expectedModel)
       }
+      
+      "there are missing fields and the missing fields default to false" in {
+        val json = Json.obj(
+          "addressLine1" -> true,
+          "addressLine3" -> true,
+          "postcode" -> true
+        )
+        
+        val expectedModel = MandatoryFieldsConfigModel(
+          addressLine1 = true,
+          addressLine2 = false,
+          addressLine3 = true,
+          postcode = true,
+          town = false
+        )
+        
+        Json.fromJson[MandatoryFieldsConfigModel](json) mustBe JsSuccess(expectedModel)
+      }
     }
   }
 }

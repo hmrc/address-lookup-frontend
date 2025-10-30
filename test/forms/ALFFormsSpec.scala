@@ -38,10 +38,8 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
 
-  val editFormNonuk: Form[Edit] = ALFForms.nonUkEditForm()
-  val editFormNonukWelsh: Form[Edit] = ALFForms.nonUkEditForm()
-  val editFormUk: Form[Edit] = ALFForms.ukEditForm()
-  val editFormUkWelsh: Form[Edit] = ALFForms.ukEditForm()
+  val editFormNonUk: Form[Edit] = ALFForms.editForm(isUkMode = false)
+  val editFormUk: Form[Edit] = ALFForms.editForm(isUkMode = true)
 
   val chars257: String = "A" * 257
   val chars256: String = "A" * 256
@@ -145,7 +143,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are exceeded" should {
         "return an error for each field over the limit" in {
 
-          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
 
           val data = Map(
             "line1"       -> ("A" * (line1Limit + 1)),
@@ -169,7 +167,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are NOT exceeded (valid)" should {
         "return bound form with no errors" in {
 
-          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
 
           val data = Map(
             "line1"       -> ("A" * line1Limit),
@@ -194,13 +192,6 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         }
       }
     }
-    
-    "error" when {
-      
-      "either line1, town or postcode are missing" in {
-        
-      }
-    }
   }
 
   "nonUkEditForm" should {
@@ -212,7 +203,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "fudgebarwizz123",
         "countryCode" -> "FR")
 
-      editFormNonuk.bind(data).hasErrors mustBe false
+      editFormNonUk.bind(data).hasErrors mustBe false
     }
     "return errors with valid data that does not have country" in {
       val data = Map(
@@ -221,7 +212,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "town" -> "twn",
         "postcode" -> "fudgebarwizz123")
 
-      editFormNonuk.bind(data).hasErrors mustBe true
+      editFormNonUk.bind(data).hasErrors mustBe true
     }
     "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
 
@@ -235,7 +226,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are exceeded" should {
         "return an error for each field over the limit" in {
 
-          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = false)
 
           val data = Map(
             "line1"       -> ("A" * (line1Limit + 1)),
@@ -258,7 +249,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are NOT exceeded (valid)" should {
         "return bound form with no errors" in {
 
-          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = false)
 
           val data = Map(
             "line1"       -> ("A" * line1Limit),
@@ -338,7 +329,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   }
 
   "uk and non uk edit form" should {
-    Map(editFormUk -> "uk", editFormNonuk -> "nonUk", editFormUkWelsh -> "uk Welsh", editFormNonukWelsh -> "nonUk Welsh").foreach{ mapOfForms =>
+    Map(editFormUk -> "uk", editFormNonUk -> "nonUk", editFormUk -> "uk Welsh", editFormNonUk -> "nonUk Welsh").foreach{ mapOfForms =>
       val formOfTest = mapOfForms._2
       val form = mapOfForms._1
 

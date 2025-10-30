@@ -90,7 +90,7 @@ class AddressModeEditViewSpec extends ViewSpec {
       val testPage = address_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = ukEditForm(),
+        editForm = editForm(isUkMode = true),
         countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
         isWelsh = false,
         isUKMode = true
@@ -108,7 +108,7 @@ class AddressModeEditViewSpec extends ViewSpec {
       val testPage = address_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = nonUkEditForm(),
+        editForm = editForm(isUkMode = false),
         countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
         isWelsh = false,
         isUKMode = false
@@ -127,7 +127,7 @@ class AddressModeEditViewSpec extends ViewSpec {
       val testPage = address_mode_edit(
         id = testId,
         journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = nonUkEditForm(),
+        editForm = editForm(isUkMode = false),
         countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
         isWelsh = false,
         isUKMode = false

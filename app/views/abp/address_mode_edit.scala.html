@@ -55,16 +55,23 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@addressLinesInputErrorClass = @{
+@errorIgnore(formKey: String) = @{
+    !Seq(
+        "organisation",
+        "postcode"
+    ).contains(formKey)
+}
+    
+@addressLinesInputErrorClass(formKey: String) = @{
     editForm("line1").error match {
-        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") => "govuk-input--error"
+        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") && errorIgnore(formKey) => "govuk-input--error"
         case _ => ""
     }
 }
 
-@addressLinesFormGroupErrorClass = @{
+@addressLinesFormGroupErrorClass(formKey: String) = @{
     editForm("line1").error match {
-        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") => "govuk-form-group--error"
+        case Some(x) if x.message == messages(s"constants.editPageAtLeastOneLineOrTown") && errorIgnore(formKey) => "govuk-form-group--error"
         case _ => ""
     }
 }
@@ -75,6 +82,17 @@
     } else s"editPage.${key}Label"
 }
     
+@allFalse() = @{
+    val mandatorySettings = journeyData.config.options.manualAddressEntryConfig.flatMap(_.mandatoryFields)
+
+    !Seq(
+        mandatorySettings.map(_.addressLine1),
+        mandatorySettings.map(_.addressLine2),
+        mandatorySettings.map(_.addressLine3),
+        mandatorySettings.map(_.town)
+    ).flatten.contains(true)
+}
+    
 @textField(formKey: String, autocompleteLabel: String, width:Int = 20, addressErrorClass: Boolean = false, isMandatory: MandatoryFieldsConfigModel => Boolean) = {
     @textInput(
         Input(
@@ -82,21 +100,57 @@
             label = Label(
                 content = HtmlContent(
                     messages(generateLabel(formKey)) + (if(
-                        journeyData.config.options.manualAddressEntryConfig.flatMap(_.mandatoryFields.map(isMandatory)).forall(_ == false)
+                        journeyData.config.options.manualAddressEntryConfig
+                            .flatMap(_.mandatoryFields.map(isMandatory))
+                            .forall(_ == false) && (!allFalse() || !errorIgnore(formKey))
                     ) s" ${messages("editPage.optional")}" else "")
                 )
             ),
-            formGroup = FormGroup(classes = Some("form-field-group")),
+            formGroup = FormGroup(classes = Some(s"form-field-group ${addressLinesFormGroupErrorClass(formKey)}")),
             autocomplete = Some(autocompleteLabel),
             name = editForm(formKey).name,
             id = editForm(formKey).name,
-            classes = s"govuk-input--width-$width" + (if(addressErrorClass) s" $addressLinesInputErrorClass" else ""),
+            classes = s"govuk-input--width-$width" + (if(addressErrorClass) s" ${addressLinesInputErrorClass(formKey)}" else ""),
             errorMessage = editForm(formKey).error.map(fe => ErrorMessage(
                 content = HtmlContent(messages(fe.message)),
                 visuallyHiddenText = Some(messages("constants.error"))
             ))
         ),
     )
+}
+    
+@inputHtml = {
+    @textField("organisation", "organisation", isMandatory = _ => false)
+    @textField("line1", "address-line1", addressErrorClass = true, isMandatory = _.addressLine1)
+    @textField("line2", "address-line2", addressErrorClass = true, isMandatory = _.addressLine2)
+    @textField("line3", "address-line3", addressErrorClass = true, isMandatory = _.addressLine3)
+    @textField("town", "address-level1", addressErrorClass = true, isMandatory = _.town)
+    @textField("postcode", "postal-code", width = 10, isMandatory = _.postcode)
+    
+    @if(!isUKMode) {
+        @if(journeyData.countryCode.isDefined) {
+    
+            @textInput(Input(value =
+                editForm("countryCode").value.flatMap(c => countryService.find(isWelsh, code = c)).map(_.name),
+                attributes = Map("disabled" -> "disabled"),
+                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
+                formGroup = FormGroup(classes = Some("form-field-group")), autocomplete = Some("country"),
+                name = "countryName", id = "countryName",
+                errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
+    
+            <input type="hidden" id="countryCode" name="countryCode" value="@editForm("countryCode").value" />
+        } else {
+            @select(components.Select(
+                id = "countryCode",
+                name = "countryCode",
+                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
+                errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
+                items = ViewHelper.countriesToSelectItems(countries, editForm),
+                formGroup = FormGroup(classes = Some("form-field-group")),
+                value = editForm("countryCode").value
+            ).asAccessibleAutocomplete())
+        }
+    }
 }
 
 @page(titleWithError, Some(editForm), journeyData) {
@@ -115,39 +169,5 @@
         @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
             name = Some("continue"),
             inputType = Some("submit"), attributes = Map("id" -> "continue")))
-    }
-}
-    
-@inputHtml = {
-    @textField("organisation", "organisation", isMandatory = _ => false)
-    @textField("line1", "address-line1", addressErrorClass = true, isMandatory = _.addressLine1)
-    @textField("line2", "address-line2", addressErrorClass = true, isMandatory = _.addressLine2)
-    @textField("line3", "address-line3", addressErrorClass = true, isMandatory = _.addressLine3)
-    @textField("town", "address-level1", addressErrorClass = true, isMandatory = _.town)
-    @textField("postcode", "postal-code", width = 10, isMandatory = _.postcode)
-    
-    @if(!isUKMode) {
-        @if(journeyData.countryCode.isDefined) {
-
-            @textInput(Input(value =
-                editForm("countryCode").value.flatMap(c => countryService.find(isWelsh, code = c)).map(_.name),
-                attributes = Map("disabled" -> "disabled"),
-                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
-                formGroup = FormGroup(classes = Some("form-field-group")), autocomplete = Some("country"),
-                name = "countryName", id = "countryName",
-                errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
-
-            <input type="hidden" id="countryCode" name="countryCode" value="@editForm("countryCode").value" />
-        } else {
-            @select(components.Select(
-                id = "countryCode",
-                name = "countryCode",
-                label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
-                errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
-                items = ViewHelper.countriesToSelectItems(countries, editForm),
-                formGroup = FormGroup(classes = Some("form-field-group")),
-                value = editForm("countryCode").value
-            ).asAccessibleAutocomplete())
-        }
     }
 }

@@ -198,12 +198,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "international-edit-organisationLabel",
+          "organisation" -> "international-edit-organisationLabel (optional)",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
           "town" -> "International Custom Town",
-          "postcode" -> "International Custom Postcode",
+          "postcode" -> "International Custom Postcode (optional)",
           "countryName" -> "International Custom Country"
         ))
       }
@@ -235,12 +235,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "international-edit-organisationLabel",
+          "organisation" -> "international-edit-organisationLabel (optional)",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
           "town" -> "International Custom Town",
-          "postcode" -> "International Custom Postcode"
+          "postcode" -> "International Custom Postcode (optional)"
         ))
       }
 
@@ -291,12 +291,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel welsh",
+          "organisation" -> "edit-organisationLabel welsh (dewisol)",
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
           "line3" -> "Custom Line3 welsh",
           "town" -> "Custom Town welsh",
-          "postcode" -> "Custom Postcode welsh"
+          "postcode" -> "Custom Postcode welsh (dewisol)"
         ))
       }
     }

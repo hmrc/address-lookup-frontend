@@ -163,12 +163,12 @@ international.selectPage.searchAgainLinkText = Search again
 
 international.editPage.title = Enter your address
 international.editPage.heading = Enter your address
-international.editPage.organisationLabel = Organisation (optional)
+international.editPage.organisationLabel = Organisation
 international.editPage.line1Label = Address line 1
 international.editPage.line2Label = Address line 2
 international.editPage.line3Label = Address line 3
 international.editPage.townLabel = Town or city
-international.editPage.postcodeLabel = Postcode (optional)
+international.editPage.postcodeLabel = Postcode
 international.editPage.countryLabel = Country or territory
 international.editPage.submitLabel = Continue
 

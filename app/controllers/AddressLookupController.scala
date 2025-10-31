@@ -79,7 +79,8 @@ class AddressLookupController @Inject()(
 
 
           val isUKMode = journeyData.config.options.isUkMode
-
+          println(Console.GREEN + s"Is UK: $isUKMode" + Console.RESET)
+          
           if (isUKMode) {
             Redirect(routes.AbpAddressLookupController.lookup(id, None, None))
           }

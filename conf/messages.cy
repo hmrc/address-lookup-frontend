@@ -159,12 +159,12 @@ international.selectPage.searchAgainLinkText = Chwilio eto
 
 international.editPage.title = Nodwch eich cyfeiriad
 international.editPage.heading = Nodwch eich cyfeiriad
-international.editPage.organisationLabel = Sefydliad (dewisol)
+international.editPage.organisationLabel = Sefydliad
 international.editPage.line1Label = Cyfeiriad – llinell 1
 international.editPage.line2Label = Cyfeiriad – llinell 2
 international.editPage.line3Label = Cyfeiriad – llinell 3
 international.editPage.townLabel = Tref/dinas
-international.editPage.postcodeLabel = Cod post (dewisol)
+international.editPage.postcodeLabel = Cod post
 international.editPage.countryLabel = Gwlad neu diriogaeth
 international.editPage.submitLabel = Yn eich blaen
 

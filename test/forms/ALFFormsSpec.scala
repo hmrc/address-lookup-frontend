@@ -278,24 +278,58 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   
   "editForm" should {
     
-    "return no errors with valid data when none of the fields are mandatory and line 1 is given" in {
-      val data = Map(
-        "line1" -> "foo1"
-      )
+    "return no errors with valid data" when {
       
-      val form = editForm(isUkMode = true)
+      "when none of the fields are mandatory and line 1 is given" in {
+        val data = Map(
+          "line1" -> "foo1"
+        )
+
+        val form = editForm(isUkMode = true)
+
+        form.bind(data).hasErrors mustBe false
+      }
+
+      "none of the fields are mandatory and town is given" in {
+        val data = Map(
+          "town" -> "Some Town"
+        )
+
+        val form = editForm(isUkMode = true)
+
+        form.bind(data).hasErrors mustBe false
+      }
       
-      form.bind(data).hasErrors mustBe false
+      "line 2 is set to mandatory and line 1 and town are not provided" in {
+        val data = Map(
+          "line2" -> "Some Line"
+        )
+        
+        val form = editForm(Some(ManualAddressEntryConfig(
+          mandatoryFields = Some(MandatoryFieldsConfigModel(
+            addressLine2 = true
+          ))
+        )), isUkMode = true)
+        
+        form.bind(data).hasErrors mustBe false
+        
+      }
+      
     }
     
-    "return no errors with valid data when none of the fields are mandatory and town is given" in {
-      val data = Map(
-        "town" -> "Some Town"
-      )
+    "return a single error for the mandatory line when one is set to mandatory and no data is provided" in {
+      val data: Map[String, String] = Map()
       
-      val form = editForm(isUkMode = true)
+      val form = editForm(Some(ManualAddressEntryConfig(
+        mandatoryFields = Some(MandatoryFieldsConfigModel(
+          addressLine3 = true
+        ))
+      )), isUkMode = true)
+      val boundForm = form.bind(data)
       
-      form.bind(data).hasErrors mustBe false
+      boundForm.hasErrors mustBe true
+      boundForm.errors.length mustBe 1
+      boundForm.errors.head.key mustBe "line3"
     }
     
     "return an error for each missing line when they are set to mandatory" which {

@@ -135,12 +135,12 @@ object ALFForms extends EmptyStringValidator {
     }
   }
 
-  private def atLeastOneAddressLineOrTown(message: String = ""): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message))
+  private def atLeastOneAddressLineOrTown(message: String = "", mandatoryProvided: Boolean = false): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message, mandatoryProvided))
 
-  private def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
+  private def formatter(message: String = "", mandatoryProvided: Boolean = false): Formatter[Option[String]] = new Formatter[Option[String]] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
-      if (values.forall(_.isEmpty)) {
+      if (values.forall(_.isEmpty) && !mandatoryProvided) {
         Left(Seq(FormError(key, message, Nil)))
       } else {
         Right(data.get(key).collect { case x if x.trim.nonEmpty => x })
@@ -165,10 +165,19 @@ object ALFForms extends EmptyStringValidator {
       } else true
     }
 
+    val mandatoryProvided = optConfig.flatMap(_.mandatoryFields.map { mandatoryConfig =>
+      Seq(
+        mandatoryConfig.addressLine1,
+        mandatoryConfig.addressLine2,
+        mandatoryConfig.addressLine3,
+        mandatoryConfig.town
+      ).contains(true)
+    }).contains(true)
+    
     Form(
       mapping(
         "organisation" -> optional(text),
-        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"))
+        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"), mandatoryProvided)
           .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength))
           .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine1)),
         "line2" -> optional(text)

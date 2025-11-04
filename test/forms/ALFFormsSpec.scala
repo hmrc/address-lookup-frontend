@@ -56,7 +56,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "ZZ1 1ZZ",
         "countryCode" -> "GB")
 
-      editFormUk.bind(data).hasErrors mustBe false
+      editFormUk.bind(data).hasErrors.mustBe(false)
     }
     "retrieve organisation when present" in {
       val data = Map(
@@ -68,7 +68,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "ZZ1 1ZZ",
         "countryCode" -> "GB")
 
-      editFormUk.bind(data).get.organisation mustBe Some("some-organisation")
+      editFormUk.bind(data).get.organisation.mustBe(Some("some-organisation"))
     }
     "not retrieve organisation when it is not present" in {
       val data = Map(
@@ -79,7 +79,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "ZZ1 1ZZ",
         "countryCode" -> "GB")
 
-      editFormUk.bind(data).get.organisation mustBe None
+      editFormUk.bind(data).get.organisation.mustBe(None)
     }
     "should default country code if country code is different to GB but all data is valid" in {
       val data = Map(
@@ -90,7 +90,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "AA199ZZ",
         "countryCode" -> "FR")
 
-      editFormUk.bind(data).get.countryCode mustBe "GB"
+      editFormUk.bind(data).get.countryCode.mustBe("GB")
     }
     "should default country code if country code is not provided and all data is valid" in {
       val data = Map(
@@ -100,7 +100,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "town" -> "twn",
         "postcode" -> "AA199ZZ")
 
-      editFormUk.bind(data).get.countryCode mustBe "GB"
+      editFormUk.bind(data).get.countryCode.mustBe("GB")
     }
     "should return error if line 3 > 255 chars" in {
       val data = Map(
@@ -111,11 +111,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "AA199ZZ",
         "countryCode" -> "GB")
 
-      editFormUk.bind(data).hasErrors mustBe true
+      editFormUk.bind(data).hasErrors.mustBe(true)
     }
 
     "isvalidPostCode should accept international address with no postcode because country is defaulted to GB and postcode is optional" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "", "FR"))).hasErrors.mustBe(false)
     }
     Seq(("case 1", "MN 99555"),
       ("case 2","A"),
@@ -125,11 +125,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       ("case 6", "SW778 2BH")).foreach{
       case (caseNum,postcode) =>
         s"$editFormUk NOT accept international address with invalid postcodes ($caseNum) because country code is defaulted to GB" in {
-          ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, postcode, "FR"))).hasErrors mustBe true
+          ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, postcode, "FR"))).hasErrors.mustBe(true)
         }
     }
     "isvalidPostCode should  accept international address with valid postcode because country is defaulted to GB" in {
-      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors mustBe false
+      ALFForms.isValidPostcode(editFormUk.fill(Edit(None, None, None, None, None, "ZZ1 1ZZ", "FR"))).hasErrors.mustBe(false)
     }
     "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
 
@@ -156,11 +156,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
           val boundForm = form.bind(data)
 
-          boundForm.hasErrors mustBe true
-          boundForm.errors.head mustBe FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit))
-          boundForm.errors(1) mustBe FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit))
-          boundForm.errors(2) mustBe FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit))
-          boundForm.errors(3) mustBe FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit))
+          boundForm.hasErrors.mustBe(true)
+          boundForm.errors.head.mustBe(FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit)))
+          boundForm.errors(1).mustBe(FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit)))
+          boundForm.errors(2).mustBe(FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit)))
+          boundForm.errors(3).mustBe(FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit)))
         }
       }
 
@@ -180,15 +180,15 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
           val boundForm = form.bind(data)
 
-          boundForm.hasErrors mustBe false
-          boundForm.value mustBe Some(Edit(
+          boundForm.hasErrors.mustBe(false)
+          boundForm.value.mustBe(Some(Edit(
             organisation = None,
             line1 = Some("A" * line1Limit),
             line2 = Some("A" * line2Limit),
             line3 = Some("A" * line3Limit),
             town = Some("A" * townLimit),
             postcode = "ZZ11ZZ"
-          ))
+          )))
         }
       }
     }
@@ -203,7 +203,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "fudgebarwizz123",
         "countryCode" -> "FR")
 
-      editFormNonUk.bind(data).hasErrors mustBe false
+      editFormNonUk.bind(data).hasErrors.mustBe(false)
     }
     "return errors with valid data that does not have country" in {
       val data = Map(
@@ -212,7 +212,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "town" -> "twn",
         "postcode" -> "fudgebarwizz123")
 
-      editFormNonUk.bind(data).hasErrors mustBe true
+      editFormNonUk.bind(data).hasErrors.mustBe(true)
     }
     "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
 
@@ -238,11 +238,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
           val boundForm = form.bind(data)
 
-          boundForm.hasErrors mustBe true
-          boundForm.errors.head mustBe FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit))
-          boundForm.errors(1) mustBe FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit))
-          boundForm.errors(2) mustBe FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit))
-          boundForm.errors(3) mustBe FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit))
+          boundForm.hasErrors.mustBe(true)
+          boundForm.errors.head.mustBe(FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit)))
+          boundForm.errors(1).mustBe(FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit)))
+          boundForm.errors(2).mustBe(FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit)))
+          boundForm.errors(3).mustBe(FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit)))
         }
       }
 
@@ -261,8 +261,8 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
           val boundForm = form.bind(data)
 
-          boundForm.hasErrors mustBe false
-          boundForm.value mustBe Some(Edit(
+          boundForm.hasErrors.mustBe(false)
+          boundForm.value.mustBe(Some(Edit(
             organisation = None,
             line1 = Some("A" * line1Limit),
             line2 = Some("A" * line2Limit),
@@ -270,7 +270,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
             town = Some("A" * townLimit),
             postcode = "",
             countryCode = "FR"
-          ))
+          )))
         }
       }
     }
@@ -369,7 +369,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
       // #Scenario: UK Address no postcode
       s" accept a UK address with no postcode where for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, ""))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, ""))).hasErrors.mustBe(false)
       }
       // #Scenario Outline: UK Address with Invalid PostCode
       Seq(
@@ -381,7 +381,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         ("case 6","SW778 2BH")).foreach {
         case (caseNum, postcode) =>
           s"not accept a UK address with an invalid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors mustBe true
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors.mustBe(true)
           }
       }
 
@@ -395,11 +395,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         ("case 6","B11 6HJ")).foreach{
         case  (caseNum,postcode) =>
           s"accept a UK address with a valid postcode ($caseNum) for $formOfTest" in {
-            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors mustBe false
+            ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, postcode))).hasErrors.mustBe(false)
           }
       }
       s"accept valid postcode and no CountryCode as country code is defaulted for $formOfTest" in {
-        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, "ZZ11ZZ", ""))).hasErrors mustBe false
+        ALFForms.isValidPostcode(form.fill(Edit(None, None, None, None, None, "ZZ11ZZ", ""))).hasErrors.mustBe(false)
       }
 
       s"$formOfTest accept input if only line 1 is present" in {
@@ -411,7 +411,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe false
+        form.bind(data).hasErrors.mustBe(false)
       }
 
       s"$formOfTest accept input if only line 2 is present" in {
@@ -423,7 +423,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe false
+        form.bind(data).hasErrors.mustBe(false)
       }
 
       s"$formOfTest accept input if only line 3 is present" in {
@@ -435,7 +435,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe false
+        form.bind(data).hasErrors.mustBe(false)
       }
 
       s"$formOfTest accept input if only town is present" in {
@@ -447,7 +447,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "AA199ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe false
+        form.bind(data).hasErrors.mustBe(false)
       }
 
       s"$formOfTest return error if all lines and town are empty" in {
@@ -459,7 +459,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "AA199ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors.mustBe(true)
       }
 
       s"$formOfTest return error if line 1 > 255 chars" in {
@@ -471,7 +471,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors.mustBe(true)
       }
       s"$formOfTest return error if line 2 > 255 chars" in {
         val data = Map(
@@ -482,7 +482,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors.mustBe(true)
       }
       s"$formOfTest return error if line 3 > 255 chars" in {
         val data = Map(
@@ -493,7 +493,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "ZZ11ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors.mustBe(true)
       }
       s"$formOfTest return error if town > 255 chars" in {
         val data = Map(
@@ -504,29 +504,29 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           "postcode" -> "AA199ZZ",
           "countryCode" -> "GB")
 
-        form.bind(data).hasErrors mustBe true
+        form.bind(data).hasErrors.mustBe(true)
       }
     }
   }
 
   "constraintStringMaxLength" should {
     "return invalid for string > maxLength" in {
-      ALFForms.constraintStringMaxLength("foo", 256)(chars257) mustBe Invalid("foo", 256)
+      ALFForms.constraintStringMaxLength("foo", 256)(chars257).mustBe(Invalid("foo", 256))
     }
     "return valid for string = maxLength" in {
-      ALFForms.constraintStringMaxLength("foo", 256)(chars256)  mustBe Valid
+      ALFForms.constraintStringMaxLength("foo", 256)(chars256) .mustBe(Valid)
     }
     "return Valid for string < maxLength" in  {
-      ALFForms.constraintStringMaxLength("foo", 256)(chars255)  mustBe Valid
+      ALFForms.constraintStringMaxLength("foo", 256)(chars255) .mustBe(Valid)
     }
   }
 
   "constraintMinLength" should {
     "return invalid for empty string" in {
-      ALFForms.constraintMinLength("foo")("") mustBe Invalid("foo")
+      ALFForms.constraintMinLength("foo")("").mustBe(Invalid("foo"))
     }
     "return valid for string > 0 chars" in {
-      ALFForms.constraintMinLength("foo")("1") mustBe Valid
+      ALFForms.constraintMinLength("foo")("1").mustBe(Valid)
     }
   }
 }

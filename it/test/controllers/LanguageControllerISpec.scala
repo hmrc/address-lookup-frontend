@@ -27,16 +27,16 @@ class LanguageControllerISpec extends IntegrationSpecBase {
   s"${controllers.routes.LanguageController.switchToLanguage("english")}" must {
     "swap to english and redirect back" in {
       val response = await(buildClientLanguage("english", "testRef").get())
-      response.status shouldBe SEE_OTHER
-      response.cookie(messagesApi.langCookieName).get.value shouldBe "en"
+      response.status.shouldBe(SEE_OTHER)
+      response.cookie(messagesApi.langCookieName).get.value.shouldBe("en")
     }
   }
 
   s"${controllers.routes.LanguageController.switchToLanguage("cymraeg")}" must {
     "swap to welsh and redirect back" in {
       val response = await(buildClientLanguage("cymraeg", "testRef").get())
-      response.status shouldBe SEE_OTHER
-      response.cookie(messagesApi.langCookieName).get.value shouldBe "cy"
+      response.status.shouldBe(SEE_OTHER)
+      response.cookie(messagesApi.langCookieName).get.value.shouldBe("cy")
     }
   }
 

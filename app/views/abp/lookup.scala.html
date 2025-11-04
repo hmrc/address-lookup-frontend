@@ -34,7 +34,7 @@
     isWelsh: Boolean,
     isUKMode: Boolean = true,
     message: Option[String] = None
-)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @errorPrefix = @{s"${messages("constants.error.prefix")} "}
 

@@ -29,7 +29,7 @@
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
-@(pageTitle: String, form: Option[Form[_]], journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
+@(pageTitle: String, form: Option[Form[?]], journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedJourneyConfig = @{
     journeyData.resolveConfigV2(appConfig)

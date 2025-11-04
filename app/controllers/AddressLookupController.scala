@@ -65,8 +65,8 @@ class AddressLookupController @Inject()(
   private def countries(welshFlag: Boolean): Seq[Country] =
     countryService.findAll(welshFlag)
 
-  // GET  /no-journey
-  // display an error page when a required journey is not available
+  // GET /no-journey
+  // displays an error page when a required journey is not available
   def noJourney(): Action[AnyContent] = Action { implicit req =>
     implicit val messages: Messages = messagesApi.preferred(req)
     Ok(error_template(messages("no.journey.title.text"), messages("no.journey.heading.text"), ""))
@@ -197,7 +197,7 @@ abstract class AlfController @Inject()(journeyRepository: JourneyRepository,
     }
   }
 
-  def getWelshContent(journeyData: JourneyDataV2)(implicit request: Request[_]): Boolean = {
+  def getWelshContent(journeyData: JourneyDataV2)(implicit request: Request[?]): Boolean = {
     journeyData.welshEnabled && request.cookies.exists(
       kv => kv.name == "PLAY_LANG" && kv.value == "cy"
     )
@@ -278,3 +278,6 @@ case class Proposals(proposals: Option[Seq[ProposedAddress]]) {
 }
 
 case class Confirmed(id: String)
+object Confirmed {
+  def unapply(confirmed: Confirmed): Option[String] = Some(confirmed.id)
+}

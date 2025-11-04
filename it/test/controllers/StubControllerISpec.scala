@@ -49,7 +49,7 @@ class StubControllerISpec extends IntegrationSpecBase {
       val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      await(res).status shouldBe OK
+      await(res).status.shouldBe(OK)
     }
   }
 
@@ -70,8 +70,8 @@ class StubControllerISpec extends IntegrationSpecBase {
           "journeyConfig" -> Seq(basicJourney)))
 
       val response = await(res)
-      response.status shouldBe SEE_OTHER
-      response.header(HeaderNames.LOCATION).get shouldBe s"http://localhost:9028/lookup-address/$testJourneyId/begin"
+      response.status.shouldBe(SEE_OTHER)
+      response.header(HeaderNames.LOCATION).get.shouldBe(s"http://localhost:9028/lookup-address/$testJourneyId/begin")
 
     }
   }

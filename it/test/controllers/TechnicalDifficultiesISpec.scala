@@ -60,11 +60,11 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-        res.cookie(ALFCookieNames.useWelsh) shouldBe None
+        res.status.shouldBe(INTERNAL_SERVER_ERROR)
+        res.cookie(ALFCookieNames.useWelsh).shouldBe(None)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.title.shouldBe(messages("constants.intServerErrorTitle"))
         doc.h1 should have(text(messages("constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
@@ -80,11 +80,11 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
-        res.cookie(ALFCookieNames.useWelsh) shouldBe None
+        res.status.shouldBe(INTERNAL_SERVER_ERROR)
+        res.cookie(ALFCookieNames.useWelsh).shouldBe(None)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.title.shouldBe(messages("constants.intServerErrorTitle"))
         doc.h1 should have(text(messages("constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
@@ -100,10 +100,10 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
+        res.status.shouldBe(INTERNAL_SERVER_ERROR)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.intServerErrorTitle")
+        doc.title.shouldBe(messages("constants.intServerErrorTitle"))
         doc.h1 should have(text(messages("constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages("constants.intServerErrorTryAgain")))
       }
@@ -119,10 +119,10 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe INTERNAL_SERVER_ERROR
+        res.status.shouldBe(INTERNAL_SERVER_ERROR)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages(Lang("cy"), "constants.intServerErrorTitle")
+        doc.title.shouldBe(messages(Lang("cy"), "constants.intServerErrorTitle"))
         doc.h1 should have(text(messages(Lang("cy"), "constants.intServerErrorTitle")))
         doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.intServerErrorTryAgain")))
       }

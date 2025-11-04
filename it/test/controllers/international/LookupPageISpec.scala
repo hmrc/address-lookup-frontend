@@ -67,14 +67,14 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe messages("international.lookupPage.title")
-        doc.h1.text() shouldBe messages("international.lookupPage.heading")
+        doc.title.shouldBe(messages("international.lookupPage.title"))
+        doc.h1.text().shouldBe(messages("international.lookupPage.heading"))
 
-        doc.getElementById("afterHeadingText") shouldBe null
+        doc.getElementById("afterHeadingText").shouldBe(null)
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
@@ -90,7 +90,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           text(messages("international.lookupPage.manualAddressLinkText"))
         )
 
-        doc.submitButton.text() shouldBe "Continue"
+        doc.submitButton.text().shouldBe("Continue")
       }
 
       "Show the default 'filter invalid' error messages" in {
@@ -105,7 +105,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe BAD_REQUEST
+        res.status.shouldBe(BAD_REQUEST)
 
         val message = "The house name or number needs to be fewer than 256 characters"
 
@@ -132,7 +132,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           .get()
         val res = await(fResponse)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
@@ -150,7 +150,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         for {
           l <- testCustomLookupPageJourneyConfigV2.config.labels
@@ -159,10 +159,10 @@ class LookupPageISpec extends IntegrationSpecBase {
           lookupPage <- international.lookupPageLabels
         } yield {
 
-          doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
-          doc.h1.text() shouldBe lookupPage.heading.get
+          doc.title.shouldBe(lookupPage.title.get + " - NAV_TITLE - GOV.UK")
+          doc.h1.text().shouldBe(lookupPage.heading.get)
 
-          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
+          doc.getElementById("afterHeadingText").html.shouldBe("international-after-heading-text")
 
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
@@ -178,7 +178,7 @@ class LookupPageISpec extends IntegrationSpecBase {
             text(lookupPage.manualAddressLinkText.get)
           )
 
-          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+          doc.submitButton.text().shouldBe(lookupPage.submitLabel.get)
 
         }
 
@@ -194,7 +194,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         doc.select("a[class=govuk-back-link]") should not have (
           text("Back")
@@ -213,7 +213,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
@@ -223,10 +223,10 @@ class LookupPageISpec extends IntegrationSpecBase {
           international <- en.international
           lookupPage <- international.lookupPageLabels
         } yield {
-          doc.title shouldBe lookupPage.title.get + " - NAV_TITLE - GOV.UK"
-          doc.h1.text() shouldBe lookupPage.heading.get
+          doc.title.shouldBe(lookupPage.title.get + " - NAV_TITLE - GOV.UK")
+          doc.h1.text().shouldBe(lookupPage.heading.get)
 
-          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
+          doc.getElementById("afterHeadingText").html.shouldBe("international-after-heading-text")
 
           doc.select("a[class=govuk-back-link]") should have(
             text("Back")
@@ -242,7 +242,7 @@ class LookupPageISpec extends IntegrationSpecBase {
             text(lookupPage.manualAddressLinkText.get)
           )
 
-          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+          doc.submitButton.text().shouldBe(lookupPage.submitLabel.get)
         }
       }
     }
@@ -259,7 +259,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val res = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
@@ -269,9 +269,9 @@ class LookupPageISpec extends IntegrationSpecBase {
           international <- en.international
           lookupPage <- international.lookupPageLabels
         } yield {
-          doc.title shouldBe lookupPage.title.get
-          doc.h1.text() shouldBe lookupPage.heading.get
-          doc.getElementById("afterHeadingText").html shouldBe "international-after-heading-text"
+          doc.title.shouldBe(lookupPage.title.get)
+          doc.h1.text().shouldBe(lookupPage.heading.get)
+          doc.getElementById("afterHeadingText").html.shouldBe("international-after-heading-text")
           doc.select("a[class=govuk-back-link]") should have(text("Back"))
           doc.input(LookupPage.filterId) should have(label(lookupPage.filterLabel.get + hardCodedFormHint), value(testFilterValue))
           doc.link(LookupPage.manualAddressLink) should have(
@@ -279,7 +279,7 @@ class LookupPageISpec extends IntegrationSpecBase {
             text(lookupPage.manualAddressLinkText.get)
           )
 
-          doc.submitButton.text() shouldBe lookupPage.submitLabel.get
+          doc.submitButton.text().shouldBe(lookupPage.submitLabel.get)
         }
       }
     }
@@ -297,7 +297,7 @@ class LookupPageISpec extends IntegrationSpecBase {
     val res = await(fResponse)
     val doc = getDocFromResponse(res)
 
-    res.status shouldBe BAD_REQUEST
+    res.status.shouldBe(BAD_REQUEST)
 
     val message = "Rhaid i enw/rhif eich tŷ fod yn llai na 256 o gymeriadau"
 

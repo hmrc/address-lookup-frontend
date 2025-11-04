@@ -19,14 +19,14 @@ import controllers.RemoteMessagesApiProvider
 import org.apache.pekko.stream.Materializer
 import org.htmlunit.ProxyConfig
 import play.api.libs.concurrent.PekkoGuiceSupport
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger}
 import services._
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-class Module(env: Environment, playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
+class Module(playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
 
   override def configure(): Unit = {
     bind(classOf[RemoteMessagesApiProvider])
@@ -40,8 +40,7 @@ class Module(env: Environment, playConfig: Configuration) extends AbstractModule
                                                  ec: ExecutionContext, mat: Materializer): WelshCountryNamesDataSource = {
     val logger = Logger(this.getClass)
 
-    val useLocal =
-      playConfig.getOptional[Boolean]("microservice.services.gov-wales.useLocal").getOrElse(true)
+    val useLocal = playConfig.getOptional[Boolean]("microservice.services.gov-wales.useLocal").getOrElse(true)
 
     if (useLocal) {
       logger.info(s"Using local gov-wales country data")

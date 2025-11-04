@@ -51,7 +51,7 @@ class ViewHelperSpec extends ViewSpec {
           val actual = ViewHelper.countriesToSelectItems(Seq(), ALFForms.countryPickerForm())
           val expected = Seq(SelectItem(Some(""), messagesForLanguage.selectCountry))
 
-          actual shouldBe expected
+          actual.shouldBe(expected)
         }
       }
     }

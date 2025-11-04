@@ -33,10 +33,10 @@ class NotFoundISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -53,10 +53,10 @@ class NotFoundISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -70,11 +70,11 @@ class NotFoundISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        res.status.shouldBe(NOT_FOUND)
 
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -88,10 +88,10 @@ class NotFoundISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages(Lang("cy"), "constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages(Lang("cy"), "constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages(Lang("cy"), "constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.notFoundErrorBody")))
       }

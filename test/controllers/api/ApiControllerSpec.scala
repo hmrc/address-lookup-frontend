@@ -53,9 +53,9 @@ abstract class ApiControllerSpecBase extends AnyWordSpec with MockitoSugar with 
 
     val fakeRequest = FakeRequest("POST", s"/api/v2/init/")
       .withBody[JourneyConfigV2](journeyOptions)
-      .withHeaders(headers: _*)
+      .withHeaders(headers*)
 
-    val result = controller.initWithConfigV2().apply(fakeRequest)
+    val result = controller.initWithConfigV2.apply(fakeRequest)
     result
   }
 }
@@ -78,7 +78,7 @@ class ApiControllerSpec extends ApiControllerSpecBase {
           timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("/keepalive")))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.ACCEPTED
+      status(result).shouldBe(Status.ACCEPTED)
     }
 
     "Return bad request for non-relative signoutUrl" in {
@@ -87,7 +87,7 @@ class ApiControllerSpec extends ApiControllerSpecBase {
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout"))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.BAD_REQUEST
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
     "Return bad request for non-relative timeoutUrl" in {
@@ -95,7 +95,7 @@ class ApiControllerSpec extends ApiControllerSpecBase {
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "http://www.google.com/"))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.BAD_REQUEST
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
     "Return bad request for non-relative timeoutKeepAliveUrl" in {
@@ -103,7 +103,7 @@ class ApiControllerSpec extends ApiControllerSpecBase {
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("http://www.google.com")))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.BAD_REQUEST
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
   }
 }
@@ -126,7 +126,7 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
           timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("/keepalive")))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.ACCEPTED
+      status(result).shouldBe(Status.ACCEPTED)
     }
 
     "Succeed for non-relative signoutUrl" in {
@@ -136,7 +136,7 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
 
       val result = init(journeyOptions)
 
-      status(result) shouldBe Status.ACCEPTED
+      status(result).shouldBe(Status.ACCEPTED)
     }
 
     "Succeed for non-relative timeoutUrl" in {
@@ -144,7 +144,7 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "http://www.google.com/"))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.ACCEPTED
+      status(result).shouldBe(Status.ACCEPTED)
     }
 
     "Succeed for non-relative timeoutKeepAliveUrl" in {
@@ -152,7 +152,7 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("http://www.google.com")))))
 
       val result = init(journeyOptions)
-      status(result) shouldBe Status.ACCEPTED
+      status(result).shouldBe(Status.ACCEPTED)
     }
   }
 }

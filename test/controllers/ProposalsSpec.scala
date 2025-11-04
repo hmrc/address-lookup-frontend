@@ -36,7 +36,7 @@ class ProposalsSpec extends AnyWordSpec with Matchers {
         ("GB990091234526", "2 main road, some-town, ZZ11 1ZZ"),
         ("GB990091234530", "10 main road, some-town, ZZ11 1ZZ"))
 
-      proposals shouldBe expectedProposals
+      proposals.shouldBe(expectedProposals)
     }
   }
 }

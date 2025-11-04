@@ -46,19 +46,19 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe messages("international.editPage.title")
-        document.h1.first.text() shouldBe messages("international.editPage.heading")
+        document.title().shouldBe(messages("international.editPage.title"))
+        document.h1.first.text().shouldBe(messages("international.editPage.heading"))
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
-        document.getElementById("continue").text() shouldBe "Continue"
+        document.getElementById("continue").text().shouldBe("Continue")
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "Organisation (optional)",
@@ -87,18 +87,18 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
-        document.h1.first.text() shouldBe messages(Lang("cy"), "international.editPage.heading")
-        document.getElementById("continue").text() shouldBe "Yn eich blaen"
+        document.title().shouldBe(messages(Lang("cy"), "international.editPage.title"))
+        document.h1.first.text().shouldBe(messages(Lang("cy"), "international.editPage.heading"))
+        document.getElementById("continue").text().shouldBe("Yn eich blaen")
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Cyfeiriad – llinell 1",
@@ -123,7 +123,7 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
@@ -147,19 +147,19 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe messages(Lang("cy"), "international.editPage.title")
-        document.h1.first.text() shouldBe messages(Lang("cy"), "international.editPage.heading")
-        document.getElementById("continue").text() shouldBe "Yn eich blaen"
-        Option(document.getElementById("countryName")).isDefined shouldBe true
+        document.title().shouldBe(messages(Lang("cy"), "international.editPage.title"))
+        document.h1.first.text().shouldBe(messages(Lang("cy"), "international.editPage.heading"))
+        document.getElementById("continue").text().shouldBe("Yn eich blaen")
+        Option(document.getElementById("countryName")).isDefined.shouldBe(true)
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Cyfeiriad – llinell 1",
@@ -184,18 +184,18 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "international-edit-title"
-        document.h1.first.text() shouldBe "international-edit-heading"
-        document.getElementById("continue").text() shouldBe "international-edit-submitLabel"
+        document.title().shouldBe("international-edit-title")
+        document.h1.first.text().shouldBe("international-edit-heading")
+        document.getElementById("continue").text().shouldBe("international-edit-submitLabel")
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "international-edit-organisationLabel (optional)",
@@ -220,19 +220,19 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "international-edit-title"
-        document.h1.first.text() shouldBe "international-edit-heading"
-        document.getElementById("continue").text() shouldBe "international-edit-submitLabel"
-        Option(document.getElementById("countryName")).isDefined shouldBe true
+        document.title().shouldBe("international-edit-title")
+        document.h1.first.text().shouldBe("international-edit-heading")
+        document.getElementById("continue").text().shouldBe("international-edit-submitLabel")
+        Option(document.getElementById("countryName")).isDefined.shouldBe(true)
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "international-edit-organisationLabel (optional)",
@@ -277,18 +277,18 @@ class EditPageISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "edit-title welsh"
-        document.h1.first.text() shouldBe "edit-heading welsh"
-        document.getElementById("continue").text() shouldBe "edit-submitLabel welsh"
+        document.title().shouldBe("edit-title welsh")
+        document.h1.first.text().shouldBe("edit-heading welsh")
+        document.getElementById("continue").text().shouldBe("edit-submitLabel welsh")
 
-        document.getElementById("line1").`val` shouldBe "1 High Street"
-        document.getElementById("line2").`val` shouldBe "Line 2"
-        document.getElementById("line3").`val` shouldBe "Line 3"
-        document.getElementById("town").`val` shouldBe "Telford"
-        document.getElementById("postcode").`val` shouldBe "AB11 1AB"
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "edit-organisationLabel welsh (dewisol)",
@@ -313,7 +313,7 @@ class EditPageISpec extends IntegrationSpecBase {
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
       val res = await(fResponse)
-      res.status shouldBe BAD_REQUEST
+      res.status.shouldBe(BAD_REQUEST)
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
         "line1" -> "Address line 1",
@@ -342,10 +342,10 @@ class EditPageISpec extends IntegrationSpecBase {
       val res = await(fResponse)
       val document = Jsoup.parse(res.body)
 
-      document.title shouldBe "Gwall: Nodwch eich cyfeiriad"
-      document.h1.text shouldBe "Nodwch eich cyfeiriad"
-      document.submitButton.text shouldBe "Yn eich blaen"
-      Option(document.getElementById("countryName")).isDefined shouldBe true
+      document.title.shouldBe("Gwall: Nodwch eich cyfeiriad")
+      document.h1.text.shouldBe("Nodwch eich cyfeiriad")
+      document.submitButton.text.shouldBe("Yn eich blaen")
+      Option(document.getElementById("countryName")).isDefined.shouldBe(true)
 
       document.input("line1") should have(value(""))
       document.input("line2") should have(value(""))
@@ -361,7 +361,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "postcode" -> "Cod post (dewisol)"
       ))
 
-      res.status shouldBe BAD_REQUEST
+      res.status.shouldBe(BAD_REQUEST)
     }
 
     "return 400 if postcode is invalid and return edit page with welsh text" in {
@@ -391,7 +391,7 @@ class EditPageISpec extends IntegrationSpecBase {
         "postcode" -> "Cod post (dewisol)"
       ))
 
-      res.status shouldBe BAD_REQUEST
+      res.status.shouldBe(BAD_REQUEST)
     }
 
     s"return 303 if form is valid and redirect to ${controllers.routes.InternationalAddressLookupController.confirm("")}" in {
@@ -417,7 +417,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
       val res = await(fResponse)
 
-      res.status shouldBe SEE_OTHER
+      res.status.shouldBe(SEE_OTHER)
     }
   }
 }

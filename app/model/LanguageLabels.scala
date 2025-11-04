@@ -103,6 +103,10 @@ object LanguageLabels {
   implicit val confirmPageReads: Reads[ConfirmPageLabels] = Json.reads[ConfirmPageLabels]
   implicit val countryPickerPageReads: Reads[CountryPickerPageLabels] = Json.reads[CountryPickerPageLabels]
   implicit val languageLabelsReads: Reads[LanguageLabels] = Json.reads[LanguageLabels]
+
+  def unapply(labels: LanguageLabels): Option[(Option[AppLevelLabels], Option[SelectPageLabels], Option[LookupPageLabels], Option[EditPageLabels], Option[ConfirmPageLabels], Option[CountryPickerPageLabels], Option[InternationalLanguageLabels], Option[JsValue])] = {
+    Some((labels.appLevelLabels, labels.selectPageLabels, labels.lookupPageLabels, labels.editPageLabels, labels.confirmPageLabels, labels.countryPickerLabels, labels.international, labels.otherLabels))
+  }
 }
 
 object LanguageLabelsForMessages {
@@ -200,21 +204,94 @@ object LanguageLabelsForMessages {
 
 object AppLevelLabels {
   implicit val format: Format[AppLevelLabels] = Json.format[AppLevelLabels]
+  
+  def unapply(appLevelLabels: AppLevelLabels): Option[(Option[String], Option[String])] = {
+    Some((appLevelLabels.navTitle, appLevelLabels.phaseBannerHtml))
+  }
 }
 
 object SelectPageLabels {
   implicit val format: Format[SelectPageLabels] = Json.format[SelectPageLabels]
+  
+  def unapply(selectPageLabels: SelectPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some((
+      selectPageLabels.title,
+      selectPageLabels.heading,
+      selectPageLabels.headingWithPostcode,
+      selectPageLabels.proposalListLabel,
+      selectPageLabels.submitLabel,
+      selectPageLabels.searchAgainLinkText,
+      selectPageLabels.editAddressLinkText
+    ))
+  }
 }
 
 object LookupPageLabels {
   implicit val format: Format[LookupPageLabels] = Json.format[LookupPageLabels]
+  
+  def unapply(lookupPageLabels: LookupPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some((
+      lookupPageLabels.title,
+      lookupPageLabels.titleUkMode,
+      lookupPageLabels.heading,
+      lookupPageLabels.headingUkMode,
+      lookupPageLabels.afterHeadingText,
+      lookupPageLabels.filterLabel,
+      lookupPageLabels.postcodeLabel,
+      lookupPageLabels.postcodeLabelUkMode,
+      lookupPageLabels.submitLabel,
+      lookupPageLabels.noResultsFoundMessage,
+      lookupPageLabels.resultLimitExceededMessage,
+      lookupPageLabels.manualAddressLinkText
+    ))
+  }
 }
 
 object EditPageLabels {
   implicit val format: Format[EditPageLabels] = Json.format[EditPageLabels]
+  
+  def unapply(editPageLabels: EditPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some((
+      editPageLabels.title,
+      editPageLabels.heading,
+      editPageLabels.line1Label,
+      editPageLabels.line2Label,
+      editPageLabels.line3Label,
+      editPageLabels.townLabel,
+      editPageLabels.postcodeLabel,
+      editPageLabels.postcodeLabelUkMode,
+      editPageLabels.countryLabel,
+      editPageLabels.submitLabel,
+      editPageLabels.organisationLabel
+    ))
+  }
 }
 
 object ConfirmPageLabels {
   implicit val format: Format[ConfirmPageLabels] =
     Json.format[ConfirmPageLabels]
+    
+  def unapply(confirmPageLabels: ConfirmPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some((
+      confirmPageLabels.title,
+      confirmPageLabels.heading,
+      confirmPageLabels.infoSubheading,
+      confirmPageLabels.infoMessage,
+      confirmPageLabels.submitLabel,
+      confirmPageLabels.searchAgainLinkText,
+      confirmPageLabels.changeLinkText,
+      confirmPageLabels.confirmChangeText
+    ))
+  }
+}
+
+object CountryPickerPageLabels {
+  def unapply(countryPickerPageLabels: CountryPickerPageLabels): Option[(Option[String], Option[String], Option[String], Option[String])] = {
+    Some((
+      countryPickerPageLabels.title,
+      countryPickerPageLabels.heading,
+      countryPickerPageLabels.countryLabel,
+      countryPickerPageLabels.submitLabel
+    ))
+  }
 }

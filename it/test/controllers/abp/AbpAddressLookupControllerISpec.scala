@@ -44,7 +44,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> testFilterValue))
     }
 
@@ -57,7 +57,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> ""))
     }
 
@@ -70,7 +70,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> testFilterValue))
     }
 
@@ -83,7 +83,7 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> ""))
     }
   }
@@ -100,8 +100,8 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
 
       val res = await(fResponse)
 
-      res.status shouldBe OK
-      res.json shouldBe Json.toJson(ConfirmedResponseAddress(
+      res.status.shouldBe(OK)
+      res.json.shouldBe(Json.toJson(ConfirmedResponseAddress()
         auditRef = testJourneyId,
         id = Some(testAddressIdRaw),
         address = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))

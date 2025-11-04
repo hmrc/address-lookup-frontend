@@ -73,7 +73,7 @@ class AddressReputationConnectorISpec extends IntegrationBaseSpec
             .willReturn(aResponse().withStatus(200).withBody(Json.stringify(Json.toJson(responseBody))))
         )
 
-        connector.findByPostcode("ZZ11 1ZZ", Some("filter")).futureValue mustBe responseBody
+        connector.findByPostcode("ZZ11 1ZZ", Some("filter")).futureValue.mustBe(responseBody)
       }
   }
 
@@ -90,7 +90,7 @@ class AddressReputationConnectorISpec extends IntegrationBaseSpec
           .willReturn(aResponse().withStatus(200).withBody(Json.stringify(Json.toJson(responseBody))))
       )
 
-      connector.findByCountry("FR", "filter").futureValue mustBe responseBody
+      connector.findByCountry("FR", "filter").futureValue.mustBe(responseBody)
     }
   }
 

@@ -172,14 +172,14 @@ trait PageContentHelper {
     val doc = getDocFromResponse(response)
 
     idValueMapping.foreach { case (elementId: String, expectedValue: String) =>
-      doc.getElementById(elementId).`val`() shouldBe expectedValue
+      doc.getElementById(elementId).`val`().shouldBe(expectedValue)
     }
   }
 
   def labelForFieldsMatch(response: Future[WSResponse], idOfFieldExpectedLabelTextForFieldMapping: Map[String, String]): Unit = {
     val elems = getDocFromResponse(response).getElementsByTag("label")
     idOfFieldExpectedLabelTextForFieldMapping.foreach { case (fieldId: String, expectedtextOfLabel: String) =>
-      elems.select(s"[for=$fieldId]").get(0).text() shouldBe expectedtextOfLabel
+      elems.select(s"[for=$fieldId]").get(0).text().shouldBe(expectedtextOfLabel)
     }
   }
 
@@ -190,12 +190,12 @@ trait PageContentHelper {
 
   def testElementDoesntExist(response: Future[WSResponse], elementId: String): Unit = {
     val doc = getDocFromResponse(response)
-    doc.getElementById(elementId) shouldBe null
+    doc.getElementById(elementId).shouldBe(null)
   }
 
   def testCustomPartsOfGovWrapperElementsForDefaultConfig(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
+//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe("")
     testElementDoesntExist(response, "govuk-phase-banner")
     doc.select(".govuk-link").last().attr("href") should include ("/contact/report-technical-problem?service=AddressLookupFrontend")
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
@@ -203,31 +203,31 @@ trait PageContentHelper {
 
   def testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(response: Future[WSResponse], navTitle: String): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe navTitle
-    doc.getElementsByClass("govuk-phase-banner__content__tag").text() shouldBe "alpha"
-    doc.getElementsByClass("govuk-phase-banner__content").text() shouldBe "alpha PHASE_BANNER_HTML"
+//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe(navTitle)
+    doc.getElementsByClass("govuk-phase-banner__content__tag").text().shouldBe("alpha")
+    doc.getElementsByClass("govuk-phase-banner__content").text().shouldBe("alpha PHASE_BANNER_HTML")
     testElementExists(response, "govuk-phase-banner")
 
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=DESKPRO_SERVICE_NAME"
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href").shouldBe("/contact/report-technical-problem?service=DESKPRO_SERVICE_NAME")
     // /contact/report-technical-problem?newTab=true&service=address-lookup-frontend
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=deskpro_service_name""")
     // TODO: Re-introduce timeout script support
-//    doc.getElementById("timeoutScript").html().contains("timeout: 120") shouldBe true
-//    doc.getElementById("timeoutScript").html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe true
-//    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+//    doc.getElementById("timeoutScript").html().contains("timeout: 120").shouldBe(true)
+//    doc.getElementById("timeoutScript").html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL").shouldBe(true)
+//    doc.getElementsByClass("copyright").first().child(0).attr("href").shouldBe("https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm")
   }
 
   def testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text() shouldBe ""
-    doc.getElementsByClass("govuk-phase-banner__content__tag").first() shouldBe null
-    doc.getElementsByClass("govuk-phase-banner__content").first() shouldBe null
+//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe("")
+    doc.getElementsByClass("govuk-phase-banner__content__tag").first().shouldBe(null)
+    doc.getElementsByClass("govuk-phase-banner__content").first().shouldBe(null)
     testElementDoesntExist(response, "govuk-phase-banner")
 
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href") shouldBe "/contact/report-technical-problem?service=AddressLookupFrontend"
+//    doc.select(".report-error__toggle.js-hidden").first().attr("href").shouldBe("/contact/report-technical-problem?service=AddressLookupFrontend")
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=address_lookup_frontend""")
-//    doc.getElementsByTag("script").last().html().contains("timeout: 120") shouldBe false
-//    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL") shouldBe false
-//    doc.getElementsByClass("copyright").first().child(0).attr("href") shouldBe "https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm"
+//    doc.getElementsByTag("script").last().html().contains("timeout: 120").shouldBe(false)
+//    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL").shouldBe(false)
+//    doc.getElementsByClass("copyright").first().child(0).attr("href").shouldBe("https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm")
   }
 }

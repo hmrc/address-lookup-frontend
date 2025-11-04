@@ -86,7 +86,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
-            await(res).status shouldBe OK
+            await(res).status.shouldBe(OK)
 
             val doc = getDocFromResponse(res)
 
@@ -94,11 +94,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
               text("Back")
             )
 
-            doc.title shouldBe tooManyResultsMessages.title
-            doc.h1.text shouldBe tooManyResultsMessages.heading1
+            doc.title.shouldBe(tooManyResultsMessages.title)
+            doc.h1.text.shouldBe(tooManyResultsMessages.heading1)
             doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
-            doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
+            doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet2WithFilter(testFilterValue))
+            doc.link("anotherSearch").text().shouldBe(tooManyResultsMessages.button)
             doc.link("enterManual") should have(
               href(routes.InternationalAddressLookupController.edit(testJourneyId).url),
               text("Enter the address manually")
@@ -119,18 +119,18 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
               .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
               .get()
 
-            await(res).status shouldBe OK
+            await(res).status.shouldBe(OK)
 
             val doc = getDocFromResponse(res)
 
             doc.select("a[class=govuk-back-link]") shouldNot have(
               text("Back")
             )
-            doc.title shouldBe tooManyResultsMessages.title
-            doc.h1.text shouldBe tooManyResultsMessages.heading1
+            doc.title.shouldBe(tooManyResultsMessages.title)
+            doc.h1.text.shouldBe(tooManyResultsMessages.heading1)
             doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
-            doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
-            doc.link("anotherSearch").text() shouldBe tooManyResultsMessages.button
+            doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet2WithFilter(testFilterValue))
+            doc.link("anotherSearch").text().shouldBe(tooManyResultsMessages.button)
             doc.link("enterManual") should have(
               href(routes.InternationalAddressLookupController.edit(testJourneyId).url),
               text("Enter the address manually")
@@ -156,7 +156,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           .get()
         val res = await(fResponse)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
         document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
       }
@@ -175,11 +175,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe messages("international.selectPage.title")
+        doc.title.shouldBe(messages("international.selectPage.title"))
       }
 
       "the backend service returns 1 address and redirects to the confirm page" in {
@@ -193,8 +193,8 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           .get()
 
         val completedResponse = await(res)
-        completedResponse.status shouldBe SEE_OTHER
-        completedResponse.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/confirm"
+        completedResponse.status.shouldBe(SEE_OTHER)
+        completedResponse.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/international/confirm")
 
       }
 
@@ -207,11 +207,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe s"${otherPageMessages.noResultsPageTitle} $testFilterValue"
+        doc.title.shouldBe(s"${otherPageMessages.noResultsPageTitle} $testFilterValue")
       }
     }
   }

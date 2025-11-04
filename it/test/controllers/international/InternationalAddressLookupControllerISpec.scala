@@ -41,7 +41,7 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.filterId -> testFilterValue))
     }
 
@@ -54,7 +54,7 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
         .get()
       val res = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.filterId -> ""))
     }
   }

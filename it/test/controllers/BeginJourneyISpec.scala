@@ -41,9 +41,9 @@ class BeginJourneyISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
+        res.status.shouldBe(SEE_OTHER)
 
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/lookup"
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/lookup")
       }
     }
 
@@ -57,9 +57,9 @@ class BeginJourneyISpec extends IntegrationSpecBase {
           .get()
 
         val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
+        res.status.shouldBe(SEE_OTHER)
 
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/country-picker"
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/country-picker")
       }
     }
   }

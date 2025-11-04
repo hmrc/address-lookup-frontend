@@ -24,23 +24,23 @@ class PostCodeHelperSpec extends AnyWordSpec with Matchers with ALFEFixtures {
 
   "displayPostcode (option string)" should {
     "return formatted postcode" in {
-      PostcodeHelper.displayPostcode(Some("  ZZ1   1Zz    ")) mustBe "ZZ1 1ZZ"
+      PostcodeHelper.displayPostcode(Some("  ZZ1   1Zz    ")).mustBe("ZZ1 1ZZ")
     }
     "return nothing for invalid postcode" in {
-      PostcodeHelper.displayPostcode(Some("fbbfjebfje")) mustBe ""
+      PostcodeHelper.displayPostcode(Some("fbbfjebfje")).mustBe("")
     }
   }
   "displayPostcode string" should {
     "return formatted postcode" in {
-      PostcodeHelper.displayPostcode("  ZZ1   1Zz    ") mustBe "ZZ1 1ZZ"
+      PostcodeHelper.displayPostcode("  ZZ1   1Zz    ").mustBe("ZZ1 1ZZ")
     }
     "return nothing for invalid postcode" in {
-      PostcodeHelper.displayPostcode("fbbfjebfje") mustBe ""
+      PostcodeHelper.displayPostcode("fbbfjebfje").mustBe("")
     }
   }
   "displayPostcode string for edge case postcode 'GIR 0AA'" should {
     "return formatted postcode" in {
-      PostcodeHelper.displayPostcode("GIR 0AA") mustBe "GIR 0AA"
+      PostcodeHelper.displayPostcode("GIR 0AA").mustBe("GIR 0AA")
     }
   }
 }

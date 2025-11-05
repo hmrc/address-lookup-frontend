@@ -19,14 +19,14 @@ import controllers.RemoteMessagesApiProvider
 import org.apache.pekko.stream.Materializer
 import org.htmlunit.ProxyConfig
 import play.api.libs.concurrent.PekkoGuiceSupport
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Environment, Logger}
 import services._
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-class Module(playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
+class Module(environment: Environment, playConfig: Configuration) extends AbstractModule with PekkoGuiceSupport {
 
   override def configure(): Unit = {
     bind(classOf[RemoteMessagesApiProvider])

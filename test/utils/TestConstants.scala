@@ -208,7 +208,7 @@ object TestConstants {
     Confirm.showConfirmChangeLink
   ))
 
-  val selectPageConfigMinimal = SelectPageConfig(None, None)
+  val selectPageConfigMinimal = SelectPageConfig(None, None, None)
 
   val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
   val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")

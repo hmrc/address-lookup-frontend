@@ -179,18 +179,18 @@ object ALFForms extends EmptyStringValidator {
         "organisation" -> optional(text),
         "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"), mandatoryProvided)
           .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength))
-          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine1)),
+          .verifying("editPage.line1.error", input => checkIfMandatory(input, _.addressLine1)),
         "line2" -> optional(text)
           .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength))
-          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine2)),
+          .verifying("editPage.line2.error", input => checkIfMandatory(input, _.addressLine2)),
         "line3" -> optional(text)
           .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength))
-          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.addressLine3)),
+          .verifying("editPage.line3.error", input => checkIfMandatory(input, _.addressLine3)),
         "town" -> optional(text)
           .verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength))
-          .verifying("common.error.fieldRequired", input => checkIfMandatory(input, _.town)),
+          .verifying("editPage.town.error", input => checkIfMandatory(input, _.town)),
         "postcode" -> default(text, "").verifying(
-          "common.error.fieldRequired",
+          if(isUkMode) "editPage.postcodeLabel.ukMode.error" else "editPage.postcode.error",
           input => checkIfMandatory(
             if(input == "") None else Some(input),
             _.postcode

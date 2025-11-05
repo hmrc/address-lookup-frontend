@@ -114,12 +114,12 @@ confirmPage.searchAgainLinkText = Chwilio eto
 
 editPage.title = Nodwch eich cyfeiriad
 editPage.heading = Nodwch eich cyfeiriad
-editPage.organisationLabel = Sefydliad
-editPage.line1Label = Llinell cyfeiriad 1
-editPage.line2Label = Llinell cyfeiriad 2
-editPage.line3Label = Llinell cyfeiriad 3
-editPage.townLabel = Tref/dinas
-editPage.postcodeLabel = Cod post
+editPage.organisation.label = Sefydliad
+editPage.line1.label = Llinell cyfeiriad 1
+editPage.line2.label = Llinell cyfeiriad 2
+editPage.line3.label = Llinell cyfeiriad 3
+editPage.town.label = Tref/dinas
+editPage.postcode.label = Cod post
 editPage.postcodeLabel.ukMode = Cod post y DU
 editPage.countryLabel = Gwlad neu diriogaeth
 editPage.submitLabel = Yn eich blaen
@@ -159,12 +159,12 @@ international.selectPage.searchAgainLinkText = Chwilio eto
 
 international.editPage.title = Nodwch eich cyfeiriad
 international.editPage.heading = Nodwch eich cyfeiriad
-international.editPage.organisationLabel = Sefydliad
-international.editPage.line1Label = Cyfeiriad – llinell 1
-international.editPage.line2Label = Cyfeiriad – llinell 2
-international.editPage.line3Label = Cyfeiriad – llinell 3
-international.editPage.townLabel = Tref/dinas
-international.editPage.postcodeLabel = Cod post
+international.editPage.organisation.label = Sefydliad
+international.editPage.line1.label = Cyfeiriad – llinell 1
+international.editPage.line2.label = Cyfeiriad – llinell 2
+international.editPage.line3.label = Cyfeiriad – llinell 3
+international.editPage.town.label = Tref/dinas
+international.editPage.postcode.label = Cod post
 international.editPage.countryLabel = Gwlad neu diriogaeth
 international.editPage.submitLabel = Yn eich blaen
 

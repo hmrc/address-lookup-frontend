@@ -85,8 +85,8 @@
 
 @generateLabel(key: String) = @{
     if(key == "postcode" && isUKMode) {
-        s"editPage.postcodeLabel.ukMode"
-    } else s"editPage.${key}Label"
+        s"international.editPage.postcodeLabel.ukMode"
+    } else s"international.editPage.$key.label"
 }
 
 @allFalse() = @{

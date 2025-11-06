@@ -86,7 +86,7 @@
 @generateLabel(key: String) = @{
     if(key == "postcode" && isUKMode) {
         s"international.editPage.postcodeLabel.ukMode"
-    } else s"international.editPage.$key.label"
+    } else s"international.editPage.${key}Label"
 }
 
 @allFalse() = @{
@@ -127,7 +127,7 @@
 }
 
 @inputHtml = {
-    @textField("organisation", "organisation", isMandatory = _ => false)
+    @textField("organisation", "organization", isMandatory = _ => false)
     @textField("line1", "address-line1", addressErrorClass = true, isMandatory = _.addressLine1)
     @textField("line2", "address-line2", addressErrorClass = true, isMandatory = _.addressLine2)
     @textField("line3", "address-line3", addressErrorClass = true, isMandatory = _.addressLine3)

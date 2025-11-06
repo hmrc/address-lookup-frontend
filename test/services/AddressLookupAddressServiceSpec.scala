@@ -136,7 +136,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
     "return multiple addresses with diverse country codes when isUkMode == false" in new Scenario(
       manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
-      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.map(a => a.country.code) must contain("foo")
+      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.map(a => a.country.code).must(contain("foo"))
     }
 
     "return no addresses where ukMode == true and all addresses are non UK addresses" in new Scenario(

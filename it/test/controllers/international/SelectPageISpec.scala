@@ -19,12 +19,14 @@ package controllers.international
 import address.v2.Country
 import controllers.routes
 import itutil.IntegrationSpecBase
-import itutil.config.AddressRecordConstants._
-import itutil.config.IntegrationTestConstants._
+import itutil.config.AddressRecordConstants.*
+import itutil.config.IntegrationTestConstants.*
 import itutil.config.PageElementConstants.SelectPage
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
 import play.api.i18n.Lang
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -112,14 +114,13 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
 
         testIds.zipWithIndex.foreach {
-          case (id, idx) => {
+          case (id, idx) =>
             val i = idx + 1
             val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
             doc.radio(fieldId) should have(
               value(id),
               label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
             )
-          }
         }
       }
     }
@@ -161,14 +162,13 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
 
         testIds.zipWithIndex.foreach {
-          case (id, idx) => {
+          case (id, idx) =>
             val i = idx + 1
             val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
             doc.radio(fieldId) should have(
               value(id),
               label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
             )
-          }
         }
       }
     }
@@ -263,11 +263,11 @@ class SelectPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
 
         res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
   }

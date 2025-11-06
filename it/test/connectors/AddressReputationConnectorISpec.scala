@@ -19,7 +19,7 @@ package connectors
 import address.v2._
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.libs.json.Json
 import services.{LookupAddressByCountry, LookupAddressByPostcode}
 import support.{IntegrationBaseSpec, WireMockHelper}

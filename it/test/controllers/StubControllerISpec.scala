@@ -19,13 +19,16 @@ package controllers
 import com.codahale.metrics.SharedMetricRegistries
 import itutil.IntegrationSpecBase
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import play.api.{Application, Environment, Mode}
 import services.IdGenerationService
 
 import java.util.UUID
+import scala.concurrent.Future
 
 class StubControllerISpec extends IntegrationSpecBase {
 
@@ -64,12 +67,13 @@ class StubControllerISpec extends IntegrationSpecBase {
           |
           |}""".stripMargin
 
-      val res = buildClientTestOnlyRoutes(path = "v2/test-setup")
+      val res: Future[WSResponse] = buildClientTestOnlyRoutes(path = "v2/test-setup")
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map(
-          "journeyConfig" -> Seq(basicJourney)))
+          "journeyConfig" -> Seq(basicJourney)
+        ))
 
-      val response = await(res)
+      val response: WSResponse = await(res)
       response.status.shouldBe(SEE_OTHER)
       response.header(HeaderNames.LOCATION).get.shouldBe(s"http://localhost:9028/lookup-address/$testJourneyId/begin")
 

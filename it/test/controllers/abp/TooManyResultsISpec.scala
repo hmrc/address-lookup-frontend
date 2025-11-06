@@ -17,14 +17,15 @@
 package controllers.abp
 
 import controllers.routes
-import itutil.config.AddressRecordConstants._
-import itutil.config.IntegrationTestConstants._
+import itutil.config.AddressRecordConstants.*
+import itutil.config.IntegrationTestConstants.*
 import itutil.{IntegrationSpecBase, PageContentHelper}
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -218,11 +219,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
         val fResponse = buildClientLookupAddress(path = "select?postcode=AB111AB", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
 
         res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
 

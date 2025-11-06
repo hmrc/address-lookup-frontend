@@ -19,15 +19,17 @@ package controllers.international
 import com.codahale.metrics.SharedMetricRegistries
 import controllers.routes
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
+import itutil.config.IntegrationTestConstants.*
 import itutil.config.PageElementConstants.LookupPage
 import model.v2.{JourneyConfigV2, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.Application
 import play.api.Mode.Test
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedSimpleForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -64,7 +66,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(OK)
@@ -102,7 +104,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("filter" -> filterValue))
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(BAD_REQUEST)
@@ -130,11 +132,11 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
 
         res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
 
@@ -147,7 +149,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(OK)
@@ -191,7 +193,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(OK)
@@ -210,7 +212,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"international/lookup?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(OK)
@@ -256,7 +258,7 @@ class LookupPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
         res.status.shouldBe(OK)
@@ -294,7 +296,7 @@ class LookupPageISpec extends IntegrationSpecBase {
       .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
       .post(Map("filter" -> filterValue))
 
-    val res = await(fResponse)
+    val res: WSResponse = await(fResponse)
     val doc = getDocFromResponse(res)
 
     res.status.shouldBe(BAD_REQUEST)

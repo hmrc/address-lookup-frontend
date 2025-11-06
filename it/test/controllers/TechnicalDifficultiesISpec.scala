@@ -26,6 +26,7 @@ import play.api.http.HeaderNames
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.i18n.Lang
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.ws.WSResponse
 import play.api.{Application, inject}
 import services.{JourneyDataV2Cache, JourneyRepository}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -59,7 +60,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(INTERNAL_SERVER_ERROR)
         res.cookie(ALFCookieNames.useWelsh).shouldBe(None)
 
@@ -79,7 +80,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(INTERNAL_SERVER_ERROR)
         res.cookie(ALFCookieNames.useWelsh).shouldBe(None)
 
@@ -99,7 +100,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(INTERNAL_SERVER_ERROR)
 
         val doc = getDocFromResponse(res)
@@ -118,7 +119,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(INTERNAL_SERVER_ERROR)
 
         val doc = getDocFromResponse(res)

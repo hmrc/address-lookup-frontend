@@ -17,13 +17,15 @@
 package controllers.international
 
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
-import model._
+import itutil.config.IntegrationTestConstants.*
+import model.*
 import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.i18n.Lang
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -45,13 +47,13 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
         document.title().shouldBe(messages("international.editPage.title"))
         document.h1.first.text().shouldBe(messages("international.editPage.heading"))
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
         document.getElementById("continue").text().shouldBe("Continue")
 
         document.getElementById("line1").`val`.shouldBe("1 High Street")
@@ -86,7 +88,7 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
@@ -122,11 +124,11 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
 
@@ -146,7 +148,7 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
@@ -183,7 +185,7 @@ class EditPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
@@ -219,7 +221,7 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
@@ -276,7 +278,7 @@ class EditPageISpec extends IntegrationSpecBase {
             "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
@@ -312,7 +314,7 @@ class EditPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       res.status.shouldBe(BAD_REQUEST)
 
       labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
@@ -339,7 +341,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val document = Jsoup.parse(res.body)
 
       document.title.shouldBe("Gwall: Nodwch eich cyfeiriad")
@@ -378,7 +380,7 @@ class EditPageISpec extends IntegrationSpecBase {
           HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")),
           "Csrf-Token" -> "nocheck").
         post(Map("csrfToken" -> Seq("xxx-ignored-xxx"), "postcode" -> Seq("eebb")))
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val document = Jsoup.parse(res.body)
 
       document.input("postcode") should have(value("eebb"))
@@ -415,7 +417,7 @@ class EditPageISpec extends IntegrationSpecBase {
           "countryCode" -> Seq("GB")
         ))
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
       res.status.shouldBe(SEE_OTHER)
     }

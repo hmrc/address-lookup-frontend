@@ -19,10 +19,11 @@ package forms
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
 import model._
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{FieldMapping, Form, FormError, Forms}
 import play.api.i18n.Messages
 
 object Helpers {
@@ -117,7 +118,7 @@ object ALFForms extends EmptyStringValidator {
       Invalid(msg, max)
     })
 
-  val constraintMinLength = (msg: String) => new Constraint[String](Some("length.min"), Seq.empty)(s => if (s.nonEmpty) {
+  val constraintMinLength: String => Constraint[String] = (msg: String) => new Constraint[String](Some("length.min"), Seq.empty)(s => if (s.nonEmpty) {
     Valid
   } else {
     Invalid(msg)
@@ -129,17 +130,17 @@ object ALFForms extends EmptyStringValidator {
     val postcode = form("postcode").value.getOrElse("")
 
     (isGB, postcode) match {
-      case (true, p) if p.nonEmpty && !Postcode.cleanupPostcode(postcode).isDefined => form.withError("postcode", messages(s"constants.editPagePostcodeErrorMessage"))
+      case (true, p) if p.nonEmpty && Postcode.cleanupPostcode(postcode).isEmpty => form.withError("postcode", messages(s"constants.editPagePostcodeErrorMessage"))
       case _ => form
     }
   }
 
-  def atLeastOneAddressLineOrTown(message: String = "") = Forms.of[Option[String]](formatter(message))
+  private def atLeastOneAddressLineOrTown(message: String = "", mandatoryProvided: Boolean = false): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message, mandatoryProvided))
 
-  def formatter(message: String = ""): Formatter[Option[String]] = new Formatter[Option[String]] {
+  private def formatter(message: String = "", mandatoryProvided: Boolean = false): Formatter[Option[String]] = new Formatter[Option[String]] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
-      if (values.forall(_.isEmpty)) {
+      if (values.forall(_.isEmpty) && !mandatoryProvided) {
         Left(Seq(FormError(key, message, Nil)))
       } else {
         Right(data.get(key).collect { case x if x.trim.nonEmpty => x })
@@ -149,32 +150,53 @@ object ALFForms extends EmptyStringValidator {
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
 
-  def ukEditForm(optConfig: Option[ManualAddressEntryConfig] = None)(implicit messages: Messages): Form[Edit] = {
+  def editForm(optConfig: Option[ManualAddressEntryConfig] = None, isUkMode: Boolean)(implicit messages: Messages): Form[Edit] = {
     val config = optConfig getOrElse ManualAddressEntryConfig()
-    Form(
-    mapping(
-      "organisation" -> optional(text),
-      "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength)),
-      "line2" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength)),
-      "line3" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength)),
-      "town" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength)),
-      "postcode" -> default(text, ""),
-      "countryCode" -> ignored[String]("GB")
-    )(Edit.apply)(Edit.unapply)
-  )
-  }
 
-  def nonUkEditForm(optConfig: Option[ManualAddressEntryConfig] = None)(implicit messages: Messages) = {
-    val config = optConfig getOrElse ManualAddressEntryConfig()
+    val countryCodeMapping = if (isUkMode) {
+      "countryCode" -> ignored[String]("GB")
+    } else {
+      "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
+    }
+    
+    def checkIfMandatory(input: Option[String], mandatoryCheck: MandatoryFieldsConfigModel => Boolean) = {
+      if (optConfig.flatMap(_.mandatoryFields.map(mandatoryCheck)).contains(true)) {
+        input.nonEmpty
+      } else true
+    }
+
+    val mandatoryProvided = optConfig.flatMap(_.mandatoryFields.map { mandatoryConfig =>
+      Seq(
+        mandatoryConfig.addressLine1,
+        mandatoryConfig.addressLine2,
+        mandatoryConfig.addressLine3,
+        mandatoryConfig.town
+      ).contains(true)
+    }).contains(true)
+    
     Form(
       mapping(
         "organisation" -> optional(text),
-        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown")).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength)),
-        "line2" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength)),
-        "line3" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength)),
-        "town" -> optional(text).verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength)),
-        "postcode" -> default(text, ""),
-        "countryCode" -> customErrorTextValidation(messages(s"constants.editPageCountryErrorMessage"))
+        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"), mandatoryProvided)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength))
+          .verifying("editPage.line1.error", input => checkIfMandatory(input, _.addressLine1)),
+        "line2" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength))
+          .verifying("editPage.line2.error", input => checkIfMandatory(input, _.addressLine2)),
+        "line3" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength))
+          .verifying("editPage.line3.error", input => checkIfMandatory(input, _.addressLine3)),
+        "town" -> optional(text)
+          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength))
+          .verifying("editPage.town.error", input => checkIfMandatory(input, _.town)),
+        "postcode" -> default(text, "").verifying(
+          if(isUkMode) "editPage.postcodeLabel.ukMode.error" else "editPage.postcode.error",
+          input => checkIfMandatory(
+            if(input == "") None else Some(input),
+            _.postcode
+          )
+        ),
+        countryCodeMapping
       )(Edit.apply)(Edit.unapply)
     )
   }

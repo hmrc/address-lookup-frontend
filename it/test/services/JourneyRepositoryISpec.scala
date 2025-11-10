@@ -16,9 +16,9 @@
 
 package services
 
-import org.apache.pekko.util.Timeout
 import itutil.config.IntegrationTestConstants._
-import model.JourneyDataV2
+import model.v2.JourneyDataV2
+import org.apache.pekko.util.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

@@ -16,13 +16,14 @@
 
 package itutil.config
 
-import java.util.UUID
-import itutil.config.IntegrationTestConstants._
-import model.{LanguageLabels, _}
-import play.api.libs.json._
 import address.v2.Country
 import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
+import itutil.config.IntegrationTestConstants._
+import model.v2._
+import model._
+import play.api.libs.json._
 
+import java.util.UUID
 import scala.language.postfixOps
 
 object IntegrationTestConstants {
@@ -387,7 +388,7 @@ object IntegrationTestConstants {
     showSearchAgainLink = Some(true)
   )
 
-  val fullConfirmPageConfigV2 = ConfirmPageConfig(
+  val fullConfirmPageConfigV2: ConfirmPageConfig = ConfirmPageConfig(
     showSubHeadingAndInfo = Some(true),
     showSearchAgainLink = Some(true),
     showConfirmChangeText = Some(true),
@@ -561,11 +562,25 @@ object IntegrationTestConstants {
 
     JourneyConfigV2(
       2,
-      options = JourneyOptions(continueUrl = "continueUrl", homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")), phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")), deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")), showPhaseBanner = Some(allBooleanSetAndAppropriateOptions), alphaPhase = Some(allBooleanSetAndAppropriateOptions), showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)), includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions), ukMode = Some(allBooleanSetAndAppropriateOptions), allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))), selectPageConfig = Some(fullSelectPageConfigV2.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))), confirmPageConfig = Some(fullConfirmPageConfigV2.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))), timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
-                timeoutAmount = 120,
-                timeoutUrl = "TIMEOUT_URL",
-                timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
-              )))),
+      options = JourneyOptions(
+        continueUrl = "continueUrl",
+        homeNavHref = returnNoneOrConfig(Some("HOME_NAV_REF")),
+        phaseFeedbackLink = returnNoneOrConfig(Some("PHASE_FEEDBACK_LINK")),
+        deskProServiceName = returnNoneOrConfig(Some("DESKPRO_SERVICE_NAME")),
+        showPhaseBanner = Some(allBooleanSetAndAppropriateOptions),
+        alphaPhase = Some(allBooleanSetAndAppropriateOptions),
+        showBackButtons = returnNoneOrConfig(Some(allBooleanSetAndAppropriateOptions)),
+        includeHMRCBranding = Some(allBooleanSetAndAppropriateOptions),
+        ukMode = Some(allBooleanSetAndAppropriateOptions),
+        allowedCountryCodes = returnNoneOrConfig(Some(Set("GB", "AB", "CD"))),
+        selectPageConfig = Some(fullSelectPageConfigV2.copy(showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions))),
+        confirmPageConfig = Some(fullConfirmPageConfigV2.copy(showConfirmChangeText = Some(allBooleanSetAndAppropriateOptions), showChangeLink = Some(allBooleanSetAndAppropriateOptions), showSearchAgainLink = Some(allBooleanSetAndAppropriateOptions), showSubHeadingAndInfo = Some(allBooleanSetAndAppropriateOptions))),
+        timeoutConfig = returnNoneOrConfig(Some(TimeoutConfig(
+          timeoutAmount = 120,
+          timeoutUrl = "TIMEOUT_URL",
+          timeoutKeepAliveUrl = Some("KEEP_ALIVE_URL")
+        )))
+      ),
       Some(JourneyLabels(
         en = Some(LanguageLabels(
           confirmPageLabels = Some(ConfirmPageLabels(

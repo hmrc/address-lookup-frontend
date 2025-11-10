@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.countOfResults._
 import forms.ALFForms._
 import model._
+import model.v2.{JourneyDataV2, SelectPageConfig}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -266,7 +267,7 @@ class InternationalAddressLookupController @Inject()(
             edit(
               id,
               journeyData,
-              nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).fill(defaultAddress),
+              editForm(journeyData.config.options.manualAddressEntryConfig, isUkMode = false).fill(defaultAddress),
               allowedSeqCountries(countries(isWelsh)),
               isWelsh = isWelsh
             )
@@ -299,7 +300,7 @@ class InternationalAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
 
         val validatedForm =
-          isValidPostcode(nonUkEditForm(journeyData.config.options.manualAddressEntryConfig).bindFromRequest())
+          isValidPostcode(editForm(journeyData.config.options.manualAddressEntryConfig, isUkMode = false).bindFromRequest())
 
         validatedForm.fold(
           errors => {

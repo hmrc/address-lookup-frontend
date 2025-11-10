@@ -22,7 +22,7 @@ import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
-import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
 import play.api.i18n.Lang
 import services.JourneyDataV2Cache

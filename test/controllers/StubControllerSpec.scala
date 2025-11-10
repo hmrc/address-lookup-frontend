@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import controllers.api.ApiController
 import controllers.testonly.{StubController, StubHelper}
 import fixtures.ALFEFixtures
-import model._
+import model.v2.{JourneyConfigV2, JourneyOptions}
 import org.apache.pekko.stream.Materializer
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

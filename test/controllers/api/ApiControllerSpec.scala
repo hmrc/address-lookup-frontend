@@ -18,7 +18,7 @@ package controllers.api
 
 import com.codahale.metrics.SharedMetricRegistries
 import fixtures.ALFEFixtures
-import model.{JourneyConfigV2, JourneyOptions, TimeoutConfig}
+import model.v2.{JourneyConfigV2, JourneyOptions, TimeoutConfig}
 import org.apache.pekko.stream.Materializer
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

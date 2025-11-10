@@ -14,241 +14,25 @@
  * limitations under the License.
  */
 
-package model
+package model.v2
 
 import com.codahale.metrics.SharedMetricRegistries
 import config.FrontendAppConfig
+import model.ResolvedJourneyConfigV2
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json._
 import utils.TestConstants._
 
-class ModelV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite {
+class ResolvedJourneyConfigV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite {
   override implicit lazy val app: Application = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder().build()
   }
 
   val appConfig = app.injector.instanceOf[FrontendAppConfig]
-
-  "JourneyDataV2" should {
-    "read successfully from full json" in {
-      Json.fromJson[JourneyDataV2](journeyDataV2FullJson) mustBe JsSuccess(journeyDataV2Full)
-    }
-    "read successfully from minimal json" in {
-      Json.fromJson[JourneyDataV2](journeyDataV2MinimalJson) mustBe JsSuccess(journeyDataV2MinimalExpected)
-    }
-    "fail to read when the journey config is missing from the json" in {
-      Json.fromJson[JourneyDataV2](emptyJson) mustBe JsError(JsPath \ "config", JsonValidationError("error.path.missing"))
-    }
-
-    "write to json from full model" in {
-      Json.toJson(journeyDataV2Full) mustBe journeyDataV2FullJson
-    }
-    "write to json from minimal model" in {
-      Json.toJson(journeyDataV2MinimalExpected) mustBe journeyDataV2MinimalJson
-    }
-  }
-
-  "JourneyConfigV2" should {
-    "read successfully with no journey labels" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MinimalJson) mustBe JsSuccess(journeyConfigV2Minimal)
-    }
-    "fail to read from json with version missing" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingVersionJson) mustBe JsError(JsPath \ "version", JsonValidationError("error.path.missing"))
-    }
-    "fail to read from json with journey options missing" in {
-      Json.fromJson[JourneyConfigV2](journeyConfigV2MissingConfigJson) mustBe JsError(JsPath \ "options", JsonValidationError("error.path.missing"))
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(journeyConfigV2Minimal) mustBe journeyConfigV2MinimalJson
-    }
-  }
-
-  "JourneyOptions" should {
-    "read successfully with minimal json" in {
-      Json.fromJson[JourneyOptions](journeyOptionsMinimalJson) mustBe JsSuccess(journeyOptionsMinimal)
-    }
-    "fail to read from json with continue url missing" in {
-      Json.fromJson[JourneyOptions](emptyJson) mustBe JsError(JsPath \ "continueUrl", JsonValidationError("error.path.missing"))
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(journeyOptionsMinimal) mustBe journeyOptionsMinimalJson
-    }
-  }
-
-  "SelectPageConfig" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[SelectPageConfig](emptyJson) mustBe JsSuccess(selectPageConfigMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(selectPageConfigMinimal) mustBe emptyJson
-    }
-  }
-
-  "ConfirmPageConfig" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[ConfirmPageConfig](emptyJson) mustBe JsSuccess(confirmPageConfigMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(confirmPageConfigMinimal) mustBe emptyJson
-    }
-  }
-
-  "Manual Address Entry Config" when {
-
-    "deserializing from JSON" should {
-
-      "fail to read if a value is smaller than the minimum allowed (35)" in {
-        Json.fromJson[ManualAddressEntryConfig](Json.obj(
-          "line1MaxLength" -> 34,
-          "line2MaxLength" -> 60,
-          "line3MaxLength" -> 70,
-          "townMaxLength" -> 80
-        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.min", 35))
-      }
-
-      "fail to read if a value is greater than the max allowed (255)" in {
-        Json.fromJson[ManualAddressEntryConfig](Json.obj(
-          "line1MaxLength" -> 256,
-          "line2MaxLength" -> 60,
-          "line3MaxLength" -> 70,
-          "townMaxLength" -> 80
-        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.max", 255))
-      }
-
-      "read successfully from max json" in {
-        Json.fromJson[ManualAddressEntryConfig](Json.obj(
-          "line1MaxLength" -> 50,
-          "line2MaxLength" -> 60,
-          "line3MaxLength" -> 70,
-          "townMaxLength" -> 80
-        )) mustBe JsSuccess(ManualAddressEntryConfig(
-          line1MaxLength = 50,
-          line2MaxLength = 60,
-          line3MaxLength = 70,
-          townMaxLength = 80
-        ))
-      }
-
-      "read successfully from minimal json" in {
-        Json.fromJson[ManualAddressEntryConfig](emptyJson) mustBe JsSuccess(ManualAddressEntryConfig())
-      }
-    }
-
-    "serialize to json" in {
-      Json.toJson(ManualAddressEntryConfig()) mustBe Json.obj(
-        "line1MaxLength" -> ManualAddressEntryConfig.defaultMax,
-        "line2MaxLength" -> ManualAddressEntryConfig.defaultMax,
-        "line3MaxLength" -> ManualAddressEntryConfig.defaultMax,
-        "townMaxLength" -> ManualAddressEntryConfig.defaultMax
-      )
-    }
-  }
-
-  "TimeoutConfig" should {
-    "fail to read from json with timeout amount missing" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigLessThanMinJson) mustBe JsError(JsPath \ "timeoutAmount", JsonValidationError("error.min", 120))
-    }
-    "fail to read from json with timeout url missing" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigMissingAmountJson) mustBe JsError(JsPath \ "timeoutAmount", JsonValidationError("error.path.missing"))
-    }
-    "fail to read from json when timeout amount is less than 120" in {
-      Json.fromJson[TimeoutConfig](timeoutConfigMissingUrlJson) mustBe JsError(JsPath \ "timeoutUrl", JsonValidationError("error.path.missing"))
-    }
-  }
-
-  "JourneyLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[JourneyLabels](emptyJson) mustBe JsSuccess(journeyLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(journeyLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "LanguageLabels" should {
-    import LanguageLabels.{languageLabelsReads, languageLabelsWrites}
-
-    "read successfully from minimal json" in {
-      Json.fromJson[LanguageLabels](emptyJson) mustBe JsSuccess(languageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(languageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "InternationalLanguageLabels" should {
-    import InternationalLanguageLabels.{internationalLanguageLabelsReads, internationalLanguageLabelsWrites}
-
-    "read successfully from minimal json" in {
-      Json.fromJson[InternationalLanguageLabels](emptyJson) mustBe JsSuccess(internationalLanguageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(internationalLanguageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "AppLevelLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[AppLevelLabels](emptyJson) mustBe JsSuccess(appLevelLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(appLevelLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "SelectPageLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[SelectPageLabels](emptyJson) mustBe JsSuccess(selectPageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(selectPageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "LookupPageLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[LookupPageLabels](emptyJson) mustBe JsSuccess(lookupPageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(lookupPageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "EditPageLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[EditPageLabels](emptyJson) mustBe JsSuccess(editPageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(editPageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
-  "ConfirmPageLabels" should {
-    "read successfully from minimal json" in {
-      Json.fromJson[ConfirmPageLabels](emptyJson) mustBe JsSuccess(confirmPageLabelsMinimal)
-    }
-
-    "write to json with minimal data" in {
-      Json.toJson(confirmPageLabelsMinimal) mustBe emptyJson
-    }
-  }
-
 
   "ResolvedJourneyConfigV2" should {
     "return a full model without defaulting any values" in {
@@ -457,42 +241,6 @@ class ModelV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite
       //      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText mustBe WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT
       //      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT
       //      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText mustBe WelshConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT
-    }
-  }
-
-  "welshEnabled" should {
-    "return true" when {
-      "there is welsh config provided" in {
-        journeyDataV2Full.welshEnabled mustBe true
-      }
-      "there is no config provided" in {
-        journeyDataV2Minimal.welshEnabled mustBe true
-      }
-    }
-  }
-
-  "ResolvedJourneyOptions" should {
-    //TODO: isUKMode, provided and false
-    "set the isUkMode to true" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(true)), appConfig).isUkMode mustBe true
-    }
-    "set the isUkMode to false" when {
-      "ukMode is missing" in {
-        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = None), appConfig).isUkMode mustBe false
-      }
-      "ukMode is set to false" in {
-        ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(ukMode = Some(false)), appConfig).isUkMode mustBe false
-      }
-    }
-
-    "set the phase value to alpha" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(true), alphaPhase = Some(true)), appConfig).phase mustBe "alpha"
-    }
-    "set the phase value to beta" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(true), alphaPhase = Some(false)), appConfig).phase mustBe "beta"
-    }
-    "set the phase value to empty string" in {
-      ResolvedJourneyOptions(journeyDataV2Full.config.options.copy(showPhaseBanner = Some(false), alphaPhase = Some(false)), appConfig).phase mustBe ""
     }
   }
 }

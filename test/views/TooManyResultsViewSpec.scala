@@ -17,7 +17,7 @@
 package views
 
 import config.FrontendAppConfig
-import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, MessagesApi}

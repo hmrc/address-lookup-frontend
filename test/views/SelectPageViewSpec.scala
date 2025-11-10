@@ -19,7 +19,8 @@ package views
 import config.FrontendAppConfig
 import controllers.{Proposals, routes}
 import forms.ALFForms.selectForm
-import model.{JourneyDataV2, Lookup}
+import model.Lookup
+import model.v2.JourneyDataV2
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -55,7 +56,7 @@ class SelectPageViewSpec extends ViewSpec {
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
     implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
 
-    val messages = implicitly[Messages]
+    val messages: Messages = implicitly[Messages]
 
     val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch, welshEnabled)
     val doc: Document = Jsoup.parse(testPage.body)

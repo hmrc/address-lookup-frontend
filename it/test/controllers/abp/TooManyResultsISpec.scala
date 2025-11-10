@@ -20,7 +20,7 @@ import controllers.routes
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.{IntegrationSpecBase, PageContentHelper}
-import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._

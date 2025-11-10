@@ -18,11 +18,11 @@ package services
 
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import model._
+import model.v2.JourneyDataV2
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheIdType.SimpleCacheId
-import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

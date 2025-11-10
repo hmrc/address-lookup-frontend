@@ -16,18 +16,14 @@
 
 package controllers.abp
 
-import com.codahale.metrics.SharedMetricRegistries
 import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants._
 import itutil.config.IntegrationTestConstants._
 import itutil.config.PageElementConstants.SelectPage
-import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
+import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
-import play.api.Application
-import play.api.Mode.Test
 import play.api.i18n.Lang
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 

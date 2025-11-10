@@ -24,6 +24,7 @@ import controllers.api.ApiController
 import controllers.countOfResults.ResultsCount
 import fixtures.ALFEFixtures
 import model._
+import model.v2._
 import org.apache.pekko.stream.Materializer
 import org.jsoup.nodes.Element
 import org.scalatest.concurrent.ScalaFutures

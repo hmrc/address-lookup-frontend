@@ -19,6 +19,7 @@ package controllers.international
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
+import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._
@@ -30,7 +31,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EditPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The edit page" should {
@@ -197,12 +198,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "international-edit-organisationLabel",
+          "organisation" -> "international-edit-organisationLabel (optional)",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
           "town" -> "International Custom Town",
-          "postcode" -> "International Custom Postcode",
+          "postcode" -> "International Custom Postcode (optional)",
           "countryName" -> "International Custom Country"
         ))
       }
@@ -234,12 +235,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "international-edit-organisationLabel",
+          "organisation" -> "international-edit-organisationLabel (optional)",
           "line1" -> "International Custom Line1",
           "line2" -> "International Custom Line2",
           "line3" -> "International Custom Line3",
           "town" -> "International Custom Town",
-          "postcode" -> "International Custom Postcode"
+          "postcode" -> "International Custom Postcode (optional)"
         ))
       }
 
@@ -290,12 +291,12 @@ class EditPageISpec extends IntegrationSpecBase {
         document.getElementById("postcode").`val` shouldBe "AB11 1AB"
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
-          "organisation" -> "edit-organisationLabel welsh",
+          "organisation" -> "edit-organisationLabel welsh (dewisol)",
           "line1" -> "Custom Line1 welsh",
           "line2" -> "Custom Line2 welsh",
           "line3" -> "Custom Line3 welsh",
           "town" -> "Custom Town welsh",
-          "postcode" -> "Custom Postcode welsh"
+          "postcode" -> "Custom Postcode welsh (dewisol)"
         ))
       }
     }

@@ -19,7 +19,7 @@ package controllers.api
 import config.FrontendAppConfig
 import controllers.AlfController
 import forms.ALFForms
-import model._
+import model.v2.{JourneyConfigV2, JourneyDataV2}
 import play.api.Logger
 import play.api.libs.json.{Json, OWrites}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,22 +55,19 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
   def initWithConfigV2: Action[JourneyConfigV2] = Action.async(parse.json[JourneyConfigV2]) { implicit req =>
     val id = uuid
 
-    val timeoutRedirectUrl = req.body.options.timeoutConfig.map(t => t.timeoutUrl)
-    val timeoutKeepAliveUrl = req.body.options.timeoutConfig.flatMap(t => t.timeoutKeepAliveUrl)
-    val signoutUrl = req.body.options.signOutHref
+    val timeoutRedirectUrl = req.body.options.timeoutConfig.map(_.timeoutUrl)
+    val timeoutKeepAliveUrl = req.body.options.timeoutConfig.flatMap(_.timeoutKeepAliveUrl)
+    val signOutUrl = req.body.options.signOutHref
 
     val redirectPolicyResult = timeoutRedirectUrl.map { url => Try {
       policy.url(url)
-    }
-    }
+    }}
     val keepAlivePolicyResult = timeoutKeepAliveUrl.map { url => Try {
       policy.url(url)
-    }
-    }
-    val signoutPolicyResult = signoutUrl.map { url => Try {
+    }}
+    val signoutPolicyResult = signOutUrl.map { url => Try {
       policy.url(url)
-    }
-    }
+    }}
 
     (redirectPolicyResult, keepAlivePolicyResult, signoutPolicyResult) match {
       case (Some(Failure(_)), _, _) | (_, Some(Failure(_)), _) | (_, _, Some(Failure(_))) =>

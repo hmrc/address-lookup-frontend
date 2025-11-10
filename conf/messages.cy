@@ -27,6 +27,8 @@ footer.privacy.url = /help/privacy
 footer.termsConditions.text = Telerau ac Amodau
 footer.termsConditions.url = /help/terms-and-conditions
 
+common.error.fieldRequired = Mae angen llenwi’r blwch hwn
+
 constants.home = Cartref
 constants.back = Yn ôl
 constants.signOut = Allgofnodi
@@ -112,15 +114,22 @@ confirmPage.searchAgainLinkText = Chwilio eto
 
 editPage.title = Nodwch eich cyfeiriad
 editPage.heading = Nodwch eich cyfeiriad
-editPage.organisationLabel = Sefydliad (dewisol)
+editPage.organisationLabel = Sefydliad
 editPage.line1Label = Llinell cyfeiriad 1
+editPage.line1.error = Nodwch linell gyntaf eich cyfeiriad
 editPage.line2Label = Llinell cyfeiriad 2
+editPage.line2.error = Nodwch gyfeiriad – llinell 2
 editPage.line3Label = Llinell cyfeiriad 3
+editPage.line2.error = Nodwch gyfeiriad – llinell 3
 editPage.townLabel = Tref/dinas
-editPage.postcodeLabel = Cod post (dewisol)
-editPage.postcodeLabel.ukMode = Cod post y DU (dewisol)
+editPage.town.error = Nodwch dref neu ddinas
+editPage.postcodeLabel = Cod post
+editPage.postcode.error = Nodwch god post
+editPage.postcodeLabel.ukMode = Cod post y DU
+editPage.postcodeLabel.ukMode.error = Nodwch god post yn y DU
 editPage.countryLabel = Gwlad neu diriogaeth
 editPage.submitLabel = Yn eich blaen
+editPage.optional = (dewisol)
 
 lookupPage.title = Dod o hyd i gyfeiriad
 lookupPage.title.ukMode = Dod o hyd i’ch cyfeiriad yn y DU
@@ -156,12 +165,12 @@ international.selectPage.searchAgainLinkText = Chwilio eto
 
 international.editPage.title = Nodwch eich cyfeiriad
 international.editPage.heading = Nodwch eich cyfeiriad
-international.editPage.organisationLabel = Sefydliad (dewisol)
+international.editPage.organisationLabel = Sefydliad
 international.editPage.line1Label = Cyfeiriad – llinell 1
 international.editPage.line2Label = Cyfeiriad – llinell 2
 international.editPage.line3Label = Cyfeiriad – llinell 3
 international.editPage.townLabel = Tref/dinas
-international.editPage.postcodeLabel = Cod post (dewisol)
+international.editPage.postcodeLabel = Cod post
 international.editPage.countryLabel = Gwlad neu diriogaeth
 international.editPage.submitLabel = Yn eich blaen
 

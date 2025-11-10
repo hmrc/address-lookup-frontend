@@ -15,13 +15,11 @@
  *@
 
 @import config.FrontendAppConfig
-@import model.{JourneyConfigV2, JourneyDataV2, JourneyOptions}
 @import views.html.helper.{form, textarea}
 @import views.html.templates.Layout
+@import model.v2.{JourneyDataV2, JourneyConfigV2, JourneyOptions}
 
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, page: Layout)
-
-
 @(stubForm: Form[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @dummyJourney = @{

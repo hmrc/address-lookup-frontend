@@ -27,6 +27,8 @@ footer.privacy.url = /help/privacy
 footer.termsConditions.text = Terms and conditions
 footer.termsConditions.url = /help/terms-and-conditions
 
+common.error.fieldRequired = This field is required
+
 constants.home = Home
 constants.back = Back
 constants.signOut = Sign out
@@ -112,15 +114,22 @@ confirmPage.searchAgainLinkText = Search again
 
 editPage.title = Enter your address
 editPage.heading = Enter your address
-editPage.organisationLabel = Organisation (optional)
+editPage.organisationLabel = Organisation
 editPage.line1Label = Address line 1
+editPage.line1.error = Enter address line 1, typically the building and street
 editPage.line2Label = Address line 2
+editPage.line2.error = Enter address line 2
 editPage.line3Label = Address line 3
+editPage.line3.error = Enter address line 3
 editPage.townLabel = Town or city
-editPage.postcodeLabel = Postcode (optional)
-editPage.postcodeLabel.ukMode = UK postcode (optional)
+editPage.town.error = Enter town or city
+editPage.postcodeLabel = Postcode
+editPage.postcode.error = Enter postcode
+editPage.postcodeLabel.ukMode = UK postcode
+editPage.postcodeLabel.ukMode.error = Enter UK postcode
 editPage.countryLabel = Country or territory
 editPage.submitLabel = Continue
+editPage.optional = (optional)
 
 lookupPage.title = Find your address
 lookupPage.title.ukMode = Find your UK address
@@ -160,12 +169,12 @@ international.selectPage.searchAgainLinkText = Search again
 
 international.editPage.title = Enter your address
 international.editPage.heading = Enter your address
-international.editPage.organisationLabel = Organisation (optional)
+international.editPage.organisationLabel = Organisation
 international.editPage.line1Label = Address line 1
 international.editPage.line2Label = Address line 2
 international.editPage.line3Label = Address line 3
 international.editPage.townLabel = Town or city
-international.editPage.postcodeLabel = Postcode (optional)
+international.editPage.postcodeLabel = Postcode
 international.editPage.countryLabel = Country or territory
 international.editPage.submitLabel = Continue
 

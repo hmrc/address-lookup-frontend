@@ -17,13 +17,15 @@
 package forms
 
 import com.codahale.metrics.SharedMetricRegistries
-import model.{Edit, ManualAddressEntryConfig}
+import forms.ALFForms.editForm
+import model.Edit
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.data.{Form, FormError}
 import play.api.data.validation.{Invalid, Valid}
+import play.api.data.{Form, FormError}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -36,10 +38,8 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
 
-  val editFormNonuk: Form[Edit] = ALFForms.nonUkEditForm()
-  val editFormNonukWelsh: Form[Edit] = ALFForms.nonUkEditForm()
-  val editFormUk: Form[Edit] = ALFForms.ukEditForm()
-  val editFormUkWelsh: Form[Edit] = ALFForms.ukEditForm()
+  val editFormNonUk: Form[Edit] = ALFForms.editForm(isUkMode = false)
+  val editFormUk: Form[Edit] = ALFForms.editForm(isUkMode = true)
 
   val chars257: String = "A" * 257
   val chars256: String = "A" * 256
@@ -143,7 +143,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are exceeded" should {
         "return an error for each field over the limit" in {
 
-          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
 
           val data = Map(
             "line1"       -> ("A" * (line1Limit + 1)),
@@ -167,7 +167,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are NOT exceeded (valid)" should {
         "return bound form with no errors" in {
 
-          val form: Form[Edit] = ALFForms.ukEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
 
           val data = Map(
             "line1"       -> ("A" * line1Limit),
@@ -203,7 +203,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "postcode" -> "fudgebarwizz123",
         "countryCode" -> "FR")
 
-      editFormNonuk.bind(data).hasErrors mustBe false
+      editFormNonUk.bind(data).hasErrors mustBe false
     }
     "return errors with valid data that does not have country" in {
       val data = Map(
@@ -212,7 +212,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         "town" -> "twn",
         "postcode" -> "fudgebarwizz123")
 
-      editFormNonuk.bind(data).hasErrors mustBe true
+      editFormNonUk.bind(data).hasErrors mustBe true
     }
     "when custom ManualAddressEntryConfig JourneyOptions are supplied" when {
 
@@ -226,7 +226,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are exceeded" should {
         "return an error for each field over the limit" in {
 
-          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = false)
 
           val data = Map(
             "line1"       -> ("A" * (line1Limit + 1)),
@@ -249,7 +249,7 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       "the limits are NOT exceeded (valid)" should {
         "return bound form with no errors" in {
 
-          val form: Form[Edit] = ALFForms.nonUkEditForm(Some(config))
+          val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = false)
 
           val data = Map(
             "line1"       -> ("A" * line1Limit),
@@ -275,9 +275,95 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       }
     }
   }
+  
+  "editForm" should {
+    
+    "return no errors with valid data" when {
+      
+      "when none of the fields are mandatory and line 1 is given" in {
+        val data = Map(
+          "line1" -> "foo1"
+        )
+
+        val form = editForm(isUkMode = true)
+
+        form.bind(data).hasErrors mustBe false
+      }
+
+      "none of the fields are mandatory and town is given" in {
+        val data = Map(
+          "town" -> "Some Town"
+        )
+
+        val form = editForm(isUkMode = true)
+
+        form.bind(data).hasErrors mustBe false
+      }
+      
+      "line 2 is set to mandatory and line 1 and town are not provided" in {
+        val data = Map(
+          "line2" -> "Some Line"
+        )
+        
+        val form = editForm(Some(ManualAddressEntryConfig(
+          mandatoryFields = Some(MandatoryFieldsConfigModel(
+            addressLine2 = true
+          ))
+        )), isUkMode = true)
+        
+        form.bind(data).hasErrors mustBe false
+        
+      }
+      
+    }
+    
+    "return a single error for the mandatory line when one is set to mandatory and no data is provided" in {
+      val data: Map[String, String] = Map()
+      
+      val form = editForm(Some(ManualAddressEntryConfig(
+        mandatoryFields = Some(MandatoryFieldsConfigModel(
+          addressLine3 = true
+        ))
+      )), isUkMode = true)
+      val boundForm = form.bind(data)
+      
+      boundForm.hasErrors mustBe true
+      boundForm.errors.length mustBe 1
+      boundForm.errors.head.key mustBe "line3"
+    }
+    
+    "return an error for each missing line when they are set to mandatory" which {
+      case class Data(testingLine: String, data: Map[String, String], modelMap: MandatoryFieldsConfigModel => MandatoryFieldsConfigModel)
+      
+      val testData = Seq(
+        Data("line1", Map("town" -> "Some Town"), _.copy(addressLine1 = true)),
+        Data("line2", Map("line1" -> "line1"), _.copy(addressLine2 = true)),
+        Data("line3", Map("line1" -> "line1"), _.copy(addressLine3 = true)),
+        Data("postcode", Map("line1" -> "line1"), _.copy(postcode = true)),
+        Data("town", Map("line1" -> "line1"), _.copy(town = true))
+      )
+      
+      val allFalseModel = MandatoryFieldsConfigModel(
+        addressLine1 = false, addressLine2 = false, addressLine3 = false, postcode = false, town = false
+      )
+      
+      testData.foreach { data =>
+        s"testing ${data.testingLine} errors if missing when set to mandatory" in {
+          val settingsModel = Some(ManualAddressEntryConfig(
+            mandatoryFields = Some(data.modelMap(allFalseModel))
+          ))
+          val form = editForm(settingsModel, isUkMode = true)
+          val result = form.bind(data.data)
+          
+          result.hasErrors mustBe true
+          result.errors.length mustBe 1
+        }
+      }
+    }
+  }
 
   "uk and non uk edit form" should {
-    Map(editFormUk -> "uk", editFormNonuk -> "nonUk", editFormUkWelsh -> "uk Welsh", editFormNonukWelsh -> "nonUk Welsh").foreach{ mapOfForms =>
+    Map(editFormUk -> "uk", editFormNonUk -> "nonUk", editFormUk -> "uk Welsh", editFormNonUk -> "nonUk Welsh").foreach{ mapOfForms =>
       val formOfTest = mapOfForms._2
       val form = mapOfForms._1
 

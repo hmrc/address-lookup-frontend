@@ -19,6 +19,7 @@ package controllers.international
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants._
 import model._
+import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status._

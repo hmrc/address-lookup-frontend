@@ -82,8 +82,6 @@ class AbpAddressLookupControllerSpec
 
     val lookup: lookup = app.injector.instanceOf[lookup]
     val select: select = app.injector.instanceOf[select]
-    val uk_mode_edit: uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
-    val non_uk_mode_edit: non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
     val confirm: confirm = app.injector.instanceOf[confirm]
     val no_results: no_results = app.injector.instanceOf[no_results]
     val too_many_results: too_many_results = app.injector.instanceOf[too_many_results]
@@ -118,12 +116,12 @@ class AbpAddressLookupControllerSpec
     }
 
     val controller = new AbpAddressLookupController(journeyRepository, addressService, auditConnector,
-      frontendAppConfig, components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm,
+      frontendAppConfig, components, remoteMessagesApiProvider, countryService, lookup, select, confirm,
       no_results, too_many_results, address_mode_edit)
 
     def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]): AbpAddressLookupController =
       new AbpAddressLookupController(journeyRepository, addressService, auditConnector, frontendAppConfig,
-        components, remoteMessagesApiProvider, countryService, lookup, select, uk_mode_edit, non_uk_mode_edit, confirm, no_results,
+        components, remoteMessagesApiProvider, countryService, lookup, select, confirm, no_results,
         too_many_results, address_mode_edit) {
         override private[controllers] def handleLookup(id: String, journeyData: JourneyDataV2, postCode: String, filter: Option[String], firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }

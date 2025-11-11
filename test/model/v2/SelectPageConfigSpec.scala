@@ -34,7 +34,7 @@ class SelectPageConfigSpec extends AnyWordSpecLike with Matchers with GuiceOneAp
 
   "SelectPageConfig" should {
     "read successfully from minimal json" in {
-      Json.fromJson[SelectPageConfig](emptyJson) mustBe JsSuccess(selectPageConfigMinimal)
+      Json.fromJson[SelectPageConfig](emptyJson) mustBe JsSuccess(selectPageConfigMinimal.copy(proposalListLimit = Some(100)))
     }
 
     "write to json with minimal data" in {

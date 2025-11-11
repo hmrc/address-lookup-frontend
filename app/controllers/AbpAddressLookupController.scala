@@ -48,8 +48,6 @@ class AbpAddressLookupController @Inject()(
                                             countryService: CountryService,
                                             lookup: lookup,
                                             select: select,
-                                            uk_mode_edit: uk_mode_edit,
-                                            non_uk_mode_edit: non_uk_mode_edit,
                                             confirm: views.html.abp.confirm,
                                             no_results: views.html.abp.no_results,
                                             too_many_results: views.html.abp.too_many_results,

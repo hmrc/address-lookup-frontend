@@ -32,4 +32,7 @@ object TimeoutConfig {
       (JsPath \ "timeoutUrl").format[String] and
       (JsPath \ "timeoutKeepAliveUrl").formatNullable[String]
     )(TimeoutConfig.apply, unlift(TimeoutConfig.unapply))
+
+  def unapply(config: TimeoutConfig): Option[(Int, String, Option[String])] =
+    Some((config.timeoutAmount, config.timeoutUrl, config.timeoutKeepAliveUrl))
 }

@@ -107,9 +107,9 @@ If your service doesn't have Welsh translations you can disable them setting the
       "line3MaxLength": 255,
       "townMaxLength": 255,
       "mandatoryFields": {
-        "line1": true,
-        "line2": true,
-        "line3": true,
+        "addressLine1": true,
+        "addressLine2": true,
+        "addressLine3": true,
         "town": true,
         "postcode": true
       }
@@ -238,41 +238,41 @@ If your service doesn't have Welsh translations you can disable them setting the
 
 #### Top-level configuration JSON object
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`continueUrl`|the "off ramp" URL for a user journey|**Required**|String|N/A|
-|`homeNavHref`|value of the link href attribute for the GDS "home" link|Optional|String|`"http://www.hmrc.gov.uk/"`|
-|`signOutHref`|value of the link href attribute for the Sign out link|Optional|String|`None`|
-|`accessibilityFooterUrl`|value of the link href attribute for the "Accessibility Statement" link in the footer|Optional|String|`None`|
-|`phaseFeedbackLink`|link to provide a user feedback link for phase banner|Optional|String|`"/help/alpha"`|
-|`deskProServiceName`|name of your service in DeskPro. Used when constructing the "report a problem" link. Defaults to None.|Optional|String|`None`|
-|`showPhaseBanner`|whether or not to show a phase banner (if `showPhaseBanner == true && alphaPhase == false`, shows "beta")|Optional|Boolean|`false`|
-|`alphaPhase`|if `showPhaseBanner = true && alphaPhase == true`, will show "alpha" phase banner|Optional|Boolean|`false`|
-|`showBackButtons`|whether or not to show back buttons on user journey wizard forms|Optional|Boolean|`false`|
-|`includeHMRCBranding`|whether or not to use HMRC branding|Optional|Boolean|`true`|
-|`allowedCountryCodes`|country codes list allowed in manual edit dropdown|Optional|List of Strings|All countries|
-|`ukMode`|enable uk only Lookup and Edit mode|Optional|Boolean|`None`|
-|`pageHeadingStyle`|specify an alternative css class for page headings, e.g `govuk-heading-xl`|Optional|String|`govuk-heading-xl`|
+| Field name               | Description                                                                                               | Optional/Required | Type            | Default value               |
+|--------------------------|-----------------------------------------------------------------------------------------------------------|-------------------|-----------------|-----------------------------|
+| `continueUrl`            | the "off ramp" URL for a user journey                                                                     | **Required**      | String          | N/A                         |
+| `homeNavHref`            | value of the link href attribute for the GDS "home" link                                                  | Optional          | String          | `"http://www.hmrc.gov.uk/"` |
+| `signOutHref`            | value of the link href attribute for the Sign out link                                                    | Optional          | String          | `None`                      |
+| `accessibilityFooterUrl` | value of the link href attribute for the "Accessibility Statement" link in the footer                     | Optional          | String          | `None`                      |
+| `phaseFeedbackLink`      | link to provide a user feedback link for phase banner                                                     | Optional          | String          | `"/help/alpha"`             |
+| `deskProServiceName`     | name of your service in DeskPro. Used when constructing the "report a problem" link. Defaults to None.    | Optional          | String          | `None`                      |
+| `showPhaseBanner`        | whether or not to show a phase banner (if `showPhaseBanner == true && alphaPhase == false`, shows "beta") | Optional          | Boolean         | `false`                     |
+| `alphaPhase`             | if `showPhaseBanner = true && alphaPhase == true`, will show "alpha" phase banner                         | Optional          | Boolean         | `false`                     |
+| `showBackButtons`        | whether or not to show back buttons on user journey wizard forms                                          | Optional          | Boolean         | `false`                     |
+| `includeHMRCBranding`    | whether or not to use HMRC branding                                                                       | Optional          | Boolean         | `true`                      |
+| `allowedCountryCodes`    | country codes list allowed in manual edit dropdown                                                        | Optional          | List of Strings | All countries               |
+| `ukMode`                 | enable uk only Lookup and Edit mode                                                                       | Optional          | Boolean         | `None`                      |
+| `pageHeadingStyle`       | specify an alternative css class for page headings, e.g `govuk-heading-xl`                                | Optional          | String          | `govuk-heading-xl`          |
 
 #### Select page configuration JSON object
 
 Configuration of the "select" page, in which user chooses an address from a list of search results. The select page configuration is a nested JSON object inside the journey configuration under the `selectPage` property.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
-|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
+| Field name            | Description                                                                             | Optional/Required | Type    | Default value |
+|-----------------------|-----------------------------------------------------------------------------------------|-------------------|---------|---------------|
+| `proposalListLimit`   | maximum number of results to display (when exceeded, will return user to "lookup" page) | Optional          | Integer | `nothing`     |
+| `showSearchAgainLink` | Whether or not to show "search again" link back to lookup page                          | Optional          | Boolean | `false`       |
 
 #### Confirm page configuration JSON object
 
 Configuration of the "confirm" page, in which the user is requested to confirm a "finalized" form for their address. The confirm page configuration is a nested JSON object inside the journey configuration under the `confirmPage` property.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
-|`showSearchAgainLink`|Whether or not to show "search again" link back to lookup page|Optional|Boolean|`false`|
-|`showChangeLink`|Whether or not to show "Edit address" link back to Edit page|Optional|Boolean|`true`|
-|`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
+| Field name              | Description                                                                  | Optional/Required | Type    | Default value             |
+|-------------------------|------------------------------------------------------------------------------|-------------------|---------|---------------------------|
+| `infoSubheading`        | a subheading to display above the "finalized" address                        | Optional          | String  | `"Your selected address"` |
+| `showSearchAgainLink`   | Whether or not to show "search again" link back to lookup page               | Optional          | Boolean | `false`                   |
+| `showChangeLink`        | Whether or not to show "Edit address" link back to Edit page                 | Optional          | Boolean | `true`                    |
+| `showConfirmChangeText` | Whether or not to show "confirmChangeText" displayed above the submit button | Optional          | Boolean | `false`                   |
 
 #### Manual Address Entry Configuration JSON object (Optional)
 
@@ -289,94 +289,94 @@ The manual address entry page configuration is a nested JSON object inside the j
 
 #### Mandatory Fields Configuration JSON object (Optional)
 
-| Field name | Description | Optional/Required | Type    | Default value |
-|------------|-------------|-------------------|---------|---------------|
-| `line1`    | Line 1      | Optional          | Boolean | False         |
-| `line2`    | Line 2      | Optional          | Boolean | False         |
-| `line3`    | Line 3      | Optional          | Boolean | False         |
-| `town`     | Town/City   | Optional          | Boolean | False         |
-| `postcode` | Postcode    | Optional          | Boolean | False         |
+| Field name     | Description | Optional/Required | Type    | Default value |
+|----------------|-------------|-------------------|---------|---------------|
+| `addressLine1` | Line 1      | Optional          | Boolean | False         |
+| `addressLine2` | Line 2      | Optional          | Boolean | False         |
+| `addressLine3` | Line 3      | Optional          | Boolean | False         |
+| `town`         | Town/City   | Optional          | Boolean | False         |
+| `postcode`     | Postcode    | Optional          | Boolean | False         |
 
 #### Timeout Configuration JSON object (Optional)
 
 Configuration of the timeout popup in which user is shown a popup allowing them to extend their session before it times out. The timeout configuration is a nested JSON object inside the journey configuration under the `timeout` property.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`timeoutAmount`|the duration of session timeout in seconds (between 120 and 999999999 seconds)|Required|Int|N/A|
-|`timeoutUrl`|the url to be redirected to on session timeout ***(This must be a relative URL, or a URL on the allow list.)***|Required|String|N/A|
-|`timeoutKeepAliveUrl`|keep alive url to keep the session alive on calling service ***(This must be a relative URL, or a URL on the allow list.)***|Optional|String|N/A|
+| Field name            | Description                                                                                                                  | Optional/Required | Type   | Default value |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------|--------|---------------|
+| `timeoutAmount`       | the duration of session timeout in seconds (between 120 and 999999999 seconds)                                               | Required          | Int    | N/A           |
+| `timeoutUrl`          | the url to be redirected to on session timeout ***(This must be a relative URL, or a URL on the allow list.)***              | Required          | String | N/A           |
+| `timeoutKeepAliveUrl` | keep alive url to keep the session alive on calling service ***(This must be a relative URL, or a URL on the allow list.)*** | Optional          | String | N/A           |
 
 #### Top-level label JSON object
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`navTitle`|the main masthead heading text|Optional|String|`"Address Lookup"`|
-|`phaseBannerHtml`|text (allows HTML tags) for phase banner|Optional|String|`"This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."`"
+| Field name        | Description                              | Optional/Required | Type   | Default value                                                                                    |
+|-------------------|------------------------------------------|-------------------|--------|--------------------------------------------------------------------------------------------------|
+| `navTitle`        | the main masthead heading text           | Optional          | String | `"Address Lookup"`                                                                               |
+| `phaseBannerHtml` | text (allows HTML tags) for phase banner | Optional          | String | `"This is a new service – your <a href='/help/alpha'>feedback</a> will help us to improve it."`" |
 
 #### Lookup page label JSON object
 
 Labels for the "lookup" page.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`title`|the `html->head->title` text|Optional|String|`"Find the address"`|
-|`heading`|the heading to display above the lookup form|Optional|String|`"Find the address"`|
-|`afterHeadingText`|text that can appear after the heading|Optional|String|`nothing`|
-|`filterLabel`|the input label for the "filter" field|Optional|String|`"Property name or number (optional)"`|
-|`postcodeLabel`|the input label for the "postcode" field|Optional|String|`"UK postcode"`|
-|`submitLabel`|the submit button text (proceeds to the "select" page)|Optional|String|`"Find address"`|
-|`noResultsFoundMessage`|message to display in infobox above lookup form when no results were found|Optional|String|`"Sorry, we couldn't find anything for that postcode."`|
-|`resultLimitExceededMessage`|message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit)|Optional|String|`"There were too many results. Please add additional details to limit the number of results."`|
-|`manualAddressLinkText`|Text to use for link to manual address entry form|Optional|String|`"Enter the address manually"`|
+| Field name                   | Description                                                                                                         | Optional/Required | Type   | Default value                                                                                  |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------|--------|------------------------------------------------------------------------------------------------|
+| `title`                      | the `html->head->title` text                                                                                        | Optional          | String | `"Find the address"`                                                                           |
+| `heading`                    | the heading to display above the lookup form                                                                        | Optional          | String | `"Find the address"`                                                                           |
+| `afterHeadingText`           | text that can appear after the heading                                                                              | Optional          | String | `nothing`                                                                                      |
+| `filterLabel`                | the input label for the "filter" field                                                                              | Optional          | String | `"Property name or number (optional)"`                                                         |
+| `postcodeLabel`              | the input label for the "postcode" field                                                                            | Optional          | String | `"UK postcode"`                                                                                |
+| `submitLabel`                | the submit button text (proceeds to the "select" page)                                                              | Optional          | String | `"Find address"`                                                                               |
+| `noResultsFoundMessage`      | message to display in infobox above lookup form when no results were found                                          | Optional          | String | `"Sorry, we couldn't find anything for that postcode."`                                        |
+| `resultLimitExceededMessage` | message to display in infobox above lookup form when too many results were found (see selectPage.proposalListLimit) | Optional          | String | `"There were too many results. Please add additional details to limit the number of results."` |
+| `manualAddressLinkText`      | Text to use for link to manual address entry form                                                                   | Optional          | String | `"Enter the address manually"`                                                                 |
 
 #### Select page label JSON object
 
 Labels for the "select" page.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`title`|the `html->head->title` text|Optional|String|`"Choose address"`|
-|`heading`|the heading to display above the list of results|Optional|String|`"Choose address"`|
-|`headingWithPostCode`|the heading to display above the list of results when a postcode is provided|Optional|String|`"Showing all results for [postcode]"`|
-|`proposalListLabel`|the radio group label for the list of results|Optional|String|`"Please select one of the following addresses"`|
-|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
-|`proposalListLimit`|maximum number of results to display (when exceeded, will return user to "lookup" page)|Optional|Integer|`nothing`|
-|`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`editAddressLinkText`|Link text to use for the "edit address" link|Optional|String|`"Enter the address manually"`|
+| Field name            | Description                                                                             | Optional/Required | Type    | Default value                                    |
+|-----------------------|-----------------------------------------------------------------------------------------|-------------------|---------|--------------------------------------------------|
+| `title`               | the `html->head->title` text                                                            | Optional          | String  | `"Choose address"`                               |
+| `heading`             | the heading to display above the list of results                                        | Optional          | String  | `"Choose address"`                               |
+| `headingWithPostCode` | the heading to display above the list of results when a postcode is provided            | Optional          | String  | `"Showing all results for [postcode]"`           |
+| `proposalListLabel`   | the radio group label for the list of results                                           | Optional          | String  | `"Please select one of the following addresses"` |
+| `submitLabel`         | the submit button text (proceeds to the "confirm" page)                                 | Optional          | String  | `"Continue"`                                     |
+| `proposalListLimit`   | maximum number of results to display (when exceeded, will return user to "lookup" page) | Optional          | Integer | `nothing`                                        |
+| `searchAgainLinkText` | Link text to use when 'showSearchAgainLink' is true                                     | Optional          | String  | `"Search again"`                                 |
+| `editAddressLinkText` | Link text to use for the "edit address" link                                            | Optional          | String  | `"Enter the address manually"`                   |
 
 #### Confirm page label JSON object
 
 Labels for the "confirm" page.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`title`|the html->head->title text|Optional|String|`"Confirm the address"`|
-|`heading`|the main heading to display on the page|Optional|String|`"Review and confirm"`|
-|`infoSubheading`|a subheading to display above the "finalized" address|Optional|String|`"Your selected address"`|
-|`infoMessage`|an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML)|Optional|String|`"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."`|
-|`submitLabel`|the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)|Optional|String|`"Confirm Address"`|
-|`searchAgainLinkText`|Link text to use when 'showSearchAgainLink' is true|Optional|String|`"Search again"`|
-|`changeLinkText`|Link text to use for the "edit adddress" link|Optional|String|`"Change address"`|
-|`showConfirmChangeText`|Whether or not to show "confirmChangeText" displayed above the submit button|Optional|Boolean|`false`|
-|`confirmChangeText`|Text displayed above the submit button when 'showConfirmChangeText' is true|Optional|String|`"By confirming this change, you agree that the information you have given is complete and correct."`|
+| Field name              | Description                                                                                                     | Optional/Required | Type    | Default value                                                                                                            |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------|-------------------|---------|--------------------------------------------------------------------------------------------------------------------------|
+| `title`                 | the html->head->title text                                                                                      | Optional          | String  | `"Confirm the address"`                                                                                                  |
+| `heading`               | the main heading to display on the page                                                                         | Optional          | String  | `"Review and confirm"`                                                                                                   |
+| `infoSubheading`        | a subheading to display above the "finalized" address                                                           | Optional          | String  | `"Your selected address"`                                                                                                |
+| `infoMessage`           | an explanatory message to display below the subheading to clarify what we are asking of the user (accepts HTML) | Optional          | String  | `"This is how your address will look. Please double-check it and, if accurate, click on the <kbd>Confirm</kbd> button."` |
+| `submitLabel`           | the submit button text (will result in them being redirected to the "off ramp" URL (see continueUrl)            | Optional          | String  | `"Confirm Address"`                                                                                                      |
+| `searchAgainLinkText`   | Link text to use when 'showSearchAgainLink' is true                                                             | Optional          | String  | `"Search again"`                                                                                                         |
+| `changeLinkText`        | Link text to use for the "edit adddress" link                                                                   | Optional          | String  | `"Change address"`                                                                                                       |
+| `showConfirmChangeText` | Whether or not to show "confirmChangeText" displayed above the submit button                                    | Optional          | Boolean | `false`                                                                                                                  |
+| `confirmChangeText`     | Text displayed above the submit button when 'showConfirmChangeText' is true                                     | Optional          | String  | `"By confirming this change, you agree that the information you have given is complete and correct."`                    |
 
 #### Edit page label JSON object
 
 Labels for the "edit" page.
 
-|Field name|Description|Optional/Required|Type|Default value|
-|----------|-----------|-----------------|----|-------------|
-|`title`|the html->head->title text|Optional|String|`"Enter the address"`|
-|`heading`|the heading to display above the edit form|Optional|String|`"Enter the address"`|
-|`organisationLabel`|the input label for the "organisation" field|Optional|String|`"Organisation (optional)"`|
-|`line1Label`|the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field|Optional|String|`"Address line 1"`|
-|`line2Label`|the input label for the "line2" field; an optional field|Optional|String|`"Address line 2 (optional)"`|
-|`line3Label`|the input label for the "line3" field; an optional field|Optional|String|`"Address line 3 (optional)"`|
-|`townLabel`|the input label for the "town" field; a REQUIRED field|Optional|String|`"Town/City"`|
-|`postcodeLabel`|the input label for the "postcode" field; a REQUIRED field|Optional|String|`"Postal code (optional)"`|
-|`countryLabel`|the input label for the "country" drop-down; an optional field (defaults to UK)|Optional|String|`"Country"`|
-|`submitLabel`|the submit button text (proceeds to the "confirm" page)|Optional|String|`"Continue"`|
+| Field name          | Description                                                                                              | Optional/Required | Type   | Default value                 |
+|---------------------|----------------------------------------------------------------------------------------------------------|-------------------|--------|-------------------------------|
+| `title`             | the html->head->title text                                                                               | Optional          | String | `"Enter the address"`         |
+| `heading`           | the heading to display above the edit form                                                               | Optional          | String | `"Enter the address"`         |
+| `organisationLabel` | the input label for the "organisation" field                                                             | Optional          | String | `"Organisation (optional)"`   |
+| `line1Label`        | the input label for the "line1" field (commonly expected to be street number and name); a REQUIRED field | Optional          | String | `"Address line 1"`            |
+| `line2Label`        | the input label for the "line2" field; an optional field                                                 | Optional          | String | `"Address line 2 (optional)"` |
+| `line3Label`        | the input label for the "line3" field; an optional field                                                 | Optional          | String | `"Address line 3 (optional)"` |
+| `townLabel`         | the input label for the "town" field; a REQUIRED field                                                   | Optional          | String | `"Town/City"`                 |
+| `postcodeLabel`     | the input label for the "postcode" field; a REQUIRED field                                               | Optional          | String | `"Postal code (optional)"`    |
+| `countryLabel`      | the input label for the "country" drop-down; an optional field (defaults to UK)                          | Optional          | String | `"Country"`                   |
+| `submitLabel`       | the submit button text (proceeds to the "confirm" page)                                                  | Optional          | String | `"Continue"`                  |
 
 Additional configuration options may be introduced in future; for instance to prohibit "edit", to bypass "lookup", or to modify validation procedures for international or BFPO addresses. However, the design intent is that **all** configuration options should **always** have a default value. Consequently, **"calling services"** should only ever need to provide overrides to specific keys, rather than re-configuring or duplicating the entire journey for each scenario.
 

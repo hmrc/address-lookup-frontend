@@ -99,7 +99,7 @@ object InternationalLanguageLabels {
 }
 
 object InternationalLanguageLabelsForMessages {
-  implicit def internationalSelectPageLabelsWrites: Writes[InternationalSelectPageLabels] = {
+  implicit val internationalSelectPageLabelsWrites: Writes[InternationalSelectPageLabels] = {
     (__ \ "international.selectPage.title").writeNullable[String]
       .and((__ \ "international.selectPage.heading").writeNullable[String])
       .and((__ \ "international.selectPage.headingWithPostcode").writeNullable[String])
@@ -111,7 +111,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalLookupPageLabelsWrites: OWrites[InternationalLookupPageLabels] = {
+  implicit val internationalLookupPageLabelsWrites: OWrites[InternationalLookupPageLabels] = {
     (__ \ "international.lookupPage.title").writeNullable[String]
       .and((__ \ "international.lookupPage.heading").writeNullable[String])
       .and((__ \ "international.lookupPage.afterHeadingText").writeNullable[String])
@@ -124,7 +124,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalEditPageLabelsWrites: OWrites[InternationalEditPageLabels] = {
+  implicit val internationalEditPageLabelsWrites: OWrites[InternationalEditPageLabels] = {
     (__ \ "international.editPage.title").writeNullable[String]
       .and((__ \ "international.editPage.heading").writeNullable[String])
       .and((__ \ "international.editPage.line1Label").writeNullable[String])
@@ -139,7 +139,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalConfirmPageLabelsWrites: OWrites[InternationalConfirmPageLabels] = {
+  implicit val internationalConfirmPageLabelsWrites: OWrites[InternationalConfirmPageLabels] = {
     (__ \ "international.confirmPage.title").writeNullable[String]
       .and((__ \ "international.confirmPage.heading").writeNullable[String])
       .and((__ \ "international.confirmPage.infoSubheading").writeNullable[String])
@@ -152,7 +152,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalLanguageLabelsWrites: OWrites[InternationalLanguageLabels] = {
+  implicit val internationalLanguageLabelsWrites: OWrites[InternationalLanguageLabels] = {
     ((__).writeNullable[InternationalSelectPageLabels])
       .and((__).writeNullable[InternationalLookupPageLabels])
       .and((__).writeNullable[InternationalEditPageLabels])

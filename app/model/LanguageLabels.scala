@@ -110,14 +110,14 @@ object LanguageLabels {
 }
 
 object LanguageLabelsForMessages {
-  implicit def appLevelLabelsWrites: Writes[AppLevelLabels] = {
+  implicit val appLevelLabelsWrites: Writes[AppLevelLabels] = {
     (__ \ "navTitle").writeNullable[String]
       .and((__ \ "phaseBannerHtml").writeNullable[String])(
         unlift(AppLevelLabels.unapply)
       )
   }
 
-  implicit def selectPageLabelsWrites: Writes[SelectPageLabels] = {
+  implicit val selectPageLabelsWrites: Writes[SelectPageLabels] = {
     (__ \ "selectPage.title").writeNullable[String]
       .and((__ \ "selectPage.heading").writeNullable[String])
       .and((__ \ "selectPage.headingWithPostcode").writeNullable[String])
@@ -129,7 +129,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def lookupPageLabelsWrites: OWrites[LookupPageLabels] = {
+  implicit val lookupPageLabelsWrites: OWrites[LookupPageLabels] = {
     (__ \ "lookupPage.title").writeNullable[String]
       .and((__ \ "lookupPage.title.ukMode").writeNullable[String])
       .and((__ \ "lookupPage.heading").writeNullable[String])
@@ -146,7 +146,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def editPageLabelsWrites: OWrites[EditPageLabels] = {
+  implicit val editPageLabelsWrites: OWrites[EditPageLabels] = {
     (__ \ "editPage.title").writeNullable[String]
       .and((__ \ "editPage.heading").writeNullable[String])
       .and((__ \ "editPage.line1Label").writeNullable[String])
@@ -162,7 +162,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def confirmPageLabelsWrites: OWrites[ConfirmPageLabels] = {
+  implicit val confirmPageLabelsWrites: OWrites[ConfirmPageLabels] = {
     (__ \ "confirmPage.title").writeNullable[String]
       .and((__ \ "confirmPage.heading").writeNullable[String])
       .and((__ \ "confirmPage.infoSubheading").writeNullable[String])
@@ -175,7 +175,7 @@ object LanguageLabelsForMessages {
       )
   }
 
-  implicit def countryPickerLabelsWrites: OWrites[CountryPickerPageLabels] = {
+  implicit val countryPickerLabelsWrites: OWrites[CountryPickerPageLabels] = {
     (__ \ "countryPickerPage.title").writeNullable[String]
       .and((__ \ "countryPickerPage.heading").writeNullable[String])
       .and((__ \ "countryPickerPage.countryLabel").writeNullable[String])
@@ -186,7 +186,7 @@ object LanguageLabelsForMessages {
 
   import InternationalLanguageLabelsForMessages._
 
-  implicit def languageLabelsWrites: OWrites[LanguageLabels] = {
+  implicit val languageLabelsWrites: OWrites[LanguageLabels] = {
     (__).writeNullable[AppLevelLabels]
       .and((__).writeNullable[SelectPageLabels])
       .and((__).writeNullable[LookupPageLabels])

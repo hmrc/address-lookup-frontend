@@ -22,6 +22,8 @@ import itutil.config.IntegrationTestConstants.{testCustomCountryPickerPageJourne
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,14 +44,14 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe OK
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe messages("countryPickerPage.title")
-        document.getElementById("pageHeading").text() shouldBe messages("countryPickerPage.heading")
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
-        document.getElementById("continue").text() shouldBe "Continue"
+        document.title().shouldBe(messages("countryPickerPage.title"))
+        document.getElementById("pageHeading").text().shouldBe(messages("countryPickerPage.heading"))
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
+        document.getElementById("continue").text().shouldBe("Continue")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Select country or territory"
@@ -66,14 +68,14 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe OK
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "Dewiswch eich gwlad neu diriogaeth"
-        document.getElementById("pageHeading").text() shouldBe "Dewiswch eich gwlad neu diriogaeth"
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
-        document.getElementById("continue").text() shouldBe "Yn eich blaen"
+        document.title().shouldBe("Dewiswch eich gwlad neu diriogaeth")
+        document.getElementById("pageHeading").text().shouldBe("Dewiswch eich gwlad neu diriogaeth")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
+        document.getElementById("continue").text().shouldBe("Yn eich blaen")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Dewiswch gwlad neu diriogaeth"
@@ -91,14 +93,14 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe OK
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "countryPicker-title"
-        document.getElementById("pageHeading").text() shouldBe "countryPicker-heading"
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
-        document.getElementById("continue").text() shouldBe "Custom Continue"
+        document.title().shouldBe("countryPicker-title")
+        document.getElementById("pageHeading").text().shouldBe("countryPicker-heading")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
+        document.getElementById("continue").text().shouldBe("Custom Continue")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Custom Country"
@@ -113,14 +115,14 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(Some("cy")), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe OK
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe "countryPicker-title-cy"
-        document.getElementById("pageHeading").text() shouldBe "countryPicker-heading-cy"
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-xl")
-        document.getElementById("continue").text() shouldBe "Custom Continue Cy"
+        document.title().shouldBe("countryPicker-title-cy")
+        document.getElementById("pageHeading").text().shouldBe("countryPicker-heading-cy")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
+        document.getElementById("continue").text().shouldBe("Custom Continue Cy")
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "countryCode" -> "Custom Country Cy"
@@ -137,11 +139,11 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
-        val res = await(fResponse)
-        res.status shouldBe BAD_REQUEST
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(BAD_REQUEST)
 
         val document = Jsoup.parse(res.body)
-        document.title() shouldBe s"Error: ${messages("countryPickerPage.title")}"
+        document.title().shouldBe(s"Error: ${messages("countryPickerPage.title")}")
       }
     }
 
@@ -155,9 +157,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("GB"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
-        val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/lookup"
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(SEE_OTHER)
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/lookup")
       }
     }
 
@@ -170,9 +172,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("BM"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
-        val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/lookup"
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(SEE_OTHER)
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/international/lookup")
       }
     }
 
@@ -185,9 +187,9 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .post(Map("countryCode" -> Seq("XX"), "csrfToken" -> Seq("xxx-ignored-xxx")))
 
-        val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/edit"
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(SEE_OTHER)
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/international/edit")
       }
     }
   }

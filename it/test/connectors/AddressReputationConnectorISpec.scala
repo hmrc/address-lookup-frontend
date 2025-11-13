@@ -19,7 +19,7 @@ package connectors
 import address.v2._
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.libs.json.Json
 import services.{LookupAddressByCountry, LookupAddressByPostcode}
 import support.{IntegrationBaseSpec, WireMockHelper}
@@ -73,7 +73,7 @@ class AddressReputationConnectorISpec extends IntegrationBaseSpec
             .willReturn(aResponse().withStatus(200).withBody(Json.stringify(Json.toJson(responseBody))))
         )
 
-        connector.findByPostcode("ZZ11 1ZZ", Some("filter")).futureValue mustBe responseBody
+        connector.findByPostcode("ZZ11 1ZZ", Some("filter")).futureValue.mustBe(responseBody)
       }
   }
 
@@ -90,7 +90,7 @@ class AddressReputationConnectorISpec extends IntegrationBaseSpec
           .willReturn(aResponse().withStatus(200).withBody(Json.stringify(Json.toJson(responseBody))))
       )
 
-      connector.findByCountry("FR", "filter").futureValue mustBe responseBody
+      connector.findByCountry("FR", "filter").futureValue.mustBe(responseBody)
     }
   }
 

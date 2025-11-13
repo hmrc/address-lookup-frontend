@@ -31,7 +31,7 @@ object ViewHelper {
       attributes = Map("id" -> encodeCountryCode(c))
     )
 
-  def countriesToSelectItems(cs: Seq[Country], form: Form[_])(implicit messages: Messages): Seq[SelectItem] =
+  def countriesToSelectItems(cs: Seq[Country], form: Form[?])(implicit messages: Messages): Seq[SelectItem] =
     SelectItem(Some(""), messages("countryPickerPage.countryLabel")) +: countriesToSelectItems(cs)
 
   def countriesToSelectItems(cs:Seq[Country]): Seq[SelectItem] = cs.map(c => countryToSelectItem(c))

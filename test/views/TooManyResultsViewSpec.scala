@@ -65,7 +65,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(showBackButtons = false)
 
       "display back button" in {
-        doc.getBackLinkText shouldBe empty
+        doc.getBackLinkText.shouldBe(empty)
       }
     }
 
@@ -73,7 +73,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(firstLookup = true)
 
       "render too many results found text" in {
-        doc.getH1ElementAsText shouldBe tooManyResultsMessages.tooManyResultsText
+        doc.getH1ElementAsText.shouldBe(tooManyResultsMessages.tooManyResultsText)
       }
     }
 
@@ -81,7 +81,7 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render()
 
       "render cannot find text" in {
-        doc.getH1ElementAsText shouldBe tooManyResultsMessages.cannotFindText
+        doc.getH1ElementAsText.shouldBe(tooManyResultsMessages.cannotFindText)
       }
     }
 
@@ -89,8 +89,8 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(filter = None)
 
       "render the no filter text" in {
-        doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
-        doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2NoFilter
+        doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet1(testPostCode))
+        doc.bulletPointList.select("li").last.text.shouldBe(tooManyResultsMessages.bullet2NoFilter)
       }
     }
 
@@ -98,8 +98,8 @@ class TooManyResultsViewSpec extends ViewSpec {
       val doc = render(filter = Some(testFilterValue))
 
       "render the filter text" in {
-        doc.bulletPointList.select("li").first.text shouldBe tooManyResultsMessages.bullet1(testPostCode)
-        doc.bulletPointList.select("li").last.text shouldBe tooManyResultsMessages.bullet2WithFilter(testFilterValue)
+        doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet1(testPostCode))
+        doc.bulletPointList.select("li").last.text.shouldBe(tooManyResultsMessages.bullet2WithFilter(testFilterValue))
       }
     }
   }

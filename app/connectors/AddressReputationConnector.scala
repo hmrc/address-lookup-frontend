@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import forms.Postcode
 import play.api.Logging
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import services.AddressReputationFormats.{addressRecordReads, nonUkAddressRecordReads}
 import services.{LookupAddressByCountry, LookupAddressByPostcode}
 import uk.gov.hmrc.http.HttpReadsInstances.readFromJson

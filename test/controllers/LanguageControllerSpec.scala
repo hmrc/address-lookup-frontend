@@ -32,13 +32,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFEFixtures {
-    SharedMetricRegistries.clear()
+  SharedMetricRegistries.clear()
 
-  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
-  val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  val components = app.injector.instanceOf[MessagesControllerComponents]
-  val languageUtils = app.injector.instanceOf[LanguageUtils]
+  val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val components: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+  val languageUtils: LanguageUtils = app.injector.instanceOf[LanguageUtils]
 
   class TestLanguageController extends LanguageController(frontendAppConfig, components, languageUtils)
 
@@ -51,23 +49,23 @@ class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFE
 
       "the language is english" in new TestLanguageController {
         val result: Future[Result] = switchToLanguage("english")(request)
-        status(result) mustBe 303
-        redirectLocation(result) mustBe Some(referer)
-        cookies(result).get(messagesApi.langCookieName).get.value mustBe "en"
+        status(result).mustBe(303)
+        redirectLocation(result).mustBe(Some(referer))
+        cookies(result).get(messagesApi.langCookieName).get.value.mustBe("en")
       }
 
       "the language is cymraeg (welsh)" in new TestLanguageController {
         val result: Future[Result] = switchToLanguage("cymraeg")(request)
-        status(result) mustBe 303
-        redirectLocation(result) mustBe Some(referer)
-        cookies(result).get(messagesApi.langCookieName).get.value mustBe "cy"
+        status(result).mustBe(303)
+        redirectLocation(result).mustBe(Some(referer))
+        cookies(result).get(messagesApi.langCookieName).get.value.mustBe("cy")
       }
 
       "the language is not in the language map and the request does not have a language cookie already" in new TestLanguageController {
         val result: Future[Result] = switchToLanguage("unknown")(request)
-        status(result) mustBe 303
-        redirectLocation(result) mustBe Some(referer)
-        cookies(result).get(messagesApi.langCookieName).get.value mustBe "en"
+        status(result).mustBe(303)
+        redirectLocation(result).mustBe(Some(referer))
+        cookies(result).get(messagesApi.langCookieName).get.value.mustBe("en")
       }
     }
 
@@ -75,9 +73,9 @@ class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFE
       "the language is not in the language map" in new TestLanguageController {
         val request: Request[AnyContent] = FakeRequest().withHeaders(REFERER -> referer).withCookies(Cookie(messagesApi.langCookieName, "cy"))
         val result: Future[Result] = switchToLanguage("unknown")(request)
-        status(result) mustBe 303
-        redirectLocation(result) mustBe Some(referer)
-        cookies(result).get(messagesApi.langCookieName).get.value mustBe "cy"
+        status(result).mustBe(303)
+        redirectLocation(result).mustBe(Some(referer))
+        cookies(result).get(messagesApi.langCookieName).get.value.mustBe("cy")
       }
     }
 

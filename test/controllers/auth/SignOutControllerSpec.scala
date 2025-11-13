@@ -27,11 +27,11 @@ class SignOutControllerSpec extends PlaySpec with GuiceOneAppPerTest {
 
     "redirect to gov.uk and clear the session on signOut" in {
       val controller = new SignOutController(stubMessagesControllerComponents())
-      val result = controller.signOut().apply(FakeRequest())
+      val result = controller.signOut.apply(FakeRequest())
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("https://www.gov.uk")
-      session(result).data mustBe empty
+      status(result).mustBe(SEE_OTHER)
+      redirectLocation(result).mustBe(Some("https://www.gov.uk"))
+      session(result).data.mustBe(empty)
     }
 
   }

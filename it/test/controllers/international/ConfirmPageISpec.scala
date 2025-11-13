@@ -17,13 +17,15 @@
 package controllers.international
 
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
-import model._
+import itutil.config.IntegrationTestConstants.*
+import model.*
 import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.i18n.Lang
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -47,13 +49,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe messages("confirmPage.title")
-      doc.h1.text() shouldBe messages("confirmPage.heading")
-      doc.submitButton.text() shouldBe "Confirm address"
+      doc.title.shouldBe(messages("confirmPage.title"))
+      doc.h1.text().shouldBe(messages("confirmPage.heading"))
+      doc.submitButton.text().shouldBe("Confirm address")
       doc.link("changeLink") should have(text(messages("confirmPage.changeLinkText")))
       doc.address should have(
         addressLine("line1", "1 High Street"),
@@ -71,7 +73,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "redirect to the international lookup page if no selected address exists in keystore" in {
@@ -82,9 +84,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
-      res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/lookup"
+      val res: WSResponse = await(fResponse)
+      res.status.shouldBe(SEE_OTHER)
+      res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/international/lookup")
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as TRUE for page" in {
@@ -102,13 +104,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
           "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "international-confirm-title - NAV_TITLE - GOV.UK"
-      doc.h1.text() shouldBe "international-confirm-heading"
-      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
+      doc.title.shouldBe("international-confirm-title - NAV_TITLE - GOV.UK")
+      doc.h1.text().shouldBe("international-confirm-heading")
+      doc.submitButton.text().shouldBe("international-confirm-submitLabel")
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -132,7 +134,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         navTitle = "NAV_TITLE"
       )
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "pre-pop with an address and all elements are correct for FULL journey config model with all booleans as FALSE for page" in {
@@ -151,13 +153,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
           "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "international-confirm-title"
-      doc.h1.text() shouldBe "international-confirm-heading"
-      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
+      doc.title.shouldBe("international-confirm-title")
+      doc.h1.text().shouldBe("international-confirm-heading")
+      doc.submitButton.text().shouldBe("international-confirm-submitLabel")
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -179,7 +181,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         fResponse
       )
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "pre-pop with an address and all elements are correct for almost full journey config model (missing field in confirm page) with all booleans as FALSE for page" in {
@@ -197,13 +199,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text("Back"))
-      doc.title shouldBe "international-confirm-title"
-      doc.h1.text() shouldBe "Review and confirm"
-      doc.submitButton.text() shouldBe "international-confirm-submitLabel"
+      doc.title.shouldBe("international-confirm-title")
+      doc.h1.text().shouldBe("Review and confirm")
+      doc.submitButton.text().shouldBe("international-confirm-submitLabel")
 
       doc.address should have(
         addressLine("line1", "1 High Street"),
@@ -221,7 +223,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "pre-pop with an address and all elements are correct for a minimal Welsh journey config model" in {
@@ -239,13 +241,13 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
       doc.select("a[class=govuk-back-link]") should have(text(messages(Lang("cy"), "constants.back")))
-      doc.title shouldBe messages(Lang("cy"), "international.confirmPage.title")
-      doc.h1.text() shouldBe messages(Lang("cy"), "international.confirmPage.heading")
-      doc.submitButton.text() shouldBe messages(Lang("cy"), "international.confirmPage.submitLabel")
+      doc.title.shouldBe(messages(Lang("cy"), "international.confirmPage.title"))
+      doc.h1.text().shouldBe(messages(Lang("cy"), "international.confirmPage.heading"))
+      doc.submitButton.text().shouldBe(messages(Lang("cy"), "international.confirmPage.submitLabel"))
       doc.link("changeLink") should have(text(messages(Lang("cy"), "international.confirmPage.changeLinkText")))
 
       doc.address should have(
@@ -261,7 +263,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       testElementDoesntExist(res, "confirmChangeText")
 
       testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "pre-pop with an address and all elements are correct for FULL Welsh journey config model with all booleans as FALSE for page" in {
@@ -274,14 +276,14 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
       val doc = getDocFromResponse(fResponse)
 
 
       doc.select("a[class=govuk-back-link]") should have(text(messages(Lang("cy"), "constants.back")))
-      doc.title shouldBe "cy-international-confirm-title"
-      doc.h1.text() shouldBe "cy-international-confirm-heading"
-      doc.submitButton.text() shouldBe "cy-international-confirm-submitLabel"
+      doc.title.shouldBe("cy-international-confirm-title")
+      doc.h1.text().shouldBe("cy-international-confirm-heading")
+      doc.submitButton.text().shouldBe("cy-international-confirm-submitLabel")
       doc.address should have(
         addressLine("line1", "1 High Street"),
         addressLine("line2", "Line 2"),
@@ -298,7 +300,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         fResponse
       )
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
     }
 
     "allow the initialising service to override the header size" in {
@@ -312,11 +314,11 @@ class ConfirmPageISpec extends IntegrationSpecBase {
           "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
-      res.status shouldBe OK
+      val res: WSResponse = await(fResponse)
+      res.status.shouldBe(OK)
 
       val document = Jsoup.parse(res.body)
-      document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+      document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
     }
   }
 
@@ -330,9 +332,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
-      val res = await(fResponse)
-      res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe s"$testContinueUrl?id=$testJourneyId"
+      val res: WSResponse = await(fResponse)
+      res.status.shouldBe(SEE_OTHER)
+      res.header(HeaderNames.LOCATION).get.shouldBe(s"$testContinueUrl?id=$testJourneyId")
     }
 
     "should redirect to the confirm page if incorrect data in keystore" in {
@@ -343,9 +345,9 @@ class ConfirmPageISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .post(Map("csrfToken" -> Seq("xxx-ignored-xxx")))
 
-      val res = await(fResponse)
-      res.status shouldBe SEE_OTHER
-      res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/international/confirm"
+      val res: WSResponse = await(fResponse)
+      res.status.shouldBe(SEE_OTHER)
+      res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/international/confirm")
     }
   }
 }

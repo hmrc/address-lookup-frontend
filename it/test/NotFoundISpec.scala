@@ -15,10 +15,11 @@
  */
 
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
+import itutil.config.IntegrationTestConstants.*
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.i18n.Lang
+import play.api.libs.ws.WSResponse
 
 import java.util.UUID
 
@@ -32,11 +33,11 @@ class NotFoundISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -52,11 +53,11 @@ class NotFoundISpec extends IntegrationSpecBase {
           )
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -69,12 +70,12 @@ class NotFoundISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithWelshCookie(useWelsh = false), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(NOT_FOUND)
 
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages("constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages("constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages("constants.notFoundErrorBody")))
       }
@@ -87,11 +88,11 @@ class NotFoundISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRFAndLang(), "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe NOT_FOUND
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(NOT_FOUND)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages(Lang("cy"), "constants.notFoundErrorTitle")
+        doc.title.shouldBe(messages(Lang("cy"), "constants.notFoundErrorTitle"))
         doc.h1 should have(text(messages(Lang("cy"), "constants.notFoundErrorHeading")))
         doc.paras should have(elementWithValue(messages(Lang("cy"), "constants.notFoundErrorBody")))
       }

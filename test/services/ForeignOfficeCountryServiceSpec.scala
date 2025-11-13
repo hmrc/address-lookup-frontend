@@ -37,7 +37,7 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       found.last.name must be ("Zimbabwe")
     }
     "return list of countries must have unique elements" in new Scenario {
-      service.findAll().size mustBe  service.findAll().distinct.size
+      service.findAll().size.mustBe( service.findAll().distinct.size)
     }
 
   }
@@ -45,14 +45,14 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   "UK in English" should {
     "keep reference to UK" in new Scenario {
       val found = service.findAll().filter(_.code == "GB")
-      found.exists(_.name == "United Kingdom") mustBe true
+      found.exists(_.name == "United Kingdom").mustBe(true)
     }
   }
 
   "English country list" should {
     "contain aliases from the aliases file" in new Scenario {
       val gbs = service.findAll().filter(_.code == "GB")
-      gbs.size mustBe >(1)
+      gbs.size.mustBe(>(1))
     }
   }
 
@@ -63,7 +63,7 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       found.last.name must be ("Zimbabwe")
     }
     "return list of countries must have unique elements" in new Scenario {
-      service.findAll(welshFlag = true).size mustBe  service.findAll(welshFlag = true).distinct.size
+      service.findAll(welshFlag = true).size.mustBe( service.findAll(welshFlag = true).distinct.size)
     }
   }
 
@@ -78,13 +78,13 @@ class ForeignOfficeCountryServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
   "Welsh country list" should {
     "contain aliases from the aliases file" in new Scenario {
       val gbs = service.findAll(welshFlag = true).filter(_.code == "GB")
-      gbs.size mustBe >(1)
+      gbs.size.mustBe(>(1))
     }
 
     "merge country lists from gov.wales and wco" in new Scenario {
       val usa = service.findAll(welshFlag = true).filter(_.code == "US")
-      usa.size mustBe > (1)
-      usa.head mustBe Country("US", "Yr Unol Daleithiau")
+      usa.size.mustBe(> (1))
+      usa.head.mustBe(Country("US", "Yr Unol Daleithiau"))
     }
   }
 }

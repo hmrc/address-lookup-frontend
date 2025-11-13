@@ -19,12 +19,14 @@ package controllers.international
 import address.v2.Country
 import controllers.routes
 import itutil.IntegrationSpecBase
-import itutil.config.AddressRecordConstants._
-import itutil.config.IntegrationTestConstants._
+import itutil.config.AddressRecordConstants.*
+import itutil.config.IntegrationTestConstants.*
 import itutil.config.PageElementConstants.SelectPage
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
 import play.api.i18n.Lang
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -55,12 +57,12 @@ class SelectPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("international.selectPage.title")
-        doc.h1.text() shouldBe messages("international.selectPage.heading")
-        doc.submitButton.text() shouldBe messages("international.selectPage.submitLabel")
+        doc.title.shouldBe(messages("international.selectPage.title"))
+        doc.h1.text().shouldBe(messages("international.selectPage.heading"))
+        doc.submitButton.text().shouldBe(messages("international.selectPage.submitLabel"))
         doc.link("editAddress") should have(
           href(routes.InternationalAddressLookupController.edit(id = testJourneyId).url),
           text(messages("international.selectPage.editAddressLinkText"))
@@ -95,31 +97,30 @@ class SelectPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         val doc = getDocFromResponse(res)
-        doc.title shouldBe messages("international.selectPage.title")
-        doc.h1.text() shouldBe messages("international.selectPage.heading")
-        doc.submitButton.text() shouldBe messages("international.selectPage.submitLabel")
+        doc.title.shouldBe(messages("international.selectPage.title"))
+        doc.h1.text().shouldBe(messages("international.selectPage.heading"))
+        doc.submitButton.text().shouldBe(messages("international.selectPage.submitLabel"))
         doc.link("editAddress") should have(
           href(""),
           text("")
         )
-        doc.select("#addressId-none + label").text() shouldBe messages("international.selectPage.noneOfThese")
+        doc.select("#addressId-none + label").text().shouldBe(messages("international.selectPage.noneOfThese"))
 
         val testIds = (testResultsList \\ "id").map {
           testId => testId.as[String]
         }
 
         testIds.zipWithIndex.foreach {
-          case (id, idx) => {
+          case (id, idx) =>
             val i = idx + 1
             val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
             doc.radio(fieldId) should have(
               value(id),
               label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
             )
-          }
         }
       }
     }
@@ -140,16 +141,16 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         val doc = getDocFromResponse(res)
 
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
         for {
           l <- journeyDataV2SelectLabels.config.labels
           en <- l.en
           international <- en.international
           selectPage <- international.selectPageLabels
         } yield {
-          doc.title shouldBe selectPage.title.get
-          doc.h1.text() shouldBe selectPage.heading.get
-          doc.submitButton.text() shouldBe selectPage.submitLabel.get
+          doc.title.shouldBe(selectPage.title.get)
+          doc.h1.text().shouldBe(selectPage.heading.get)
+          doc.submitButton.text().shouldBe(selectPage.submitLabel.get)
           doc.link("editAddress") should have(
             href(routes.InternationalAddressLookupController.edit(id = testJourneyId).url),
             text(selectPage.editAddressLinkText.get)
@@ -161,14 +162,13 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
 
         testIds.zipWithIndex.foreach {
-          case (id, idx) => {
+          case (id, idx) =>
             val i = idx + 1
             val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
             doc.radio(fieldId) should have(
               value(id),
               label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
             )
-          }
         }
       }
     }
@@ -185,7 +185,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         getDocFromResponse(res)
 
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
       }
 
       "there is 1 result" in {
@@ -200,7 +200,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         getDocFromResponse(res)
 
-        await(res).status shouldBe SEE_OTHER
+        await(res).status.shouldBe(SEE_OTHER)
       }
 
       "there are 50 results" in {
@@ -214,7 +214,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         getDocFromResponse(res)
 
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
 
       }
     }
@@ -236,10 +236,10 @@ class SelectPageISpec extends IntegrationSpecBase {
           .get()
 
         val doc = getDocFromResponse(res)
-        await(res).status shouldBe OK
+        await(res).status.shouldBe(OK)
 
-        doc.title() shouldBe messages(Lang("cy"), "international.selectPage.title")
-        doc.h1.text() shouldBe messages(Lang("cy"), "international.selectPage.heading")
+        doc.title().shouldBe(messages(Lang("cy"), "international.selectPage.title"))
+        doc.h1.text().shouldBe(messages(Lang("cy"), "international.selectPage.heading"))
       }
     }
 
@@ -263,11 +263,11 @@ class SelectPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"international/select?filter=$testFilterValue", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
   }
@@ -287,11 +287,11 @@ class SelectPageISpec extends IntegrationSpecBase {
             "csrfToken" -> Seq("xxx-ignored-xxx")
           ))
 
-        res.status shouldBe BAD_REQUEST
+        res.status.shouldBe(BAD_REQUEST)
 
         val doc = getDocFromResponse(res)
 
-        doc.title shouldBe s"Gwall: ${messages(Lang("cy"), "international.selectPage.title")}"
+        doc.title.shouldBe(s"Gwall: ${messages(Lang("cy"), "international.selectPage.title")}")
       }
     }
     "Redirects to Confirm page if option is selected" in {
@@ -312,7 +312,7 @@ class SelectPageISpec extends IntegrationSpecBase {
           "addressId" -> Seq(testIds.head)
         ))
       val res = await(fRes)
-      res.status shouldBe SEE_OTHER
+      res.status.shouldBe(SEE_OTHER)
     }
 
     "Returns errors when no option has been selected" in {
@@ -328,7 +328,7 @@ class SelectPageISpec extends IntegrationSpecBase {
           "csrfToken" -> Seq("xxx-ignored-xxx")
         ))
 
-      fRes.status shouldBe BAD_REQUEST
+      fRes.status.shouldBe(BAD_REQUEST)
 
       val doc = getDocFromResponse(fRes)
 
@@ -353,7 +353,7 @@ class SelectPageISpec extends IntegrationSpecBase {
           "addressId" -> Seq("wrong-id")
         ))
       val res = await(fRes)
-      res.status shouldBe SEE_OTHER
+      res.status.shouldBe(SEE_OTHER)
     }
   }
 }

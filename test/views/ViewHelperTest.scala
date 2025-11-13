@@ -35,25 +35,25 @@ class ViewHelperTest extends AnyWordSpec with GuiceOneAppPerSuite with Matchers 
     "create list of country select items with unique ids" in {
       val groupedById = selectItems.groupBy(_.attributes("id"))
 
-      groupedById.keySet.size shouldBe allCountries.length
+      groupedById.keySet.size.shouldBe(allCountries.length)
     }
 
     "create list of country select items with unique values" in {
       val groupedById = selectItems.groupBy(_.value)
 
-      groupedById.keySet.size shouldBe allCountries.length
+      groupedById.keySet.size.shouldBe(allCountries.length)
     }
 
     "encodeCountryCode predictably" in {
       val gb = allCountries.find(_.code == "GB")
       val encoded = ViewHelper.encodeCountryCode(gb.get)
       encoded should not contain " "
-      encoded shouldBe gb.map(gb => s"GB-United_Kingdom").getOrElse("GB_NOT_FOUND")
+      encoded.shouldBe(gb.map(gb => s"GB-United_Kingdom").getOrElse("GB_NOT_FOUND"))
     }
 
     "decodeCountryCode predictably" in {
       val decoded = ViewHelper.decodeCountryCode("GB-United Kingdom")
-      decoded shouldBe "GB"
+      decoded.shouldBe("GB")
     }
   }
 }

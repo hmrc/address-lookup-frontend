@@ -19,11 +19,12 @@ package controllers.abp
 import address.v2.Country
 import controllers.api.{ConfirmedResponseAddress, ConfirmedResponseAddressDetails}
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
-import itutil.config.PageElementConstants._
+import itutil.config.IntegrationTestConstants.*
+import itutil.config.PageElementConstants.*
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,9 +43,9 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11+1AB&filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> testFilterValue))
     }
 
@@ -55,9 +56,9 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "lookup?postcode=AB11 1AB", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> testPostCode, LookupPage.filterId -> ""))
     }
 
@@ -68,9 +69,9 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> testFilterValue))
     }
 
@@ -81,9 +82,9 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.postcodeId -> "", LookupPage.filterId -> ""))
     }
   }
@@ -98,14 +99,14 @@ class AbpAddressLookupControllerISpec extends IntegrationSpecBase {
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
 
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
-      res.json shouldBe Json.toJson(ConfirmedResponseAddress(
+      res.status.shouldBe(OK)
+      res.json.shouldBe(Json.toJson(ConfirmedResponseAddress(
         auditRef = testJourneyId,
         id = Some(testAddressIdRaw),
-        address = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France"))))
-      )
+        address = ConfirmedResponseAddressDetails(None, Some(Seq(testAddressLine1, testAddressLine2, testAddressLine3, testAddressTown)), Some(testPostCode), Some(Country("FR", "France")))
+      )))
     }
   }
 }

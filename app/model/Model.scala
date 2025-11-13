@@ -22,10 +22,19 @@ import address.v2.Country
 import utils.PostcodeHelper
 
 case class CountryPicker(countryCode: String)
+object CountryPicker {
+  def unapply(countryPicker: CountryPicker): Option[String] = Some(countryPicker.countryCode)
+}
 
 case class Lookup(filter: Option[String], postcode: String)
+object Lookup {
+  def unapply(lookup: Lookup): Option[(Option[String], String)] = Some((lookup.filter, lookup.postcode))
+}
 
 case class NonAbpLookup(filter: String)
+object NonAbpLookup {
+  def unapply(lookup: NonAbpLookup): Option[String] = Some(lookup.filter)
+}
 
 case class Timeout(timeoutAmount: Int,
                    timeoutUrl: String,
@@ -33,6 +42,9 @@ case class Timeout(timeoutAmount: Int,
 
 case class Select(addressId: String) {
   def noneOfTheseOptionSelected: Boolean = addressId == "none"
+}
+object Select {
+  def unapply(select: Select): Option[String] = Some(select.addressId)
 }
 
 case class Edit(organisation: Option[String],
@@ -58,6 +70,9 @@ case class Edit(organisation: Option[String],
         findCountry(countryCode)
       )
     )
+}
+object Edit {
+  def unapply(edit: Edit): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], String, String)] = Some((edit.organisation, edit.line1, edit.line2, edit.line3, edit.town, edit.postcode, edit.countryCode))
 }
 
 case class ProposedAddress(addressId: String,

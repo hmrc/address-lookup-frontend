@@ -20,6 +20,7 @@ import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.{journeyDataV2MinimalUkMode, testJourneyDataWithMinimalJourneyConfigV2}
 import play.api.http.HeaderNames
 import play.api.http.Status.SEE_OTHER
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,10 +41,10 @@ class BeginJourneyISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(SEE_OTHER)
 
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/lookup"
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/lookup")
       }
     }
 
@@ -56,10 +57,10 @@ class BeginJourneyISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
-        res.status shouldBe SEE_OTHER
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(SEE_OTHER)
 
-        res.header(HeaderNames.LOCATION).get shouldBe s"/lookup-address/$testJourneyId/country-picker"
+        res.header(HeaderNames.LOCATION).get.shouldBe(s"/lookup-address/$testJourneyId/country-picker")
       }
     }
   }

@@ -29,7 +29,7 @@ class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends AnyWordSpec with M
           new RelativeOrAbsoluteWithHostnameFromAllowlist(Set("some-host"), Environment.simple(mode = Mode.Test))
 
         val testUrl = "https://some-host/some/path/here"
-        relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl) shouldBe testUrl
+        relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl).shouldBe(testUrl)
       }
 
       "relative url is provided" in {
@@ -37,7 +37,7 @@ class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends AnyWordSpec with M
           new RelativeOrAbsoluteWithHostnameFromAllowlist(Set("some-host"), Environment.simple(mode = Mode.Test))
 
         val testUrl = "/path/here"
-        relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl) shouldBe testUrl
+        relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl).shouldBe(testUrl)
       }
     }
 
@@ -50,7 +50,7 @@ class RelativeOrAbsoluteWithHostnameFromWhitelistTest extends AnyWordSpec with M
         val e = intercept[IllegalArgumentException] {
           relativeOrAbsoluteWithHostnameFromWhitelist.url(testUrl)
         }
-        e.getMessage shouldBe "Provided URL [https://other-host/some/path/here] doesn't comply with redirect policy"
+        e.getMessage.shouldBe("Provided URL [https://other-host/some/path/here] doesn't comply with redirect policy")
       }
     }
   }

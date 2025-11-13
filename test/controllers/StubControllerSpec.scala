@@ -26,7 +26,7 @@ import model.v2.{JourneyConfigV2, JourneyOptions}
 import org.apache.pekko.stream.Materializer
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any => m_any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -58,7 +58,7 @@ class StubControllerSpec extends PlaySpec
   "StubHelper getJourneyIDFromURL" should {
     "return id if url matches regex" in {
       val id = StubHelper.getJourneyIDFromURL("/lookup-address/FOOBarWizzID/begin")
-      id mustBe "FOOBarWizzID"
+      id.mustBe("FOOBarWizzID")
     }
     "return exception if url does not match regex" in {
       intercept[Exception](StubHelper.getJourneyIDFromURL("foo"))
@@ -78,21 +78,21 @@ class StubControllerSpec extends PlaySpec
       )
 
       val res = StubHelper.changeContinueUrlFromUserInputToStubV2(journeyConfigV2, journeyId)
-      res mustBe expectedJourneyConfigV2
+      res.mustBe(expectedJourneyConfigV2)
     }
   }
 
   "StubHelper defaultJourneyConfigV2JsonAsString" should {
     "return default journeyConfig v2 string and is a valid JourneyConfigV2 model" in {
       val res = StubHelper.defaultJourneyConfigV2JsonAsString
-      res mustBe Json.parse(
+      res.mustBe(Json.parse(
         """{
            "version": 2,
            "options":{
                 "continueUrl": "This will be ignored"
                 },
            "labels" : {}
-      }""".stripMargin)
+      }""".stripMargin))
       res.as[JourneyConfigV2]
     }
   }
@@ -115,20 +115,20 @@ class StubControllerSpec extends PlaySpec
   "showStubPageForJourneyInitV2" should {
     "return 200" in new Setup {
       val res: Future[Result] = controller.showStubPageForJourneyInitV2()(FakeRequest())
-      status(res) mustBe OK
+      status(res).mustBe(OK)
       val doc: Document = Jsoup.parse(contentAsString(res))
-      doc.getElementsByTag("title").first().text() mustBe titleForV2StubPage
+      doc.getElementsByTag("title").first().text().mustBe(titleForV2StubPage)
 
-      Json.parse(doc.getElementById("journeyConfig").text()) mustBe Json.parse(
+      Json.parse(doc.getElementById("journeyConfig").text()).mustBe(Json.parse(
         """{
            "version": 2,
            "options":{
               "continueUrl": "This will be ignored"
               },
             "labels" : {}
-        }""".stripMargin)
+        }""".stripMargin))
 
-      doc.getElementsByTag("form").first().attr("action") mustBe "/v2/test-setup"
+      doc.getElementsByTag("form").first().attr("action").mustBe("/v2/test-setup")
     }
   }
 
@@ -151,21 +151,21 @@ class StubControllerSpec extends PlaySpec
       when(mockAPIController.initWithConfigV2).thenReturn(Action.async(cc.parsers.json[JourneyConfigV2])(
         _ => Future.successful(Results.Ok("foo").withHeaders(HeaderNames.LOCATION -> "/lookup-address/bar/begin"))))
 
-      when(mockJourneyRepository.putV2(meq("bar"), any())(any(), any()))
+      when(mockJourneyRepository.putV2(meq("bar"), m_any())(m_any(), m_any()))
         .thenReturn(Future.successful(true))
 
       val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest().withMethod("POST").withFormUrlEncodedBody(
         "journeyConfig" -> basicJourney
       ))
 
-      redirectLocation(res).get mustBe "/lookup-address/bar/begin"
+      redirectLocation(res).get.mustBe("/lookup-address/bar/begin")
     }
 
     "return 400 if journeyConfig is not provided" in new Setup {
       val res: Future[Result] = controller.submitStubForNewJourneyV2()(FakeRequest())
 
-      status(res) mustBe BAD_REQUEST
-      Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text() mustBe titleForV2StubPage
+      status(res).mustBe(BAD_REQUEST)
+      Jsoup.parse(contentAsString(res)).getElementsByTag("title").first().text().mustBe(titleForV2StubPage)
     }
   }
 }

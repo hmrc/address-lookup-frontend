@@ -17,10 +17,11 @@
 package controllers.international
 
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
-import itutil.config.PageElementConstants._
+import itutil.config.IntegrationTestConstants.*
+import itutil.config.PageElementConstants.*
 import play.api.http.HeaderNames
-import play.api.http.Status._
+import play.api.http.Status.*
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,9 +40,9 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "international/lookup?filter=bar", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.filterId -> testFilterValue))
     }
 
@@ -52,9 +53,9 @@ class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
       val fResponse = buildClientLookupAddress(path = "international/lookup", testJourneyId)
         .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
         .get()
-      val res = await(fResponse)
+      val res: WSResponse = await(fResponse)
 
-      res.status shouldBe OK
+      res.status.shouldBe(OK)
       testFormElementValuesMatch(res, Map(LookupPage.filterId -> ""))
     }
   }

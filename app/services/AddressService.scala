@@ -142,7 +142,7 @@ object AddressReputationFormats {
           (JsPath \ "streetClassification").readNullable[String] and
           (JsPath \ "administrativeArea").readNullable[String] and
           (JsPath \ "poBox").readNullable[String]
-      ) (AddressRecord.apply _)
+      ) (AddressRecord.apply)
 
   implicit val format3: Format[AddressRecord] = Format(addressRecordReads, Json.writes[AddressRecord])
   implicit val format4: Format[International] = Json.format[International]

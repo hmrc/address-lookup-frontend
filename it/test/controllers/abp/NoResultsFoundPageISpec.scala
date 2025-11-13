@@ -18,14 +18,15 @@ package controllers.abp
 
 import controllers.routes
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants._
+import itutil.config.IntegrationTestConstants.*
 import itutil.config.PageElementConstants.LookupPage
-import model._
+import model.*
 import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.libs.json.Json
+import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -64,15 +65,15 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForDefaultConfig(fResponse)
 
-        doc.title shouldBe EnglishContent.title(testPostCode)
-        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
+        doc.title.shouldBe(EnglishContent.title(testPostCode))
+        doc.h1.text().shouldBe(EnglishContent.heading(testPostCode))
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
@@ -101,15 +102,15 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
 
-        doc.title shouldBe EnglishContent.title(testPostCode) + " - NAV_TITLE - GOV.UK"
-        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
+        doc.title.shouldBe(EnglishContent.title(testPostCode) + " - NAV_TITLE - GOV.UK")
+        doc.h1.text().shouldBe(EnglishContent.heading(testPostCode))
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
@@ -138,15 +139,15 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe EnglishContent.title(testPostCode)
-        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
+        doc.title.shouldBe(EnglishContent.title(testPostCode))
+        doc.h1.text().shouldBe(EnglishContent.heading(testPostCode))
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Back")
@@ -175,15 +176,15 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> (sessionCookieWithCSRF + ";PLAY_LANG=cy;"), "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
         testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(fResponse)
 
-        doc.title shouldBe WelshContent.title(testPostCode)
-        doc.h1.text() shouldBe WelshContent.heading(testPostCode)
+        doc.title.shouldBe(WelshContent.title(testPostCode))
+        doc.h1.text().shouldBe(WelshContent.heading(testPostCode))
 
         doc.select("a[class=govuk-back-link]") should have(
           text("Yn ôl")
@@ -220,13 +221,13 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val fResponse = buildClientLookupAddress(path = s"select?${LookupPage.postcodeId}=$testPostCode", testJourneyId)
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
         val doc = getDocFromResponse(res)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
 
-        doc.title shouldBe EnglishContent.title(testPostCode)
-        doc.h1.text() shouldBe EnglishContent.heading(testPostCode)
+        doc.title.shouldBe(EnglishContent.title(testPostCode))
+        doc.h1.text().shouldBe(EnglishContent.heading(testPostCode))
 
         doc.select("a[class=govuk-back-link]") should not have (
           text("Back")
@@ -264,11 +265,11 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
           .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
           .get()
 
-        val res = await(fResponse)
+        val res: WSResponse = await(fResponse)
 
-        res.status shouldBe OK
+        res.status.shouldBe(OK)
         val document = Jsoup.parse(res.body)
-        document.getElementById("pageHeading").classNames() should contain("govuk-heading-l")
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-l"))
       }
     }
   }

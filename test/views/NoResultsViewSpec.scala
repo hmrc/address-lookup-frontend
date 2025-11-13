@@ -39,7 +39,7 @@ class NoResultsViewSpec extends ViewSpec {
       val noResultsView = no_results(id = testJourneyId, journeyData = testNoResultsConfig, postcode = testPostCode)
       val doc = Jsoup.parse(noResultsView.body)
 
-      doc.getBackLinkText shouldBe empty
+      doc.getBackLinkText.shouldBe(empty)
     }
 
     "render the view with the back link" in {

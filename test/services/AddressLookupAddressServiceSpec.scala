@@ -136,7 +136,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
     "return multiple addresses with diverse country codes when isUkMode == false" in new Scenario(
       manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
-      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.map(a => a.country.code) must contain("foo")
+      service.find("ZZ11 1ZZ", isUkMode = false).futureValue.map(a => a.country.code).must(contain("foo"))
     }
 
     "return no addresses where ukMode == true and all addresses are non UK addresses" in new Scenario(
@@ -147,22 +147,22 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
     "return 2 addresses where ukMode == true and 2 out of 3 addresses are UK" in new Scenario(
       manyAddresses(0)(Some("foo")) ::: manyAddresses(1)(Some("UK"))) {
 
-      service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(a => a.country.code) mustBe Seq("GB", "GB")
+      service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(a => a.country.code).mustBe(Seq("GB", "GB"))
     }
 
     "sort the addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedAddresses) {
       val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
       val listOfOrgs: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.flatMap(pa => pa.organisation)
 
-      listOfLines mustBe Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court")
+      listOfLines.mustBe(Seq("1 Malvern Court", "3b Malvern Court", "3c Malvern Court", "Flat 2a stuff 4 Malvern Court"))
 
-      listOfOrgs mustBe Seq("malvern-organisation")
+      listOfOrgs.mustBe(Seq("malvern-organisation"))
     }
 
     "sort complex addresses intelligently based on street/flat numbers as well as string comparisons" in new Scenario(cannedComplexAddresses) {
       val listOfLines: Seq[String] = service.find("ZZ11 1ZZ", isUkMode = true).futureValue.map(pa => pa.lines.mkString(" "))
 
-      listOfLines mustBe Seq(
+      listOfLines.mustBe(Seq(
         "Flat 1 The Curtains Up Comeragh Road",
         "Flat 2 The Curtains Up Comeragh Road",
         "Flat 1 70 Comeragh Road",
@@ -170,7 +170,7 @@ class AddressLookupAddressServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
         "Flat 1 74 Comeragh Road",
         "Flat 2 74 Comeragh Road",
         "Flat B 78 Comeragh Road"
-      )
+      ))
     }
 
     "sort the dodgy addresses without failing" in new Scenario(dodgyAddresses) {

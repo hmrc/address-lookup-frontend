@@ -65,116 +65,116 @@ class SelectPageViewSpec extends ViewSpec {
   "Select Page" should {
 
     "render the a11y link in the footer" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-      doc.select("ul.govuk-footer__inline-list li:nth-of-type(2) a").attr("href") shouldBe "/a11y/url"
+      doc.select("ul.govuk-footer__inline-list li:nth-of-type(2) a").attr("href").shouldBe("/a11y/url")
     }
 
     "render the back button" when {
       "the config is provided as true for back links" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.getBackLinkText shouldBe messages("constants.back")
+        doc.getBackLinkText.shouldBe(messages("constants.back"))
       }
 
       "the config is not provided" in new Setup(testSelectPageConfigMinimal, testProposal, testLookup, firstSearch = true) {
-        doc.getBackLinkText shouldBe messages("constants.back")
+        doc.getBackLinkText.shouldBe(messages("constants.back"))
       }
     }
 
     "render the edit address link" when {
       "the config is provided as false for show none of these option" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.getEditAddressLinkAsText shouldBe messages("selectPage.editAddressLinkText")
+        doc.getEditAddressLinkAsText.shouldBe(messages("selectPage.editAddressLinkText"))
       }
     }
 
     "not render the edit address link" when {
       "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
-        doc.getEditAddressLinkAsText shouldBe Content.empty
+        doc.getEditAddressLinkAsText.shouldBe(Content.empty)
       }
     }
 
     "render the none of these option" when {
       "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
-        doc.select("#addressId-none + label").text() shouldBe messages("selectPage.noneOfThese")
+        doc.select("#addressId-none + label").text().shouldBe(messages("selectPage.noneOfThese"))
       }
     }
 
     "not render the none of these option" when {
       "the config is provided as false for show none of these option" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.select("#addressId-none + label").text() shouldBe Content.empty
+        doc.select("#addressId-none + label").text().shouldBe(Content.empty)
       }
     }
 
     "not render the back button" when {
       "the config is provided as false for back links" in new Setup(testJourneyDataNoBackButtons, testProposal, testLookup, firstSearch = true) {
-        doc.getBackLinkText shouldBe Content.empty
+        doc.getBackLinkText.shouldBe(Content.empty)
       }
     }
 
     "render the heading without a postcode" when {
       "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-        doc.getH1ElementAsText shouldBe messages("selectPage.heading")
+        doc.getH1ElementAsText.shouldBe(messages("selectPage.heading"))
       }
     }
 
     "render the heading with a postcode" when {
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-        doc.getH1ElementAsText shouldBe s"${messages("selectPage.headingWithPostcode")} ${testLookup.postcode}"
+        doc.getH1ElementAsText.shouldBe(s"${messages("selectPage.headingWithPostcode")} ${testLookup.postcode}")
       }
     }
   }
 
   "render the no results message" when {
     "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-      doc.select("#no-results").text shouldBe s"${messages("constants.noResults")} 'testFilter'."
+      doc.select("#no-results").text.shouldBe(s"${messages("constants.noResults")} 'testFilter'.")
     }
   }
 
   "not render the no results message" when {
     "it is the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-      doc.select("#no-results").text shouldBe Content.empty
+      doc.select("#no-results").text.shouldBe(Content.empty)
     }
   }
 
   "render the try a different name or number link" when {
     "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
-      doc.getALinkText(id = "differentAddress") shouldBe messages("constants.differentSearch")
-      doc.getLinkHrefAsText(id = "differentAddress") shouldBe routes.AbpAddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url
+      doc.getALinkText(id = "differentAddress").shouldBe(messages("constants.differentSearch"))
+      doc.getLinkHrefAsText(id = "differentAddress").shouldBe(routes.AbpAddressLookupController.lookup("testId", Some(testLookup.postcode), testLookup.filter).url)
     }
   }
 
   "not render the try a different name or number link" when {
     "it is the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-      doc.getALinkText(id = "differentAddress") shouldBe Content.empty
-      doc.getLinkHrefAsText(id = "differentAddress") shouldBe Content.empty
+      doc.getALinkText(id = "differentAddress").shouldBe(Content.empty)
+      doc.getLinkHrefAsText(id = "differentAddress").shouldBe(Content.empty)
     }
   }
 
   "render proposals" when {
     "there is 1 proposal" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
-      doc.select(s"input[name^=addressId]").size shouldBe testProposal.proposals.get.size
-      doc.select("input[id^=addressId]").size shouldBe 1
-      doc.select("label[for^=addressId]").size shouldBe 1
-      doc.select("label[for^=addressId]").text shouldBe testProposal.proposals.get.head.toDescription
+      doc.select(s"input[name^=addressId]").size.shouldBe(testProposal.proposals.get.size)
+      doc.select("input[id^=addressId]").size.shouldBe(1)
+      doc.select("label[for^=addressId]").size.shouldBe(1)
+      doc.select("label[for^=addressId]").text.shouldBe(testProposal.proposals.get.head.toDescription)
       doc.getElementById("searchAgainLink") should not be null
     }
   }
 
   "there are many proposals" in new Setup(testSelectPageConfig, testProposalMany, testLookup, firstSearch = true) {
-    doc.select(s"input[name^=addressId]").size shouldBe testProposalMany.proposals.get.size
+    doc.select(s"input[name^=addressId]").size.shouldBe(testProposalMany.proposals.get.size)
     for ((proposal, count) <- testProposalMany.proposals.get.zipWithIndex) {
       if (count == 0) {
-        doc.select("input[id=addressId]").size shouldBe 1
-        doc.select("label[for=addressId]").size shouldBe 1
-        doc.select("label[for=addressId]").text shouldBe proposal.toDescription
+        doc.select("input[id=addressId]").size.shouldBe(1)
+        doc.select("label[for=addressId]").size.shouldBe(1)
+        doc.select("label[for=addressId]").text.shouldBe(proposal.toDescription)
       } else {
-        doc.select(s"input[id=addressId-${count}]").size shouldBe 1
-        doc.select(s"label[for=addressId-${count}]").size shouldBe 1
-        doc.select(s"label[for=addressId-${count}]").text shouldBe proposal.toDescription
+        doc.select(s"input[id=addressId-${count}]").size.shouldBe(1)
+        doc.select(s"label[for=addressId-${count}]").size.shouldBe(1)
+        doc.select(s"label[for=addressId-${count}]").text.shouldBe(proposal.toDescription)
       }
     }
   }
 
   "not render any proposals" when {
     "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {
-      doc.select("input[id^=addressId]").size() shouldBe testProposalNone.proposals.get.size
+      doc.select("input[id^=addressId]").size().shouldBe(testProposalNone.proposals.get.size)
     }
   }
 }

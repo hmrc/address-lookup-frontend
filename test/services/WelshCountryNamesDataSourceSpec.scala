@@ -52,7 +52,7 @@ class WelshCountryNamesDataSourceSpec extends PlaySpec with GuiceOneAppPerSuite 
           "Name" -> "Albania"
         )
       )
-      actual mustBe expected
+      actual.mustBe(expected)
     }
 
     "Be able to process a file with semicolon delimiter (and wrong headers)" in {
@@ -67,7 +67,7 @@ class WelshCountryNamesDataSourceSpec extends PlaySpec with GuiceOneAppPerSuite 
           "Name" -> "Albania"
         )
       )
-      actual mustBe expected
+      actual.mustBe(expected)
     }
   }
 }

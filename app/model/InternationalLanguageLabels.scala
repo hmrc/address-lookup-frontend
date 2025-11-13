@@ -32,6 +32,11 @@ case class InternationalSelectPageLabels(title: Option[String] = None,
                                          searchAgainLinkText: Option[String] = None,
                                          editAddressLinkText: Option[String] = None)
 
+object InternationalSelectPageLabels {
+  def unapply(labels: InternationalSelectPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] =
+    Some((labels.title, labels.heading, labels.headingWithPostcode, labels.proposalListLabel, labels.submitLabel, labels.searchAgainLinkText, labels.editAddressLinkText))
+}
+
 case class InternationalLookupPageLabels(title: Option[String] = None,
                                          heading: Option[String] = None,
                                          afterHeadingText: Option[String] = None,
@@ -40,6 +45,11 @@ case class InternationalLookupPageLabels(title: Option[String] = None,
                                          noResultsFoundMessage: Option[String] = None,
                                          resultLimitExceededMessage: Option[String] = None,
                                          manualAddressLinkText: Option[String] = None)
+
+object InternationalLookupPageLabels {
+  def unapply(labels: InternationalLookupPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] =
+    Some((labels.title, labels.heading, labels.afterHeadingText, labels.filterLabel, labels.submitLabel, labels.noResultsFoundMessage, labels.resultLimitExceededMessage, labels.manualAddressLinkText))
+}
 
 case class InternationalEditPageLabels(title: Option[String] = None,
                                        heading: Option[String] = None,
@@ -52,6 +62,11 @@ case class InternationalEditPageLabels(title: Option[String] = None,
                                        submitLabel: Option[String] = None,
                                        organisationLabel: Option[String] = None)
 
+object InternationalEditPageLabels {
+  def unapply(labels: InternationalEditPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] =
+    Some((labels.title, labels.heading, labels.line1Label, labels.line2Label, labels.line3Label, labels.townLabel, labels.postcodeLabel, labels.countryLabel, labels.submitLabel, labels.organisationLabel))
+}
+
 case class InternationalConfirmPageLabels(title: Option[String] = None,
                                           heading: Option[String] = None,
                                           infoSubheading: Option[String] = None,
@@ -60,6 +75,11 @@ case class InternationalConfirmPageLabels(title: Option[String] = None,
                                           searchAgainLinkText: Option[String] = None,
                                           changeLinkText: Option[String] = None,
                                           confirmChangeText: Option[String] = None)
+
+object InternationalConfirmPageLabels {
+  def unapply(labels: InternationalConfirmPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])] =
+    Some((labels.title, labels.heading, labels.infoSubheading, labels.infoMessage, labels.submitLabel, labels.searchAgainLinkText, labels.changeLinkText, labels.confirmChangeText))
+}
 
 object InternationalLanguageLabels {
   implicit val internationalSelectPageWrites: Writes[InternationalSelectPageLabels] = Json.writes[InternationalSelectPageLabels]
@@ -73,10 +93,13 @@ object InternationalLanguageLabels {
   implicit val internationalEditPageReads: Reads[InternationalEditPageLabels] = Json.reads[InternationalEditPageLabels]
   implicit val internationalConfirmPageReads: Reads[InternationalConfirmPageLabels] = Json.reads[InternationalConfirmPageLabels]
   implicit val internationalLanguageLabelsReads: Reads[InternationalLanguageLabels] = Json.reads[InternationalLanguageLabels]
+
+  def unapply(labels: InternationalLanguageLabels): Option[(Option[InternationalSelectPageLabels], Option[InternationalLookupPageLabels], Option[InternationalEditPageLabels], Option[InternationalConfirmPageLabels])] =
+    Some((labels.selectPageLabels, labels.lookupPageLabels, labels.editPageLabels, labels.confirmPageLabels))
 }
 
 object InternationalLanguageLabelsForMessages {
-  implicit def internationalSelectPageLabelsWrites: Writes[InternationalSelectPageLabels] = {
+  implicit val internationalSelectPageLabelsWrites: Writes[InternationalSelectPageLabels] = {
     (__ \ "international.selectPage.title").writeNullable[String]
       .and((__ \ "international.selectPage.heading").writeNullable[String])
       .and((__ \ "international.selectPage.headingWithPostcode").writeNullable[String])
@@ -88,7 +111,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalLookupPageLabelsWrites: OWrites[InternationalLookupPageLabels] = {
+  implicit val internationalLookupPageLabelsWrites: OWrites[InternationalLookupPageLabels] = {
     (__ \ "international.lookupPage.title").writeNullable[String]
       .and((__ \ "international.lookupPage.heading").writeNullable[String])
       .and((__ \ "international.lookupPage.afterHeadingText").writeNullable[String])
@@ -101,7 +124,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalEditPageLabelsWrites: OWrites[InternationalEditPageLabels] = {
+  implicit val internationalEditPageLabelsWrites: OWrites[InternationalEditPageLabels] = {
     (__ \ "international.editPage.title").writeNullable[String]
       .and((__ \ "international.editPage.heading").writeNullable[String])
       .and((__ \ "international.editPage.line1Label").writeNullable[String])
@@ -116,7 +139,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalConfirmPageLabelsWrites: OWrites[InternationalConfirmPageLabels] = {
+  implicit val internationalConfirmPageLabelsWrites: OWrites[InternationalConfirmPageLabels] = {
     (__ \ "international.confirmPage.title").writeNullable[String]
       .and((__ \ "international.confirmPage.heading").writeNullable[String])
       .and((__ \ "international.confirmPage.infoSubheading").writeNullable[String])
@@ -129,7 +152,7 @@ object InternationalLanguageLabelsForMessages {
       )
   }
 
-  implicit def internationalLanguageLabelsWrites: OWrites[InternationalLanguageLabels] = {
+  implicit val internationalLanguageLabelsWrites: OWrites[InternationalLanguageLabels] = {
     ((__).writeNullable[InternationalSelectPageLabels])
       .and((__).writeNullable[InternationalLookupPageLabels])
       .and((__).writeNullable[InternationalEditPageLabels])

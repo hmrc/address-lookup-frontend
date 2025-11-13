@@ -43,7 +43,7 @@ class ConfirmViewSpec extends ViewSpec {
       val doc: Document = Jsoup.parse(testPage.body)
 
       "show the back button" in {
-        doc.getBackLinkText shouldBe messages("constants.back")
+        doc.getBackLinkText.shouldBe(messages("constants.back"))
       }
     }
 
@@ -52,7 +52,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      doc.getBackLinkText shouldBe empty
+      doc.getBackLinkText.shouldBe(empty)
     }
 
     "show subheading and info is true" in {
@@ -62,8 +62,8 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      doc.getElementById("infoSubheading").text shouldBe messages("confirmPage.infoSubheading")
-      doc.getElementById("infoMessage").text shouldBe infoText
+      doc.getElementById("infoSubheading").text.shouldBe(messages("confirmPage.infoSubheading"))
+      doc.getElementById("infoMessage").text.shouldBe(infoText)
     }
 
     "show subheading and info is false" in {
@@ -73,8 +73,8 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      Option(doc.getElementById("infoSubheading")) shouldBe None
-      Option(doc.getElementById("infoMessage")) shouldBe None
+      Option(doc.getElementById("infoSubheading")).shouldBe(None)
+      Option(doc.getElementById("infoMessage")).shouldBe(None)
     }
 
     "show search again link is true " in {
@@ -83,7 +83,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      doc.getElementById("searchAgainLink").text shouldBe messages("confirmPage.searchAgainLinkText")
+      doc.getElementById("searchAgainLink").text.shouldBe(messages("confirmPage.searchAgainLinkText"))
     }
 
     "show search again link is false " in {
@@ -93,7 +93,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      Option(doc.getElementById("searchAgainLink")) shouldBe None
+      Option(doc.getElementById("searchAgainLink")).shouldBe(None)
     }
 
     "show change link is true " in {
@@ -102,7 +102,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      doc.getElementById("changeLink").text shouldBe messages("confirmPage.changeLinkText")
+      doc.getElementById("changeLink").text.shouldBe(messages("confirmPage.changeLinkText"))
     }
 
     "show change link is false " in {
@@ -112,7 +112,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      Option(doc.getElementById("changeLink")) shouldBe None
+      Option(doc.getElementById("changeLink")).shouldBe(None)
     }
 
     "show confirm change options is true" in {
@@ -121,7 +121,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      doc.getElementById("confirmChangeText").text shouldBe messages("confirmPage.confirmChangeText")
+      doc.getElementById("confirmChangeText").text.shouldBe(messages("confirmPage.confirmChangeText"))
     }
 
     "show confirm change options is false" in {
@@ -131,7 +131,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testPage = confirm("", testJourneyConfig, Some(testAddress))
       val doc: Document = Jsoup.parse(testPage.body)
 
-      Option(doc.getElementById("confirmChangeText")) shouldBe None
+      Option(doc.getElementById("confirmChangeText")).shouldBe(None)
     }
   }
 }

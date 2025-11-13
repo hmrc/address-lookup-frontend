@@ -20,7 +20,7 @@
 @import model.v2.JourneyDataV2
 
 @this(form: FormWithCSRF, button: GovukButton, page: Layout)
-@(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, postcode: String, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)

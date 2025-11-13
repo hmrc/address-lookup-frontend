@@ -35,7 +35,7 @@ trait JourneyRepository {
 }
 
 @Singleton
-class JourneyDataV2Repository @Inject()(mongoComponent: MongoComponent, config: FrontendAppConfig, ec: ExecutionContext) extends MongoCacheRepository(
+class JourneyDataV2Repository @Inject()(mongoComponent: MongoComponent, config: FrontendAppConfig)(implicit ec: ExecutionContext) extends MongoCacheRepository(
   mongoComponent = mongoComponent,
   collectionName = config.appName,
   replaceIndexes = true,
@@ -47,7 +47,7 @@ class JourneyDataV2Repository @Inject()(mongoComponent: MongoComponent, config: 
 }
 
 @Singleton
-class JourneyDataV2Cache @Inject()(repo: JourneyDataV2Repository) extends JourneyRepository {
+class JourneyDataV2Cache @Inject()(repo: JourneyDataV2Repository)(implicit ec: ExecutionContext) extends JourneyRepository {
   override def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] =
     repo.get[JourneyDataV2](sessionId)(repo.dataKey)
 

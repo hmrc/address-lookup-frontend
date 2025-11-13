@@ -660,6 +660,24 @@ object IntegrationTestConstants {
       countryCode = countryCode
     )
   }
+  def journeyDataV2WithOrganisationHidden(
+                                           testAuditRef: String,
+                                           journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(
+                                             testContinueUrl,
+                                             ukMode = Some(false),
+                                             manualAddressEntryConfig = Some(ManualAddressEntryConfig(
+                                               showOrganisationName = false
+                                             ))
+                                           )),
+                                           selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress,
+                                           countryCode: Option[String] = None
+                                         ): JourneyDataV2 = {
+    JourneyDataV2(
+      journeyConfigV2,
+      selectedAddress = Some(ConfirmableAddress(testAuditRef, testAddressId, None, None, None, None, selectedAddress)),
+      countryCode = countryCode
+    )
+  }
 
   val journeyDataV2ResultLimitUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true), selectPageConfig = Some(SelectPageConfig(proposalListLimit = Some(50))))))
   val journeyDataV2MinimalUkMode: JourneyDataV2 = JourneyDataV2(JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(true))))

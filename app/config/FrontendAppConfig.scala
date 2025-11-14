@@ -36,7 +36,8 @@ class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: Service
   val addressLookupEndpoint: String = servicesConfig.baseUrl("address-lookup-frontend")
   val addressReputationEndpoint: String = servicesConfig.baseUrl("address-reputation")
   val allowedHosts: Set[String] = config.underlying.getStringList("microservice.hosts.allowList").asScala.toSet
-  val showNoneOfTheseOptionOnSelectPage: Boolean = config.underlying.getBoolean("microservice.selectPageConfig.showNoneOfTheseOption")
+  val showNoneOfTheseOptionOnSelectPage: Boolean = config.get[Boolean]("microservice.selectPageConfig.showNoneOfTheseOption")
+  val newGovUkServiceNavigationEnabled: Boolean = config.get[Boolean]("microservice.newGovUkServiceNavigationEnabled")
 
   val languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

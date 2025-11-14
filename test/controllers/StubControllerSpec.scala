@@ -87,12 +87,38 @@ class StubControllerSpec extends PlaySpec
       val res = StubHelper.defaultJourneyConfigV2JsonAsString
       res.mustBe(Json.parse(
         """{
-           "version": 2,
-           "options":{
-                "continueUrl": "This will be ignored"
-                },
-           "labels" : {}
-      }""".stripMargin))
+          |  "version": 2,
+          |  "options": {
+          |    "continueUrl": "This will be ignored",
+          |    "useNewGovUkServiceNavigation": false
+          |  },
+          |  "labels": {
+          |    "en": {
+          |      "appLevelLabels": {
+          |        "navTitle": "Address Lookup Example"
+          |      },
+          |      "selectPageLabels": {},
+          |      "lookupPageLabels": {},
+          |      "editPageLabels": {},
+          |      "confirmPageLabels": {},
+          |      "countryPickerLabels": {},
+          |      "international": {},
+          |      "otherLabels": {}
+          |    },
+          |    "cy": {
+          |      "appLevelLabels": {
+          |        "navTitle": "Address Lookup Example (Welsh)"
+          |      },
+          |      "selectPageLabels": {},
+          |      "lookupPageLabels": {},
+          |      "editPageLabels": {},
+          |      "confirmPageLabels": {},
+          |      "countryPickerLabels": {},
+          |      "international": {},
+          |      "otherLabels": {}
+          |    }
+          |  }
+          |}""".stripMargin))
       res.as[JourneyConfigV2]
     }
   }
@@ -121,12 +147,38 @@ class StubControllerSpec extends PlaySpec
 
       Json.parse(doc.getElementById("journeyConfig").text()).mustBe(Json.parse(
         """{
-           "version": 2,
-           "options":{
-              "continueUrl": "This will be ignored"
-              },
-            "labels" : {}
-        }""".stripMargin))
+          |  "version": 2,
+          |  "options": {
+          |    "continueUrl": "This will be ignored",
+          |    "useNewGovUkServiceNavigation": false
+          |  },
+          |  "labels": {
+          |    "en": {
+          |      "appLevelLabels": {
+          |        "navTitle": "Address Lookup Example"
+          |      },
+          |      "selectPageLabels": {},
+          |      "lookupPageLabels": {},
+          |      "editPageLabels": {},
+          |      "confirmPageLabels": {},
+          |      "countryPickerLabels": {},
+          |      "international": {},
+          |      "otherLabels": {}
+          |    },
+          |    "cy": {
+          |      "appLevelLabels": {
+          |        "navTitle": "Address Lookup Example (Welsh)"
+          |      },
+          |      "selectPageLabels": {},
+          |      "lookupPageLabels": {},
+          |      "editPageLabels": {},
+          |      "confirmPageLabels": {},
+          |      "countryPickerLabels": {},
+          |      "international": {},
+          |      "otherLabels": {}
+          |    }
+          |  }
+          |}""".stripMargin))
 
       doc.getElementsByTag("form").first().attr("action").mustBe("/v2/test-setup")
     }

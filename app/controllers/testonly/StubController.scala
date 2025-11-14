@@ -18,9 +18,10 @@ package controllers.testonly
 
 import config.FrontendAppConfig
 import controllers.api.ApiController
+import model.*
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyLabels, JourneyOptions}
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -47,7 +48,7 @@ object StubHelper {
                                              id: String): JourneyConfigV2 =
     journeyconfigV2.copy(
       options = journeyconfigV2.options.copy(continueUrl =
-                controllers.testonly.routes.StubController.showResultOfJourney(id).url)
+        controllers.testonly.routes.StubController.showResultOfJourney(id).url)
     )
 
   val defaultJourneyConfigV2JsonAsString: JsValue =
@@ -55,7 +56,32 @@ object StubHelper {
       JourneyConfigV2(
         version = 2,
         options = JourneyOptions(continueUrl = "This will be ignored"),
-        labels = Some(JourneyLabels())
+        labels = Some(JourneyLabels(
+          en = Some(LanguageLabels(
+            appLevelLabels = Some(AppLevelLabels(
+              navTitle = Some("Address Lookup Example")
+            )),
+            selectPageLabels = Some(SelectPageLabels()),
+            lookupPageLabels = Some(LookupPageLabels()),
+            editPageLabels = Some(EditPageLabels()),
+            confirmPageLabels = Some(ConfirmPageLabels()),
+            countryPickerLabels = Some(CountryPickerPageLabels()),
+            international = Some(InternationalLanguageLabels()),
+            otherLabels = Some(Json.obj())
+          )),
+          cy = Some(LanguageLabels(
+            appLevelLabels = Some(AppLevelLabels(
+              navTitle = Some("Address Lookup Example (Welsh)")
+            )),
+            selectPageLabels = Some(SelectPageLabels()),
+            lookupPageLabels = Some(LookupPageLabels()),
+            editPageLabels = Some(EditPageLabels()),
+            confirmPageLabels = Some(ConfirmPageLabels()),
+            countryPickerLabels = Some(CountryPickerPageLabels()),
+            international = Some(InternationalLanguageLabels()),
+            otherLabels = Some(Json.obj())
+          ))
+        ))
       )
     )
 }

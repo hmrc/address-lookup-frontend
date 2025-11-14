@@ -16,7 +16,8 @@
 
 package model.v2
 
-import play.api.libs.json._
+import config.FrontendAppConfig
+import play.api.libs.json.*
 
 case class JourneyOptions(
                            continueUrl: String, 
@@ -37,7 +38,8 @@ case class JourneyOptions(
                            manualAddressEntryConfig: Option[ManualAddressEntryConfig] = None,
                            timeoutConfig: Option[TimeoutConfig] = None,
                            serviceHref: Option[String] = None,
-                           pageHeadingStyle: Option[String] = None
+                           pageHeadingStyle: Option[String] = None,
+                           useNewGovUkServiceNavigation: Option[Boolean] = Some(false)
                          ) {
 
   val isUkMode: Boolean = ukMode contains true

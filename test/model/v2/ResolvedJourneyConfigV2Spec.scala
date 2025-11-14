@@ -17,16 +17,22 @@
 package model.v2
 
 import com.codahale.metrics.SharedMetricRegistries
+import com.typesafe.config.Config
 import config.FrontendAppConfig
 import model.ResolvedJourneyConfigV2
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import utils.TestConstants._
+import play.api.{Application, Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.TestConstants.*
 
-class ResolvedJourneyConfigV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite {
+class ResolvedJourneyConfigV2Spec extends AnyWordSpecLike with Matchers with GuiceOneAppPerSuite with MockitoSugar {
   override implicit lazy val app: Application = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder().build()
@@ -241,6 +247,50 @@ class ResolvedJourneyConfigV2Spec extends AnyWordSpecLike with Matchers with Gui
       //      resolvedJourneyConfig.labels.confirmPageLabels.searchAgainLinkText.mustBe(WelshConstantsNonUkMode.SEARCH_AGAIN_LINK_TEXT)
       //      resolvedJourneyConfig.labels.confirmPageLabels.changeLinkText.mustBe(WelshConstantsNonUkMode.CONFIRM_PAGE_EDIT_LINK_TEXT)
       //      resolvedJourneyConfig.labels.confirmPageLabels.confirmChangeText.mustBe(WelshConstantsNonUkMode.CONFIRM_PAGE_CONFIRM_CHANGE_TEXT)
+    }
+
+    "for the newGovUkServiceNavigationEnabled flag" should {
+
+      class Setup(appEnabled: Boolean, journeyOptionEnabled: Boolean) {
+        lazy val mockConfiguration: Configuration = mock[Configuration]
+        lazy val mockUnderlying: Config = mock[Config]
+        lazy val appConfig: FrontendAppConfig = new FrontendAppConfig(
+          mockConfiguration,
+          app.injector.instanceOf[ServicesConfig],
+          app.injector.instanceOf[Environment]
+        )
+
+        when(mockUnderlying.getStringList(any())).thenReturn(java.util.List.of("tax.service.gov.uk"))
+        when(mockConfiguration.underlying).thenReturn(mockUnderlying)
+        when(mockConfiguration.get[Boolean](eqTo("microservice.newGovUkServiceNavigationEnabled"))(any())).thenReturn(appEnabled)
+        val journeyConfig: JourneyConfigV2 = journeyDataV2Minimal.config.copy(options =
+          journeyDataV2Minimal.config.options.copy(useNewGovUkServiceNavigation = Some(journeyOptionEnabled))
+        )
+
+        val resolvedJourneyConfig: ResolvedJourneyConfigV2 = ResolvedJourneyConfigV2(journeyConfig, appConfig)
+      }
+
+      "return false" when {
+
+        "the flag is disabled in both app config and journey options" in new Setup(appEnabled = false, journeyOptionEnabled = false) {
+          resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled.mustBe(false)
+        }
+      }
+
+      "return true" when {
+
+        "the flag is disabled in app config BUT enabled in journey options" in new Setup(appEnabled = false, journeyOptionEnabled = true) {
+          resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled.mustBe(true)
+        }
+
+        "the flag is enabled in app config BUT disabled in journey options" in new Setup(appEnabled = true, journeyOptionEnabled = false) {
+          resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled.mustBe(true)
+        }
+
+        "the flag is enabled in both" in new Setup(appEnabled = true, journeyOptionEnabled = true) {
+          resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled.mustBe(true)
+        }
+      }
     }
   }
 }

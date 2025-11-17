@@ -3,10 +3,10 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlayVersion = "9.19.0"
+  private val bootstrapPlayVersion = "10.4.0"
   private val hmrcFrontendPlayVersion = "12.20.0"
   private val hmrcMongoPlayVersion = "2.10.0"
-  private val jacksonVersion = "2.19.2"
+  private val jacksonVersion = "3.0.2"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -22,12 +22,12 @@ object AppDependencies {
   def test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"   % bootstrapPlayVersion,
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"  % hmrcMongoPlayVersion,
-    "org.jsoup"          % "jsoup"                    % "1.21.1"
+    "org.jsoup"          % "jsoup"                    % "1.21.2"
   ).map(_ % Test)
 
   def it: Seq[sbt.ModuleID] = Seq(
-    "com.fasterxml.jackson.core"     % "jackson-databind"     % jacksonVersion,
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala" % jacksonVersion
+    "tools.jackson.core"     % "jackson-databind"     % jacksonVersion,
+    "tools.jackson.module"  %% "jackson-module-scala" % jacksonVersion
   ).map(_ % Test)
 
 }

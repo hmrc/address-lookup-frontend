@@ -4,8 +4,8 @@ import sbt.*
 object AppDependencies {
 
   private val bootstrapPlayVersion = "9.19.0"
-  private val hmrcFrontendPlayVersion = "12.8.0"
-  private val hmrcMongoPlayVersion = "2.7.0"
+  private val hmrcFrontendPlayVersion = "12.20.0"
+  private val hmrcMongoPlayVersion = "2.10.0"
   private val jacksonVersion = "2.19.2"
 
   val compile: Seq[ModuleID] = Seq(
@@ -16,7 +16,7 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "play-conditional-form-mapping-play-30"  % "3.3.0",
     "com.github.tototoshi"    %% "scala-csv"                              % "2.0.0",
     "net.ruippeixotog"        %% "scala-scraper"                          % "3.2.0",
-    "uk.gov.hmrc.objectstore" %% "object-store-client-play-30"            % "2.4.0"
+    "uk.gov.hmrc.objectstore" %% "object-store-client-play-30"            % "2.5.0"
   ).map(_.withSources())
 
   def test: Seq[ModuleID] = Seq(

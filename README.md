@@ -248,6 +248,7 @@ If your service doesn't have Welsh translations you can disable them setting the
 | `deskProServiceName`     | name of your service in DeskPro. Used when constructing the "report a problem" link. Defaults to None.    | Optional          | String          | `None`                      |
 | `showPhaseBanner`        | whether or not to show a phase banner (if `showPhaseBanner == true && alphaPhase == false`, shows "beta") | Optional          | Boolean         | `false`                     |
 | `alphaPhase`             | if `showPhaseBanner = true && alphaPhase == true`, will show "alpha" phase banner                         | Optional          | Boolean         | `false`                     |
+| `disableTranslations`    | You can disable the Welsh Translation by setting the `disableTranslations` option to `true`.              | Optional          | Boolean         | `false`                     |
 | `showBackButtons`        | whether or not to show back buttons on user journey wizard forms                                          | Optional          | Boolean         | `false`                     |
 | `includeHMRCBranding`    | whether or not to use HMRC branding                                                                       | Optional          | Boolean         | `true`                      |
 | `allowedCountryCodes`    | country codes list allowed in manual edit dropdown                                                        | Optional          | List of Strings | All countries               |
@@ -386,9 +387,27 @@ When enabled:
 
 Lookup returns Only UK Addresses; 1 link on Lookup Page is overridden; Edit Address Mode removes option to change country (Defaults to United Kingdom) and omits postcode field.
 
+### International Manually Entered Addresses (Optional)
+
+Provides configuration for the manual address entry page, currently this supports setting max lengths for the address lines that are different from the 255 default.
+The manual address entry page configuration is a nested JSON object inside the journey configuration under the `manualAddressEntryConfig` property.
+
+Ensure that ukMode is set to 'false' to allow international addresses and enable the country selection dropdown.
+If ukMode is enabled, the manual address entry will default to UK addresses and restrict country selection to UK addresses.
+
+Ensure that the allowedCountryCodes field in the top-level configuration includes the relevant country codes for international addresses. All countries are defined by default.
+You can restrict the list if required by specifying only the desired country codes, for example:
+
+"allowedCountryCodes": [
+    "GB",
+    "FR",
+    "DE",
+    "IT"
+],
+
 ### Obtaining the Confirmed Address
 
-Once the user has completed the address lookup journey, they will be redirected to the **off ramp** URL specified in the **journey configuration**. An `id` parameter will be appended to the **off ramp** URL. **Calling services** may use the value of this parameter to obtain the **user's** confirmed address.
+Once the user has completed the address lookup journey, they will be redirected to the **off ramp** URL specified in the **journey configuration** when the required **continueUrl** field is defined. An `id` parameter will be appended to the **off ramp** URL. **Calling services** may use the value of this parameter to obtain the **user's** confirmed address.
 
 URL:
 

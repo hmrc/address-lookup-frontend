@@ -37,7 +37,9 @@ class EditPageISpec extends IntegrationSpecBase {
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The edit page" should {
+    
     "when provided with no page config for english and welsh" should {
+      
       "return edit page" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, journeyDataV2WithSelectedAddress(testJourneyId, countryCode = Some("BM"))))
@@ -64,6 +66,42 @@ class EditPageISpec extends IntegrationSpecBase {
 
         labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "organisation" -> "Organisation (optional)",
+          "line1" -> "Address line 1",
+          "line2" -> "Address line 2",
+          "line3" -> "Address line 3",
+          "town" -> "Town or city",
+          "postcode" -> "Postcode (optional)",
+          "countryName" -> "Country or territory"
+        ))
+      }
+      
+      "return edit page with organisation hidden when set to false" in {
+        val testJourneyId = UUID.randomUUID().toString
+        await(cache.putV2(testJourneyId, journeyDataV2WithOrganisationHidden(testJourneyId, countryCode = Some("BM"))))
+
+        val fResponse = buildClientLookupAddress(path = "international/edit", testJourneyId)
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF,
+            "Csrf-Token" -> "nocheck")
+          .get()
+
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
+
+        val document = Jsoup.parse(res.body)
+        document.title().shouldBe(messages("international.editPage.title"))
+        document.h1.first.text().shouldBe(messages("international.editPage.heading"))
+        document.getElementById("pageHeading").classNames().should(contain("govuk-heading-xl"))
+        document.getElementById("continue").text().shouldBe("Continue")
+
+        document.getElementById("line1").`val`.shouldBe("1 High Street")
+        document.getElementById("line2").`val`.shouldBe("Line 2")
+        document.getElementById("line3").`val`.shouldBe("Line 3")
+        document.getElementById("town").`val`.shouldBe("Telford")
+        document.getElementById("postcode").`val`.shouldBe("AB11 1AB")
+
+        document.getElementById("organisation").shouldBe(null)
+
+        labelForFieldsMatch(res, idOfFieldExpectedLabelTextForFieldMapping = Map(
           "line1" -> "Address line 1",
           "line2" -> "Address line 2",
           "line3" -> "Address line 3",

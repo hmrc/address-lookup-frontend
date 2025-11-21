@@ -93,7 +93,8 @@ If your service doesn't have Welsh translations you can disable them setting the
     "ukMode": false,
     "selectPageConfig": {
       "proposalListLimit": 30,
-      "showSearchLinkAgain": true
+      "showSearchLinkAgain": true,
+      "showNoneOfTheseOption": false
     },
     "confirmPageConfig": {
       "showChangeLink": false,

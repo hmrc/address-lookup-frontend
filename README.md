@@ -94,7 +94,8 @@ If your service doesn't have Welsh translations you can disable them setting the
     "ukMode": false,
     "selectPageConfig": {
       "proposalListLimit": 30,
-      "showSearchLinkAgain": true
+      "showSearchLinkAgain": true,
+      "showNoneOfTheseOption": false
     },
     "confirmPageConfig": {
       "showChangeLink": false,
@@ -261,10 +262,11 @@ If your service doesn't have Welsh translations you can disable them setting the
 
 Configuration of the "select" page, in which user chooses an address from a list of search results. The select page configuration is a nested JSON object inside the journey configuration under the `selectPage` property.
 
-| Field name            | Description                                                                             | Optional/Required | Type    | Default value |
-|-----------------------|-----------------------------------------------------------------------------------------|-------------------|---------|---------------|
-| `proposalListLimit`   | maximum number of results to display (when exceeded, will return user to "lookup" page) | Optional          | Integer | `nothing`     |
-| `showSearchAgainLink` | Whether or not to show "search again" link back to lookup page                          | Optional          | Boolean | `false`       |
+| Field name              | Description                                                                                | Optional/Required | Type    | Default value |
+|-------------------------|--------------------------------------------------------------------------------------------|-------------------|---------|---------------|
+| `proposalListLimit`     | maximum number of results to display (when exceeded, will return user to "lookup" page)    | Optional          | Integer | `nothing`     |
+| `showSearchAgainLink`   | Whether or not to show "search again" link back to lookup page                             | Optional          | Boolean | `false`       |
+| `showNoneOfTheseOption` | Whether or not to show "none of these" option instead of link to manual address entry form | Optional          | Boolean | `false`       |
 
 #### Confirm page configuration JSON object
 

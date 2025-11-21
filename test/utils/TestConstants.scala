@@ -211,7 +211,7 @@ object TestConstants {
   val selectPageConfigMinimal = SelectPageConfig(None, None, None)
 
   val journeyOptionsMinimal = JourneyOptions("testUrl", None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
-  val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl"}""")
+  val journeyOptionsMinimalJson: JsValue = Json.parse("""{"continueUrl":"testUrl", "useNewGovUkServiceNavigation":false}""")
 
   val journeyConfigV2 = JourneyConfigV2(2, journeyOptionsMinimal, Some(journeyLabelsMinimal))
   val journeyConfigV2Json: JsValue = Json.parse(s"""{"version":2, "options":$journeyOptionsMinimalJson, "labels":$emptyJson}""")
@@ -258,19 +258,36 @@ object TestConstants {
   val journeyDataV2Full = JourneyDataV2(
     config = JourneyConfigV2(
       version = 2,
-      options = JourneyOptions(continueUrl = "testContinueUrl", homeNavHref = Some("testNavHref"), accessibilityFooterUrl = Some("testAccessibilityFooterUrl"), phaseFeedbackLink = Some("testFeedbackLink"), deskProServiceName = Some("testDeskproName"), showPhaseBanner = Some(true), alphaPhase = Some(true), showBackButtons = Some(true), disableTranslations = Some(false), includeHMRCBranding = Some(true), ukMode = Some(true), allowedCountryCodes = Some(Set("UK", "FR")), selectPageConfig = Some(SelectPageConfig(
-                proposalListLimit = Some(30),
-                showSearchAgainLink = Some(true)
-              )), confirmPageConfig = Some(ConfirmPageConfig(
-                showSearchAgainLink = Some(true),
-                showSubHeadingAndInfo = Some(true),
-                showChangeLink = Some(true),
-                showConfirmChangeText = Some(true)
-              )), timeoutConfig = Some(TimeoutConfig(
-                timeoutAmount = 120,
-                timeoutUrl = "testTimeoutUrl",
-                timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
-              ))),
+      options = JourneyOptions(
+        continueUrl = "testContinueUrl",
+        homeNavHref = Some("testNavHref"),
+        accessibilityFooterUrl = Some("testAccessibilityFooterUrl"),
+        phaseFeedbackLink = Some("testFeedbackLink"),
+        deskProServiceName = Some("testDeskproName"),
+        showPhaseBanner = Some(true),
+        alphaPhase = Some(true),
+        showBackButtons = Some(true),
+        disableTranslations = Some(false),
+        includeHMRCBranding = Some(true),
+        ukMode = Some(true),
+        allowedCountryCodes = Some(Set("UK", "FR")),
+        selectPageConfig = Some(SelectPageConfig(
+          proposalListLimit = Some(30),
+          showSearchAgainLink = Some(true)
+        )),
+        confirmPageConfig = Some(ConfirmPageConfig(
+          showSearchAgainLink = Some(true),
+          showSubHeadingAndInfo = Some(true),
+          showChangeLink = Some(true),
+          showConfirmChangeText = Some(true)
+        )),
+        timeoutConfig = Some(TimeoutConfig(
+          timeoutAmount = 120,
+          timeoutUrl = "testTimeoutUrl",
+          timeoutKeepAliveUrl = Some("testTimeoutKeepAliveUrl")
+        )),
+        useNewGovUkServiceNavigation = Some(true)
+      ),
       labels = Some(JourneyLabels(
         en = Some(LanguageLabels(
           appLevelLabels = Some(AppLevelLabels(
@@ -384,6 +401,7 @@ object TestConstants {
       |      "version":2,
       |      "options":{
       |         "continueUrl":"testContinueUrl",
+      |         "useNewGovUkServiceNavigation" : true,
       |         "homeNavHref":"testNavHref",
       |         "accessibilityFooterUrl": "testAccessibilityFooterUrl",
       |         "phaseFeedbackLink":"testFeedbackLink",
@@ -570,7 +588,8 @@ object TestConstants {
       |   "config":{
       |      "version":2,
       |      "options":{
-      |         "continueUrl":"testContinueUrl"
+      |         "continueUrl":"testContinueUrl",
+      |         "useNewGovUkServiceNavigation" : false
       |      }
       |   }
       |}

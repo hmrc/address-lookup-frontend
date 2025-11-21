@@ -50,6 +50,8 @@ case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: Fro
   val timeoutConfig: Option[TimeoutConfig] = journeyOptions.timeoutConfig
 
   val pageHeadingStyle: String = journeyOptions.pageHeadingStyle.getOrElse("govuk-heading-xl")
+  val newGovUkServiceNavigationEnabled: Boolean =
+    appConfig.newGovUkServiceNavigationEnabled || journeyOptions.useNewGovUkServiceNavigation.getOrElse(false)
 }
 
 case class ResolvedSelectPageConfig(selectPageConfig: SelectPageConfig) {

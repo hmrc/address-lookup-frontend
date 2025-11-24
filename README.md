@@ -114,7 +114,8 @@ If your service doesn't have Welsh translations you can disable them setting the
         "addressLine3": true,
         "town": true,
         "postcode": true
-      }
+      },
+      "showOrganisationName": true
     },
     "timeoutConfig": {
       "timeoutAmount": 900,
@@ -284,13 +285,14 @@ Configuration of the "confirm" page, in which the user is requested to confirm a
 Provides configuration for the manual address entry page, currently this supports setting max lengths for the address lines that are different from the 255 default.
 The manual address entry page configuration is a nested JSON object inside the journey configuration under the `manualAddressEntryConfig` property.
 
-| Field name        | Description                                                          | Optional/Required | Type  | Default value |
-|-------------------|----------------------------------------------------------------------|-------------------|-------|---------------|
-| `line1MaxLength`  | Max Length for Line 1 of the Address (must be between 35 and 255)    | Optional          | Int   | 255           |
-| `line2MaxLength`  | Max Length for Line 2 of the Address (must be between 35 and 255)    | Optional          | Int   | 255           |
-| `line3MaxLength`  | Max Length for Line 3 of the Address (must be between 35 and 255)    | Optional          | Int   | 255           |
-| `townMaxLength`   | Max Length for Town/City of the Address (must be between 35 and 255) | Optional          | Int   | 255           |
-| `mandatoryFields` | List of fields that are mandatory for the address to be valid        | Optional          | Model | None          |
+| Field name             | Description                                                                         | Optional/Required | Type    | Default value |
+|------------------------|-------------------------------------------------------------------------------------|-------------------|---------|---------------|
+| `line1MaxLength`       | Max Length for Line 1 of the Address (must be between 35 and 255)                   | Optional          | Int     | 255           |
+| `line2MaxLength`       | Max Length for Line 2 of the Address (must be between 35 and 255)                   | Optional          | Int     | 255           |
+| `line3MaxLength`       | Max Length for Line 3 of the Address (must be between 35 and 255)                   | Optional          | Int     | 255           |
+| `townMaxLength`        | Max Length for Town/City of the Address (must be between 35 and 255)                | Optional          | Int     | 255           |
+| `mandatoryFields`      | List of fields that are mandatory for the address to be valid                       | Optional          | Model   | None          |
+| `showOrganisationName` | Whether or not to show the organisation name field on the manual address entry page | Optional          | Boolean | True          |
 
 #### Mandatory Fields Configuration JSON object (Optional)
 

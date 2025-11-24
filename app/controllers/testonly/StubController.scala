@@ -119,17 +119,15 @@ class StubController @Inject()(
         valid => {
           val jConfigV2 = Json.parse(valid).as[JourneyConfigV2]
           val reqForInit: Request[JourneyConfigV2] = request.map(_ => jConfigV2)
+          
+          apiController.initWithConfigV2()(reqForInit).flatMap { resOfInit =>
+            val redirectLocation = resOfInit.header.headers(HeaderNames.LOCATION)
+            val id = StubHelper.getJourneyIDFromURL(redirectLocation)
+            val updatedJConfigWIthNewContinueUrl = StubHelper.changeContinueUrlFromUserInputToStubV2(jConfigV2, id)
 
-          apiController.initWithConfigV2()(reqForInit).flatMap {
-            resOfInit => {
-              val redirectLocation = resOfInit.header.headers(HeaderNames.LOCATION)
-              val id = StubHelper.getJourneyIDFromURL(redirectLocation)
-              val updatedJConfigWIthNewContinueUrl = StubHelper.changeContinueUrlFromUserInputToStubV2(jConfigV2, id)
-
-              journeyRepository
-                .putV2(id, JourneyDataV2(updatedJConfigWIthNewContinueUrl))
-                .map(_ => Redirect(redirectLocation))
-            }
+            journeyRepository
+              .putV2(id, JourneyDataV2(updatedJConfigWIthNewContinueUrl))
+              .map(_ => Redirect(redirectLocation))
           }
         }
       )

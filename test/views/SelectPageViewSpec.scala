@@ -28,7 +28,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utils.TestConstants._
-import views.html.abp.{lookup, non_uk_mode_edit, select, uk_mode_edit}
+import views.html.abp.{lookup, select}
 
 class SelectPageViewSpec extends ViewSpec {
 
@@ -50,8 +50,6 @@ class SelectPageViewSpec extends ViewSpec {
   implicit val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   val lookup: lookup = app.injector.instanceOf[lookup]
   val select: select = app.injector.instanceOf[select]
-  val uk_mode_edit: uk_mode_edit = app.injector.instanceOf[uk_mode_edit]
-  val non_uk_mode_edit: non_uk_mode_edit = app.injector.instanceOf[non_uk_mode_edit]
 
   class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
     implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")

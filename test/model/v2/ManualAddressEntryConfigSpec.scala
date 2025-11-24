@@ -78,7 +78,8 @@ class ManualAddressEntryConfigSpec extends AnyWordSpecLike with Matchers with Gu
         "line1MaxLength" -> ManualAddressEntryConfig.defaultMax,
         "line2MaxLength" -> ManualAddressEntryConfig.defaultMax,
         "line3MaxLength" -> ManualAddressEntryConfig.defaultMax,
-        "townMaxLength" -> ManualAddressEntryConfig.defaultMax
+        "townMaxLength" -> ManualAddressEntryConfig.defaultMax,
+        "showOrganisationName" -> true
       )
     }
   }

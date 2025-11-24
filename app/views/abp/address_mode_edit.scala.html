@@ -123,7 +123,9 @@
 }
     
 @inputHtml = {
-    @textField("organisation", "organisation", isMandatory = _ => false)
+    @if(journeyData.config.options.manualAddressEntryConfig.forall(_.showOrganisationName)) {
+        @textField("organisation", "organisation", isMandatory = _ => false)
+    }
     @textField("line1", "address-line1", addressErrorClass = true, isMandatory = _.addressLine1)
     @textField("line2", "address-line2", isMandatory = _.addressLine2)
     @textField("line3", "address-line3", isMandatory = _.addressLine3)

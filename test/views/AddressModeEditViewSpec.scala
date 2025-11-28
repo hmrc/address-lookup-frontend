@@ -86,18 +86,22 @@ class AddressModeEditViewSpec extends ViewSpec {
   "UK Mode Page" should {
     implicit val lang: Lang = Lang("en")
 
-    "the town field should have autocomplete attribute of address-level1" in {
-      val testPage = address_mode_edit(
-        id = testId,
-        journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
-        editForm = editForm(isUkMode = true),
-        countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
-        isWelsh = false,
-        isUKMode = true
-      )
-      val doc: Document = Jsoup.parse(testPage.body)
+    val testPage = address_mode_edit(
+      id = testId,
+      journeyData = fullV2JourneyDataNonUkMode.copy(config = configWithoutLabels),
+      editForm = editForm(isUkMode = true),
+      countries = Seq(Country("FR", "France"), Country("AL", "Albanian")),
+      isWelsh = false,
+      isUKMode = true
+    )
+    val doc: Document = Jsoup.parse(testPage.body)
 
+    "the town field should have autocomplete attribute of address-level1" in {
       doc.getElementById("town").attr("autocomplete") shouldBe "address-level1"
+    }
+
+    "the organisation field should have autocomplete attribute of 'organization'" in {
+      doc.getElementById("organisation").attr("autocomplete") shouldBe "organization"
     }
   }
 

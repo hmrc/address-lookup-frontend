@@ -158,18 +158,23 @@
     }
 }
 
+@heading = {
+    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
+        @{messages("editPage.heading")}
+    </h1>
+}
+
 @page(titleWithError, Some(editForm), journeyData) {
 
     @if(editForm.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(editForm))
     }
 
-    <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
-        @{messages("editPage.heading")}
-    </h1>
-
     @form(routes.AbpAddressLookupController.handleEdit(id)) {
-        @govukFieldset(Fieldset(html = inputHtml))
+        @govukFieldset(Fieldset(
+            html = inputHtml,
+            legend = Some(Legend(content = HtmlContent(heading)))
+        ))
 
         @button(Button(content = HtmlContent(messages("editPage.submitLabel")),
             name = Some("continue"),

@@ -74,7 +74,7 @@
         banners = {
             if (resolvedJourneyConfig.options.showPhaseBanner) {
                 Banners(
-                    displayHmrcBanner = true,
+                    displayHmrcBanner = resolvedJourneyConfig.options.includeHMRCBranding,
                     phaseBanner = Some(
                         PhaseBanner(
                             tag = Some(Tag(
@@ -88,7 +88,7 @@
                 )
             }
             else {
-                Banners(displayHmrcBanner = true)
+                Banners(displayHmrcBanner = resolvedJourneyConfig.options.includeHMRCBranding)
             }
         },
         templateOverrides = TemplateOverrides(

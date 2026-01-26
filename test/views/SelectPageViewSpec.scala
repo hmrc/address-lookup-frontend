@@ -180,7 +180,7 @@ class SelectPageViewSpec extends ViewSpec {
 
     val toggleSelect = s"a[lang='cy']"
 
-    "Welsh is not enabled" should {
+    "Welsh is enabled" should {
       "NOT include a language toggle" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true, renderInWelsh = false) {
         //Note: the footer link to get help in Welsh shows plus the language toggle - hence count of 2
         doc.select(toggleSelect).size().shouldBe(2)

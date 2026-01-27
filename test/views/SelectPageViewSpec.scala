@@ -51,12 +51,12 @@ class SelectPageViewSpec extends ViewSpec {
   val lookup: lookup = app.injector.instanceOf[lookup]
   val select: select = app.injector.instanceOf[select]
 
-  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, welshEnabled: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
-    implicit val lang: Lang = if (welshEnabled) Lang("cy") else Lang("en")
+  class Setup(journeyData: JourneyDataV2, proposals: Proposals, lookup: Lookup, firstSearch: Boolean, renderInWelsh: Boolean = false)(implicit frontendAppConfig: FrontendAppConfig) {
+    implicit val lang: Lang = if (renderInWelsh) Lang("cy") else Lang("en")
 
     val messages: Messages = implicitly[Messages]
 
-    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch, welshEnabled)
+    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch, renderInWelsh)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 
@@ -173,6 +173,25 @@ class SelectPageViewSpec extends ViewSpec {
   "not render any proposals" when {
     "there are none" in new Setup(testSelectPageConfig, testProposalNone, testLookup, firstSearch = true) {
       doc.select("input[id^=addressId]").size().shouldBe(testProposalNone.proposals.get.size)
+    }
+  }
+
+  "Welsh Toggle" when {
+
+    val toggleSelect = s"a[lang='cy']"
+
+    "Welsh is enabled" should {
+      "NOT include a language toggle" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true, renderInWelsh = false) {
+        //Note: the footer link to get help in Welsh shows plus the language toggle - hence count of 2
+        doc.select(toggleSelect).size().shouldBe(2)
+      }
+    }
+
+    "Welsh is disabled" should {
+      "include a language toggle with link to Welsh" in new Setup(testSelectPageConfigWelshDisabled, testProposal, testLookup, firstSearch = true, renderInWelsh = false) {
+        //Note: the footer link to get help still shows - which is expected, hence count of 1
+        doc.select(toggleSelect).size().shouldBe(1)
+      }
     }
   }
 }

@@ -95,13 +95,19 @@
             additionalHeadBlock = Some(combinedAdditionalHead),
             additionalScriptsBlock = Some(autocompleteJavascript())
         ),
-        isWelshTranslationAvailable = !resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled,
+        isWelshTranslationAvailable =
+            !(resolvedJourneyConfig.options.disableTranslations || resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled),
         backLink = {
             if (resolvedJourneyConfig.options.showBackButtons) Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
             else None
         },
-        serviceNavigation = Option.when(resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled)(
-            ServiceNavigation(serviceName = Option.when(messages.isDefinedAt("navTitle"))(messages("navTitle"))).withLanguageToggle()
-        )
+        serviceNavigation = Option.when(resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled) {
+            val serviceNav = ServiceNavigation(serviceName = Option.when(messages.isDefinedAt("navTitle"))(messages("navTitle")))
+            if(resolvedJourneyConfig.options.disableTranslations) {
+                serviceNav
+            } else {
+                serviceNav.withLanguageToggle()
+            }
+        }
     )
 )(content)

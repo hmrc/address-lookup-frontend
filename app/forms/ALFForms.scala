@@ -18,9 +18,9 @@ package forms
 
 import controllers.Confirmed
 import forms.Helpers.EmptyStringValidator
-import model._
-import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
-import play.api.data.Forms._
+import model.*
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig, MaxLengthErrorMessage}
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{FieldMapping, Form, FormError, Forms}
@@ -173,28 +173,58 @@ object ALFForms extends EmptyStringValidator {
         mandatoryConfig.town
       ).contains(true)
     }).contains(true)
-    
+
+    val localizedMaxLengthErrors: Option[MaxLengthErrorMessage] = {
+      val maxLengthErrors = optConfig.flatMap(_.maxLengthErrorMessages)
+      if (messages.lang.code == "cy") maxLengthErrors.flatMap(_.cy) else maxLengthErrors.flatMap(_.en)
+    }
+
+    def maxLengthMessage(select: MaxLengthErrorMessage => String, fallbackKey: String, max: Int): String =
+      localizedMaxLengthErrors
+        .map(select)
+        .getOrElse(messages(fallbackKey, max))
+
+    def nonEmptyOpt(value: String): Option[String] =
+      if (value == "") None else Some(value)
+
     Form(
       mapping(
         "organisation" -> optional(text),
-        "line1" -> atLeastOneAddressLineOrTown(messages(s"constants.editPageAtLeastOneLineOrTown"), mandatoryProvided)
-          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength + 1), config.line1MaxLength))
+        "line1" -> atLeastOneAddressLineOrTown(messages("constants.editPageAtLeastOneLineOrTown"), mandatoryProvided)
+          .verifying(
+            constraintOptStringMaxLength(
+              maxLengthMessage(_.addressLine1, "constants.editPageAddressLine1MaxErrorMessage", config.line1MaxLength),
+              config.line1MaxLength
+            )
+          )
           .verifying("editPage.line1.error", input => checkIfMandatory(input, _.addressLine1)),
         "line2" -> optional(text)
-          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength + 1), config.line2MaxLength))
+          .verifying(
+            constraintOptStringMaxLength(
+              maxLengthMessage(_.addressLine2, "constants.editPageAddressLine2MaxErrorMessage", config.line2MaxLength),
+              config.line2MaxLength
+            )
+          )
           .verifying("editPage.line2.error", input => checkIfMandatory(input, _.addressLine2)),
         "line3" -> optional(text)
-          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength + 1), config.line3MaxLength))
+          .verifying(
+            constraintOptStringMaxLength(
+              maxLengthMessage(_.addressLine3, "constants.editPageAddressLine3MaxErrorMessage", config.line3MaxLength),
+              config.line3MaxLength
+            )
+          )
           .verifying("editPage.line3.error", input => checkIfMandatory(input, _.addressLine3)),
         "town" -> optional(text)
-          .verifying(constraintOptStringMaxLength(messages(s"constants.editPageTownMaxErrorMessage", config.townMaxLength + 1), config.townMaxLength))
+          .verifying(
+            constraintOptStringMaxLength(
+              maxLengthMessage(_.town, "constants.editPageTownMaxErrorMessage", config.townMaxLength),
+              config.townMaxLength
+            )
+          )
           .verifying("editPage.town.error", input => checkIfMandatory(input, _.town)),
         "postcode" -> default(text, "").verifying(
-          if(isUkMode) "editPage.postcodeLabel.ukMode.error" else "editPage.postcode.error",
-          input => checkIfMandatory(
-            if(input == "") None else Some(input),
-            _.postcode
-          )
+          if (isUkMode) "editPage.postcodeLabel.ukMode.error" else "editPage.postcode.error",
+          input => checkIfMandatory(nonEmptyOpt(input), _.postcode)
         ),
         countryCodeMapping
       )(Edit.apply)(Edit.unapply)

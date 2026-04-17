@@ -18,8 +18,10 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.config._",
       "controllers.routes._"
     ),
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"
+    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
+    // suppress warnings in generated routes files
+    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:msg=unused import&src=html/.*:s"
   )
   .settings(PlayKeys.playDefaultPort := 9028)
   .settings(CodeCoverageSettings.settings *)

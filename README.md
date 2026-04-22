@@ -177,6 +177,17 @@ If your service doesn't have Welsh translations you can disable them setting the
         "postcodeLabel": "Postcode (optional)",
         "countryLabel": "Country",
         "submitLabel": "Continue"
+      },
+      "international": {
+        "editPageLabels": {
+          "organisationLabel": "Organisation international",
+          "line1Label": "Line 1 international",
+          "line2Label": "Line 2 international",
+          "line3Label": "Line 3 international",
+          "townLabel": "City international",
+          "postcodeLabel": "postcode international",
+          "countryLabel": "Country international"
+        }
       }
     },
     "cy": {
@@ -231,6 +242,17 @@ If your service doesn't have Welsh translations you can disable them setting the
         "postcodeLabel": "Postcode (optional) welsh",
         "countryLabel": "Country welsh",
         "submitLabel": "Continue welsh"
+      },
+      "international": {
+        "editPageLabels": {
+          "organisationLabel": "Organisation international welsh",
+          "line1Label": "Line 1 international welsh",
+          "line2Label": "Line 2 international welsh",
+          "line3Label": "Line 3 international welsh",
+          "townLabel": "City international welsh",
+          "postcodeLabel": "postcode international welsh",
+          "countryLabel": "Country international welsh"
+        }
       }
     }
   }
@@ -410,6 +432,40 @@ You can restrict the list if required by specifying only the desired country cod
     "DE",
     "IT"
 ],
+
+#### International Manually Entered Addresses labels overrides (Optional)
+You can provide custom labels for the international address fields by adding an `international` block to the `labels` section of the config. If no custom content is provided, the default labels are used.
+
+Example JSON for international labels overrides:
+```json
+{
+  "version": 2,
+  "options": {
+    "continueUrl": "This will be ignored",
+    "useNewGovUkServiceNavigation": false,
+    "ukMode": false
+  },
+  "labels": {
+    "en": {
+      "international": {
+        "editPageLabels": {
+          "title": "Enter address international",
+          "heading": "Enter address international",
+          "organisationLabel": "Organisation international",
+          "line1Label": "Line 1 international",
+          "line2Label": "Line 2 international",
+          "line3Label": "Line 3 international",
+          "townLabel": "City international",
+          "postcodeLabel": "postcode international",
+          "countryLabel": "Country international",
+          "submitLabel": "Continue international"
+        }
+      }
+    }
+  }
+}
+```
+
 
 ### Obtaining the Confirmed Address
 

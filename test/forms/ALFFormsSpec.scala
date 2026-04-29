@@ -19,7 +19,7 @@ package forms
 import com.codahale.metrics.SharedMetricRegistries
 import forms.ALFForms.editForm
 import model.Edit
-import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig}
+import model.v2.{MandatoryFieldsConfigModel, ManualAddressEntryConfig, MaxLengthErrorMessage, MaxLengthErrorMessages}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -157,10 +157,10 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           val boundForm = form.bind(data)
 
           boundForm.hasErrors.mustBe(true)
-          boundForm.errors.head.mustBe(FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit)))
-          boundForm.errors(1).mustBe(FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit)))
-          boundForm.errors(2).mustBe(FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit)))
-          boundForm.errors(3).mustBe(FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit)))
+          boundForm.errors.head.mustBe(FormError("line1", s"Address line 1 needs to be $line1Limit characters or less", Seq(line1Limit)))
+          boundForm.errors(1).mustBe(FormError("line2", s"Address line 2 needs to be $line2Limit characters or less", Seq(line2Limit)))
+          boundForm.errors(2).mustBe(FormError("line3", s"Address line 3 needs to be $line3Limit characters or less", Seq(line3Limit)))
+          boundForm.errors(3).mustBe(FormError("town", s"Town or city needs to be $townLimit characters or less", Seq(townLimit)))
         }
       }
 
@@ -239,10 +239,10 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           val boundForm = form.bind(data)
 
           boundForm.hasErrors.mustBe(true)
-          boundForm.errors.head.mustBe(FormError("line1", s"The first address line needs to be fewer than ${line1Limit + 1} characters", Seq(line1Limit)))
-          boundForm.errors(1).mustBe(FormError("line2", s"The second address line needs to be fewer than ${line2Limit + 1} characters", Seq(line2Limit)))
-          boundForm.errors(2).mustBe(FormError("line3", s"The third address line needs to be fewer than ${line3Limit + 1} characters", Seq(line3Limit)))
-          boundForm.errors(3).mustBe(FormError("town", s"The town or city needs to be fewer than ${townLimit + 1} characters", Seq(townLimit)))
+          boundForm.errors.head.mustBe(FormError("line1", s"Address line 1 needs to be $line1Limit characters or less", Seq(line1Limit)))
+          boundForm.errors(1).mustBe(FormError("line2", s"Address line 2 needs to be $line2Limit characters or less", Seq(line2Limit)))
+          boundForm.errors(2).mustBe(FormError("line3", s"Address line 3 needs to be $line3Limit characters or less", Seq(line3Limit)))
+          boundForm.errors(3).mustBe(FormError("town", s"Town or city needs to be $townLimit characters or less", Seq(townLimit)))
         }
       }
 
@@ -275,11 +275,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       }
     }
   }
-  
+
   "editForm" should {
-    
+
     "return no errors with valid data" when {
-      
+
       "when none of the fields are mandatory and line 1 is given" in {
         val data = Map(
           "line1" -> "foo1"
@@ -299,42 +299,42 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
         form.bind(data).hasErrors mustBe false
       }
-      
+
       "line 2 is set to mandatory and line 1 and town are not provided" in {
         val data = Map(
           "line2" -> "Some Line"
         )
-        
+
         val form = editForm(Some(ManualAddressEntryConfig(
           mandatoryFields = Some(MandatoryFieldsConfigModel(
             addressLine2 = true
           ))
         )), isUkMode = true)
-        
+
         form.bind(data).hasErrors mustBe false
-        
+
       }
-      
+
     }
-    
+
     "return a single error for the mandatory line when one is set to mandatory and no data is provided" in {
       val data: Map[String, String] = Map()
-      
+
       val form = editForm(Some(ManualAddressEntryConfig(
         mandatoryFields = Some(MandatoryFieldsConfigModel(
           addressLine3 = true
         ))
       )), isUkMode = true)
       val boundForm = form.bind(data)
-      
+
       boundForm.hasErrors mustBe true
       boundForm.errors.length mustBe 1
       boundForm.errors.head.key mustBe "line3"
     }
-    
+
     "return an error for each missing line when they are set to mandatory" which {
       case class Data(testingLine: String, data: Map[String, String], modelMap: MandatoryFieldsConfigModel => MandatoryFieldsConfigModel)
-      
+
       val testData = Seq(
         Data("line1", Map("town" -> "Some Town"), _.copy(addressLine1 = true)),
         Data("line2", Map("line1" -> "line1"), _.copy(addressLine2 = true)),
@@ -342,11 +342,11 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         Data("postcode", Map("line1" -> "line1"), _.copy(postcode = true)),
         Data("town", Map("line1" -> "line1"), _.copy(town = true))
       )
-      
+
       val allFalseModel = MandatoryFieldsConfigModel(
         addressLine1 = false, addressLine2 = false, addressLine3 = false, postcode = false, town = false
       )
-      
+
       testData.foreach { data =>
         s"testing ${data.testingLine} errors if missing when set to mandatory" in {
           val settingsModel = Some(ManualAddressEntryConfig(
@@ -354,10 +354,74 @@ class ALFFormsSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           ))
           val form = editForm(settingsModel, isUkMode = true)
           val result = form.bind(data.data)
-          
+
           result.hasErrors mustBe true
           result.errors.length mustBe 1
         }
+      }
+    }
+
+    "return custom error messages for max length fields" when {
+      val line1Limit = 50
+      val line2Limit = 60
+      val line3Limit = 70
+      val townLimit = 80
+
+      val config: ManualAddressEntryConfig = ManualAddressEntryConfig(
+        line1MaxLength = line1Limit,
+        line2MaxLength = line2Limit,
+        line3MaxLength = line3Limit,
+        townMaxLength = townLimit,
+        mandatoryFields = None,
+        maxLengthErrorMessages = Some(MaxLengthErrorMessages(
+          en = Some(MaxLengthErrorMessage(
+            addressLine1 = "line 1 custom max length error",
+            addressLine2 = "line 2 custom max length error",
+            addressLine3 = "line 3 custom max length error",
+            town = "town custom max length error"
+          )),
+          cy = Some(MaxLengthErrorMessage(
+            addressLine1 = "line 1 custom max length error welsh",
+            addressLine2 = "line 2 custom max length error welsh",
+            addressLine3 = "line 3 custom max length error welsh",
+            town = "town custom max length error welsh"
+          ))
+        ))
+      )
+
+      val data: Map[String, String] = Map(
+        "line1" -> ("A" * line1Limit + 1),
+        "line2" -> ("A" * line2Limit + 1),
+        "line3" -> ("A" * line3Limit + 1),
+        "town" -> ("A" * townLimit + 1),
+        "postcode" -> "ZZ11ZZ",
+        "countryCode" -> "GB"
+      )
+
+      "in English" in {
+        implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
+
+        val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
+        val boundForm = form.bind(data)
+
+        boundForm.hasErrors.mustBe(true)
+        boundForm.errors.head.mustBe(FormError("line1", s"line 1 custom max length error", Seq(line1Limit)))
+        boundForm.errors(1).mustBe(FormError("line2", s"line 2 custom max length error", Seq(line2Limit)))
+        boundForm.errors(2).mustBe(FormError("line3", s"line 3 custom max length error", Seq(line3Limit)))
+        boundForm.errors(3).mustBe(FormError("town", s"town custom max length error", Seq(townLimit)))
+      }
+
+      "in Welsh" in {
+        implicit val messages: Messages = messagesApi.preferred(Seq(Lang("cy")))
+
+        val form: Form[Edit] = ALFForms.editForm(Some(config), isUkMode = true)
+        val boundForm = form.bind(data)
+
+        boundForm.hasErrors.mustBe(true)
+        boundForm.errors.head.mustBe(FormError("line1", s"line 1 custom max length error welsh", Seq(line1Limit)))
+        boundForm.errors(1).mustBe(FormError("line2", s"line 2 custom max length error welsh", Seq(line2Limit)))
+        boundForm.errors(2).mustBe(FormError("line3", s"line 3 custom max length error welsh", Seq(line3Limit)))
+        boundForm.errors(3).mustBe(FormError("town", s"town custom max length error welsh", Seq(townLimit)))
       }
     }
   }

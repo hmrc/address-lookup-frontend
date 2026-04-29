@@ -16,9 +16,9 @@
 
 package model.v2
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import play.api.libs.json.Reads.{max, min}
-import play.api.libs.json._
 
 case class ManualAddressEntryConfig(
                                      line1MaxLength: Int = ManualAddressEntryConfig.defaultMax,
@@ -26,6 +26,7 @@ case class ManualAddressEntryConfig(
                                      line3MaxLength: Int = ManualAddressEntryConfig.defaultMax,
                                      townMaxLength: Int = ManualAddressEntryConfig.defaultMax,
                                      mandatoryFields: Option[MandatoryFieldsConfigModel] = None,
+                                     maxLengthErrorMessages: Option[MaxLengthErrorMessages] = None,
                                      showOrganisationName: Boolean = true
                                    )
 
@@ -42,6 +43,7 @@ object ManualAddressEntryConfig {
       (__ \ "line3MaxLength").readWithDefault[Int](defaultMax)(constraints) and
       (__ \ "townMaxLength").readWithDefault[Int](defaultMax)(constraints) and
       (__ \ "mandatoryFields").readNullable[MandatoryFieldsConfigModel] and
+      (__ \ "maxLengthErrorMessages").readNullable[MaxLengthErrorMessages] and
       (__ \ "showOrganisationName").readWithDefault[Boolean](true)
   )(ManualAddressEntryConfig.apply _)
 

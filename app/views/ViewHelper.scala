@@ -23,16 +23,22 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
 object ViewHelper {
 
-  private def countryToSelectItem(c: Country): SelectItem =
-    SelectItem(
-      value = Some(encodeCountryCode(c)),
-      text = c.name,
-      selected = false,
-      attributes = Map("id" -> encodeCountryCode(c))
-    )
+  private def countryToSelectItem(c: Country, selectedValue: Option[String] = None): SelectItem = {
+    val encodedValue = encodeCountryCode(c)
 
-  def countriesToSelectItems(cs: Seq[Country], form: Form[?])(implicit messages: Messages): Seq[SelectItem] =
-    SelectItem(Some(""), messages("countryPickerPage.countryLabel")) +: countriesToSelectItems(cs)
+    SelectItem(
+      value = Some(encodedValue),
+      text = c.name,
+      selected = selectedValue.contains(encodedValue),
+      attributes = Map("id" -> encodedValue)
+    )
+  }
+
+  def countriesToSelectItems(cs: Seq[Country], form: Form[?])(implicit messages: Messages): Seq[SelectItem] = {
+    val selectedValue = form("countryCode").value
+    SelectItem(Some(""), messages("countryPickerPage.countryLabel"), selected = selectedValue.contains("")) +:
+      cs.map(country => countryToSelectItem(country, selectedValue))
+  }
 
   def countriesToSelectItems(cs:Seq[Country]): Seq[SelectItem] = cs.map(c => countryToSelectItem(c))
 

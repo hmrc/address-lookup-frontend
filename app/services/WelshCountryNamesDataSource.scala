@@ -143,18 +143,18 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
           objectStore.putObject(path = objectStorePath, content, contentType = Some("text/plain"))
             .map(_ => logger.info("[retrieveAndStoreData] - Wrote welsh country name data to object-store successfully"))
             .recoverWith { case e =>
-              logger.error("[retrieveAndStoreData] - Could not write welsh country name data to object-store", e)
+              logger.error("[retrieveAndStoreData][Error] - Could not write welsh country name data to object-store", e)
               Future successful()
             }
       }
       else {
-        logger.error(s"[retrieveAndStoreData] - Error parsing welsh country name data from third party, unexpected file contents")
+        logger.error(s"[retrieveAndStoreData][Error] - Error parsing welsh country name data from third party, unexpected file contents")
         Future successful()
       }
 
     } catch {
       case e: Exception =>
-        logger.error("[retrieveAndStoreData] - Welsh country name data retrieval and storage failed", e)
+        logger.error("[retrieveAndStoreData][Error] - Welsh country name data retrieval and storage failed", e)
         Future successful()
     }
   }
@@ -175,18 +175,18 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
             logger.info("[updateCache] - Refreshed welsh country name data cache from object-store")
           }
           else {
-            logger.error("[updateCache] - Error parsing welsh country name data cache from object-store, unexpected file contents")
+            logger.error("[updateCache][Error] - Error parsing welsh country name data cache from object-store, unexpected file contents")
           }
         case None =>
           logger.warn("[updateCache] - Did not find welsh country name data in object-store (it may not have been initialised yet)")
       }.recoverWith { case e =>
-        logger.error("[updateCache] - Could not read welsh country name from object-store", e)
+        logger.error("[updateCache][Error] - Could not read welsh country name from object-store", e)
         Future successful()
       }
 
     } catch {
       case e: Exception =>
-        logger.error("[updateCache] - Welsh country name data cache initialisation failed", e)
+        logger.error("[updateCache][Error] - Welsh country name data cache initialisation failed", e)
         Future successful()
     }
   }

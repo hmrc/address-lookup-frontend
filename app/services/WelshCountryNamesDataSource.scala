@@ -27,11 +27,13 @@ import uk.gov.hmrc.objectstore.client.play.Implicits.*
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import java.io.InputStream
+import java.net.URI
 import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.SortedMap
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
+import scala.util.Using
 
 @Singleton
 class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSource) extends CountryNamesDataSource with Logging {
@@ -117,7 +119,9 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
       .attr("abs:href")
 
   protected[services] def downloadContent(url: String): String =
-    new String(java.net.URI.create(url).toURL.openStream().readAllBytes(), StandardCharsets.UTF_8)
+    Using.resource(URI.create(url).toURL.openStream()) { in =>
+      new String(in.readAllBytes(), StandardCharsets.UTF_8)
+    }
 
   override def retrieveAndStoreData(): Future[Unit] = {
     try {

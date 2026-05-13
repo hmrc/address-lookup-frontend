@@ -25,8 +25,7 @@
     </logger>
 
     <logger name="services.WelshCountryNamesObjectStoreDataSource" level="DEBUG"/>
-        <appender-ref ref="STDOUT"/>
-
+    
     <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>

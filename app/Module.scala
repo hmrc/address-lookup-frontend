@@ -17,10 +17,9 @@
 import com.google.inject.{AbstractModule, Provides}
 import controllers.RemoteMessagesApiProvider
 import org.apache.pekko.stream.Materializer
-import org.htmlunit.ProxyConfig
 import play.api.libs.concurrent.PekkoGuiceSupport
 import play.api.{Configuration, Environment, Logger}
-import services._
+import services.*
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import javax.inject.Singleton
@@ -47,16 +46,7 @@ class Module(environment: Environment, playConfig: Configuration) extends Abstra
       new WelshCountryNamesDataSource(english)  
     } else {
       logger.info(s"Using gov-wales country data from object-store")
-
-      val proxyHost: Option[String] = playConfig.getOptional[String]("proxy.host")
-      val proxyPort: Option[Int] = playConfig.getOptional[Int]("proxy.port")
-
-      val proxyConfig: Option[ProxyConfig] = for {
-        pHost <- proxyHost
-        pPort <- proxyPort
-      } yield new ProxyConfig(pHost, pPort, "http")
-
-      new WelshCountryNamesObjectStoreDataSource(english, objectStore, proxyConfig, ec, mat)
+      new WelshCountryNamesObjectStoreDataSource(english, objectStore, ec, mat)
     }
   }
 }

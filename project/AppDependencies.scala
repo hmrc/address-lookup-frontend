@@ -15,14 +15,13 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-30"                     % hmrcMongoPlayVersion,
     "uk.gov.hmrc"             %% "play-conditional-form-mapping-play-30"  % "3.5.0",
     "com.github.tototoshi"    %% "scala-csv"                              % "2.0.0",
-    "net.ruippeixotog"        %% "scala-scraper"                          % "3.2.0",
+    "org.jsoup"                % "jsoup"                                  % "1.22.2",
     "uk.gov.hmrc.objectstore" %% "object-store-client-play-30"            % "2.5.0"
   ).map(_.withSources())
 
   def test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"   % bootstrapPlayVersion,
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"  % hmrcMongoPlayVersion,
-    "org.jsoup"          % "jsoup"                    % "1.22.1"
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"  % hmrcMongoPlayVersion
   ).map(_ % Test)
 
   def it: Seq[sbt.ModuleID] = Seq(

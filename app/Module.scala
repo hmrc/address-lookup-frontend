@@ -46,7 +46,7 @@ class Module(environment: Environment, playConfig: Configuration) extends Abstra
       new WelshCountryNamesDataSource(english)  
     } else {
       logger.info(s"Using gov-wales country data from object-store")
-      new WelshCountryNamesObjectStoreDataSource(english, objectStore, ec, mat)
+      new WelshCountryNamesObjectStoreDataSource(english, objectStore, playConfig, ec, mat)
     }
   }
 }

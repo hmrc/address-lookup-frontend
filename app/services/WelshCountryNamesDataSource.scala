@@ -20,7 +20,7 @@ import address.v2.Country
 import com.github.tototoshi.csv.{CSVFormat, CSVReader, DefaultCSVFormat}
 import org.apache.pekko.stream.Materializer
 import org.jsoup.Jsoup
-import play.api.Logging
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.objectstore.client.Path
 import uk.gov.hmrc.objectstore.client.play.Implicits.*
@@ -107,16 +107,38 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 class WelshCountryNamesObjectStoreDataSource  @Inject() (
                                                           englishCountryNamesDataSource: EnglishCountryNamesDataSource,
                                                           objectStore: PlayObjectStoreClient,
+                                                          config: Configuration,
                                                           implicit val ec: ExecutionContext,
                                                           implicit val materializer: Materializer) extends WelshCountryNamesDataSource(englishCountryNamesDataSource) with Logging {
 
   private val objectStorePath = Path.Directory("govwales").file("country-names.csv")
 
-  protected[services] def resolveGovWalesDownloadUrl(): String =
-    Jsoup.connect("https://www.gov.wales/bydtermcymru/international-place-names")
+
+  protected[services] def outboundProxy: Option[(String, Int)] = {
+    val maybeHost = config.getOptional[String]("proxy.host").map(_.trim).filter(_.nonEmpty)
+    val maybePort = config.getOptional[Int]("proxy.port")
+
+    (maybeHost, maybePort) match {
+      case (Some(host), Some(port)) => Some((host, port))
+      case (Some(_), None) =>
+        logger.warn("[outboundProxy] - Gov Wales proxy host is set but port is missing; proceeding without proxy")
+        None
+      case (None, Some(_)) =>
+        logger.warn("[outboundProxy] - Gov Wales proxy port is set but host is missing; proceeding without proxy")
+        None
+      case _ => None
+    }
+  }
+
+  protected[services] def resolveGovWalesDownloadUrl(): String = {
+    val connection = Jsoup.connect("https://www.gov.wales/bydtermcymru/international-place-names")
+    outboundProxy.foreach { case (host, port) => connection.proxy(host, port) }
+
+    connection
       .get()
       .select("a:containsOwn(Enwau gwledydd)")
       .attr("abs:href")
+  }
 
   protected[services] def downloadContent(url: String): String =
     Using.resource(URI.create(url).toURL.openStream()) { in =>

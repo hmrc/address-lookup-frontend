@@ -17,14 +17,15 @@
 package services
 
 import org.apache.pekko.stream.Materializer
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import uk.gov.hmrc.objectstore.client.{ObjectSummaryWithMd5, Path}
+import play.api.Configuration
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
+import uk.gov.hmrc.objectstore.client.{ObjectSummaryWithMd5, Path}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,7 +48,8 @@ class WelshCountryNamesObjectStoreDataSourceSpec
   class Scenario(
     resolveDownloadUrl: () => String = () => "https://example.com/country-names.csv",
     downloadContentFromUrl: String => String = _ => validGovWalesCsv,
-    putObjectResult: Future[ObjectSummaryWithMd5] = Future.successful(null.asInstanceOf[ObjectSummaryWithMd5])
+    putObjectResult: Future[ObjectSummaryWithMd5] = Future.successful(null.asInstanceOf[ObjectSummaryWithMd5]),
+    config: Configuration = app.configuration
   ) {
     implicit val ec: ExecutionContext = ExecutionContext.global
     implicit val materializer: Materializer = app.materializer
@@ -59,7 +61,7 @@ class WelshCountryNamesObjectStoreDataSourceSpec
     when(objectStore.putObject(any[Path.File], any[String], any(), any(), any(), any())(any(), any()))
       .thenReturn(putObjectResult)
 
-    val service: WelshCountryNamesObjectStoreDataSource = new WelshCountryNamesObjectStoreDataSource(english, objectStore, ec, materializer) {
+    val service: WelshCountryNamesObjectStoreDataSource = new WelshCountryNamesObjectStoreDataSource(english, objectStore, config, ec, materializer) {
       override protected[services] def resolveGovWalesDownloadUrl(): String = resolveDownloadUrl()
       override protected[services] def downloadContent(url: String): String = downloadContentFromUrl(url)
     }
@@ -101,6 +103,38 @@ class WelshCountryNamesObjectStoreDataSourceSpec
 
       service.countriesCY.find(_.code == "AF").get.name mustBe originalAfghanistanName
       verifyNoInteractions(objectStore)
+    }
+  }
+
+  "outboundProxy" should {
+    "return configured proxy when host and port are present" in new Scenario(
+      config = Configuration.from(Map("proxy.host" -> "proxy.local", "proxy.port" -> 8080))
+    ) {
+      service.outboundProxy mustBe Some("proxy.local" -> 8080)
+    }
+
+    "trim host value before returning proxy" in new Scenario(
+      config = Configuration.from(Map("proxy.host" -> "  proxy.local  ", "proxy.port" -> 8080))
+    ) {
+      service.outboundProxy mustBe Some("proxy.local" -> 8080)
+    }
+
+    "return no proxy when host is configured without port" in new Scenario(
+      config = Configuration.from(Map("proxy.host" -> "proxy.local"))
+    ) {
+      service.outboundProxy mustBe None
+    }
+
+    "return no proxy when port is configured without host" in new Scenario(
+      config = Configuration.from(Map("proxy.port" -> 8080))
+    ) {
+      service.outboundProxy mustBe None
+    }
+
+    "return no proxy when host is blank" in new Scenario(
+      config = Configuration.from(Map("proxy.host" -> "   ", "proxy.port" -> 8080))
+    ) {
+      service.outboundProxy mustBe None
     }
   }
 }

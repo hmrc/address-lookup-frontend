@@ -27,7 +27,7 @@ import uk.gov.hmrc.objectstore.client.play.Implicits.*
 import uk.gov.hmrc.objectstore.client.play.PlayObjectStoreClient
 
 import java.io.InputStream
-import java.net.URI
+import java.net.{InetSocketAddress, Proxy, URI}
 import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.SortedMap
@@ -114,23 +114,29 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
   private val objectStorePath = Path.Directory("govwales").file("country-names.csv")
 
 
-  protected[services] def outboundProxy: Option[(String, Int)] = {
+  val outboundProxy: Option[(String, Int)] = {
     val maybeHost = config.getOptional[String]("proxy.host").map(_.trim).filter(_.nonEmpty)
     val maybePort = config.getOptional[Int]("proxy.port")
 
     (maybeHost, maybePort) match {
-      case (Some(host), Some(port)) => Some((host, port))
+      case (Some(host), Some(port)) =>
+        logger.info("[outboundProxy] - Gov Wales proxy defined")
+        Some((host, port))
       case (Some(_), None) =>
         logger.warn("[outboundProxy] - Gov Wales proxy host is set but port is missing; proceeding without proxy")
         None
       case (None, Some(_)) =>
         logger.warn("[outboundProxy] - Gov Wales proxy port is set but host is missing; proceeding without proxy")
         None
-      case _ => None
+      case _ =>
+        logger.warn("[outboundProxy] - Gov Wales proxy is not defined")
+        None
     }
   }
 
   protected[services] def resolveGovWalesDownloadUrl(): String = {
+    logger.info("[resolveGovWalesDownloadUrl] - Resolving Welsh Government country names download URL")
+
     val connection = Jsoup.connect("https://www.gov.wales/bydtermcymru/international-place-names")
     outboundProxy.foreach { case (host, port) => connection.proxy(host, port) }
 
@@ -140,10 +146,23 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
       .attr("abs:href")
   }
 
-  protected[services] def downloadContent(url: String): String =
-    Using.resource(URI.create(url).toURL.openStream()) { in =>
+  protected[services] def downloadContent(url: String): String = {
+    logger.info(s"[downloadContent] - Downloading Welsh Government country names data from URL: $url")
+
+    Using.resource {
+      val targetUrl = URI.create(url).toURL
+      val connection = outboundProxy
+        .map { case (host, port) =>
+          val proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port))
+          targetUrl.openConnection(proxy)
+        }
+        .getOrElse(targetUrl.openConnection())
+
+      connection.getInputStream
+    } { in =>
       new String(in.readAllBytes(), StandardCharsets.UTF_8)
     }
+  }
 
   override def retrieveAndStoreData(): Future[Unit] = {
     try {

@@ -84,10 +84,6 @@
           id = lookupForm("postcode").id,
           errorMessage = lookupForm("postcode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error"))))))
 
-        <p class="govuk-!-margin-bottom-6 govuk-body">
-            <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
-        </p>
-
       @textInput(Input(
           label = Label(content = HtmlContent(messages("lookupPage.filterLabel"))),
           name = lookupForm("filter").name,
@@ -96,6 +92,10 @@
           id = lookupForm("filter").id,
           errorMessage = lookupForm("filter").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           hint = Some(Hint(content = HtmlContent(messages("constants.lookupFilterHint"))))))
+
+      <p class="govuk-!-margin-bottom-6 govuk-body">
+          <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id)}" id="manualAddress">@{messages("lookupPage.manualAddressLinkText")}</a>
+      </p>
 
       @button(Button(content = HtmlContent(messages("lookupPage.submitLabel")),
           name=Some("continue"),

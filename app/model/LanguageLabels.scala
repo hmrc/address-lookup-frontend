@@ -187,14 +187,14 @@ object LanguageLabelsForMessages {
   import InternationalLanguageLabelsForMessages._
 
   implicit val languageLabelsWrites: OWrites[LanguageLabels] = {
-    (__).writeNullable[AppLevelLabels]
-      .and((__).writeNullable[SelectPageLabels])
-      .and((__).writeNullable[LookupPageLabels])
-      .and((__).writeNullable[EditPageLabels])
-      .and((__).writeNullable[ConfirmPageLabels])
-      .and((__).writeNullable[CountryPickerPageLabels])
-      .and((__).writeNullable[InternationalLanguageLabels])
-      .and((__).writeNullable[JsValue])(
+    __.writeNullable[AppLevelLabels]
+      .and(__.writeNullable[SelectPageLabels])
+      .and(__.writeNullable[LookupPageLabels])
+      .and(__.writeNullable[EditPageLabels])
+      .and(__.writeNullable[ConfirmPageLabels])
+      .and(__.writeNullable[CountryPickerPageLabels])
+      .and(__.writeNullable[InternationalLanguageLabels])
+      .and(__.writeNullable[JsValue])(
         unlift(LanguageLabels.unapply)
       )
   }

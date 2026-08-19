@@ -45,6 +45,7 @@ import views.html.{country_picker, error_template}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.reflectiveCalls
 import scala.reflect.Selectable.reflectiveSelectable
 
 class InternationalAddressLookupControllerSpec
@@ -59,8 +60,7 @@ class InternationalAddressLookupControllerSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  class Scenario(journeyConfigV2: Map[String, JourneyDataV2] = Map.empty,
-                 var journeyDataV2: Map[String, JourneyDataV2] = Map.empty,
+  class Scenario(var journeyDataV2: Map[String, JourneyDataV2] = Map.empty,
                  proposals: Seq[ProposedAddress] = Seq.empty,
                  id: Option[String] = None) {
 
@@ -113,16 +113,16 @@ class InternationalAddressLookupControllerSpec
     val countryService: CountryService = new CountryService {
       override def findAll(enFlag: Boolean = true): Seq[Country] = Seq(Country("GB", "United Kingdom"), Country("DE", "Germany"), Country("FR", "France"))
 
-      override def find(enFlag: Boolean = true, code: String): Option[Country] = findAll().find { case c: Country => c.code == code }
+      override def find(enFlag: Boolean = true, code: String): Option[Country] = findAll().find { _.code == code }
     }
 
     val controller = new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
       frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results, lookup)
 
-    def controllerOveridinghandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]): InternationalAddressLookupController =
+    def controllerOverridingHandleLookup(resOfHandleLookup: Future[countOfResults.ResultsCount]): InternationalAddressLookupController =
       new InternationalAddressLookupController(journeyRepository, addressService, countryService, auditConnector,
         frontendAppConfig, components, remoteMessagesApiProvider, select, edit, confirm, no_results, too_many_results, lookup) {
-        override def handleLookup(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
+        override def handleLookup(journeyData: JourneyDataV2, filter: String, firstLookup: Boolean)(implicit hc: HeaderCarrier): Future[ResultsCount] = resOfHandleLookup
       }
 
     object MockIdGenerationService extends IdGenerationService {
@@ -231,7 +231,7 @@ class InternationalAddressLookupControllerSpec
       val html: Element = contentAsString(res).asBodyFragment
       private val maybeBannerTextElement = html.getElementsByClass("govuk-phase-banner__text")
 
-      maybeBannerTextElement.size().toInt.mustBe((0))
+      maybeBannerTextElement.size().mustBe(0)
     }
 
     val betaBannerJourneyV2 =
@@ -335,7 +335,7 @@ class InternationalAddressLookupControllerSpec
       header(HeaderNames.LOCATION, res) must be(Some(routes.InternationalAddressLookupController.confirm("foo").url))
     }
 
-    "display a list of  english proposals given postcode and filter parameters" in new Scenario(
+    "display a list of  English proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
@@ -577,7 +577,7 @@ class InternationalAddressLookupControllerSpec
   }
 
   "edit" should {
-    "show the uk edit page for english" in new Scenario(
+    "show the uk edit page for English" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))

@@ -20,7 +20,7 @@ object BLPUStateHelper {
 
   def valueToEnum(value: String) = Option(BLPUState.valueOf(value))
 
-  def codeToEnum(code: Int) = Option(BLPUState.lookup(code))
+  private def codeToEnum(code: Int) = Option(BLPUState.lookup(code))
 
   def codeToString(code: Int): Option[String] = codeToEnum(code).map(_.name)
 }
@@ -30,7 +30,7 @@ object LogicalStateHelper {
 
   def valueToEnum(value: String) = Option(LogicalState.valueOf(value))
 
-  def codeToEnum(code: Int) = Option(LogicalState.lookup(code))
+  private def codeToEnum(code: Int) = Option(LogicalState.lookup(code))
 
   def codeToString(code: Int): Option[String] = codeToEnum(code).map(_.name)
 }
@@ -40,7 +40,7 @@ object StreetClassificationHelper {
 
   def valueToEnum(value: String) = Option(StreetClassification.valueOf(value))
 
-  def codeToEnum(code: Int) = Option(StreetClassification.lookup(code))
+  private def codeToEnum(code: Int) = Option(StreetClassification.lookup(code))
 
   def codeToString(code: Int): Option[String] = codeToEnum(code).map(_.name)
 }

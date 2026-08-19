@@ -22,7 +22,6 @@
 
 @this(
         form: FormWithCSRF,
-        textarea: GovukTextarea,
         button: GovukButton,
         textInput: GovukInput,
         govukErrorSummary: GovukErrorSummary,
@@ -31,7 +30,6 @@
 @(id: String,
     journeyData: JourneyDataV2,
     lookupForm: Form[Lookup],
-    isWelsh: Boolean,
     isUKMode: Boolean = true,
     message: Option[String] = None
 )(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
@@ -51,7 +49,7 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(titleWithError, Some(lookupForm), journeyData) {
+@page(titleWithError, journeyData) {
 
   @form(routes.AbpAddressLookupController.postLookup(id)) {
 

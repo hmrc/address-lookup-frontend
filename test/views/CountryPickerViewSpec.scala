@@ -39,7 +39,7 @@ class CountryPickerViewSpec extends ViewSpec {
       testShowPhaseBanner = showPhaseBanner,
       testIncludeHMRCBranding = includeHMRCBranding
     )
-    val testPage: Html = countryPickerView("", testJourneyConfig, countryPickerForm(), isWelsh = false, countries = Seq.empty[Country])(FakeRequest())
+    val testPage: Html = countryPickerView("", testJourneyConfig, countryPickerForm(), countries = Seq.empty[Country])(FakeRequest())
     Jsoup.parse(testPage.body)
   }
 

@@ -34,10 +34,10 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  object tooManyResultsMessages {
+  object TooManyResultsMessages {
     val title = "No results found"
     val heading1 = "Too many results, enter more details"
     val heading2 = "We couldn't find any results for that property name or number"
@@ -53,7 +53,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     val back = "back"
   }
 
-  object welshTooManyResultsMessages {
+  object WelshTooManyResultsMessages {
     val title = "Dim canlyniadau wedi’u darganfod"
     val heading1 = "Mae yna ormod o ganlyniadau"
     val heading2 = "Ni allem ddod o hyd i unrhyw ganlyniadau ar gyfer enw neu rif yr eiddo hwnnw"
@@ -69,7 +69,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
     val back = "Yn ôl"
   }
 
-  object otherPageMessages {
+  object OtherPageMessages {
     val noResultsPageTitle = "We cannot find any addresses for"
   }
 
@@ -95,11 +95,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
               text("Back")
             )
 
-            doc.title.shouldBe(tooManyResultsMessages.title)
-            doc.h1.text.shouldBe(tooManyResultsMessages.heading1)
-            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
-            doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet2WithFilter(testFilterValue))
-            doc.link("anotherSearch").text().shouldBe(tooManyResultsMessages.button)
+            doc.title.shouldBe(TooManyResultsMessages.title)
+            doc.h1.text.shouldBe(TooManyResultsMessages.heading1)
+            doc.paras should have(elementWithValue(TooManyResultsMessages.line1))
+            doc.bulletPointList.select("li").first.text.shouldBe(TooManyResultsMessages.bullet2WithFilter(testFilterValue))
+            doc.link("anotherSearch").text().shouldBe(TooManyResultsMessages.button)
             doc.link("enterManual") should have(
               href(routes.InternationalAddressLookupController.edit(testJourneyId).url),
               text("Enter the address manually")
@@ -127,11 +127,11 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
             doc.select("a[class=govuk-back-link]") shouldNot have(
               text("Back")
             )
-            doc.title.shouldBe(tooManyResultsMessages.title)
-            doc.h1.text.shouldBe(tooManyResultsMessages.heading1)
-            doc.paras should have(elementWithValue(tooManyResultsMessages.line1))
-            doc.bulletPointList.select("li").first.text.shouldBe(tooManyResultsMessages.bullet2WithFilter(testFilterValue))
-            doc.link("anotherSearch").text().shouldBe(tooManyResultsMessages.button)
+            doc.title.shouldBe(TooManyResultsMessages.title)
+            doc.h1.text.shouldBe(TooManyResultsMessages.heading1)
+            doc.paras should have(elementWithValue(TooManyResultsMessages.line1))
+            doc.bulletPointList.select("li").first.text.shouldBe(TooManyResultsMessages.bullet2WithFilter(testFilterValue))
+            doc.link("anotherSearch").text().shouldBe(TooManyResultsMessages.button)
             doc.link("enterManual") should have(
               href(routes.InternationalAddressLookupController.edit(testJourneyId).url),
               text("Enter the address manually")
@@ -212,7 +212,7 @@ class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
 
         val doc = getDocFromResponse(res)
 
-        doc.title.shouldBe(s"${otherPageMessages.noResultsPageTitle} $testFilterValue")
+        doc.title.shouldBe(s"${OtherPageMessages.noResultsPageTitle} $testFilterValue")
       }
     }
   }

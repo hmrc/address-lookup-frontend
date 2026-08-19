@@ -16,7 +16,6 @@
 
 package views
 
-import forms.ALFForms
 import play.api.i18n
 import play.api.i18n.{Lang, MessagesApi}
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
@@ -48,7 +47,7 @@ class ViewHelperSpec extends ViewSpec {
         implicit val messages: i18n.Messages = messagesApi.preferred(Seq(Lang(language.code)))
 
         s"return the correct message for the drop down of '${messagesForLanguage.selectCountry}'" in {
-          val actual = ViewHelper.countriesToSelectItems(Seq(), ALFForms.countryPickerForm())
+          val actual = ViewHelper.countriesToSelectItemsWithLabel(Seq())
           val expected = Seq(SelectItem(Some(""), messagesForLanguage.selectCountry))
 
           actual.shouldBe(expected)

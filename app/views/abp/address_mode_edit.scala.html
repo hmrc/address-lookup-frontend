@@ -29,10 +29,8 @@
 
 @this(
         form: FormWithCSRF,
-        textarea: GovukTextarea,
         button: GovukButton,
         textInput: GovukInput,
-        radios: GovukRadios,
         select: GovukSelect,
         page: Layout,
         govukFieldset: GovukFieldset,
@@ -150,7 +148,7 @@
                 name = "countryCode",
                 label = Label(content = HtmlContent(messages("editPage.countryLabel"))),
                 errorMessage = editForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
-                items = ViewHelper.countriesToSelectItems(countries, editForm),
+                items = ViewHelper.countriesToSelectItemsWithLabel(countries),
                 formGroup = FormGroup(classes = Some("form-field-group")),
                 value = editForm("countryCode").value
             ).asAccessibleAutocomplete())
@@ -164,7 +162,7 @@
     </h1>
 }
 
-@page(titleWithError, Some(editForm), journeyData) {
+@page(titleWithError, journeyData) {
 
     @if(editForm.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(editForm))

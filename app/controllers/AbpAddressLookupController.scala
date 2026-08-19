@@ -78,7 +78,7 @@ class AbpAddressLookupController @Inject()(
           )
 
           requestWithWelshHeader(isWelsh) {
-            Ok(lookup(id, journeyData, formPrePopped, isWelsh, isUKMode)
+            Ok(lookup(id, journeyData, formPrePopped, isUKMode)
             (req, messages, frontendAppConfig))
           }
 
@@ -106,7 +106,7 @@ class AbpAddressLookupController @Inject()(
             .bindFromRequest()
             .fold(
               errors => requestWithWelshHeader(isWelsh) {
-                BadRequest(lookup(id, journeyData, errors, isWelsh, isUKMode))
+                BadRequest(lookup(id, journeyData, errors, isUKMode))
               },
               lookup => Redirect(routes.AbpAddressLookupController.select(id, lookup.postcode, lookup.filter)))
 
@@ -126,8 +126,6 @@ class AbpAddressLookupController @Inject()(
 
       val isWelsh = getWelshContent(journeyData)
 
-      val isUKMode = journeyData.config.options.isUkMode
-
       val formattedPostcode = PostcodeHelper.displayPostcode(postcode)
 
       handleLookup(id, journeyData, postcode, filter) map {
@@ -144,15 +142,15 @@ class AbpAddressLookupController @Inject()(
 
           Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
             Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), formattedPostcode, filter,
-              firstLookup, isWelsh, isUKMode))
+              firstLookup))
           }
         case TooManyResults(_, firstLookup) =>
           None -> requestWithWelshHeader(isWelsh) {
-            Ok(too_many_results(id, journeyData, formattedPostcode, filter, firstLookup, isWelsh, isUKMode))
+            Ok(too_many_results(id, journeyData, formattedPostcode, filter, firstLookup))
           }
         case NoResults =>
           None -> requestWithWelshHeader(isWelsh) {
-            Ok(no_results(id, journeyData, formattedPostcode, isWelsh, isUKMode))
+            Ok(no_results(id, journeyData, formattedPostcode))
           }
       }
     }
@@ -213,12 +211,11 @@ class AbpAddressLookupController @Inject()(
 
         val isWelsh = getWelshContent(journeyData)
 
-        val isUKMode = journeyData.config.options.isUkMode
         val bound = selectForm().bindFromRequest()
 
         bound.fold(
           errors => {
-            (None -> requestWithWelshHeader(isWelsh) {
+            None -> requestWithWelshHeader(isWelsh) {
               BadRequest(
                 select(
                   id,
@@ -227,12 +224,10 @@ class AbpAddressLookupController @Inject()(
                   Proposals(journeyData.proposals),
                   postcode,
                   filter,
-                  firstSearch = true,
-                  isWelsh = isWelsh,
-                  isUKMode = isUKMode
+                  firstSearch = true
                 )
               )
-            })
+            }
           },
           selection => {
             journeyData.proposals match {
@@ -263,9 +258,7 @@ class AbpAddressLookupController @Inject()(
                           Proposals(Some(props)),
                           postcode,
                           filter,
-                          firstSearch = true,
-                          isWelsh = isWelsh,
-                          isUKMode = isUKMode
+                          firstSearch = true
                         )
                       )
                     })
@@ -390,7 +383,8 @@ class AbpAddressLookupController @Inject()(
                     countries(isWelsh),
                     journeyData.config.options.allowedCountryCodes
                   ),
-                  isWelsh, isUKMode
+                  isWelsh,
+                  isUKMode
                 )
               )
             }),
@@ -429,7 +423,6 @@ class AbpAddressLookupController @Inject()(
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
       val isWelsh = getWelshContent(journeyData)
-      val isUKMode = journeyData.config.options.isUkMode
 
       journeyData.selectedAddress
         .map(
@@ -439,9 +432,7 @@ class AbpAddressLookupController @Inject()(
                 confirm(
                   id,
                   journeyData,
-                  selectedAddress,
-                  isWelsh,
-                  isUKMode
+                  selectedAddress
                 )
               )
             })

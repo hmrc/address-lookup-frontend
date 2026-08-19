@@ -153,10 +153,10 @@ object InternationalLanguageLabelsForMessages {
   }
 
   implicit val internationalLanguageLabelsWrites: OWrites[InternationalLanguageLabels] = {
-    ((__).writeNullable[InternationalSelectPageLabels])
-      .and((__).writeNullable[InternationalLookupPageLabels])
-      .and((__).writeNullable[InternationalEditPageLabels])
-      .and((__).writeNullable[InternationalConfirmPageLabels])(
+    __.writeNullable[InternationalSelectPageLabels]
+      .and(__.writeNullable[InternationalLookupPageLabels])
+      .and(__.writeNullable[InternationalEditPageLabels])
+      .and(__.writeNullable[InternationalConfirmPageLabels])(
         unlift(InternationalLanguageLabels.unapply)
       )
   }

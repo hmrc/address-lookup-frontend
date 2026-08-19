@@ -23,14 +23,13 @@
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
-        standardBetaBanner: StandardBetaBanner,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
-@(pageTitle: String, form: Option[Form[?]], journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
+@(pageTitle: String, journeyData: JourneyDataV2)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedJourneyConfig = @{
     journeyData.resolveConfigV2(appConfig)

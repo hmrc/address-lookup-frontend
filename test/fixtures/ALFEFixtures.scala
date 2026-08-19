@@ -29,7 +29,7 @@ trait ALFEFixtures {
      ))
    ), countryCode = Some("GB"))
 
-   def editFormConstructor(a: Edit = Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bang"),"B11 6HJ", "GB"))
+   def editFormConstructor(a: Edit = Edit(None, Some("foo"), Some("bar"), Some("wizz"), Some("bang"),"B11 6HJ")): Seq[(String, String)]
    = Seq(
       a.line1.map(a => ("line1", a)).getOrElse(("", "")),
       a.line2.map(b => ("line2", b)).getOrElse(("", "")),

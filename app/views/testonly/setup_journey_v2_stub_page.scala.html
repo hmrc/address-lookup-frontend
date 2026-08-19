@@ -26,7 +26,7 @@
     JourneyDataV2(JourneyConfigV2(2, JourneyOptions("")))
 }
 
-@page("Stub For starting new journey in ALF with V2 config", Some(stubForm), dummyJourney) {
+@page("Stub For starting new journey in ALF with V2 config", dummyJourney) {
 
     @form(controllers.testonly.routes.StubController.submitStubForNewJourneyV2) {
         <h1 class="form-title govuk-heading-l" id="pageHeading">Stub For starting new journey in ALF with V2 config</h1>

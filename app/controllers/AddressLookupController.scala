@@ -113,7 +113,7 @@ class AddressLookupController @Inject()(
               allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
 
             requestWithWelshHeader(isWelsh) {
-              Ok(country_picker(id, journeyData, countryPickerForm().fill(CountryPicker("")), isWelsh,
+              Ok(country_picker(id, journeyData, countryPickerForm().fill(CountryPicker("")),
                 allowedSeqCountries(countries(isWelsh)))(req, messages, frontendAppConfig))
             }
           }
@@ -142,7 +142,7 @@ class AddressLookupController @Inject()(
 
             None -> {
               requestWithWelshHeader(isWelsh) {
-                BadRequest(country_picker(id, journeyData, errors, isWelsh,
+                BadRequest(country_picker(id, journeyData, errors,
                   allowedSeqCountries(countries(isWelsh)))(req, messages, frontendAppConfig))
               }
             }

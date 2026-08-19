@@ -19,16 +19,15 @@
 @import templates.{Layout, address_confirmation_display}
 @import model.v2.JourneyDataV2
 
-@this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput,
-        radios: GovukRadios, select: GovukSelect, page: Layout)
+@this(form: FormWithCSRF, button: GovukButton, page: Layout)
 
-@(id: String, journeyData: JourneyDataV2, selectedAddress: ConfirmableAddress, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: ConfirmableAddress)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(messages("confirmPage.title"), None, journeyData) {
+@page(messages("confirmPage.title"), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{messages("confirmPage.heading")}

@@ -39,12 +39,12 @@ import scala.language.postfixOps
 import scala.util.Random
 
 class LookupPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  def longFilterValue = (1 to 257) map (_ => Random.alphanumeric.head) mkString
+  def longFilterValue: String = (1 to 257) map (_ => Random.alphanumeric.head) mkString
 
-  // TODO: Make hint configurable as part of welsh translation
+  // TODO: Make hint configurable as part of Welsh translation
   val hardCodedFormHint = " For example, The Mill, 116 or Flat 37a"
 
   override lazy val app: Application = {
@@ -116,7 +116,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val message = "This field is required"
 
         doc.errorSummary should have(
-          errorSummaryMessage(LookupPage.postcodeId, message)
+          errorSummaryMessage(message)
         )
 
         doc.input(LookupPage.postcodeId) should have(
@@ -141,7 +141,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val message = "Enter a real Postcode e.g. AA1 1AA"
 
         doc.errorSummary should have(
-          errorSummaryMessage(LookupPage.postcodeId, message)
+          errorSummaryMessage(message)
         )
 
         doc.input(LookupPage.postcodeId) should have(
@@ -167,7 +167,7 @@ class LookupPageISpec extends IntegrationSpecBase {
         val message = "The house name or number needs to be fewer than 256 characters"
 
         doc.errorSummary should have(
-          errorSummaryMessage(LookupPage.filterId, message)
+          errorSummaryMessage(message)
         )
 
         doc.input(LookupPage.filterId) should have(
@@ -257,9 +257,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status.shouldBe(OK)
 
-        doc.select("a[class=govuk-back-link]") should not have (
-          text("Back")
-          )
+        doc.select("a[class=govuk-back-link]") should not have text("Back")
       }
     }
 
@@ -276,7 +274,7 @@ class LookupPageISpec extends IntegrationSpecBase {
 
         res.status.shouldBe(OK)
 
-        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
+        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
 
         for {
           l <- testCustomLookupPageJourneyConfigV2.config.labels

@@ -43,7 +43,7 @@ class Module(environment: Environment, playConfig: Configuration) extends Abstra
 
     if (useLocal) {
       logger.info(s"Using local gov-wales country data")
-      new WelshCountryNamesDataSource(english)  
+      new WelshCountryNamesDataSource(english)
     } else {
       logger.info(s"Using gov-wales country data from object-store")
       new WelshCountryNamesObjectStoreDataSource(english, objectStore, playConfig, ec, mat)

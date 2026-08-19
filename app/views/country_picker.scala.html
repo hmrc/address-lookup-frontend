@@ -27,7 +27,6 @@
 
 @this(
         form: FormWithCSRF,
-        textarea: GovukTextarea,
         button: GovukButton,
         select: GovukSelect,
         govukErrorSummary: GovukErrorSummary,
@@ -36,7 +35,6 @@
 @(id: String,
     journeyData: JourneyDataV2,
     countryPickerForm: Form[CountryPicker],
-    isWelsh: Boolean,
     countries: Seq[Country],
     message: Option[String] = None
 )(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
@@ -56,7 +54,7 @@
     journeyData.resolveConfigV2(appConfig)
 }
 
-@page(titleWithError, Some(countryPickerForm), journeyData) {
+@page(titleWithError, journeyData) {
 
   @form(routes.AddressLookupController.handleCountryPicker(id)) {
       @if(countryPickerForm.errors.nonEmpty) {
@@ -82,7 +80,7 @@
           name = "countryCode",
           label = Label(content = HtmlContent(messages("countryPickerPage.countryLabel"))),
           errorMessage = countryPickerForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
-          items = ViewHelper.countriesToSelectItems(countries, countryPickerForm),
+          items = ViewHelper.countriesToSelectItemsWithLabel(countries),
           formGroup = FormGroup(classes = Some("form-field-group"))
       ).asAccessibleAutocomplete())
 

@@ -34,7 +34,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object EnglishContent {
@@ -104,7 +104,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val res: WSResponse = await(fResponse)
         res.status.shouldBe(OK)
 
-        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
+        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
 
         val doc = getDocFromResponse(res)
         doc.title.shouldBe(EnglishContent.title(testFilterValue) + " - NAV_TITLE - GOV.UK")
@@ -218,9 +218,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
         val doc = getDocFromResponse(res)
         doc.title.shouldBe(EnglishContent.title(testFilterValue))
         doc.h1.text().shouldBe(EnglishContent.heading(testFilterValue))
-        doc.select("a[class=govuk-back-link]") should not have (
-          text("Back")
-          )
+        doc.select("a[class=govuk-back-link]") should not have text("Back")
 
         doc.link("enterManual") should have(
           href(routes.InternationalAddressLookupController.edit(testJourneyId).url),

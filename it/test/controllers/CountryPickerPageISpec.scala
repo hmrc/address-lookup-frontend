@@ -31,7 +31,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CountryPickerPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The country picker page" when {
@@ -60,7 +60,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
       }
 
-      "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
+      "render the default Welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
@@ -107,7 +107,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "render the custom welsh content where the 'PLAY_LANG' is set to cy" in {
+      "render the custom Welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2))
 

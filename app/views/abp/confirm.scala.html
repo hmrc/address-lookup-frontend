@@ -22,7 +22,7 @@
 @this(form: FormWithCSRF, textarea: GovukTextarea, button: GovukButton, textInput: GovukInput,
         radios: GovukRadios, select: GovukSelect, page: Layout)
 
-@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: ConfirmableAddress, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -34,42 +34,31 @@
         @{messages("confirmPage.heading")}
     </h1>
 
-    @if(selectedAddress.isDefined) {
-        @form(controllers.routes.AbpAddressLookupController.handleConfirm(id)) {
-            @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
-                <h2 class="govuk-heading-m" id="infoSubheading">@{messages("confirmPage.infoSubheading")}</h2>
-                <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("confirmPage.infoMessage"))</p>
-            }
-            @address_confirmation_display(selectedAddress.get.address)
-
-            @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
-                <p>
-                    <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
-                </p>
-            }
-
-            @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
-                <p class="govuk-!-margin-bottom-7">
-                    <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, None)}" id="changeLink">@{messages("confirmPage.changeLinkText")}</a>
-                </p>
-            }
-
-            @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
-                <p class="govuk-body" id="confirmChangeText">@messages("confirmPage.confirmChangeText")</p>
-            }
-
-            @button(Button(content = HtmlContent(messages("confirmPage.submitLabel")),
-                name = Some("continue"),
-                inputType = Some("submit"), attributes = Map("id" -> "continue")))
+    @form(controllers.routes.AbpAddressLookupController.handleConfirm(id)) {
+        @if(resolvedConf.options.confirmPageConfig.showSubHeadingAndInfo) {
+            <h2 class="govuk-heading-m" id="infoSubheading">@{messages("confirmPage.infoSubheading")}</h2>
+            <p class="govuk-body govuk-!-margin-bottom-6" id="infoMessage">@Html(messages("confirmPage.infoMessage"))</p>
         }
-    } else {
-        <p>@{
-            messages("constants.confirmSelectedAddressError1")
-        } <a class="govuk-link" href="@{
-            routes.AbpAddressLookupController.lookup(id)
-        }" id="lookupLink">@{
-            messages("constants.confirmSelectedAddressError2")
-        }</a>.</p>
+        @address_confirmation_display(selectedAddress.address)
+
+        @if(resolvedConf.options.confirmPageConfig.showSearchAgainLink) {
+            <p>
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.lookup(id)}" id="searchAgainLink">@{messages("confirmPage.searchAgainLinkText")}</a>
+            </p>
+        }
+
+        @if(resolvedConf.options.confirmPageConfig.showChangeLink) {
+            <p class="govuk-!-margin-bottom-7">
+                <a class="govuk-link" href="@{routes.AbpAddressLookupController.edit(id, None)}" id="changeLink">@{messages("confirmPage.changeLinkText")}</a>
+            </p>
+        }
+
+        @if(resolvedConf.options.confirmPageConfig.showConfirmChangeText) {
+            <p class="govuk-body" id="confirmChangeText">@messages("confirmPage.confirmChangeText")</p>
+        }
+
+        @button(Button(content = HtmlContent(messages("confirmPage.submitLabel")),
+            name = Some("continue"),
+            inputType = Some("submit"), attributes = Map("id" -> "continue")))
     }
 }
-    <!--TODO: Remove unreachable redirect to the lookup page-->

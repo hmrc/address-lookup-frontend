@@ -433,13 +433,13 @@ class AbpAddressLookupController @Inject()(
 
       journeyData.selectedAddress
         .map(
-          _ =>
+          selectedAddress =>
             (None, requestWithWelshHeader(isWelsh) {
               Ok(
                 confirm(
                   id,
                   journeyData,
-                  journeyData.selectedAddress,
+                  selectedAddress,
                   isWelsh,
                   isUKMode
                 )

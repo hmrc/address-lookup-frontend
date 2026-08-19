@@ -21,14 +21,10 @@
 
 @this(
         form: FormWithCSRF,
-        textarea: GovukTextarea,
         button: GovukButton,
-        textInput: GovukInput,
-        radios: GovukRadios,
-        select: GovukSelect,
         page: Layout
 )
-@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -41,7 +37,7 @@
         messages(key)
 }
 
-@page(internationalMessage("confirmPage.title"), None, journeyData) {
+@page(internationalMessage("confirmPage.title"), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
         @{internationalMessage("confirmPage.heading")}

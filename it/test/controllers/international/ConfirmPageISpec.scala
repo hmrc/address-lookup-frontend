@@ -33,7 +33,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConfirmPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The confirm page GET" should {
@@ -129,10 +129,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
       doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
 
-      testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(
-        fResponse,
-        navTitle = "NAV_TITLE"
-      )
+      testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
 
       res.status.shouldBe(OK)
     }

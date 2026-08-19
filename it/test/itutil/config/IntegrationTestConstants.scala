@@ -28,14 +28,12 @@ import scala.language.postfixOps
 
 object IntegrationTestConstants {
   val testApiVersion = 2
-//  val testJourneyId = "Jid123"
-  val testCsrfToken = () => UUID.randomUUID().toString
+  val testCsrfToken: () => String = () => UUID.randomUUID().toString
 
 
   val testContinueUrl = "test-continue-url"
   val testPostCode = "AB11 1AB"
   val testFilterValue = "bar"
-//  val testAuditRef = testJourneyId
   val testAddressIdRaw = "addressId"
   val testAddressId = Some(testAddressIdRaw)
   val testAddressLine1 = "1 High Street"
@@ -376,12 +374,12 @@ object IntegrationTestConstants {
   lazy val journeyDataV2Full: JourneyDataV2 = journeyDataV2FullJson.as[JourneyDataV2]
 
   val testJourneyDataWithMinimalJourneyConfigV2 = JourneyDataV2(config = JourneyConfigV2(2, JourneyOptions(continueUrl = testContinueUrl)))
-  def testConfigWithFullNonUKAddressV2(testAuditRef: String) = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress(testAuditRef)))
-  val testConfigNotUkModeV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(continueUrl = testContinueUrl, ukMode = Some(false)))
+  def testConfigWithFullNonUKAddressV2(testAuditRef: String): JourneyDataV2 = testJourneyDataWithMinimalJourneyConfigV2.copy(selectedAddress = Some(testFullNonUKConfirmedAddress(testAuditRef)))
+  val testConfigNotUkModeV2: JourneyConfigV2 = testJourneyDataWithMinimalJourneyConfigV2.config.copy(options = JourneyOptions(continueUrl = testContinueUrl, ukMode = Some(false)))
 
-  def testConfigWithAddressNotUkModeV2(testAuditRef: String) = testConfigWithFullNonUKAddressV2(testAuditRef).copy(config = testConfigNotUkModeV2)
-  def testConfigwithAddressNotUkModeAsJsonV2(testAuditRef: String) = Json.toJson(testConfigWithAddressNotUkModeV2(testAuditRef))
-  val testConfigDefaultAsJsonV2 = Json.toJson(testJourneyDataWithMinimalJourneyConfigV2).as[JsObject]
+  def testConfigWithAddressNotUkModeV2(testAuditRef: String): JourneyDataV2 = testConfigWithFullNonUKAddressV2(testAuditRef).copy(config = testConfigNotUkModeV2)
+  def testConfigwithAddressNotUkModeAsJsonV2(testAuditRef: String): JsValue = Json.toJson(testConfigWithAddressNotUkModeV2(testAuditRef))
+  val testConfigDefaultAsJsonV2: JsObject = Json.toJson(testJourneyDataWithMinimalJourneyConfigV2).as[JsObject]
 
   val fullSelectPageConfigV2 = SelectPageConfig(
     proposalListLimit = Some(50),
@@ -412,7 +410,7 @@ object IntegrationTestConstants {
     )
   )
 
-  val testMinimalLevelJourneyDataV2Json = Json.toJson(testMinimalLevelJourneyDataV2).as[JsValue]
+  val testMinimalLevelJourneyDataV2Json: JsValue = Json.toJson(testMinimalLevelJourneyDataV2).as[JsValue]
 
   val testDefaultLookupPageJourneyDataV2 = JourneyDataV2(
     config = JourneyConfigV2(
@@ -433,9 +431,9 @@ object IntegrationTestConstants {
     )
   )
 
-  val testDefaultLookupPageJourneyConfigV2 = Json.toJson(testDefaultLookupPageJourneyDataV2).as[JsValue]
+  val testDefaultLookupPageJourneyConfigV2: JsValue = Json.toJson(testDefaultLookupPageJourneyDataV2).as[JsValue]
 
-  def testCustomLookupPageJourneyConfigV2Json = Json.toJson(testCustomLookupPageJourneyConfigV2).as[JsValue]
+  def testCustomLookupPageJourneyConfigV2Json: JsValue = Json.toJson(testCustomLookupPageJourneyConfigV2).as[JsValue]
 
   def testCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
@@ -491,7 +489,7 @@ object IntegrationTestConstants {
     )
   )
 
-  def testOtherCustomLookupPageJourneyConfigV2Json = Json.toJson(testOtherCustomLookupPageJourneyConfigV2).as[JsValue]
+  def testOtherCustomLookupPageJourneyConfigV2Json: JsValue = Json.toJson(testOtherCustomLookupPageJourneyConfigV2).as[JsValue]
 
   def testOtherCustomLookupPageJourneyConfigV2 = JourneyDataV2(
     config = JourneyConfigV2(
@@ -556,7 +554,7 @@ object IntegrationTestConstants {
     ))
   }
 
-  def fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true, isWelsh: Boolean = false) = {
+  def fullDefaultJourneyConfigModelV2WithAllBooleansSet(allBooleanSetAndAppropriateOptions: Boolean = true, isWelsh: Boolean = false): JourneyConfigV2 = {
 
     def returnNoneOrConfig[A](configOption: Option[A]) = if (allBooleanSetAndAppropriateOptions) configOption else Option.empty[A]
 
@@ -640,14 +638,14 @@ object IntegrationTestConstants {
     )
   }
 
-  def journeyDataV2WithNoSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true)) =
+  def journeyDataV2WithNoSelectedAddressJson(journeyConfig: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet(true)): JsValue =
     Json.toJson(
       JourneyDataV2(
         journeyConfig
       ))
 
   def journeyDataV2WithSelectedAddressJson(testAuditRef: String, journeyConfigV2: JourneyConfigV2 = JourneyConfigV2(2, JourneyOptions(testContinueUrl, ukMode = Some(false))),
-                                           selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress, countryCode: Option[String] = None) =
+                                           selectedAddress: ConfirmableAddressDetails = testFullNonUKAddress, countryCode: Option[String] = None): JsValue =
     Json.toJson(
       journeyDataV2WithSelectedAddress(testAuditRef, journeyConfigV2, selectedAddress, countryCode))
 
@@ -795,7 +793,7 @@ object IntegrationTestConstants {
     )
   )
 
-  def testCustomCountryPickerPageJourneyConfigV2Json = Json.toJson(testCustomCountryPickerPageJourneyConfigV2).as[JsValue]
+  def testCustomCountryPickerPageJourneyConfigV2Json: JsValue = Json.toJson(testCustomCountryPickerPageJourneyConfigV2).as[JsValue]
 }
 
 
@@ -843,7 +841,7 @@ object AddressRecordConstants {
   )
 
   def addressResultsModelListBySize(numberOfRepeats: Int): List[ProposedAddress] =
-    (1 to numberOfRepeats).map(n =>
+    (1 to numberOfRepeats).map(_ =>
       ProposedAddress(
         addressId = testAddressIdRaw,
         uprn = None,
@@ -872,7 +870,7 @@ object AddressRecordConstants {
     )
   }
 
- def internationalAddressResultsListBySize(numberOfRepeats: Int): JsValue = {
+  def internationalAddressResultsListBySize(numberOfRepeats: Int): JsValue = {
     Json.toJson(
       (1 to numberOfRepeats) map {
         n =>

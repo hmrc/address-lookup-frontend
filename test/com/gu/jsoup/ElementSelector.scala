@@ -24,18 +24,18 @@ import scala.jdk.CollectionConverters._
 
 sealed trait ElementSelector extends ElementSelectorBuilders {
 
-  protected def self = this
+  protected def self: ElementSelector = this
 
   final def apply(elem: Element): Elements =
     fold[Element => Elements](
-      (f, desc) => f,
+      (f, _) => f,
       (l, r) => elem => new Elements(l(elem).asScala.flatMap(a => r.apply(a).asScala).asJava),
       (l, r) => elem => new Elements((l(elem).asScala ++ r(elem).asScala.distinct).asJava)
     )(elem)
 
   override final def toString: String =
     fold[List[String]](
-      (f, desc) => desc.toList,
+      (_, desc) => desc.toList,
       (l, r) => l ::: r,
       (l, r) => l ::: List("or (" + r.mkString(" ") + ")")
     ).mkString(" ")

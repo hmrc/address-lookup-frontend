@@ -31,7 +31,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CountryPickerPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The country picker page" when {
@@ -59,7 +59,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         document.getElementById("countryCode").text() contains "No results found"
 
       }
-
+      
       "render the previously selected country when country code exists in the journey data" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some(Countries.GB.code))))
@@ -77,8 +77,8 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         selectedOption.size().shouldBe(1)
         selectedOption.`val`().shouldBe("GB-United_Kingdom")
       }
-
-      "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
+      
+      "render the default Welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
 
@@ -125,7 +125,7 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "render the custom welsh content where the 'PLAY_LANG' is set to cy" in {
+      "render the custom Welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testCustomCountryPickerPageJourneyConfigV2))
 

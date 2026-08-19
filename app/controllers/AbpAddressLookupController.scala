@@ -414,7 +414,7 @@ class AbpAddressLookupController @Inject()(
 
   // GET  /:id/confirm
   def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
-    withJourneyV2(id) { journeyData => {
+    withJourneyV2(id) { journeyData =>
       import LanguageLabelsForMessages.*
 
       val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
@@ -424,10 +424,11 @@ class AbpAddressLookupController @Inject()(
 
       val isWelsh = getWelshContent(journeyData)
 
-      journeyData.selectedAddress
-        .map(
-          selectedAddress =>
-            (None, requestWithWelshHeader(isWelsh) {
+      journeyData.selectedAddress match {
+          case None =>
+            None -> requestWithWelshHeader(isWelsh) { Redirect(routes.AbpAddressLookupController.lookup(id)) }
+          case Some(selectedAddress) if journeyData.selectedAddressPassesConstraints() =>
+            Some(journeyData) -> requestWithWelshHeader(isWelsh) {
               Ok(
                 confirm(
                   id,
@@ -435,12 +436,19 @@ class AbpAddressLookupController @Inject()(
                   selectedAddress
                 )
               )
-            })
-        )
-        .getOrElse((None, requestWithWelshHeader(isWelsh) {
-          Redirect(routes.AbpAddressLookupController.lookup(id))
-        }))
-    }
+            }
+          case Some(addressNeedingManualChanges) =>
+            Some(journeyData) -> requestWithWelshHeader(isWelsh) {
+              Ok(
+                confirm(
+                  id,
+                  journeyData,
+                  addressNeedingManualChanges,
+                  requiresChanges = true
+                )
+              )
+            }
+        }
     }
   }
 

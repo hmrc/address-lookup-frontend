@@ -423,28 +423,31 @@ class AbpAddressLookupController @Inject()(
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
       val isWelsh = getWelshContent(journeyData)
+      val addressConstraints = journeyData.config.options.manualAddressEntryConfig
 
       journeyData.selectedAddress match {
           case None =>
             None -> requestWithWelshHeader(isWelsh) { Redirect(routes.AbpAddressLookupController.lookup(id)) }
-          case Some(selectedAddress) if journeyData.selectedAddressPassesConstraints() =>
+          case Some(addressNeedingManualChanges)
+            if addressConstraints.isDefined && !journeyData.selectedAddressPassesConstraints() =>
+              Some(journeyData) -> requestWithWelshHeader(isWelsh) {
+                Ok(
+                  confirm(
+                    id,
+                    journeyData,
+                    addressNeedingManualChanges
+                      .truncateAddressUsingConstraints(addressConstraints.get),
+                    truncated = true
+                  )
+                )
+              }
+          case Some(selectedAddress) =>
             Some(journeyData) -> requestWithWelshHeader(isWelsh) {
               Ok(
                 confirm(
                   id,
                   journeyData,
                   selectedAddress
-                )
-              )
-            }
-          case Some(addressNeedingManualChanges) =>
-            Some(journeyData) -> requestWithWelshHeader(isWelsh) {
-              Ok(
-                confirm(
-                  id,
-                  journeyData,
-                  addressNeedingManualChanges,
-                  requiresChanges = true
                 )
               )
             }

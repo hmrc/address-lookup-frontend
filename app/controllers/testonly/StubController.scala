@@ -38,7 +38,7 @@ object TestSetupForm {
 }
 
 object StubHelper {
-  private val regexPatternForId = """(?<=lookup-address/)(.*)(?=/begin)""".r
+  private val regexPatternForId = """(?<=lookup-address\/)(.*)(?=/begin)""".r
   val getJourneyIDFromURL: String => String = (url: String) =>
     regexPatternForId
       .findFirstIn(url)

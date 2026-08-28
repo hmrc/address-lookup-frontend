@@ -30,6 +30,7 @@ import java.io.InputStream
 import java.net.{InetSocketAddress, Proxy, URI}
 import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
+import scala.collection.View
 import scala.collection.immutable.SortedMap
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
@@ -58,7 +59,7 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     .groupBy(_("Country"))
     .view.mapValues(v => v.head)
 
-  private[services] def allGovWalesRows(govWalesData: String) = {
+  private[services] def allGovWalesRows(govWalesData: String): View[(String, Map[String, String])] = {
     //There was a bug introduced where the Welsh Government published a CSV that had `Column1,Column2,...` at the top of the file
     //This code pre-reads the CSV to find the actual header row and then re-reads it from there. It also now caters for both ',' and ';' delimiters
 
@@ -79,7 +80,19 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     }
 
     val csvContent = lines.drop(headerIdx).mkString("\n")
-    val reader = CSVReader.open(Source.fromString(csvContent))(parserFormat)
+
+    // check if each line starts and ends with a quote (and no other quotes within the line), if so remove the quotes from each line, this is to cater for a bug in the Welsh Gov CSV where they have added quotes around the entire line
+    // which means the CSV doesn't conform to RFC 4180 and the CSV parser fails to parse it correctly. This is a workaround to fix that issue.
+    val cleanedCsvContent = csvContent.linesIterator.map { line =>
+      if (line.startsWith("\"") && line.endsWith("\"") && line.count(_ == '"') == 2) {
+        line.substring(1, line.length - 1)
+      } else {
+        line
+      }
+    }.mkString("\n")
+
+    val reader = CSVReader.open(Source.fromString(cleanedCsvContent))(parserFormat)
+
     reader.allWithOrderedHeaders()._2
       .sortBy(x => x("Cod gwlad (Country code)"))
       .groupBy(_("Cod gwlad (Country code)"))

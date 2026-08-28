@@ -40,6 +40,14 @@ class WelshCountryNamesDataSourceSpec extends PlaySpec with GuiceOneAppPerSuite 
         |AL;Albania;Albania;The Republic of Albania;Gweriniaeth Albania
         |""".stripMargin
 
+    val dummyFileWithSemicolonsAndEachLineWrappedInQuotes: String =
+      """
+        |"Column1;Column2;Column3;Column4;Column5"
+        |"Cod gwlad (Country code);Enw yn Saesneg (Name in English);Enw yn Gymraeg (Name in Welsh);Enw swyddogol yn Saesneg (Official name in English);Enw swyddogol yn Gymraeg (Official name in Welsh)"
+        |"AF;Afghanistan;Affganistan;The Islamic Republic of Afghanistan;Gweriniaeth Islamaidd Affganistan"
+        |"AL;Albania;Albania;The Republic of Albania;Gweriniaeth Albania"
+        |""".stripMargin
+
     "Be able to process a file with comma delimiter" in {
       val actual = service.allGovWalesRows(dummyFileWithCommas).toMap
       val expected = Map(
@@ -57,6 +65,21 @@ class WelshCountryNamesDataSourceSpec extends PlaySpec with GuiceOneAppPerSuite 
 
     "Be able to process a file with semicolon delimiter (and wrong headers)" in {
       val actual = service.allGovWalesRows(dummyFileWithSemicolon).toMap
+      val expected = Map(
+        "AF" -> Map(
+          "Country" -> "AF",
+          "Name" -> "Affganistan"
+        ),
+        "AL" -> Map(
+          "Country" -> "AL",
+          "Name" -> "Albania"
+        )
+      )
+      actual.mustBe(expected)
+    }
+
+    "Be able to process a file with semicolon delimiter (and wrong headers) and each line wrapped in quotes" in {
+      val actual = service.allGovWalesRows(dummyFileWithSemicolonsAndEachLineWrappedInQuotes).toMap
       val expected = Map(
         "AF" -> Map(
           "Country" -> "AF",

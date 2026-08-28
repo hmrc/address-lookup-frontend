@@ -3,10 +3,10 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlayVersion = "10.7.0"
+  private val bootstrapPlayVersion = "10.8.0"
   private val hmrcFrontendPlayVersion = "12.32.0"
-  private val hmrcMongoPlayVersion = "2.12.0"
-  private val jacksonVersion = "3.0.3"
+  private val hmrcMongoPlayVersion = "2.13.0"
+  private val jacksonVersion = "3.2.2"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -15,8 +15,8 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-30"                     % hmrcMongoPlayVersion,
     "uk.gov.hmrc"             %% "play-conditional-form-mapping-play-30"  % "3.5.0",
     "com.github.tototoshi"    %% "scala-csv"                              % "2.0.0",
-    "org.jsoup"                % "jsoup"                                  % "1.22.2",
-    "uk.gov.hmrc.objectstore" %% "object-store-client-play-30"            % "2.5.0"
+    "org.jsoup"                % "jsoup"                                  % "1.23.2",
+    "uk.gov.hmrc.objectstore" %% "object-store-client-play-30"            % "2.6.0"
   ).map(_.withSources())
 
   def test: Seq[ModuleID] = Seq(

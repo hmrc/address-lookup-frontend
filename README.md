@@ -558,11 +558,39 @@ To mock or stub ALF in your journey tests, you should:
  
 When running your tests, configure your service to point any ALF requests to your mock / stub server.
 
+
+### Unit testing
+To run the unit tests for the application, use the following command:
+
+```sbt test ```
+
+
+### Integration testing
+To run the integration tests, use the following command:
+
+```sbt it/test```
+
+### Code coverage
+
+```sbt clean coverage test it/test coverageReport```
+
+### SBT Updates Plugin
+This project uses the sbt-updates plugin to help manage dependency updates.
+For more information on how to use the plugin, please refer to the documentation:
+
+https://github.com/hmrc/platui/blob/main/docs/sbt-updates_plugin-usage.md#sbt-updates-plugin
+
+To check all dependencies (libraries and plugins) the easiest way is to use below command:
+
+```sbt ";dependencyUpdates; reload plugins; dependencyUpdates"```
+
+Keep in mind that the output will be split into two parts where the first one will have libraries and second plugins.
+
 ### Running the Application
 
-Ensure that mongo is running. If you don't have mongodb installed locally you can run it in docker using the following command:
+Ensure that mongo is running. If you don't have mongodb installed locally then follow the instructions here:
 
-`docker run -d --rm --name mongodb -p 27017-27019:27017-27019 mongo:4`
+https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-mongodb.html
 
 Start the required services using the following SM profile:
 

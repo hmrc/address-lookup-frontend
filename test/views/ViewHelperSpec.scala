@@ -17,10 +17,12 @@
 package views
 
 import forms.ALFForms
+import model.CountryPicker
 import play.api.i18n
 import play.api.i18n.{Lang, MessagesApi}
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
+import services.CountryService
 
 class ViewHelperSpec extends ViewSpec {
 
@@ -38,6 +40,7 @@ class ViewHelperSpec extends ViewSpec {
   )
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val countryService: CountryService = app.injector.instanceOf[CountryService]
 
   ".countriesToSelectItems()" when {
 
@@ -52,6 +55,17 @@ class ViewHelperSpec extends ViewSpec {
           val expected = Seq(SelectItem(Some(""), messagesForLanguage.selectCountry))
 
           actual.shouldBe(expected)
+        }
+
+        "mark the matching country as selected when the form is prefilled" in {
+          val countries = countryService.findAll().filter(c => Seq("GB", "FR").contains(c.code))
+          val form = ALFForms.countryPickerForm().fill(CountryPicker("GB-United_Kingdom"))
+
+          val actual = ViewHelper.countriesToSelectItems(countries, form)
+          val selectedItems = actual.filter(_.selected)
+
+          selectedItems should have length 1
+          selectedItems.head.value shouldBe Some("GB-United_Kingdom")
         }
       }
     }

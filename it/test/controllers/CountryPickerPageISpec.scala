@@ -60,6 +60,24 @@ class CountryPickerPageISpec extends IntegrationSpecBase {
 
       }
 
+      "render the previously selected country when country code exists in the journey data" in {
+        val testJourneyId = UUID.randomUUID().toString
+        await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2.copy(countryCode = Some(Countries.GB.code))))
+
+        val fResponse = buildClientLookupAddress(path = s"country-picker", testJourneyId)
+          .withHttpHeaders(HeaderNames.COOKIE -> sessionCookieWithCSRF, "Csrf-Token" -> "nocheck")
+          .get()
+
+        val res: WSResponse = await(fResponse)
+        res.status.shouldBe(OK)
+
+        val document = Jsoup.parse(res.body)
+        val selectedOption = document.select("select[name=countryCode] option[selected]")
+
+        selectedOption.size().shouldBe(1)
+        selectedOption.`val`().shouldBe("GB-United_Kingdom")
+      }
+
       "render the default welsh content where the 'PLAY_LANG' is set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))

@@ -111,10 +111,17 @@ class AddressLookupController @Inject()(
           else {
             val allowedSeqCountries = (cs: Seq[Country]) =>
               allowedCountries(cs, journeyData.config.options.allowedCountryCodes)
+            val availableCountries  = allowedSeqCountries(countries(isWelsh))
+            val prefilledCountryCode = journeyData.countryCode
+              .flatMap(code => availableCountries.find(_.code == code).map(ViewHelper.encodeCountryCode))
+              .getOrElse("")
+            val prefilledForm = countryPickerForm().fill(
+              CountryPicker(prefilledCountryCode)
+            )
 
             requestWithWelshHeader(isWelsh) {
-              Ok(country_picker(id, journeyData, countryPickerForm().fill(CountryPicker("")), isWelsh,
-                allowedSeqCountries(countries(isWelsh)))(req, messages, frontendAppConfig))
+              Ok(country_picker(id, journeyData, prefilledForm, isWelsh,
+                availableCountries)(req, messages, frontendAppConfig))
             }
           }
 

@@ -67,10 +67,6 @@
         @messages("countryPickerPage.heading")
       </h1>
 
-      @if(messages.isDefinedAt("countryPickerPage.afterHeadingText")) {
-      <div class="govuk-hint" id="afterHeadingText">@{messages("countryPickerPage.afterHeadingText")}</div>
-      }
-
       @if(message.isDefined) {
       <div class="highlight-message highlight-message--full-width">
         <p>@{message.get}</p>
@@ -81,6 +77,11 @@
           id = "countryCode",
           name = "countryCode",
           label = Label(content = HtmlContent(messages("countryPickerPage.countryLabel"))),
+          hint = if(messages.isDefinedAt("countryPickerPage.afterHeadingText")) {
+              Some(Hint(content = HtmlContent(messages("countryPickerPage.afterHeadingText"))))
+          } else {
+              None
+          },
           errorMessage = countryPickerForm("countryCode").error.map(fe => ErrorMessage(content = HtmlContent(fe.message), visuallyHiddenText = Some(messages("constants.error")))),
           items = ViewHelper.countriesToSelectItems(countries, countryPickerForm),
           formGroup = FormGroup(classes = Some("form-field-group"))

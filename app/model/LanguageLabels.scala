@@ -84,6 +84,7 @@ case class ConfirmPageLabels(title: Option[String] = None,
 case class CountryPickerPageLabels(title: Option[String] = None,
                                    heading: Option[String] = None,
                                    countryLabel: Option[String] = None,
+                                   afterHeadingText: Option[String] = None,
                                    submitLabel: Option[String] = None)
 
 object LanguageLabels {
@@ -179,6 +180,7 @@ object LanguageLabelsForMessages {
     (__ \ "countryPickerPage.title").writeNullable[String]
       .and((__ \ "countryPickerPage.heading").writeNullable[String])
       .and((__ \ "countryPickerPage.countryLabel").writeNullable[String])
+      .and((__ \ "countryPickerPage.afterHeadingText").writeNullable[String])
       .and((__ \ "countryPickerPage.submitLabel").writeNullable[String])(
         unlift(CountryPickerPageLabels.unapply)
       )
@@ -286,11 +288,12 @@ object ConfirmPageLabels {
 }
 
 object CountryPickerPageLabels {
-  def unapply(countryPickerPageLabels: CountryPickerPageLabels): Option[(Option[String], Option[String], Option[String], Option[String])] = {
+  def unapply(countryPickerPageLabels: CountryPickerPageLabels): Option[(Option[String], Option[String], Option[String], Option[String], Option[String])] = {
     Some((
       countryPickerPageLabels.title,
       countryPickerPageLabels.heading,
       countryPickerPageLabels.countryLabel,
+      countryPickerPageLabels.afterHeadingText,
       countryPickerPageLabels.submitLabel
     ))
   }

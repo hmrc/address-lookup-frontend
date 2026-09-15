@@ -130,30 +130,30 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
       status(result).shouldBe(Status.ACCEPTED)
     }
 
-    "Succeed for non-relative signoutUrl" in {
+    "Fail for non-relative signoutUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         signOutHref = Some("http://www.google.com"),
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout"))))
 
       val result = init(journeyOptions)
 
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
-    "Succeed for non-relative timeoutUrl" in {
+    "Fail for non-relative timeoutUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "http://www.google.com/"))))
 
       val result = init(journeyOptions)
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
-    "Succeed for non-relative timeoutKeepAliveUrl" in {
+    "Fail for non-relative timeoutKeepAliveUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("http://www.google.com")))))
 
       val result = init(journeyOptions)
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
   }
 }

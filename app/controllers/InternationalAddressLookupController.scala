@@ -320,8 +320,9 @@ class InternationalAddressLookupController @Inject()(
   // GET  /:id/confirm
   def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
     withJourneyV2(id) { journeyData => {
-      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+      val remoteMessagesApi =
+        remoteMessagesApiProvider
+          .getRemoteMessagesApi(journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
@@ -343,7 +344,7 @@ class InternationalAddressLookupController @Inject()(
         .getOrElse((None, requestWithWelshHeader(isWelsh) {
           Redirect(routes.InternationalAddressLookupController.lookup(id, None))
         }))
-    }
+      }
     }
   }
 
@@ -355,11 +356,10 @@ class InternationalAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
 
         if (journeyData.selectedAddress.isDefined) {
-          val jd =
-            journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+          val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
 
           auditConnector.sendEvent(
-            new DataEvent(
+            DataEvent(
               "address-lookup-frontend",
               EventTypes.Succeeded,
               tags = hc.toAuditTags("ConfirmAddress", req.uri),

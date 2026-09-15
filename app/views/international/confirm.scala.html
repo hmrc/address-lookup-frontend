@@ -24,7 +24,7 @@
         button: GovukButton,
         page: Layout
 )
-@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress])(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, selectedAddress: Option[ConfirmableAddress], requiresChanges: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)

@@ -46,6 +46,6 @@ object ViewHelper {
   private val whitespaceChar = "_"
 
   def encodeCountryCode(c: Country): String =
-    s"${c.code}${countryCodeEncodingChar}${c.name.replaceAll("\\p{Space}", whitespaceChar)}"
-  def decodeCountryCode(c: String): String = c.replaceAll(s"${countryCodeEncodingChar}.*", "")
+    s"${c.code}$countryCodeEncodingChar${c.name.replaceAll("\\p{Space}", whitespaceChar)}"
+  def decodeCountryCode(c: String): String = c.replaceAll(s"$countryCodeEncodingChar.*", "")
 }

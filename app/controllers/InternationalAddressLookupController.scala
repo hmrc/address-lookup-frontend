@@ -69,7 +69,7 @@ class InternationalAddressLookupController @Inject()(
           val formPrePopped = nonAbpLookupForm()(messages).fill(NonAbpLookup(filter.getOrElse("")))
 
           requestWithWelshHeader(isWelsh) {
-            Ok(lookup(id, journeyData, formPrePopped, isWelsh)
+            Ok(lookup(id, journeyData, formPrePopped)
             (req, messages, frontendAppConfig))
           }
 
@@ -92,7 +92,7 @@ class InternationalAddressLookupController @Inject()(
             .bindFromRequest()
             .fold(
               errors => requestWithWelshHeader(isWelsh) {
-                BadRequest(lookup(id, journeyData, errors, isWelsh))
+                BadRequest(lookup(id, journeyData, errors))
               },
               lookup => Redirect(routes.InternationalAddressLookupController.select(id, lookup.filter))
             )
@@ -110,7 +110,7 @@ class InternationalAddressLookupController @Inject()(
 
       val isWelsh = getWelshContent(journeyData)
 
-      handleLookup(id, journeyData, filter) map {
+      handleLookup(journeyData, filter) map {
         case OneResult(address) =>
           val journeyDataWithSelectedAddress = journeyData.copy(
             selectedAddress = Some(address.toConfirmableAddress(id))
@@ -123,23 +123,22 @@ class InternationalAddressLookupController @Inject()(
           val journeyDataWithProposals = journeyData.copy(proposals = Some(addresses))
 
           Some(journeyDataWithProposals) -> requestWithWelshHeader(isWelsh) {
-            Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), filter, firstLookup, isWelsh))
+            Ok(select(id, journeyData, selectForm(), Proposals(Some(addresses)), filter))
           }
         case TooManyResults(_, firstLookup) =>
           None -> requestWithWelshHeader(isWelsh) {
-            Ok(too_many_results(id, journeyData, filter, firstLookup, isWelsh))
+            Ok(too_many_results(id, journeyData, filter, firstLookup))
           }
         case NoResults =>
           None -> requestWithWelshHeader(isWelsh) {
-            Ok(no_results(id, journeyData, filter, isWelsh))
+            Ok(no_results(id, journeyData, filter))
           }
       }
 
     }
   }
 
-  def handleLookup(id: String,
-                   journeyData: JourneyDataV2,
+  def handleLookup(journeyData: JourneyDataV2,
                    filter: String,
                    firstLookup: Boolean = true
                   )(implicit hc: HeaderCarrier): Future[ResultsCount] = {
@@ -180,19 +179,17 @@ class InternationalAddressLookupController @Inject()(
 
         bound.fold(
           errors => {
-            (None -> requestWithWelshHeader(isWelsh) {
+            None -> requestWithWelshHeader(isWelsh) {
               BadRequest(
                 select(
                   id,
                   journeyData,
                   errors,
                   Proposals(journeyData.proposals),
-                  filter,
-                  firstSearch = true,
-                  isWelsh = isWelsh
+                  filter
                 )
               )
-            })
+            }
           },
           selection => {
             journeyData.proposals match {
@@ -201,7 +198,7 @@ class InternationalAddressLookupController @Inject()(
                   selectedAddress = None
                 )
                 (Some(journeyDataWithConfirmableAddress), Redirect(routes.InternationalAddressLookupController.edit(id)))
-              case Some(props) => {
+              case Some(props) =>
                 props.find(_.addressId == selection.addressId) match {
                   case Some(addr) =>
                     val journeyDataWithConfirmableAddress = journeyData.copy(
@@ -221,14 +218,12 @@ class InternationalAddressLookupController @Inject()(
                           journeyData,
                           bound,
                           Proposals(Some(props)),
-                          filter,
-                          firstSearch = true,
-                          isWelsh = isWelsh
+                          filter
                         )
                       )
                     })
                 }
-              }
+
               case None =>
                 (None, Redirect(routes.InternationalAddressLookupController.lookup(id, Some(filter))))
             }
@@ -325,13 +320,13 @@ class InternationalAddressLookupController @Inject()(
   // GET  /:id/confirm
   def confirm(id: String): Action[AnyContent] = Action.async { implicit req =>
     withJourneyV2(id) { journeyData => {
-      val remoteMessagesApi = remoteMessagesApiProvider.getRemoteMessagesApi(
-        journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
+      val remoteMessagesApi =
+        remoteMessagesApiProvider
+          .getRemoteMessagesApi(journeyData.config.labels.map(ls => Json.toJsObject(ls)).orElse(Some(Json.obj())))
 
       implicit val messages: Messages = remoteMessagesApi.preferred(req)
 
       val isWelsh = getWelshContent(journeyData)
-      val isUKMode = journeyData.config.options.isUkMode
 
       journeyData.selectedAddress
         .map(
@@ -341,9 +336,7 @@ class InternationalAddressLookupController @Inject()(
                 confirm(
                   id,
                   journeyData,
-                  journeyData.selectedAddress,
-                  isWelsh,
-                  isUKMode
+                  journeyData.selectedAddress
                 )
               )
             })
@@ -351,7 +344,7 @@ class InternationalAddressLookupController @Inject()(
         .getOrElse((None, requestWithWelshHeader(isWelsh) {
           Redirect(routes.InternationalAddressLookupController.lookup(id, None))
         }))
-    }
+      }
     }
   }
 
@@ -363,11 +356,10 @@ class InternationalAddressLookupController @Inject()(
         val isWelsh = getWelshContent(journeyData)
 
         if (journeyData.selectedAddress.isDefined) {
-          val jd =
-            journeyData.copy(confirmedAddress = journeyData.selectedAddress)
+          val jd = journeyData.copy(confirmedAddress = journeyData.selectedAddress)
 
           auditConnector.sendEvent(
-            new DataEvent(
+            DataEvent(
               "address-lookup-frontend",
               EventTypes.Succeeded,
               tags = hc.toAuditTags("ConfirmAddress", req.uri),

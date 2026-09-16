@@ -29,7 +29,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class InternationalAddressLookupControllerISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The lookup page" should {

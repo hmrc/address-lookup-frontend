@@ -31,8 +31,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressReputationConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)(implicit val
-ec: ExecutionContext) extends Logging {
+class AddressReputationConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)
+                                           (implicit val ec: ExecutionContext) extends Logging {
 
   val endpoint: String = frontendAppConfig.addressReputationEndpoint
 

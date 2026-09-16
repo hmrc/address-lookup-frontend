@@ -16,7 +16,7 @@
 
 package services
 
-import address.v2._
+import address.v2.*
 import com.google.inject.ImplementedBy
 import connectors.AddressReputationConnector
 import model.ProposedAddress
@@ -25,6 +25,7 @@ import play.api.libs.json.{Format, Json, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -61,6 +62,7 @@ ec: ExecutionContext) extends AddressService {
         }.filterNot(a => isUkMode && a.country.code != "GB")
 
         results.sortWith((a, b) => {
+          @tailrec
           def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
             case (Some(nA), Some(nB)) :: tail =>
               if (nA == nB) sort(tail) else nA < nB
@@ -97,6 +99,7 @@ ec: ExecutionContext) extends AddressService {
         }
 
         results.sortWith((a, b) => {
+          @tailrec
           def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
             case (Some(nA), Some(nB)) :: tail =>
               if (nA == nB) sort(tail) else nA < nB
@@ -111,11 +114,11 @@ ec: ExecutionContext) extends AddressService {
 
   }
 
-  def mkString(p: ProposedAddress) = p.lines.mkString(" ").toLowerCase()
+  def mkString(p: ProposedAddress): String = p.lines.mkString(" ").toLowerCase()
 
   // Find numbers in proposed address in order of significance, from rightmost to leftmost.
   // Pad with None to ensure we never return an empty sequence
-  def numbersIn(p: ProposedAddress): Seq[Option[Int]] =
+  private def numbersIn(p: ProposedAddress): Seq[Option[Int]] =
     "([0-9]+)".r.findAllIn(mkString(p)).map(n => Try(n.toInt).toOption).toSeq.reverse :+ None
 }
 

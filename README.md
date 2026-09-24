@@ -78,7 +78,6 @@ If your service doesn't have Welsh translations you can disable them setting the
     "continueUrl": "...",
     "homeNavHref": "..",
     "signOutHref": "..",
-    "useNewGovUkServiceNavigation": false,  
     "accessibilityFooterUrl": "...",
     "phaseFeedbackLink": "/help/alpha",
     "deskProServiceName": "",
@@ -282,7 +281,6 @@ If your service doesn't have Welsh translations you can disable them setting the
 | `continueUrl`            | the "off ramp" URL for a user journey                                                                     | **Required**      | String          | N/A                         |
 | `homeNavHref`            | value of the link href attribute for the GDS "home" link                                                  | Optional          | String          | `"http://www.hmrc.gov.uk/"` |
 | `signOutHref`            | value of the link href attribute for the Sign out link                                                    | Optional          | String          | `None`                      |
-| `useNewGovUkServiceNavigation` | toggle whether to use the new Govuk Service Navigation component/pattern                            | Optional          | Boolean         | `false`                     |
 | `accessibilityFooterUrl` | value of the link href attribute for the "Accessibility Statement" link in the footer                     | Optional          | String          | `None`                      |
 | `phaseFeedbackLink`      | link to provide a user feedback link for phase banner                                                     | Optional          | String          | `"/help/alpha"`             |
 | `deskProServiceName`     | name of your service in DeskPro. Used when constructing the "report a problem" link. Defaults to None.    | Optional          | String          | `None`                      |
@@ -465,7 +463,6 @@ Example JSON for international labels overrides:
   "version": 2,
   "options": {
     "continueUrl": "This will be ignored",
-    "useNewGovUkServiceNavigation": false,
     "ukMode": false
   },
   "labels": {

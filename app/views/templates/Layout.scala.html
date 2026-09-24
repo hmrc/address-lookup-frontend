@@ -19,7 +19,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 @import model.v2.JourneyDataV2
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichServiceNavigation
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichServiceNavigation
+
 
 @this(
         hmrcStandardPage: HmrcStandardPage,
@@ -63,9 +64,7 @@
 @hmrcStandardPage(
     HmrcStandardPageParams(
         pageTitle = Some(fullTitle),
-        serviceName = Option.when(
-            messages.isDefinedAt("navTitle") && !resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled
-        )(messages("navTitle")),
+        serviceName = Option.when(messages.isDefinedAt("navTitle"))(messages("navTitle")),
         serviceURLs = ServiceURLs(
             serviceUrl = Some(resolvedJourneyConfig.options.serviceHref.getOrElse("")),
             signOutUrl = resolvedJourneyConfig.options.signOutHref,
@@ -95,19 +94,18 @@
             additionalHeadBlock = Some(combinedAdditionalHead),
             additionalScriptsBlock = Some(autocompleteJavascript())
         ),
-        isWelshTranslationAvailable =
-            !(resolvedJourneyConfig.options.disableTranslations || resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled),
+        isWelshTranslationAvailable = !resolvedJourneyConfig.options.disableTranslations,
         backLink = {
             if (resolvedJourneyConfig.options.showBackButtons) Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
             else None
         },
-        serviceNavigation = Option.when(resolvedJourneyConfig.options.newGovUkServiceNavigationEnabled) {
+        serviceNavigation = {
             val serviceNav = ServiceNavigation(serviceName = Option.when(messages.isDefinedAt("navTitle"))(messages("navTitle")))
             if(resolvedJourneyConfig.options.disableTranslations) {
-                serviceNav
+                Some(serviceNav)
             } else {
-                serviceNav.withLanguageToggle()
+                Some(serviceNav.withLanguageToggle())
             }
-        }
+              }
     )
 )(content)

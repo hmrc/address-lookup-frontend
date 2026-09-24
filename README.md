@@ -369,14 +369,19 @@ This keeps your tests fast and avoids coupling them to ALF page structure.
 ### Prerequisites
 
 - MongoDB running locally
+- PostgreSQL running locally
 - `sbt`
-- the supporting address lookup services, if you want real address search behaviour
+- the supporting address lookup services, if you want real address search behavior
 
 If you need MongoDB setup instructions, see the MDTP handbook:
 
 https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-mongodb.html
 
 ### Start dependencies
+
+```bash
+docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
+```
 
 ```bash
 sm2 --start ADDRESS_LOOKUP_SERVICES
@@ -406,6 +411,8 @@ UI-test variant with `showNoneOfTheseOption` forced on:
 With the test router enabled, you can initialise journeys from:
 
 http://localhost:9028/lookup-address/test-only/v2/test-setup
+
+Locally you could use the postcode's defined at https://github.com/hmrc/address-search-api/blob/v1.18.0/conf/data/testaddresses.csv to test the frontend screens locally
 
 ## Tests
 

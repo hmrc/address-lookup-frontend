@@ -85,13 +85,12 @@ class StubControllerSpec extends PlaySpec
   "StubHelper defaultJourneyConfigV2JsonAsString" should {
     "return default journeyConfig v2 string and is a valid JourneyConfigV2 model" in {
       val res = StubHelper.defaultJourneyConfigV2JsonAsString
-      res.mustBe(Json.parse(
-        """{
-          |  "version": 2,
-          |  "options": {
-          |    "continueUrl": "This will be ignored",
-          |    "useNewGovUkServiceNavigation": false
-          |  },
+       res.mustBe(Json.parse(
+         """{
+           |  "version": 2,
+           |  "options": {
+           |    "continueUrl": "This will be ignored"
+           |  },
           |  "labels": {
           |    "en": {
           |      "appLevelLabels": {
@@ -145,13 +144,12 @@ class StubControllerSpec extends PlaySpec
       val doc: Document = Jsoup.parse(contentAsString(res))
       doc.getElementsByTag("title").first().text().mustBe(titleForV2StubPage)
 
-      Json.parse(doc.getElementById("journeyConfig").text()).mustBe(Json.parse(
-        """{
-          |  "version": 2,
-          |  "options": {
-          |    "continueUrl": "This will be ignored",
-          |    "useNewGovUkServiceNavigation": false
-          |  },
+       Json.parse(doc.getElementById("journeyConfig").text()).mustBe(Json.parse(
+         """{
+           |  "version": 2,
+           |  "options": {
+           |    "continueUrl": "This will be ignored"
+           |  },
           |  "labels": {
           |    "en": {
           |      "appLevelLabels": {

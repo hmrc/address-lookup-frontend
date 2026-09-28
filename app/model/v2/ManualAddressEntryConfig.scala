@@ -33,9 +33,9 @@ case class ManualAddressEntryConfig(
 object ManualAddressEntryConfig {
 
   val defaultMax: Int = 255
-  private val minLength: Int = 35
+  private val minimumValueOfMaxLengthConfig: Int = 27
 
-  val constraints: Reads[Int] = min(minLength) ~> max(defaultMax)
+  val constraints: Reads[Int] = min(minimumValueOfMaxLengthConfig) ~> max(defaultMax)
 
   implicit val reads: Reads[ManualAddressEntryConfig] = (
     (__ \ "line1MaxLength").readWithDefault[Int](defaultMax)(constraints) and

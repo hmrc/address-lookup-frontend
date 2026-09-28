@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.ws.writeableOf_JsValue
 
 class ApiControllerV2ISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val testJourneyFromConfig = JourneyDataV2(
@@ -115,7 +115,7 @@ class ApiControllerV2ISpec extends IntegrationSpecBase {
       .build()
   }
 
-  lazy val addressLookupEndpoint = app.injector.instanceOf[ApiController].addressLookupEndpoint
+  lazy val addressLookupEndpoint: String = app.injector.instanceOf[ApiController].addressLookupEndpoint
 
   "/api/v2/init" when {
     "provided with valid JourneyDataV2 Json" should {

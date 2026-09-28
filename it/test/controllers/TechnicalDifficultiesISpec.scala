@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TechnicalDifficultiesISpec extends IntegrationSpecBase {
   // Deliberately avoid setting up the mock to cause an exception
-  val mockJourneyRepository = mock[JourneyRepository]
+  val mockJourneyRepository: JourneyRepository = mock[JourneyRepository]
 
   implicit override lazy val app: Application = {
     SharedMetricRegistries.clear()
@@ -47,11 +47,11 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
       .build()
   }
 
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "technical difficulties" when {
-    "the welsh content header isn't set and welsh object isn't provided in config" should {
+    "the Welsh content header isn't set and Welsh object isn't provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
@@ -71,7 +71,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set to false and welsh object isn't provided in config" should {
+    "the Welsh content header is set to false and Welsh object isn't provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
@@ -91,7 +91,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set to false and welsh object is provided in config" should {
+    "the Welsh content header is set to false and Welsh object is provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))
@@ -110,7 +110,7 @@ class TechnicalDifficultiesISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set to true and welsh object provided in config" should {
+    "the Welsh content header is set to true and Welsh object provided in config" should {
       "render in Welsh" in {
         val testJourneyId = UUID.randomUUID().toString
         await(cache.putV2(testJourneyId, testMinimalLevelJourneyDataV2))

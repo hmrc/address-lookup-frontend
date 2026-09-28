@@ -22,7 +22,7 @@ trait FakeAppConfig {
   val mockPort: Int
   lazy val mockUrl = s"http://$mockHost:$mockPort"
 
-  def fakeConfig(extraConfig: (String,String)*) = Map(
+  def fakeConfig(extraConfig: (String,String)*): Map[String, String] = Map(
     "microservice.services.address-reputation.host" -> s"$mockHost",
     "microservice.services.address-reputation.port" -> s"$mockPort",
     "auditing.consumer.baseUri.host" -> s"$mockHost",

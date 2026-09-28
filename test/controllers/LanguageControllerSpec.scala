@@ -21,7 +21,6 @@ import config.FrontendAppConfig
 import fixtures.ALFEFixtures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -47,7 +46,7 @@ class LanguageControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ALFE
     "set the language cookie and redirect back to the referer" when {
       val request: Request[AnyContent] = FakeRequest().withHeaders(REFERER -> referer)
 
-      "the language is english" in new TestLanguageController {
+      "the language is English" in new TestLanguageController {
         val result: Future[Result] = switchToLanguage("english")(request)
         status(result).mustBe(303)
         redirectLocation(result).mustBe(Some(referer))

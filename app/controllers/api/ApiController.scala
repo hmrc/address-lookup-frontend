@@ -48,7 +48,7 @@ class ApiController @Inject()(journeyRepository: JourneyRepository,
 
   case class InitFailure(reason: String)
 
-  object InitFailure {
+  private object InitFailure {
     implicit val writes: OWrites[InitFailure] = Json.writes[InitFailure]
   }
 

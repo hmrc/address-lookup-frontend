@@ -19,7 +19,7 @@ package controllers.international
 import itutil.IntegrationSpecBase
 import itutil.config.IntegrationTestConstants.*
 import model.*
-import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions}
+import model.v2.{JourneyConfigV2, JourneyLabels, JourneyOptions, ManualAddressEntryConfig}
 import org.jsoup.Jsoup
 import play.api.http.HeaderNames
 import play.api.http.Status.*
@@ -33,7 +33,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConfirmPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The confirm page GET" should {
@@ -76,7 +76,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       res.status.shouldBe(OK)
     }
 
-    "redirect to the international lookup page if no selected address exists in keystore" in {
+    "redirect to the international lookup page if no selected address exists in database" in {
       val testJourneyId = UUID.randomUUID().toString
       await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2))
 
@@ -129,10 +129,63 @@ class ConfirmPageISpec extends IntegrationSpecBase {
 
       doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
 
-      testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(
-        fResponse,
-        navTitle = "NAV_TITLE"
+      testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
+
+      res.status.shouldBe(OK)
+    }
+
+    "pre-pop with a truncated address when journey config validation is stricter than the selected address" in {
+      val testJourneyId = UUID.randomUUID().toString
+      val journeyData: JourneyConfigV2 = fullDefaultJourneyConfigModelV2WithAllBooleansSet()
+      val json = journeyDataV2WithSelectedAddress(
+        testJourneyId,
+        journeyData.copy(
+          options = journeyData.options
+            .copy(
+              manualAddressEntryConfig = Some(ManualAddressEntryConfig(
+              line1MaxLength = 27,
+              line2MaxLength = 27,
+              line3MaxLength = 27,
+              townMaxLength = 27,
+              showOrganisationName = false
+            )))
+        )
       )
+
+      await(cache.putV2(testJourneyId, json))
+
+      val fResponse = buildClientLookupAddress(path = "international/confirm", testJourneyId)
+        .withHttpHeaders(
+          HeaderNames.COOKIE -> sessionCookieWithCSRF,
+          "Csrf-Token" -> "nocheck")
+        .get()
+
+      val res: WSResponse = await(fResponse)
+      val doc = getDocFromResponse(fResponse)
+
+      doc.select("a[class=govuk-back-link]") should have(text("Back"))
+      doc.title.shouldBe("international-confirm-title - NAV_TITLE - GOV.UK")
+      doc.h1.text().shouldBe("international-confirm-heading")
+      doc.submitButton.text().shouldBe("international-confirm-submitLabel")
+      doc.address should have(
+        addressLine("line1", "1 High Street"),
+        addressLine("line2", "Line 2"),
+        addressLine("line3", "Line 3"),
+        addressLine("line4", "Telford"),
+        addressLine("postCode", "AB11 1AB"),
+        addressLine("country", "France")
+      )
+
+      doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
+      doc.h2s should have(elementWithValue("international-confirm-infoSubheading"))
+      doc.paras should have(elementWithValue("international-confirm-infoMessage"))
+      doc.link("searchAgainLink") should have(
+        text("international-confirm-searchAgainLinkText")
+      )
+
+      doc.link("changeLink") should have(text("international-confirm-changeLinkText"))
+
+      testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
 
       res.status.shouldBe(OK)
     }
@@ -337,7 +390,7 @@ class ConfirmPageISpec extends IntegrationSpecBase {
       res.header(HeaderNames.LOCATION).get.shouldBe(s"$testContinueUrl?id=$testJourneyId")
     }
 
-    "should redirect to the confirm page if incorrect data in keystore" in {
+    "should redirect to the confirm page if incorrect data in database" in {
       val testJourneyId = UUID.randomUUID().toString
       await(cache.putV2(testJourneyId, testJourneyDataWithMinimalJourneyConfigV2))
 

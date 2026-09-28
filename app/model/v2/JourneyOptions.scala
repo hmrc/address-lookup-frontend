@@ -16,7 +16,6 @@
 
 package model.v2
 
-import config.FrontendAppConfig
 import play.api.libs.json.*
 
 case class JourneyOptions(

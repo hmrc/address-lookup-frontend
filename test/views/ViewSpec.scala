@@ -19,6 +19,7 @@ package views
 import com.codahale.metrics.SharedMetricRegistries
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatest.wordspec.AnyWordSpec
@@ -79,9 +80,9 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with L
 
     def getTextFieldInput(name: String): Elements = doc.select(s"""input[name=$name]""")
 
-    def getTextFieldLabel(name: String, textElement: String = "label"): String = doc.select(s"label[for=$name]").text()
+    def getTextFieldLabel(name: String): String = doc.select(s"label[for=$name]").text()
 
-    def getSelectOption(name: String): Elements = doc.select(s"""option[name=${name}]""")
+    def getSelectOption(name: String): Elements = doc.select(s"""option[name=$name]""")
     def getSelectOptionValue(name: String): String = getSelectOption(name).attr("value")
     def getSelectOptionLabel(name: String): String = getSelectOption(name).text()
 
@@ -91,23 +92,21 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with L
 
     def bulletPointList: Elements = doc.select("ul[class=govuk-list govuk-list-bullet]")
 
-    def getDropList(id:String) = doc.select(s"select[id=$id]")
+    def getDropList(id:String): Elements = doc.select(s"select[id=$id]")
 
-    def testElementExists(elementId: String) = doc.getElementById(elementId) should not be null
+    def testElementExists(elementId: String): Assertion = doc.getElementById(elementId) should not be null
 
   }
 
   def option(id: String, value: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val span = element.select(s"option[id=$id]")
+    (element: Elements) => {
+      val span = element.select(s"option[id=$id]")
 
-        HavePropertyMatchResult(
-          span.text() == value,
-          s"option $id",
-          value,
-          span.text()
-        )
-      }
+      HavePropertyMatchResult(
+        span.text() == value,
+        s"option $id",
+        value,
+        span.text()
+      )
     }
 }

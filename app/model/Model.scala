@@ -17,8 +17,9 @@
 package model
 
 import forms.Postcode
-import play.api.libs.json._
+import play.api.libs.json.*
 import address.v2.Country
+import model.v2.ManualAddressEntryConfig
 import utils.PostcodeHelper
 
 case class CountryPicker(countryCode: String)
@@ -114,6 +115,14 @@ case class ConfirmableAddress(auditRef: String,
 
   def toDescription: String = address.toDescription
 
+  def truncateAddressUsingConstraints(validationConfig: ManualAddressEntryConfig): ConfirmableAddress =
+    val town = address.town.map(_.take(validationConfig.townMaxLength))
+    val line1 = address.lines.unapply(0).map(_.take(validationConfig.line1MaxLength))
+    val line2 = address.lines.unapply(1).map(_.take(validationConfig.line1MaxLength))
+    val line3 = address.lines.unapply(2).map(_.take(validationConfig.line1MaxLength))
+    val addressLines = Seq(line1, line2, line3).flatten
+
+    this.copy(address = address.copy(town = town, lines = addressLines))
 }
 
 case class ConfirmableAddressDetails(

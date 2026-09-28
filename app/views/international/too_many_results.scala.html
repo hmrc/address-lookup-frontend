@@ -19,8 +19,8 @@
 @import views.html.templates.Layout
 @import model.v2.JourneyDataV2
 
-@this(button: GovukButton, page: Layout)
-@(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean, isWelsh: Boolean = false)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@this(page: Layout)
+@(id: String, journeyData: JourneyDataV2, filter: String, firstLookup: Boolean)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -37,7 +37,7 @@
         messages(key)
 }
 
-@page(internationalMessage("constants.noResultsFoundTitle"), None, journeyData) {
+@page(internationalMessage("constants.noResultsFoundTitle"), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
     @{if(firstLookup) {

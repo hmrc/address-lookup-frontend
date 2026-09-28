@@ -47,7 +47,7 @@ class JourneyDataV2Repository @Inject()(mongoComponent: MongoComponent, config: 
 }
 
 @Singleton
-class JourneyDataV2Cache @Inject()(repo: JourneyDataV2Repository)(implicit ec: ExecutionContext) extends JourneyRepository {
+class JourneyDataV2Cache @Inject()(repo: JourneyDataV2Repository) extends JourneyRepository {
   override def getV2(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[JourneyDataV2]] =
     repo.get[JourneyDataV2](sessionId)(repo.dataKey)
 

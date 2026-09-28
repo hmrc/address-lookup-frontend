@@ -38,7 +38,7 @@ class EditPageISpec extends IntegrationSpecBase {
 
   "The edit page" should {
     
-    "when provided with no page config for english and welsh" should {
+    "when provided with no page config for English and Welsh" should {
       
       "return edit page" in {
         val testJourneyId = UUID.randomUUID().toString
@@ -111,7 +111,7 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return edit page with default values where the 'PLAY_LANG' is set to cy but welsh config is not provided" in {
+      "return edit page with default values where the 'PLAY_LANG' is set to cy but Welsh config is not provided" in {
         val testJourneyId = UUID.randomUUID().toString
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddress(
@@ -170,8 +170,8 @@ class EditPageISpec extends IntegrationSpecBase {
       }
     }
 
-    "provided with only custom content that has welsh block" should {
-      "return edit page and should display all default values from the welsh constants with the 'PLAY_LANG' set to cy" in {
+    "provided with only custom content that has Welsh block" should {
+      "return edit page and should display all default values from the Welsh constants with the 'PLAY_LANG' set to cy" in {
         val testJourneyId = UUID.randomUUID().toString
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWIthWelshEmptyBlock = journeyDataV2WithSelectedAddress(
@@ -284,7 +284,7 @@ class EditPageISpec extends IntegrationSpecBase {
         ))
       }
 
-      "return edit page WITH 'PLAY_LANG' set to cy AND welsh content provided" in {
+      "return edit page WITH 'PLAY_LANG' set to cy AND Welsh content provided" in {
         val testJourneyId = UUID.randomUUID().toString
         val jc = fullDefaultJourneyConfigModelV2WithAllBooleansSet(false)
         val configWithWelsh = journeyDataV2WithSelectedAddress(
@@ -343,7 +343,7 @@ class EditPageISpec extends IntegrationSpecBase {
   }
 
   "handleEdit" should {
-    "return 400 if all fields are missing and return edit page with english text" in {
+    "return 400 if all fields are missing and return edit page with English text" in {
       val testJourneyId = UUID.randomUUID().toString
       await(cache.putV2(testJourneyId, journeyDataV2Minimal.copy(config = journeyDataV2Minimal.config.copy(
         options = journeyDataV2Minimal.config.options.copy(ukMode = Some(false))), countryCode = Some("BM"))))

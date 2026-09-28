@@ -56,7 +56,7 @@ class SelectPageViewSpec extends ViewSpec {
 
     val messages: Messages = implicitly[Messages]
 
-    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch, renderInWelsh)
+    val testPage: HtmlFormat.Appendable = select("testId", journeyData, selectForm(), proposals, lookup.postcode, lookup.filter, firstSearch)
     val doc: Document = Jsoup.parse(testPage.body)
   }
 
@@ -163,9 +163,9 @@ class SelectPageViewSpec extends ViewSpec {
         doc.select("label[for=addressId]").size.shouldBe(1)
         doc.select("label[for=addressId]").text.shouldBe(proposal.toDescription)
       } else {
-        doc.select(s"input[id=addressId-${count}]").size.shouldBe(1)
-        doc.select(s"label[for=addressId-${count}]").size.shouldBe(1)
-        doc.select(s"label[for=addressId-${count}]").text.shouldBe(proposal.toDescription)
+        doc.select(s"input[id=addressId-$count]").size.shouldBe(1)
+        doc.select(s"label[for=addressId-$count]").size.shouldBe(1)
+        doc.select(s"label[for=addressId-$count]").text.shouldBe(proposal.toDescription)
       }
     }
   }

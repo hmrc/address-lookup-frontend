@@ -20,6 +20,6 @@ import forms.Postcode
 
 object PostcodeHelper {
 
-  def displayPostcode(p:Option[String]) = p.flatMap(Postcode.cleanupPostcode).map(_.toString).getOrElse("")
-  def displayPostcode(p:String) = Postcode.cleanupPostcode(p).map(_.toString).getOrElse("")
+  def displayPostcode(p:Option[String]): String = p.flatMap(Postcode.cleanupPostcode).map(_.toString).getOrElse("")
+  def displayPostcode(p:String): String = Postcode.cleanupPostcode(p).map(_.toString).getOrElse("")
 }

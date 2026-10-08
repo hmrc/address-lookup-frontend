@@ -92,5 +92,29 @@ class WelshCountryNamesDataSourceSpec extends PlaySpec with GuiceOneAppPerSuite 
       )
       actual.mustBe(expected)
     }
+
+    "Be able to process Crown Dependencies and Overseas Territories files" in {
+      val crownDependencies =
+        """
+          |Gwlad/Tiriogaeth (Country/Territory),Enw yn Saesneg (Name in English),Enw yn Gymraeg (Name in Welsh),Enw swyddogol yn Saesneg (Official name in English),Enw swyddogol yn Gymraeg (Official name in Welsh)
+          |GG,"Guernsey, Alderney, Sark","Guernsey, Alderney, Sark",Bailiwick of Guernsey,Beilïaeth Guernsey
+          |IM,Isle of Man,Ynys Manaw,Isle of Man,Ynys Manaw
+          |""".stripMargin
+      val overseasTerritories =
+        """
+          |Column1;Column2;Column3;Column4;Column5
+          |Gwlad/Tiriogaeth (Country/Territory);Enw yn Saesneg (Name in English);Enw yn Gymraeg (Name in Welsh);Enw swyddogol yn Saesneg (Official name in English);Enw swyddogol yn Gymraeg (Official name in Welsh)
+          |IO;British Indian Ocean Territory;Tiriogaeth Brydeinig Cefnfor India;The British Indian Ocean Territory;Tiriogaeth Brydeinig Cefnfor India
+          |Amherthnasol / Not applicable;British Antarctic Territory;Tiriogaeth Brydeinig yr Antarctig;British Antarctic Territory;Tiriogaeth Brydeinig yr Antarctig
+          |""".stripMargin
+
+      val actual = (service.allGovWalesRows(crownDependencies) ++ service.allGovWalesRows(overseasTerritories)).toMap
+
+      actual mustBe Map(
+        "GG" -> Map("Country" -> "GG", "Name" -> "Guernsey, Alderney, Sark"),
+        "IM" -> Map("Country" -> "IM", "Name" -> "Ynys Manaw"),
+        "IO" -> Map("Country" -> "IO", "Name" -> "Tiriogaeth Brydeinig Cefnfor India")
+      )
+    }
   }
 }

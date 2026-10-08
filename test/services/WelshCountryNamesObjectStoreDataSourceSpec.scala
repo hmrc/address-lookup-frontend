@@ -45,8 +45,11 @@ class WelshCountryNamesObjectStoreDataSourceSpec
   private val singleRowGovWalesCsv: String =
     "Cod gwlad (Country code),Enw yn Saesneg (Name in English),Enw yn Gymraeg (Name in Welsh),Enw swyddogol yn Saesneg (Official name in English),Enw swyddogol yn Gymraeg (Official name in Welsh)"
 
+  private val normalisedValidGovWalesCsv: String =
+    "Country,Name\n\"AF\",\"Affganistan Newydd\"\n\"AL\",\"Albania Newydd\""
+
   class Scenario(
-    resolveDownloadUrl: () => String = () => "https://example.com/country-names.csv",
+    resolveDownloadUrls: () => Seq[String] = () => Seq("https://example.com/country-names.csv"),
     downloadContentFromUrl: String => String = _ => validGovWalesCsv,
     putObjectResult: Future[ObjectSummaryWithMd5] = Future.successful(null.asInstanceOf[ObjectSummaryWithMd5]),
     config: Configuration = app.configuration
@@ -62,7 +65,7 @@ class WelshCountryNamesObjectStoreDataSourceSpec
       .thenReturn(putObjectResult)
 
     val service: WelshCountryNamesObjectStoreDataSource = new WelshCountryNamesObjectStoreDataSource(english, objectStore, config, ec, materializer) {
-      override protected[services] def resolveGovWalesDownloadUrl(): String = resolveDownloadUrl()
+      override protected[services] def resolveGovWalesDownloadUrls(): Seq[String] = resolveDownloadUrls()
       override protected[services] def downloadContent(url: String): String = downloadContentFromUrl(url)
     }
   }
@@ -73,7 +76,7 @@ class WelshCountryNamesObjectStoreDataSourceSpec
 
       service.countriesCY.find(_.code == "AF").get.name mustBe "Affganistan Newydd"
       service.countriesCY.find(_.code == "AL").get.name mustBe "Albania Newydd"
-      verify(objectStore).putObject(eqTo(expectedPath), eqTo(validGovWalesCsv), any(), eqTo(Some("text/plain")), any(), any())(any(), any())
+      verify(objectStore).putObject(eqTo(expectedPath), eqTo(normalisedValidGovWalesCsv), any(), eqTo(Some("text/plain")), any(), any())(any(), any())
     }
 
     "leave the existing cache unchanged when the downloaded CSV does not contain enough rows" in new Scenario(
@@ -94,8 +97,32 @@ class WelshCountryNamesObjectStoreDataSourceSpec
       service.countriesCY.find(_.code == "AF").get.name mustBe "Affganistan Newydd"
     }
 
+    "refresh sovereign countries, Crown Dependencies and Overseas Territories together" in new Scenario(
+      resolveDownloadUrls = () => Seq("countries.csv", "crown-dependencies.csv", "overseas-territories.csv"),
+      downloadContentFromUrl = {
+        case "countries.csv" => validGovWalesCsv
+        case "crown-dependencies.csv" =>
+          """
+            |Gwlad/Tiriogaeth (Country/Territory),Enw yn Saesneg (Name in English),Enw yn Gymraeg (Name in Welsh),Enw swyddogol yn Saesneg (Official name in English),Enw swyddogol yn Gymraeg (Official name in Welsh)
+            |IM,Isle of Man,Ynys Manaw,Isle of Man,Ynys Manaw
+            |""".stripMargin
+        case "overseas-territories.csv" =>
+          """
+            |Column1;Column2;Column3;Column4;Column5
+            |Gwlad/Tiriogaeth (Country/Territory);Enw yn Saesneg (Name in English);Enw yn Gymraeg (Name in Welsh);Enw swyddogol yn Saesneg (Official name in English);Enw swyddogol yn Gymraeg (Official name in Welsh)
+            |IO;British Indian Ocean Territory;Tiriogaeth Brydeinig Cefnfor India;The British Indian Ocean Territory;Tiriogaeth Brydeinig Cefnfor India
+            |""".stripMargin
+      }
+    ) {
+      service.retrieveAndStoreData().futureValue
+
+      service.countriesCY.find(_.code == "AF").get.name mustBe "Affganistan Newydd"
+      service.countriesCY.find(_.code == "IM").get.name mustBe "Ynys Manaw"
+      service.countriesCY.find(_.code == "IO").get.name mustBe "Tiriogaeth Brydeinig Cefnfor India"
+    }
+
     "leave the existing cache unchanged when the data cannot be downloaded" in new Scenario(
-      resolveDownloadUrl = () => throw new RuntimeException("download link missing")
+      resolveDownloadUrls = () => throw new RuntimeException("download link missing")
     ) {
       val originalAfghanistanName: String = service.countriesCY.find(_.code == "AF").get.name
 

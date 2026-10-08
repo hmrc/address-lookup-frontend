@@ -19,7 +19,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcAccessibleAutocompleteCss, HmrcAccessibleAutocompleteJavascript, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 @import model.v2.JourneyDataV2
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichServiceNavigation
 
 
 @this(
@@ -98,14 +97,6 @@
         backLink = {
             if (resolvedJourneyConfig.options.showBackButtons) Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
             else None
-        },
-        serviceNavigation = {
-            val serviceNav = ServiceNavigation(serviceName = Option.when(messages.isDefinedAt("navTitle"))(messages("navTitle")))
-            if(resolvedJourneyConfig.options.disableTranslations) {
-                Some(serviceNav)
-            } else {
-                Some(serviceNav.withLanguageToggle())
-            }
-              }
+        }
     )
 )(content)

@@ -46,7 +46,7 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
   protected val mutable: java.util.Deque[CachedData] = new java.util.concurrent.ConcurrentLinkedDeque()
 
   private val localData: String = streamToString(getClass.getResourceAsStream("/welsh-country-names.csv"))
-  mutable.add(CachedData("", localData))
+  mutable.add(CachedData("", normaliseGovWalesData(Seq(localData))))
 
   def updateCache(): Future[Unit] = Future successful()
 
@@ -67,7 +67,15 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
     logger.debug("[allGovWalesRows] - Sample of govWalesData retrieved:\n" + lines.take(5).mkString("\n"))
 
     //Find index of header row
-    val headerIdx = lines.indexWhere(_.contains("Cod gwlad (Country code)"))
+    val headerIdx = lines.indexWhere { line =>
+      line.contains("Cod gwlad (Country code)") ||
+        line.contains("Gwlad/Tiriogaeth (Country/Territory)") ||
+        line == "Country,Name"
+    }
+
+    if (headerIdx < 0) {
+      throw new IllegalArgumentException("Could not find a Welsh Government country data header")
+    }
 
     //work out delimiter due to Welsh Gov switching between comma and semicolon. This logic is crude but effective, and safer
     //than just mass replacing one-delimiter with another
@@ -93,12 +101,39 @@ class WelshCountryNamesDataSource @Inject() (english: EnglishCountryNamesDataSou
 
     val reader = CSVReader.open(Source.fromString(cleanedCsvContent))(parserFormat)
 
-    reader.allWithOrderedHeaders()._2
-      .sortBy(x => x("Cod gwlad (Country code)"))
-      .groupBy(_("Cod gwlad (Country code)"))
+    val (headers, rows) = reader.allWithOrderedHeaders()
+    val countryCodeHeader = Seq("Cod gwlad (Country code)", "Gwlad/Tiriogaeth (Country/Territory)", "Country")
+      .find(headers.contains)
+      .getOrElse(throw new IllegalArgumentException("Could not find a country code column"))
+    val welshNameHeader = Seq("Enw yn Gymraeg (Name in Welsh)", "Name")
+      .find(headers.contains)
+      .getOrElse(throw new IllegalArgumentException("Could not find a Welsh name column"))
+
+    rows
+      .filter(_.get(countryCodeHeader).exists(_.trim.matches("[A-Z]{2}")))
+      .sortBy(x => x(countryCodeHeader))
+      .groupBy(_(countryCodeHeader))
       .view.mapValues(v => v.head)
-      .map { case (k, m) => k -> Map("Country" -> m("Cod gwlad (Country code)"), "Name" -> m("Enw yn Gymraeg (Name in Welsh)")) }
+      .map { case (k, m) => k.trim -> Map("Country" -> k.trim, "Name" -> m(welshNameHeader)) }
   }
+
+  private[services] def normaliseGovWalesData(govWalesData: Seq[String]): String = {
+    val rowsBySource = govWalesData.map(data => allGovWalesRows(data).toSeq)
+
+    if (rowsBySource.isEmpty || rowsBySource.exists(_.isEmpty)) {
+      throw new IllegalArgumentException("Welsh Government country data did not contain any country rows")
+    }
+
+    val rows = rowsBySource.flatten.toMap.toSeq.sortBy(_._1)
+    val csvRows = rows.map { case (code, values) =>
+      csvField(code) + "," + csvField(values("Name"))
+    }
+
+    ("Country,Name" +: csvRows).mkString("\n")
+  }
+
+  private def csvField(value: String): String =
+    "\"" + value.replace("\"", "\"\"") + "\""
 
   private def countriesCYFull(govWalesData: String): Seq[Country] =
     SortedMap.from(english.allISORows ++ english.allFCDORows ++ english.allFCDOTRows ++ allWCORows ++ allGovWalesRows(govWalesData))
@@ -126,6 +161,12 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
 
   private val objectStorePath = Path.Directory("govwales").file("country-names.csv")
 
+  private val govWalesLinkTexts = Seq(
+    "Enwau gwledydd",
+    "Enwau Dibyniaethau Coron y DU",
+    "Enwau Tiriogaethau Tramor y DU"
+  )
+
 
   val outboundProxy: Option[(String, Int)] = {
     val maybeHost = config.getOptional[String]("proxy.host").map(_.trim).filter(_.nonEmpty)
@@ -147,16 +188,20 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
     }
   }
 
-  protected[services] def resolveGovWalesDownloadUrl(): String = {
-    logger.info("[resolveGovWalesDownloadUrl] - Resolving Welsh Government country names download URL")
+  protected[services] def resolveGovWalesDownloadUrls(): Seq[String] = {
+    logger.info("[resolveGovWalesDownloadUrls] - Resolving Welsh Government country names download URLs")
 
     val connection = Jsoup.connect("https://www.gov.wales/bydtermcymru/international-place-names")
     outboundProxy.foreach { case (host, port) => connection.proxy(host, port) }
 
-    connection
-      .get()
-      .select("a:containsOwn(Enwau gwledydd)")
-      .attr("abs:href")
+    val page = connection.get()
+    govWalesLinkTexts.map { linkText =>
+      val url = page.select(s"a:containsOwn($linkText)").attr("abs:href")
+      if (url.isEmpty) {
+        throw new IllegalArgumentException(s"Could not find Welsh Government download link containing '$linkText'")
+      }
+      url
+    }
   }
 
   protected[services] def downloadContent(url: String): String = {
@@ -179,32 +224,24 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
 
   override def retrieveAndStoreData(): Future[Unit] = {
     try {
-      val content = downloadContent(resolveGovWalesDownloadUrl())
+      val content = resolveGovWalesDownloadUrls().map(downloadContent)
+      val combinedContent = normaliseGovWalesData(content)
 
-      logger.debug("[retrieveAndStoreData] - Sample of data retrieved from Welsh Government:\n" + content.take(500))
+      logger.debug("[retrieveAndStoreData] - Sample of data retrieved from Welsh Government:\n" + content.map(_.take(500)).mkString("\n"))
 
       implicit val hc: HeaderCarrier = new HeaderCarrier()
 
-      val csv = CSVReader.open(Source.fromString(content))
+      mutable.addFirst(CachedData("", combinedContent))
+      if (mutable.size() > 1) mutable.removeLast()
 
-      // Check the integrity of the data file before caching it
-      if (csv.allWithHeaders().length > 1) {
-          mutable.addFirst(CachedData("", content))
-          if (mutable.size() > 1) mutable.removeLast()
+      logger.info("[retrieveAndStoreData] - Refreshed welsh country name data from third party source")
 
-          logger.info("[retrieveAndStoreData] - Refreshed welsh country name data from third party source")
-
-          objectStore.putObject(path = objectStorePath, content, contentType = Some("text/plain"))
-            .map(_ => logger.info("[retrieveAndStoreData] - Wrote welsh country name data to object-store successfully"))
-            .recoverWith { case e =>
-              logger.error("[retrieveAndStoreData][Error] - Could not write welsh country name data to object-store", e)
-              Future successful()
-            }
-      }
-      else {
-        logger.error(s"[retrieveAndStoreData][Error] - Error parsing welsh country name data from third party, unexpected file contents")
-        Future successful()
-      }
+      objectStore.putObject(path = objectStorePath, combinedContent, contentType = Some("text/plain"))
+        .map(_ => logger.info("[retrieveAndStoreData] - Wrote welsh country name data to object-store successfully"))
+        .recoverWith { case e =>
+          logger.error("[retrieveAndStoreData][Error] - Could not write welsh country name data to object-store", e)
+          Future successful()
+        }
 
     } catch {
       case e: Exception =>
@@ -221,14 +258,13 @@ class WelshCountryNamesObjectStoreDataSource  @Inject() (
 
       objectStore.getObject[String](objectStorePath).map {
         case Some(obj) =>
-          val csv = CSVReader.open(Source.fromString(obj.content))
-
-          if (csv.allWithHeaders().length > 1) {
-            mutable.addFirst(CachedData("", obj.content))
+          try {
+            val content = normaliseGovWalesData(Seq(obj.content))
+            mutable.addFirst(CachedData("", content))
             if (mutable.size() > 1) mutable.removeLast()
             logger.info("[updateCache] - Refreshed welsh country name data cache from object-store")
-          }
-          else {
+          } catch {
+            case _: Exception =>
             logger.error("[updateCache][Error] - Error parsing welsh country name data cache from object-store, unexpected file contents")
           }
         case None =>

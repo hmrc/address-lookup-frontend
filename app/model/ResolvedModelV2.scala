@@ -17,12 +17,12 @@
 package model
 
 import config.FrontendAppConfig
-import model.v2.{ConfirmPageConfig, JourneyConfigV2, JourneyOptions, SelectPageConfig, TimeoutConfig}
+import model.v2.{ConfirmPageConfig, JourneyConfigV2, JourneyLabels, JourneyOptions, SelectPageConfig, TimeoutConfig}
 
 case class ResolvedJourneyConfigV2(journeyConfig: JourneyConfigV2, appConfig: FrontendAppConfig) {
   val version: Int = journeyConfig.version
   val options: ResolvedJourneyOptions = ResolvedJourneyOptions(journeyConfig.options, appConfig)
-  val labels = journeyConfig.labels
+  val labels: Option[JourneyLabels] = journeyConfig.labels
 }
 
 case class ResolvedJourneyOptions(journeyOptions: JourneyOptions, appConfig: FrontendAppConfig) {

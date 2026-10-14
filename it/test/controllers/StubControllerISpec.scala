@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class StubControllerISpec extends IntegrationSpecBase {
 
-  val testJourneyId = UUID.randomUUID().toString
+  val testJourneyId: String = UUID.randomUUID().toString
 
   object MockIdGenerationService extends IdGenerationService {
     override def uuid: String = testJourneyId

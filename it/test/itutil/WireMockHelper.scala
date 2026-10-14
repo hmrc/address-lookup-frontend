@@ -56,16 +56,16 @@ trait WireMockHelper {
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClientLookupAddress(path: String, journeyID: String) =
+  def buildClientLookupAddress(path: String, journeyID: String): WSRequest =
     ws.url(s"http://localhost:$port/lookup-address/$journeyID/$path").withFollowRedirects(false)
 
-  def buildClientAPI(path: String) = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
+  def buildClientAPI(path: String): WSRequest = ws.url(s"http://localhost:$port/api/$path").withFollowRedirects(false)
 
   def buildClientLanguage(language: String, referer: String): WSRequest =
     ws.url(s"http://localhost:$port/lookup-address/language/$language").withHttpHeaders("Referer" -> referer)
       .withFollowRedirects(false)
 
-  def buildClientTestOnlyRoutes(path: String) =
+  def buildClientTestOnlyRoutes(path: String): WSRequest =
     ws.url(s"http://localhost:$port/lookup-address/test-only/$path").withFollowRedirects(false)
 
   def listAllStubs: ListStubMappingsResult = listAllStubMappings

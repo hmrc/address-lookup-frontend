@@ -375,7 +375,7 @@ class AbpAddressLookupControllerSpec
       header(HeaderNames.LOCATION, res) must be(Some(routes.AbpAddressLookupController.confirm("foo").url))
     }
 
-    "display a list of  english proposals given postcode and filter parameters" in new Scenario(
+    "display a list of  English proposals given postcode and filter parameters" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2()),
       proposals = Seq(ProposedAddress("GB1234567890", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"), ProposedAddress("GB1234567891", uprn = None, parentUprn = None, usrn = None, organisation = None, "ZZ11 1ZZ", "some-town"))
     ) {
@@ -653,7 +653,7 @@ class AbpAddressLookupControllerSpec
   }
 
   "edit" should {
-    "show the uk edit page for english" in new Scenario(
+    "show the uk edit page for English" in new Scenario(
       journeyDataV2 = Map("foo" -> basicJourneyV2().copy(config = basicJourneyV2(Some(true)).config.copy(
         options = basicJourneyV2(Some(true)).config.options.copy(allowedCountryCodes = None),
         labels = Some(JourneyLabels(cy = Some(LanguageLabels()))))))

@@ -39,7 +39,7 @@ class ConfirmViewSpec extends ViewSpec {
     "show back button is true" should {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       "show the back button" in {
@@ -49,7 +49,7 @@ class ConfirmViewSpec extends ViewSpec {
 
     "show back button is false" in {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl, testShowBackButtons = Some(false))
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getBackLinkText.shouldBe(empty)
@@ -59,7 +59,7 @@ class ConfirmViewSpec extends ViewSpec {
       val infoText: String = messages("confirmPage.infoMessage").replace("<kbd>", "").replace("</kbd>", "")
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getElementById("infoSubheading").text.shouldBe(messages("confirmPage.infoSubheading"))
@@ -70,7 +70,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(
         testConfirmPageConfig = Some(ConfirmPageConfig(showSubHeadingAndInfo = Some(false))))
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       Option(doc.getElementById("infoSubheading")).shouldBe(None)
@@ -80,7 +80,7 @@ class ConfirmViewSpec extends ViewSpec {
     "show search again link is true " in {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getElementById("searchAgainLink").text.shouldBe(messages("confirmPage.searchAgainLinkText"))
@@ -90,7 +90,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
         testConfirmPageConfig = Some(ConfirmPageConfig(showSearchAgainLink = Some(false))))
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       Option(doc.getElementById("searchAgainLink")).shouldBe(None)
@@ -99,7 +99,7 @@ class ConfirmViewSpec extends ViewSpec {
     "show change link is true " in {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getElementById("changeLink").text.shouldBe(messages("confirmPage.changeLinkText"))
@@ -109,7 +109,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
         testConfirmPageConfig = Some(ConfirmPageConfig(showChangeLink = Some(false))))
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       Option(doc.getElementById("changeLink")).shouldBe(None)
@@ -118,7 +118,7 @@ class ConfirmViewSpec extends ViewSpec {
     "show confirm change options is true" in {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl)
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       doc.getElementById("confirmChangeText").text.shouldBe(messages("confirmPage.confirmChangeText"))
@@ -128,7 +128,7 @@ class ConfirmViewSpec extends ViewSpec {
       val testJourneyConfig = fullV2JourneyDataCustomConfig(testContinueUrl = testContinueUrl,
         testConfirmPageConfig = Some(ConfirmPageConfig(showConfirmChangeText = Some(false))))
 
-      val testPage = confirm("", testJourneyConfig, Some(testAddress))
+      val testPage = confirm("", testJourneyConfig, testAddress)
       val doc: Document = Jsoup.parse(testPage.body)
 
       Option(doc.getElementById("confirmChangeText")).shouldBe(None)

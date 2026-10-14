@@ -22,33 +22,33 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import services.CountryService
 
 class ViewHelperTest extends AnyWordSpec with GuiceOneAppPerSuite with Matchers {
-  val countryService = app.injector.instanceOf[CountryService]
+  val countryService: CountryService = app.injector.instanceOf[CountryService]
 
   "ViewHelper" should {
     val allCountries = countryService.findAll()
     val selectItems = ViewHelper.countriesToSelectItems(allCountries)
 
     "create list of country select items for all countries provided" in {
-      selectItems should have length (allCountries.length)
+      selectItems should have length allCountries.length
     }
 
     "create list of country select items with unique ids" in {
       val groupedById = selectItems.groupBy(_.attributes("id"))
 
-      groupedById.keySet.size.shouldBe(allCountries.length)
+      groupedById.keySet.size shouldBe allCountries.length
     }
 
     "create list of country select items with unique values" in {
       val groupedById = selectItems.groupBy(_.value)
 
-      groupedById.keySet.size.shouldBe(allCountries.length)
+      groupedById.keySet.size shouldBe allCountries.length
     }
 
     "encodeCountryCode predictably" in {
       val gb = allCountries.find(_.code == "GB")
       val encoded = ViewHelper.encodeCountryCode(gb.get)
       encoded should not contain " "
-      encoded.shouldBe(gb.map(gb => s"GB-United_Kingdom").getOrElse("GB_NOT_FOUND"))
+      encoded shouldBe gb.map(_ => "GB-United_Kingdom").getOrElse("GB_NOT_FOUND")
     }
 
     "decodeCountryCode predictably" in {

@@ -35,23 +35,23 @@ trait PageContentHelper {
 
     def h1: Elements = doc.select("h1")
 
-    def h2s = doc.select("h2")
+    def h2s: Elements = doc.select("h2")
 
     def link(id: String): Elements = doc.select(s"a[id=$id]")
 
     def submitButton: Elements = doc.select("button[type=submit]")
 
-    def input(id: String) = doc.select(s"input[id=$id]")
+    def input(id: String): Elements = doc.select(s"input[id=$id]")
 
-    def radio(id: String) = doc.select(s"input[type=radio][id=$id]")
+    def radio(id: String): Elements = doc.select(s"input[type=radio][id=$id]")
 
-    def paras = doc.select("p")
+    def paras: Elements = doc.select("p")
 
-    def address = doc.select("div[id=address]")
+    def address: Elements = doc.select("div[id=address]")
 
-    def errorSummary = doc.select("div.govuk-error-summary__body")
+    def errorSummary: Elements = doc.select("div.govuk-error-summary__body")
 
-    def bulletPointList = doc.select("ul[class=govuk-list govuk-list-bullet]")
+    def bulletPointList: Elements = doc.select("ul[class=govuk-list govuk-list-bullet]")
   }
 
   def value(value: String): HavePropertyMatcher[Elements, String] =
@@ -77,92 +77,79 @@ trait PageContentHelper {
     }
 
   def text(text: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) =
-        HavePropertyMatchResult(
-          element.text() == text,
-          "text",
-          text,
-          element.text()
-        )
-    }
+    (element: Elements) => HavePropertyMatchResult(
+      element.text() == text,
+      "text",
+      text,
+      element.text()
+    )
 
   def label(label: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val labelElem = element.parents().get(0).tagName("label")
-        val labelForAttr = labelElem.attr("for")
+    (element: Elements) => {
+      val labelElem = element.parents().get(0).tagName("label")
+      val labelForAttr = labelElem.attr("for")
 
-        HavePropertyMatchResult(
-          labelForAttr == element.attr("id"),
-          "label for attr",
-          element.attr("id"),
-          labelForAttr
-        )
+      HavePropertyMatchResult(
+        labelForAttr == element.attr("id"),
+        "label for attr",
+        element.attr("id"),
+        labelForAttr
+      )
 
-        HavePropertyMatchResult(
-          labelElem.text() == label,
-          "label text",
-          label,
-          labelElem.text()
-        )
-      }
+      HavePropertyMatchResult(
+        labelElem.text() == label,
+        "label text",
+        label,
+        labelElem.text()
+      )
     }
 
   def elementWithValue(value: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val elem = element.select(s":contains($value)")
+    (element: Elements) => {
+      val elem = element.select(s":contains($value)")
 
-        HavePropertyMatchResult(
-          elem.text() == value,
-          "paragraph",
-          value,
-          elem.text()
-        )
-      }
+      HavePropertyMatchResult(
+        elem.text() == value,
+        "paragraph",
+        value,
+        elem.text()
+      )
     }
 
   def addressLine(id: String, value: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val span = element.select(s"span[id=$id]")
+    (element: Elements) => {
+      val span = element.select(s"span[id=$id]")
 
-        HavePropertyMatchResult(
-          span.text() == value,
-          s"address line $id",
-          value,
-          span.text()
-        )
-      }
+      HavePropertyMatchResult(
+        span.text() == value,
+        s"address line $id",
+        value,
+        span.text()
+      )
     }
 
-  def errorSummaryMessage(id: String, message: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val errorMessage = element.select("a")
+  def errorSummaryMessage(message: String): HavePropertyMatcher[Elements, String] =
+    (element: Elements) => {
+      val errorMessage = element.select("a")
 
-        HavePropertyMatchResult(
-          errorMessage.first().text() == message,
-          "error summary errors",
-          message,
-          errorMessage.text()
-        )
-      }
+      HavePropertyMatchResult(
+        errorMessage.first().text() == message,
+        "error summary errors",
+        message,
+        errorMessage.text()
+      )
     }
 
   def errorMessage(message: String): HavePropertyMatcher[Elements, String] =
-    new HavePropertyMatcher[Elements, String] {
-      def apply(element: Elements) = {
-        val errorMessage = element.parents.select("p[class=govuk-error-message]")
+    (element: Elements) => {
+      val errorMessage = element.parents.select("p[class=govuk-error-message]")
 
-        HavePropertyMatchResult(
-          errorMessage.text() == message,
-          "input error message",
-          message,
-          errorMessage.text()
-        )
-      }
+      HavePropertyMatchResult(
+        errorMessage.text() == message,
+        "input error message",
+        message,
+        errorMessage.text()
+      )
     }
 
   def getDocFromResponse(response: Future[WSResponse]): Document =
@@ -195,21 +182,17 @@ trait PageContentHelper {
 
   def testCustomPartsOfGovWrapperElementsForDefaultConfig(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe("")
     testElementDoesntExist(response, "govuk-phase-banner")
     doc.select(".govuk-link").last().attr("href") should include ("/contact/report-technical-problem?service=AddressLookupFrontend")
     doc.getElementsByClass("govuk-link").last().text().contains("""Get help with this page (opens in a new window or tab)""")
   }
 
-  def testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(response: Future[WSResponse], navTitle: String): Unit = {
+  def testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe(navTitle)
     doc.getElementsByClass("govuk-phase-banner__content__tag").text().shouldBe("alpha")
     doc.getElementsByClass("govuk-phase-banner__content").text().shouldBe("alpha PHASE_BANNER_HTML")
     testElementExists(response, "govuk-phase-banner")
 
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href").shouldBe("/contact/report-technical-problem?service=DESKPRO_SERVICE_NAME")
-    // /contact/report-technical-problem?newTab=true&service=address-lookup-frontend
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=deskpro_service_name""")
     // TODO: Re-introduce timeout script support
 //    doc.getElementById("timeoutScript").html().contains("timeout: 120").shouldBe(true)
@@ -219,15 +202,10 @@ trait PageContentHelper {
 
   def testCustomPartsOfGovWrapperElementsForFullConfigWithAllTopConfigAsNoneAndAllBooleansFalse(response: Future[WSResponse]): Unit = {
     val doc = getDocFromResponse(response)
-//    doc.getElementsByClass("header__menu__proposition-name").first().text().shouldBe("")
     doc.getElementsByClass("govuk-phase-banner__content__tag").first().shouldBe(null)
     doc.getElementsByClass("govuk-phase-banner__content").first().shouldBe(null)
     testElementDoesntExist(response, "govuk-phase-banner")
 
-//    doc.select(".report-error__toggle.js-hidden").first().attr("href").shouldBe("/contact/report-technical-problem?service=AddressLookupFrontend")
     doc.getElementsByClass("govuk-link").last().text().contains("""/contact/problem_reports_ajax?service=address_lookup_frontend""")
-//    doc.getElementsByTag("script").last().html().contains("timeout: 120").shouldBe(false)
-//    doc.getElementsByTag("script").last().html().contains("/lookup-address/destroySession?timeoutUrl=TIMEOUT_URL").shouldBe(false)
-//    doc.getElementsByClass("copyright").first().child(0).attr("href").shouldBe("https://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm")
   }
 }

@@ -27,9 +27,9 @@ class RemoteMessagesApiProvider @Inject()(environment: Environment, config: Conf
                                           httpConfiguration: HttpConfiguration)
   extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
 
-  lazy val defaultMessages: Map[String, Map[String, String]] = loadAllMessages
+  private lazy val defaultMessages: Map[String, Map[String, String]] = loadAllMessages
 
-  def getRemoteMessagesApi(remoteMessages: Option[JsObject]) = {
+  def getRemoteMessagesApi(remoteMessages: Option[JsObject]): DefaultMessagesApi = {
     val english = remoteMessages.flatMap(js => (js \ "en").asOpt[Map[String, String]]).getOrElse(Map())
     val welsh = remoteMessages.flatMap(js => (js \ "cy").asOpt[Map[String, String]]).getOrElse(Map())
 

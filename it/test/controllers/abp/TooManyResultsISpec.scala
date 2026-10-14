@@ -33,7 +33,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TooManyResultsISpec extends IntegrationSpecBase with PageContentHelper {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object tooManyResultsMessages {

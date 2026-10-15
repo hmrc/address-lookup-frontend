@@ -112,6 +112,10 @@ class SelectPageViewSpec extends ViewSpec {
       }
     }
 
+    "render a proposal list legend matching the visible heading" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+      doc.select("fieldset legend").first().text.shouldBe(messages("selectPage.heading"))
+    }
+
     "render the heading with a postcode" when {
       "it is not the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = false) {
         doc.getH1ElementAsText.shouldBe(s"${messages("selectPage.headingWithPostcode")} ${testLookup.postcode}")

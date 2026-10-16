@@ -91,6 +91,7 @@ class SelectPageViewSpec extends ViewSpec {
     "render the none of these option" when {
       "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
         doc.select("#addressId-none + label").text().shouldBe(messages("selectPage.noneOfThese"))
+        doc.select("fieldset legend").size.shouldBe(1)
       }
     }
 

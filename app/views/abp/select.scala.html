@@ -78,7 +78,7 @@
             name = "addressId",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(messages("selectPage.proposalListLabel")),
+                    content = HtmlContent(messages("selectPage.heading")),
                     classes = "govuk-visually-hidden"
                 ))
             )),
@@ -99,12 +99,7 @@
                     formGroup = FormGroup(classes = Some("form-group")),
                     errorMessage = selectForm("addressId").error.map(fe => ErrorMessage(content = HtmlContent(""))),
                     name = "addressId",
-                    fieldset = Some(Fieldset(
-                        legend = Some(Legend(
-                        content = HtmlContent(""),
-                        classes = "govuk-visually-hidden"
-                    ))
-                )),
+                    fieldset = None,
                 items = Seq(RadioItem(
                             content = HtmlContent(messages("selectPage.noneOfThese")),
                             value = Some("none"),

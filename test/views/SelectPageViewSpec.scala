@@ -91,6 +91,7 @@ class SelectPageViewSpec extends ViewSpec {
     "render the none of these option" when {
       "the config is provided as true for show none of these option" in new Setup(testSelectPageConfigWithNoneOfTheseOption, testProposal, testLookup, firstSearch = true) {
         doc.select("#addressId-none + label").text().shouldBe(messages("selectPage.noneOfThese"))
+        doc.select("fieldset legend").size.shouldBe(1)
       }
     }
 
@@ -110,6 +111,10 @@ class SelectPageViewSpec extends ViewSpec {
       "a lookup is provided with a postcode but it is still the first search" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
         doc.getH1ElementAsText.shouldBe(messages("selectPage.heading"))
       }
+    }
+
+    "render a proposal list legend matching the visible heading" in new Setup(testSelectPageConfig, testProposal, testLookup, firstSearch = true) {
+      doc.select("fieldset legend").first().text.shouldBe(messages("selectPage.heading"))
     }
 
     "render the heading with a postcode" when {

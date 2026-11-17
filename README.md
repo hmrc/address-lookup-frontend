@@ -407,7 +407,6 @@ UI-test variant with `showNoneOfTheseOption` forced on:
 ```bash
 ./run-local-for-ui-test.sh
 ```
-
 With the test router enabled, you can initialise journeys from:
 
 http://localhost:9028/lookup-address/test-only/v2/test-setup

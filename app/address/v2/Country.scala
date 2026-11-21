@@ -34,12 +34,10 @@ object Country {
   implicit val format: OFormat[Country] = Json.format[Country]
 
   def apply(codeCountryMap: (String, Map[String, String])): Country = codeCountryMap match {
-    case (code, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
+    case (_, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
   }
 
-  def toMap(country: Country): (String, Map[String, String]) = {
-    (country.code -> country.toMap)
-  }
+  def toMap(country: Country): (String, Map[String, String]) = country.code -> country.toMap
 }
 
 
@@ -57,9 +55,9 @@ object Countries {
   val Cymru = Country("GB-CYM", "Cymru")
   val NorthernIreland = Country("GB-NIR", "Northern Ireland")
 
-  val Bermuda = Country("BM", "Bermuda")
-  val Netherlands = Country("NL", "Netherlands")
-  val BritishVirginIslands = Country("VG", "British Virgin Islands")
+  private val Bermuda = Country("BM", "Bermuda")
+  private val Netherlands = Country("NL", "Netherlands")
+  private val BritishVirginIslands = Country("VG", "British Virgin Islands")
 
   private val all = List(UK, GB, GG, IM, JE, England, Scotland, Wales, Cymru, NorthernIreland)
 

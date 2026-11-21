@@ -30,7 +30,7 @@ trait JsoupShouldMatchers extends Matchers with ElementSelectorBuilders with Ele
 
   private[scalatest] def any: ElementSelector = Select(_.getAllElements, None)
 
-  protected val self = any
+  protected val self: ElementSelector = any
 
   implicit def string2AsBodyFragment(s: String): Object {def asBodyFragment: Element} = new {
     def asBodyFragment: Element = parseBodyFragment(s).body

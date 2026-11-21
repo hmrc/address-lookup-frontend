@@ -36,13 +36,13 @@ class ManualAddressEntryConfigSpec extends AnyWordSpecLike with Matchers with Gu
 
     "deserializing from JSON" should {
 
-      "fail to read if a value is smaller than the minimum allowed (35)" in {
+      "fail to read if a value is smaller than the minimum allowed (27)" in {
         Json.fromJson[ManualAddressEntryConfig](Json.obj(
-          "line1MaxLength" -> 34,
+          "line1MaxLength" -> 26,
           "line2MaxLength" -> 60,
           "line3MaxLength" -> 70,
           "townMaxLength" -> 80
-        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.min", 35))
+        )) mustBe JsError(JsPath \ "line1MaxLength", JsonValidationError("error.min", 27))
       }
 
       "fail to read if a value is greater than the max allowed (255)" in {

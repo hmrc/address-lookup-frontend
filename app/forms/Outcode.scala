@@ -18,7 +18,7 @@ package forms
 
 
 case class Outcode(area: String, district: String) {
-  override lazy val toString = area + district
+  override lazy val toString: String = area + district
 }
 
 object Outcode {

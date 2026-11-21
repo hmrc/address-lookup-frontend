@@ -20,24 +20,21 @@ import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants.*
 import itutil.config.IntegrationTestConstants.*
-import itutil.config.PageElementConstants.SelectPage
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
+import play.api.http.HeaderNames
+import play.api.http.Status.*
 import play.api.i18n.Lang
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.DefaultBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.WSResponse
 import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
-import play.api.http.HeaderNames
-import play.api.http.Status._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SelectPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The select page GET" should {
@@ -73,7 +70,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         testIds.foreach {
           id => {
-            val fieldId = (s"addressId")
+            val fieldId = "addressId"
             doc.radio(fieldId) should have(
               value(id),
               label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
@@ -113,7 +110,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         testIds.foreach {
           id => {
-            val fieldId = (s"addressId")
+            val fieldId = "addressId"
             doc.radio(fieldId) should have(
               value(id),
               label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
@@ -159,7 +156,7 @@ class SelectPageISpec extends IntegrationSpecBase {
 
         testIds.foreach {
           id => {
-            val fieldId = (s"addressId")
+            val fieldId = "addressId"
             doc.radio(fieldId) should have(
               value(id),
               label(s"$testAddressLine1, $testAddressLine2, $testAddressTown, $testPostCode")
@@ -214,8 +211,8 @@ class SelectPageISpec extends IntegrationSpecBase {
 
       }
     }
-    "be shown with welsh content" when {
-      "the journey was setup with welsh enabled and the welsh cookie is present" in {
+    "be shown with Welsh content" when {
+      "the journey was setup with Welsh enabled and the welsh cookie is present" in {
         val testJourneyId = UUID.randomUUID().toString
         val addressAmount = 50
         val testResultsList = addressResultsListBySize(numberOfRepeats = addressAmount)
@@ -326,7 +323,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val message = "Select an address"
 
       doc.errorSummary should have(
-        errorSummaryMessage(SelectPage.addressId, message)
+        errorSummaryMessage(message)
       )
     }
 

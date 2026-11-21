@@ -29,6 +29,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import play.api.{Application, Mode}
@@ -48,7 +49,7 @@ abstract class ApiControllerSpecBase extends AnyWordSpec with MockitoSugar with 
   implicit val timeout: FiniteDuration = 1 second
   implicit val mat: Materializer = injector.instanceOf[Materializer]
 
-  protected def init(journeyOptions: JourneyConfigV2) = {
+  protected def init(journeyOptions: JourneyConfigV2): Future[Result] = {
     val headers = Seq("Content-Type" -> "application/json", "User-Agent" -> "test-user-agent")
 
     val fakeRequest = FakeRequest("POST", s"/api/v2/init/")
@@ -129,30 +130,30 @@ class ApiControllerDevSpec extends ApiControllerSpecBase {
       status(result).shouldBe(Status.ACCEPTED)
     }
 
-    "Succeed for non-relative signoutUrl" in {
+    "Fail for non-relative signoutUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         signOutHref = Some("http://www.google.com"),
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout"))))
 
       val result = init(journeyOptions)
 
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
-    "Succeed for non-relative timeoutUrl" in {
+    "Fail for non-relative timeoutUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "http://www.google.com/"))))
 
       val result = init(journeyOptions)
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
 
-    "Succeed for non-relative timeoutKeepAliveUrl" in {
+    "Fail for non-relative timeoutKeepAliveUrl" in {
       val journeyOptions = JourneyConfigV2(2, JourneyOptions(continueUrl = "ignoreme",
         timeoutConfig = Some(TimeoutConfig(timeoutAmount = 300, timeoutUrl = "/timeout", timeoutKeepAliveUrl = Some("http://www.google.com")))))
 
       val result = init(journeyOptions)
-      status(result).shouldBe(Status.ACCEPTED)
+      status(result).shouldBe(Status.BAD_REQUEST)
     }
   }
 }

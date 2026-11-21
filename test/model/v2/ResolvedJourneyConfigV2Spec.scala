@@ -38,7 +38,7 @@ class ResolvedJourneyConfigV2Spec extends AnyWordSpecLike with Matchers with Gui
     new GuiceApplicationBuilder().build()
   }
 
-  val appConfig = app.injector.instanceOf[FrontendAppConfig]
+  val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "ResolvedJourneyConfigV2" should {
     "return a full model without defaulting any values" in {

@@ -23,11 +23,11 @@ case class Postcode(area: String, district: String, sector: String, unit: String
 
   def asOutcode = Outcode(area, district)
 
-  def incode: String = sector + unit
+  private def incode: String = sector + unit
 
   def urlSafe: String = outcode + "+" + incode
 
-  override lazy val toString = outcode + " " + incode
+  override lazy val toString: String = outcode + " " + incode
 }
 
 
@@ -71,7 +71,7 @@ object Postcode {
   }
 
   /** Removes excess whitespace from a postcode string. */
-  def normalisePostcode(postcode: String): String = {
+  private def normalisePostcode(postcode: String): String = {
     postcode.trim.replaceAll("[ \\t]+", "").toUpperCase
   }
 

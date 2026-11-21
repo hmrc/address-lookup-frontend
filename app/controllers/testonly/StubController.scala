@@ -109,7 +109,7 @@ class StubController @Inject()(
       Ok(setup_journey_v2_stub_page(TestSetupForm.form.fill(Json.prettyPrint(StubHelper.defaultJourneyConfigV2JsonAsString))))
   }
 
-  def submitStubForNewJourneyV2 = Action.async { implicit request =>
+  def submitStubForNewJourneyV2: Action[AnyContent] = Action.async { implicit request =>
     TestSetupForm.form
       .bindFromRequest()
       .fold(

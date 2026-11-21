@@ -23,11 +23,10 @@ import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, On
 class RelativeOrAbsoluteWithHostnameFromAllowlist(private val allowedHosts: Set[String], private val environment: Environment) {
   private val absoluteWithHostnameFromAllowlist = AbsoluteWithHostnameFromAllowlist(allowedHosts)
   private val relativeUrlsOnly = OnlyRelative
-  private val permitAllOnDev = PermitAllOnDev(environment)
 
   def url(theUrl: RedirectUrl): String = url(theUrl.unsafeValue)
   def url(theUrl: String): String = {
-    RedirectUrl(theUrl).getEither(relativeUrlsOnly | absoluteWithHostnameFromAllowlist | permitAllOnDev) match {
+    RedirectUrl(theUrl).getEither(relativeUrlsOnly | absoluteWithHostnameFromAllowlist) match {
       case Right(safeRedirectUrl) => safeRedirectUrl.url
       case Left(error) => throw new IllegalArgumentException(error)
     }

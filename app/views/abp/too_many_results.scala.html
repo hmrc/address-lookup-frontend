@@ -19,13 +19,9 @@
 @import views.html.templates.Layout
 @import model.v2.JourneyDataV2
 
-@this(
-        button: GovukButton,
-        page: Layout,
-        govukErrorSummary: GovukErrorSummary
-)
+@this(page: Layout)
 
-@(id: String, journeyData: JourneyDataV2, formattedPostcode: String, filter: Option[String], firstLookup: Boolean, isWelsh: Boolean = false, isUKMode: Boolean = true)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
+@(id: String, journeyData: JourneyDataV2, formattedPostcode: String, filter: Option[String], firstLookup: Boolean)(implicit request: Request[?], messages: Messages, appConfig: FrontendAppConfig)
 
 @resolvedConf = @{
     journeyData.resolveConfigV2(appConfig)
@@ -35,7 +31,7 @@
     resolvedConf.options.selectPageConfig.proposalListLimit.get
 }
 
-@page(messages("constants.noResultsFoundTitle"), None, journeyData) {
+@page(messages("constants.noResultsFoundTitle"), journeyData) {
 
     <h1 class="@{resolvedConf.options.pageHeadingStyle}" id="pageHeading">
     @{if(firstLookup) {

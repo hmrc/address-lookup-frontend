@@ -19,13 +19,14 @@ package services
 import address.v2.Country
 import com.github.tototoshi.csv.CSVReader
 
+import java.text.Collator
 import scala.io.Source
 
 trait CountryNamesDataSource {
-  protected def allAliases(aliasFileClasspath: String) =
+  protected def allAliases(aliasFileClasspath: String): Map[String, List[Country]] =
     CSVReader.open(Source.fromInputStream(getClass.getResourceAsStream(aliasFileClasspath), "UTF-8"))
       .allWithOrderedHeaders()._2.sortBy(x => x("countryCode"))
-      .map { x => x("countryCode") -> (x("aliases").split("\\|").map(_.trim).toList) }
+      .map { x => x("countryCode") -> x("aliases").split("\\|").map(_.trim).toList }
       .map { case (c, as) => c -> as.map(a => Country(c, a)) }
       .toMap
 
@@ -33,7 +34,7 @@ trait CountryNamesDataSource {
     mappings.flatMap { case (o, nm) => nm.map(n => n -> m(o)) }
   }
 
-  protected val mappings = Map(
+  private val mappings = Map(
     "independent" -> None,
     "alpha_3_code" -> None,
     "full_name_en" -> Some("Official Name"),
@@ -44,5 +45,5 @@ trait CountryNamesDataSource {
     "alpha_2_code" -> Some("Country")
   )
 
-  protected val utfSorter = java.text.Collator.getInstance()
+  protected val utfSorter: Collator = java.text.Collator.getInstance()
 }

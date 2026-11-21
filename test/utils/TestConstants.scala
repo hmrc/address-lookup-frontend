@@ -50,7 +50,7 @@ object TestConstants {
   val testAuditRef = "Jid123"
   val testAddressDetails = ConfirmableAddressDetails(None, List("1 High Street", "Line 2", "Line 3"), Some("Town"), Some("TF1 1NT"), Some(Country("UK", "United Kingdom")))
   val testAddress = ConfirmableAddress(testAuditRef, Some("1"), None, None, None, None, testAddressDetails)
-  val testProposedAddressSeq = Seq(
+  val testProposedAddressSeq: Seq[ProposedAddress] = Seq(
     ProposedAddress("1",       uprn = None, parentUprn = None, usrn = None, organisation = None, "TF1 1NT", "Telford", List("1 High Street", "Line 2", "Line 3"), Country("UK", "United Kingdom")),
     ProposedAddress("2",       uprn = None, parentUprn = None, usrn = None, organisation = None, "TF2 2NT", "Shrewsbury", List("2 High Street", "Line2", "Line3"), Country("UK", "United Kingdom"))
   )

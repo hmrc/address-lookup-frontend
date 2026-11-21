@@ -29,10 +29,8 @@
 
 @this(
         form: FormWithCSRF,
-        textarea: GovukTextarea,
         button: GovukButton,
         textInput: GovukInput,
-        radios: GovukRadios,
         select: GovukSelect,
         page: Layout,
         govukFieldset: GovukFieldset,
@@ -164,7 +162,7 @@
     </h1>
 }
 
-@page(titleWithError, Some(editForm), journeyData) {
+@page(titleWithError, journeyData) {
 
     @if(editForm.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(editForm))

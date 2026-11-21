@@ -21,9 +21,10 @@ import controllers.routes
 import itutil.IntegrationSpecBase
 import itutil.config.AddressRecordConstants.*
 import itutil.config.IntegrationTestConstants.*
-import itutil.config.PageElementConstants.SelectPage
 import model.v2.{JourneyConfigV2, JourneyDataV2, JourneyOptions, SelectPageConfig}
 import org.jsoup.Jsoup
+import play.api.http.HeaderNames
+import play.api.http.Status.*
 import play.api.i18n.Lang
 import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.WSResponse
@@ -31,15 +32,10 @@ import services.JourneyDataV2Cache
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
-//import model.JourneyConfigDefaults.{EnglishConstants, WelshConstants}
-//import model.MessageConstants.{EnglishMessageConstants => EnglishMessages, WelshMessageConstants => WelshMessages}
-import play.api.http.HeaderNames
-import play.api.http.Status._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SelectPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "The select page GET" should {
@@ -73,14 +69,13 @@ class SelectPageISpec extends IntegrationSpecBase {
         }
 
         testIds.zipWithIndex.foreach {
-          case (id, idx) => {
+          case (id, idx) =>
             val i = idx + 1
             val fieldId = if (idx == 0) s"addressId" else s"addressId-$idx"
             doc.radio(fieldId) should have(
               value(id),
               label(s"Unit $i $i Street $i, District $i, City $i, City $i, Postcode $i")
             )
-          }
         }
       }
 
@@ -219,8 +214,8 @@ class SelectPageISpec extends IntegrationSpecBase {
       }
     }
 
-    "be shown with welsh content" when {
-      "the journey was setup with welsh enabled and the welsh cookie is present" in {
+    "be shown with Welsh content" when {
+      "the journey was setup with Welsh enabled and the welsh cookie is present" in {
         val addressAmount = 50
         val testJourneyId = UUID.randomUUID().toString
         val testResultsList = internationalAddressResultsListBySize(numberOfRepeats = addressAmount)
@@ -335,7 +330,7 @@ class SelectPageISpec extends IntegrationSpecBase {
       val message = "Select an address"
 
       doc.errorSummary should have(
-        errorSummaryMessage(SelectPage.addressId, message)
+        errorSummaryMessage(message)
       )
     }
 

@@ -15,7 +15,6 @@
  */
 
 import itutil.IntegrationSpecBase
-import itutil.config.IntegrationTestConstants.*
 import play.api.http.HeaderNames
 import play.api.http.Status.*
 import play.api.i18n.Lang
@@ -26,7 +25,7 @@ import java.util.UUID
 class NotFoundISpec extends IntegrationSpecBase {
 
   "Not Found" when {
-    "the welsh content header isn't set and welsh object isn't provided in config" should {
+    "the Welsh content header isn't set and Welsh object isn't provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
@@ -43,7 +42,7 @@ class NotFoundISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set and welsh object isn't provided in config" should {
+    "the Welsh content header is set and Welsh object isn't provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
@@ -63,7 +62,7 @@ class NotFoundISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set and welsh object is provided in config" should {
+    "the Welsh content header is set and Welsh object is provided in config" should {
       "render in English" in {
         val testJourneyId = UUID.randomUUID().toString
         val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)
@@ -81,7 +80,7 @@ class NotFoundISpec extends IntegrationSpecBase {
       }
     }
 
-    "the welsh content header is set and welsh object provided in config" should {
+    "the Welsh content header is set and Welsh object provided in config" should {
       "render in Welsh" in {
         val testJourneyId = UUID.randomUUID().toString
         val fResponse = buildClientLookupAddress(s"notfound", testJourneyId)

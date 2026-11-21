@@ -29,9 +29,9 @@ import play.api.i18n.Messages
 object Helpers {
 
   trait EmptyStringValidator {
-    def customErrorTextValidation(message: String) = Forms.of[String](stringFormat(message))
+    def customErrorTextValidation(message: String): FieldMapping[String] = Forms.of[String](stringFormat(message))
 
-    def stringFormat(message: String): Formatter[String] = new Formatter[String] {
+    private def stringFormat(message: String): Formatter[String] = new Formatter[String] {
 
       private def getNonEmpty(key: String, data: Map[String, String]): Option[String] = data.getOrElse(key, "").trim match {
         case "" => None
@@ -40,7 +40,7 @@ object Helpers {
 
       def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = getNonEmpty(key, data).toRight(Seq(FormError(key, message, Nil)))
 
-      def unbind(key: String, value: String) = Map(key -> value)
+      def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
     }
 
   }
@@ -48,13 +48,13 @@ object Helpers {
 
 object ALFForms extends EmptyStringValidator {
 
-  def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
+  private def hasInvalidChars(chars: String) = !chars.replaceAll("\\s", "").forall(_.isLetterOrDigit)
 
-  def isInvalidPostcode(postcode: String) = !Postcode.cleanupPostcode(postcode).isDefined
+  private def isInvalidPostcode(postcode: String) = Postcode.cleanupPostcode(postcode).isEmpty
 
   //TODO: TESTS_REQUIRED
   //Need to cover uk and non-uk mode
-  def postcodeConstraint(isUkMode: Boolean)(implicit messages: Messages): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
+  private def postcodeConstraint(isUkMode: Boolean)(implicit messages: Messages): Constraint[String] = Constraint[String](Some("constraints.postcode"), Seq.empty)({
     case empty if empty.isEmpty =>
       Invalid(Seq(ValidationError(messages(s"constants.lookupPostcodeEmptyError${if (isUkMode) ".ukMode" else ""}"))))
     case chars if hasInvalidChars(chars) =>
@@ -79,18 +79,18 @@ object ALFForms extends EmptyStringValidator {
     )(NonAbpLookup.apply)(NonAbpLookup.unapply)
   )
 
-  val minimumLength: Int = 1
-  val maximumLength: Int = 255
+  private val minimumLength: Int = 1
+  private val maximumLength: Int = 255
 
-  def minimumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
+  private def minimumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.min"), Seq.empty)(value =>
     if (value.length >= minimumLength) Valid else Invalid(messages(s"constants.errorMin").replace("$min", minimumLength.toString))
   )
 
-  def maximumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
+  private def maximumConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("length.max"), Seq.empty)(value =>
     if (value.length <= maximumLength) Valid else Invalid(messages(s"constants.errorMax").replace("$max", maximumLength.toString))
   )
 
-  def nonEmptyConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
+  private def nonEmptyConstraint()(implicit messages: Messages): Constraint[String] = new Constraint[String](Some("required"), Seq.empty)(value =>
     if (value.nonEmpty) Valid else Invalid(messages(s"constants.errorRequired"))
   )
 
@@ -104,7 +104,7 @@ object ALFForms extends EmptyStringValidator {
     )(Select.apply)(Select.unapply)
   )
 
-  def constraintOptStringMaxLength(msg: String, max: Int) =
+  private def constraintOptStringMaxLength(msg: String, max: Int) =
     new Constraint[Option[String]](Some("length.max"), Seq.empty)(s => if (s.isEmpty || s.get.length <= max) {
       Valid
     } else {
@@ -135,9 +135,9 @@ object ALFForms extends EmptyStringValidator {
     }
   }
 
-  private def atLeastOneAddressLineOrTown(message: String = "", mandatoryProvided: Boolean = false): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message, mandatoryProvided))
+  private def atLeastOneAddressLineOrTown(message: String, mandatoryProvided: Boolean): FieldMapping[Option[String]] = Forms.of[Option[String]](formatter(message, mandatoryProvided))
 
-  private def formatter(message: String = "", mandatoryProvided: Boolean = false): Formatter[Option[String]] = new Formatter[Option[String]] {
+  private def formatter(message: String, mandatoryProvided: Boolean): Formatter[Option[String]] = new Formatter[Option[String]] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val values = Seq(data.get("line1"), data.get("line2"), data.get("line3"), data.get("town")).flatten
       if (values.forall(_.isEmpty) && !mandatoryProvided) {
@@ -254,6 +254,6 @@ object StopOnFirstFail {
     }
   }
 
-  def constraint[T](message: String, validator: (T) => Boolean) =
+  def constraint[T](message: String, validator: T => Boolean) =
     Constraint((data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message))))
 }

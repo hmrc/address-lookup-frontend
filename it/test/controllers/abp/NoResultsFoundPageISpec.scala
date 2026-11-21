@@ -34,7 +34,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class NoResultsFoundPageISpec extends IntegrationSpecBase {
-  val cache = app.injector.instanceOf[JourneyDataV2Cache]
+  val cache: JourneyDataV2Cache = app.injector.instanceOf[JourneyDataV2Cache]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   object EnglishContent {
@@ -107,7 +107,7 @@ class NoResultsFoundPageISpec extends IntegrationSpecBase {
 
         res.status.shouldBe(OK)
 
-        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse, "NAV_TITLE")
+        testCustomPartsOfGovWrapperElementsForFullConfigAllTrue(fResponse)
 
         doc.title.shouldBe(EnglishContent.title(testPostCode) + " - NAV_TITLE - GOV.UK")
         doc.h1.text().shouldBe(EnglishContent.heading(testPostCode))
